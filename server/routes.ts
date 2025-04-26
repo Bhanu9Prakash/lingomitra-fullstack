@@ -38,6 +38,20 @@ const languages = [
     speakers: 600,
     isAvailable: true,
   },
+  {
+    code: "zh",
+    name: "Chinese",
+    flagCode: "cn",
+    speakers: 1300,
+    isAvailable: true,
+  },
+  {
+    code: "ja",
+    name: "Japanese",
+    flagCode: "jp",
+    speakers: 126,
+    isAvailable: true,
+  },
 ];
 
 const germanLessons = [
@@ -498,6 +512,142 @@ Remember, learning French opens doors to a rich cultural heritage and improved c
   },
 ];
 
+const chineseLessons = [
+  {
+    lessonId: "zh-introduction",
+    languageCode: "zh",
+    title: "Introduction to Chinese",
+    content: `# Introduction to Chinese
+
+## Learning Objectives
+- Understand basic facts about the Chinese language
+- Learn about Chinese-speaking regions
+- Recognize the importance of Chinese globally
+
+## About the Chinese Language
+Chinese (中文, Zhōngwén) is a group of language varieties that form the Sinitic branch of the Sino-Tibetan language family. Mandarin Chinese (普通话, Pǔtōnghuà) is the most widely spoken form and serves as the standard language of China.
+
+## Chinese-Speaking Regions
+Chinese is spoken primarily in:
+
+- People's Republic of China (中华人民共和国)
+- Taiwan (台湾)
+- Singapore (新加坡)
+- Malaysia (马来西亚)
+- Various Chinese communities worldwide
+
+## Importance of Chinese
+- With over 1.3 billion native speakers, Chinese is the most spoken language in the world
+- China has the world's second-largest economy and is a major global trade partner
+- Chinese culture has profoundly influenced East Asia and beyond through its art, literature, philosophy, and cuisine
+- Proficiency in Chinese provides significant advantages in international business and diplomacy
+
+## What to Expect
+In the upcoming lessons, you'll learn:
+- Chinese characters and their components
+- The four tones of Mandarin Chinese
+- Basic greetings and introductions
+- Essential vocabulary for everyday conversation
+- Cultural aspects of Chinese-speaking regions
+
+Remember, while Chinese might seem challenging at first due to its characters and tones, consistent practice will lead to steady progress. 加油! (Jiā yóu! - Keep going!)
+`,
+    orderIndex: 1,
+  },
+];
+
+const japaneseLessons = [
+  {
+    lessonId: "ja-introduction",
+    languageCode: "ja",
+    title: "Introduction to Japanese",
+    content: `# Introduction to Japanese
+
+## Learning Objectives
+- Understand basic facts about the Japanese language
+- Learn about Japan and its culture
+- Recognize the importance of Japanese globally
+
+## About the Japanese Language
+Japanese (日本語, Nihongo) is an East Asian language spoken primarily in Japan. It is a member of the Japonic language family with a complex writing system that consists of three scripts: hiragana, katakana, and kanji.
+
+## Japanese-Speaking Regions
+Japanese is spoken primarily in:
+
+- Japan (日本, Nihon/Nippon)
+- Japanese communities around the world, particularly in Brazil, the United States, and Peru
+
+## Importance of Japanese
+- Around 126 million people speak Japanese worldwide
+- Japan has the world's third-largest economy and is a leader in technology, automotive, and entertainment industries
+- Japanese culture has gained global popularity through anime, manga, video games, cuisine, and traditional arts
+- Knowledge of Japanese opens doors to academic and professional opportunities in various fields
+
+## What to Expect
+In the upcoming lessons, you'll learn:
+- The Japanese writing system (hiragana, katakana, and kanji)
+- Basic pronunciation rules
+- Essential greetings and expressions
+- Fundamental grammar structures
+- Cultural aspects that influence language use
+
+Remember, while Japanese has unique features like its writing system and grammar, a consistent learning approach makes it accessible and enjoyable. がんばって! (Ganbatte! - Do your best!)
+`,
+    orderIndex: 1,
+  },
+];
+
+const hindiLessons = [
+  {
+    lessonId: "hi-introduction",
+    languageCode: "hi",
+    title: "Introduction to Hindi",
+    content: `# Introduction to Hindi
+
+## Learning Objectives
+- Understand basic facts about the Hindi language
+- Learn about Hindi-speaking regions
+- Recognize the importance of Hindi globally
+
+## About the Hindi Language
+Hindi (हिन्दी) is an Indo-Aryan language spoken primarily in India. It is written in the Devanagari script and is one of the 22 scheduled languages of India. Hindi, along with English, serves as the official language of the Indian government.
+
+## Hindi-Speaking Regions
+Hindi is widely spoken in:
+
+- India (भारत), particularly in the "Hindi Belt" regions including:
+  - Uttar Pradesh
+  - Madhya Pradesh
+  - Rajasthan
+  - Bihar
+  - Delhi
+  - Haryana
+  - Himachal Pradesh
+  - Uttarakhand
+  - Jharkhand
+  - Chhattisgarh
+- Fiji, Mauritius, Trinidad and Tobago, Guyana, and Suriname also have significant Hindi-speaking populations
+
+## Importance of Hindi
+- Hindi is spoken by approximately 600 million people worldwide
+- It's the third most spoken language in the world by number of native speakers
+- Hindi is central to India's rich cultural heritage of literature, poetry, film, and music
+- Knowledge of Hindi provides deeper insights into Indian philosophy, spirituality, and traditions
+
+## What to Expect
+In the upcoming lessons, you'll learn:
+- The Devanagari script and pronunciation
+- Basic greetings and introductions
+- Essential vocabulary for everyday conversation
+- Fundamental grammar structures
+- Cultural insights into Indian society
+
+Remember, learning Hindi opens doors to understanding one of the world's oldest and richest civilizations. शुभकामनाएँ! (Shubhkamnayein! - Best wishes!)
+`,
+    orderIndex: 1,
+  },
+];
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize data
   // Add languages
@@ -537,6 +687,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createLesson(validatedLesson);
     } catch (error) {
       console.error("Error adding French lesson:", error);
+    }
+  }
+  
+  // Add Chinese lessons
+  for (const lesson of chineseLessons) {
+    try {
+      const validatedLesson = insertLessonSchema.parse(lesson);
+      await storage.createLesson(validatedLesson);
+    } catch (error) {
+      console.error("Error adding Chinese lesson:", error);
+    }
+  }
+  
+  // Add Japanese lessons
+  for (const lesson of japaneseLessons) {
+    try {
+      const validatedLesson = insertLessonSchema.parse(lesson);
+      await storage.createLesson(validatedLesson);
+    } catch (error) {
+      console.error("Error adding Japanese lesson:", error);
+    }
+  }
+  
+  // Add Hindi lessons
+  for (const lesson of hindiLessons) {
+    try {
+      const validatedLesson = insertLessonSchema.parse(lesson);
+      await storage.createLesson(validatedLesson);
+    } catch (error) {
+      console.error("Error adding Hindi lesson:", error);
     }
   }
 
