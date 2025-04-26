@@ -7,6 +7,7 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { z } from "zod";
 import { insertLanguageSchema, insertLessonSchema } from "@shared/schema";
+import { readAllLessons } from "./utils";
 
 // Sample data
 const languages = [
@@ -660,64 +661,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
 
-  // Add German lessons
-  for (const lesson of germanLessons) {
+  // Define the path to the courses directory
+  const coursesDir = path.join(process.cwd(), 'server', 'courses');
+  
+  try {
+    console.log(`Loading lessons from ${coursesDir}`);
+    
+    // Get language codes from initialized languages
+    const languageCodes = languages.map(lang => lang.code);
+    
+    // Check if the courses directory exists, create it if it doesn't
     try {
-      const validatedLesson = insertLessonSchema.parse(lesson);
-      await storage.createLesson(validatedLesson);
+      await fs.access(coursesDir);
     } catch (error) {
-      console.error("Error adding German lesson:", error);
+      console.log('Courses directory does not exist, creating it...');
+      await fs.mkdir(coursesDir, { recursive: true });
     }
-  }
+    
+    // First, try to load lessons from the filesystem
+    const lessons = await readAllLessons(coursesDir, languageCodes);
+    
+    // If no lessons were found in the filesystem, use the hardcoded ones
+    if (lessons.length === 0) {
+      console.log('No lessons found in the filesystem, using hardcoded lessons');
+      
+      // Add German lessons
+      for (const lesson of germanLessons) {
+        try {
+          const validatedLesson = insertLessonSchema.parse(lesson);
+          await storage.createLesson(validatedLesson);
+        } catch (error) {
+          console.error("Error adding German lesson:", error);
+        }
+      }
+      
+      // Add Spanish lessons
+      for (const lesson of spanishLessons) {
+        try {
+          const validatedLesson = insertLessonSchema.parse(lesson);
+          await storage.createLesson(validatedLesson);
+        } catch (error) {
+          console.error("Error adding Spanish lesson:", error);
+        }
+      }
 
-  // Add Spanish lessons
-  for (const lesson of spanishLessons) {
-    try {
-      const validatedLesson = insertLessonSchema.parse(lesson);
-      await storage.createLesson(validatedLesson);
-    } catch (error) {
-      console.error("Error adding Spanish lesson:", error);
+      // Add French lessons
+      for (const lesson of frenchLessons) {
+        try {
+          const validatedLesson = insertLessonSchema.parse(lesson);
+          await storage.createLesson(validatedLesson);
+        } catch (error) {
+          console.error("Error adding French lesson:", error);
+        }
+      }
+      
+      // Add Chinese lessons
+      for (const lesson of chineseLessons) {
+        try {
+          const validatedLesson = insertLessonSchema.parse(lesson);
+          await storage.createLesson(validatedLesson);
+        } catch (error) {
+          console.error("Error adding Chinese lesson:", error);
+        }
+      }
+      
+      // Add Japanese lessons
+      for (const lesson of japaneseLessons) {
+        try {
+          const validatedLesson = insertLessonSchema.parse(lesson);
+          await storage.createLesson(validatedLesson);
+        } catch (error) {
+          console.error("Error adding Japanese lesson:", error);
+        }
+      }
+      
+      // Add Hindi lessons
+      for (const lesson of hindiLessons) {
+        try {
+          const validatedLesson = insertLessonSchema.parse(lesson);
+          await storage.createLesson(validatedLesson);
+        } catch (error) {
+          console.error("Error adding Hindi lesson:", error);
+        }
+      }
+    } else {
+      console.log(`Loaded ${lessons.length} lessons from the filesystem`);
+      
+      // Add lessons from the filesystem
+      for (const lesson of lessons) {
+        try {
+          const validatedLesson = insertLessonSchema.parse(lesson);
+          await storage.createLesson(validatedLesson);
+        } catch (error) {
+          console.error(`Error adding lesson ${lesson.lessonId}:`, error);
+        }
+      }
     }
-  }
-
-  // Add French lessons
-  for (const lesson of frenchLessons) {
-    try {
-      const validatedLesson = insertLessonSchema.parse(lesson);
-      await storage.createLesson(validatedLesson);
-    } catch (error) {
-      console.error("Error adding French lesson:", error);
-    }
-  }
-  
-  // Add Chinese lessons
-  for (const lesson of chineseLessons) {
-    try {
-      const validatedLesson = insertLessonSchema.parse(lesson);
-      await storage.createLesson(validatedLesson);
-    } catch (error) {
-      console.error("Error adding Chinese lesson:", error);
-    }
-  }
-  
-  // Add Japanese lessons
-  for (const lesson of japaneseLessons) {
-    try {
-      const validatedLesson = insertLessonSchema.parse(lesson);
-      await storage.createLesson(validatedLesson);
-    } catch (error) {
-      console.error("Error adding Japanese lesson:", error);
-    }
-  }
-  
-  // Add Hindi lessons
-  for (const lesson of hindiLessons) {
-    try {
-      const validatedLesson = insertLessonSchema.parse(lesson);
-      await storage.createLesson(validatedLesson);
-    } catch (error) {
-      console.error("Error adding Hindi lesson:", error);
-    }
+  } catch (error) {
+    console.error('Error loading lessons:', error);
   }
 
   // API routes
