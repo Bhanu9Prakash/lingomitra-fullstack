@@ -32,8 +32,11 @@ export default function LessonContent({
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-10">
-        <div className="w-10 h-10 border-4 border-secondary-light rounded-full border-t-secondary-dark animate-spin"></div>
-        <p className="mt-4 text-gray-600 dark:text-gray-300">Loading lesson content...</p>
+        <div className="spinner w-12 h-12 relative">
+          <div className="absolute w-full h-full border-4 border-primary rounded-full opacity-30"></div>
+          <div className="absolute w-full h-full border-4 border-primary-light rounded-full border-t-transparent animate-spin"></div>
+        </div>
+        <p className="mt-4 text-muted-foreground">Loading lesson content...</p>
       </div>
     );
   }
@@ -41,9 +44,11 @@ export default function LessonContent({
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-10 text-center">
-        <i className="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+        <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mb-4">
+          <i className="fas fa-exclamation-triangle text-3xl text-destructive"></i>
+        </div>
         <h3 className="text-xl font-bold mb-2">Error Loading Lesson</h3>
-        <p className="text-gray-600 dark:text-gray-300">{error}</p>
+        <p className="text-muted-foreground max-w-md">{error}</p>
       </div>
     );
   }
@@ -51,9 +56,13 @@ export default function LessonContent({
   if (!lesson) {
     return (
       <div className="flex flex-col items-center justify-center py-10 text-center">
-        <i className="fas fa-book text-4xl text-gray-400 mb-4"></i>
+        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
+          <i className="fas fa-book text-3xl text-muted-foreground"></i>
+        </div>
         <h3 className="text-xl font-bold mb-2">No Lesson Selected</h3>
-        <p className="text-gray-600 dark:text-gray-300">Please select a lesson to begin learning</p>
+        <p className="text-muted-foreground max-w-md">
+          Please select a lesson to begin learning
+        </p>
       </div>
     );
   }
@@ -61,7 +70,7 @@ export default function LessonContent({
   return (
     <div 
       ref={contentRef}
-      className="lesson-content"
+      className="lesson-content prose prose-lg dark:prose-invert prose-headings:text-primary dark:prose-headings:text-primary-light prose-a:text-secondary hover:prose-a:text-secondary-dark prose-img:rounded-lg max-w-none"
       dangerouslySetInnerHTML={{ __html: marked(lesson.content) }}
     />
   );

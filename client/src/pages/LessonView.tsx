@@ -2,18 +2,12 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
 import { Lesson, Language } from "@shared/schema";
-import { useTheme } from "@/components/ThemeProvider";
-import MascotLogo from "@/components/MascotLogo";
-import LanguageDropdown from "@/components/LanguageDropdown";
 import LessonHeader from "@/components/LessonHeader";
 import LessonContent from "@/components/LessonContent";
 import LessonNavigation from "@/components/LessonNavigation";
 import LessonSelector from "@/components/LessonSelector";
-import Footer from "@/components/Footer";
-import ScrollToTop from "@/components/ScrollToTop";
 
 export default function LessonView() {
-  const { theme, toggleTheme } = useTheme();
   const [_, navigate] = useLocation();
   
   // Get route params
@@ -95,6 +89,7 @@ export default function LessonView() {
   // Navigation handlers
   const handleLessonSelect = (lessonId: string) => {
     navigate(`/lesson/${lessonId}`);
+    setLessonSelectorOpen(false);
   };
   
   // Determine loading and error states
@@ -106,36 +101,9 @@ export default function LessonView() {
       : "";
   
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex justify-between items-center">
-            <MascotLogo />
-            
-            <div className="flex items-center gap-4">
-              {/* Language dropdown */}
-              {selectedLanguage && languages && (
-                <LanguageDropdown 
-                  selectedLanguage={selectedLanguage}
-                  languages={languages}
-                />
-              )}
-              
-              {/* Theme toggle */}
-              <button 
-                className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors" 
-                onClick={toggleTheme}
-                aria-label="Toggle theme"
-              >
-                <i className={`fas ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <div className="bg-muted dark:bg-gray-900">
       {/* Lesson header */}
-      {selectedLanguage && (
+      {selectedLanguage && currentLesson && (
         <LessonHeader 
           currentLesson={currentLesson}
           onOpenLessonSelector={() => setLessonSelectorOpen(true)}
@@ -143,15 +111,25 @@ export default function LessonView() {
       )}
 
       {/* Main content */}
-      <main className="py-8 bg-gray-50 dark:bg-gray-900 flex-grow">
+      <div className="py-8">
         <div className="container mx-auto px-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 md:p-8 max-w-4xl mx-auto">
+          <div className="bg-background dark:bg-gray-800 rounded-xl shadow-md p-6 md:p-8 max-w-4xl mx-auto border border-border">
             {/* Lesson content */}
-            <LessonContent 
-              lesson={currentLesson!}
-              isLoading={isLoading}
-              error={error}
-            />
+            {currentLesson ? (
+              <LessonContent 
+                lesson={currentLesson}
+                isLoading={isLoading}
+                error={error}
+              />
+            ) : (
+              <div className="flex justify-center items-center py-8 text-muted-foreground">
+                <div className="spinner w-6 h-6 relative mr-3">
+                  <div className="absolute w-full h-full border-4 border-primary rounded-full opacity-30"></div>
+                  <div className="absolute w-full h-full border-4 border-primary-light rounded-full border-t-transparent animate-spin"></div>
+                </div>
+                Loading lesson...
+              </div>
+            )}
             
             {/* Lesson navigation */}
             {currentLesson && !isLoading && !error && (
@@ -164,7 +142,7 @@ export default function LessonView() {
             )}
           </div>
         </div>
-      </main>
+      </div>
 
       {/* Lesson selector modal */}
       {lessons && (
@@ -176,9 +154,6 @@ export default function LessonView() {
           onSelectLesson={handleLessonSelect}
         />
       )}
-
-      <Footer />
-      <ScrollToTop />
     </div>
   );
 }

@@ -16,11 +16,11 @@ export default function LessonHeader({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-16 z-40 py-3 shadow-sm">
+    <div className="bg-background dark:bg-gray-800 border-b border-border dark:border-gray-700 sticky top-[64px] z-40 py-3 shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           <button 
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="p-2 rounded-lg text-foreground hover:bg-muted dark:hover:bg-gray-700 transition-all"
             onClick={onOpenLessonSelector}
             aria-label="Open lesson selector"
           >
@@ -28,9 +28,11 @@ export default function LessonHeader({
           </button>
           
           {currentLesson && (
-            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex-grow text-center">
+            <h2 className="text-lg font-bold flex-grow text-center">
               {getLessonNumber(currentLesson.lessonId) ? (
-                <>Lesson {getLessonNumber(currentLesson.lessonId)}: </>
+                <span className="text-primary dark:text-primary-light">
+                  Lesson {getLessonNumber(currentLesson.lessonId)}:&nbsp;
+                </span>
               ) : null}
               {currentLesson.title}
             </h2>
