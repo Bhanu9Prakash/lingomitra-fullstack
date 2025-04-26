@@ -48,7 +48,7 @@ const languages = [
   {
     code: "ja",
     name: "Japanese",
-    flagCode: "ja",
+    flagCode: "jp",
     speakers: 126,
     isAvailable: true,
   },
