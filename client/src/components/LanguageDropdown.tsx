@@ -49,46 +49,44 @@ export default function LanguageDropdown({
   if (!selectedLanguage) return null;
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      <div
-        className="flex items-center gap-2 cursor-pointer py-2 px-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
+    <div className="language-dropdown" ref={dropdownRef}>
+      <div 
+        className={`selected-language ${isOpen ? 'open' : ''}`} 
         onClick={toggleDropdown}
       >
         <img
           src={`/flags/${selectedLanguage.flagCode}.svg`}
           alt={`${selectedLanguage.name} Flag`}
-          className="w-5 h-5 rounded-sm"
+          className="language-flag"
         />
-        <span className="font-medium">{selectedLanguage.name}</span>
-        <i className="fas fa-chevron-down text-xs"></i>
+        <span>{selectedLanguage.name}</span>
+        <i className="fas fa-chevron-down"></i>
       </div>
 
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 border border-gray-200 dark:border-gray-700 z-50">
-          <div
-            className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center gap-2"
-            onClick={navigateToLanguageGrid}
-          >
-            <i className="fas fa-th-large text-gray-500"></i>
-            <span>All Languages</span>
-          </div>
-          <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
-          {languages.map((language) => (
-            <div
-              key={language.code}
-              className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex items-center gap-2"
-              onClick={() => handleLanguageSelect(language.code)}
-            >
-              <img
-                src={`/flags/${language.flagCode}.svg`}
-                alt={`${language.name} Flag`}
-                className="w-5 h-5 rounded-sm"
-              />
-              <span>{language.name}</span>
-            </div>
-          ))}
+      <div className={`language-dropdown-content ${isOpen ? 'show' : ''}`}>
+        <div
+          className="dropdown-item"
+          onClick={navigateToLanguageGrid}
+        >
+          <i className="fas fa-th-large"></i>
+          <span>All Languages</span>
         </div>
-      )}
+        
+        {languages.map((language) => (
+          <div
+            key={language.code}
+            className="dropdown-item"
+            onClick={() => handleLanguageSelect(language.code)}
+          >
+            <img
+              src={`/flags/${language.flagCode}.svg`}
+              alt={`${language.name} Flag`}
+              className="language-flag"
+            />
+            <span>{language.name}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

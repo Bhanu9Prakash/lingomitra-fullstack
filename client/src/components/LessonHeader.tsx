@@ -9,36 +9,54 @@ export default function LessonHeader({
   currentLesson, 
   onOpenLessonSelector 
 }: LessonHeaderProps) {
-  // Extract lesson number from lessonId (e.g., "de-lesson-3" -> "3")
+  // Extract lesson number from lessonId (e.g., "de-lesson01" -> "01")
   const getLessonNumber = (lessonId: string) => {
-    const match = lessonId.match(/-lesson-(\d+)$/);
-    return match ? match[1] : null;
+    const match = lessonId.match(/lesson(\d+)$/);
+    return match ? match[1] : "";
+  };
+  
+  // Get language name from lesson language code
+  const getLanguageName = (languageCode: string) => {
+    const languages: Record<string, string> = {
+      de: "German",
+      es: "Spanish",
+      fr: "French",
+      hi: "Hindi",
+      zh: "Chinese",
+      jp: "Japanese"
+    };
+    return languages[languageCode] || languageCode;
   };
 
   return (
-    <div className="bg-background dark:bg-gray-800 border-b border-border dark:border-gray-700 sticky top-[64px] z-40 py-3 shadow-sm">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between">
+    <div className="lesson-header">
+      <div className="container">
+        <div className="lesson-header-content">
+          <div className="lesson-title">
+            {currentLesson && (
+              <>
+                <h1>
+                  Lesson {getLessonNumber(currentLesson.lessonId)}: {currentLesson.title}
+                </h1>
+                <div className="lesson-language">
+                  <img 
+                    src={`/flags/${currentLesson.languageCode}.svg`} 
+                    alt={`${getLanguageName(currentLesson.languageCode)} Flag`}
+                    className="language-flag" 
+                  />
+                  <span>{getLanguageName(currentLesson.languageCode)}</span>
+                </div>
+              </>
+            )}
+          </div>
+          
           <button 
-            className="p-2 rounded-lg text-foreground hover:bg-muted dark:hover:bg-gray-700 transition-all"
+            className="lesson-selector-btn"
             onClick={onOpenLessonSelector}
-            aria-label="Open lesson selector"
           >
-            <i className="fas fa-bars"></i>
+            <i className="fas fa-list"></i>
+            <span>All Lessons</span>
           </button>
-          
-          {currentLesson && (
-            <h2 className="text-lg font-bold flex-grow text-center">
-              {getLessonNumber(currentLesson.lessonId) ? (
-                <span className="text-primary dark:text-primary-light">
-                  Lesson {getLessonNumber(currentLesson.lessonId)}:&nbsp;
-                </span>
-              ) : null}
-              {currentLesson.title}
-            </h2>
-          )}
-          
-          <div className="w-8"></div> {/* Spacer for balance */}
         </div>
       </div>
     </div>
