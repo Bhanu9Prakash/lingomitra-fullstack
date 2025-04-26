@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { Link } from "wouter";
 
 interface MascotLogoProps {
@@ -8,15 +7,12 @@ interface MascotLogoProps {
 export default function MascotLogo({ className = "" }: MascotLogoProps) {
   return (
     <Link href="/">
-      <div className={`flex items-center gap-3 cursor-pointer ${className}`}>
+      <div>
         <img 
           src="/mascot.svg" 
           alt="LingoMitra Mascot" 
-          className="w-10 h-10"
+          className={className}
         />
-        <h1 className="text-xl font-bold text-primary dark:text-primary-light">
-          LingoMitra
-        </h1>
       </div>
     </Link>
   );
