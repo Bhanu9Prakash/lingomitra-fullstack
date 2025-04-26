@@ -42,16 +42,17 @@ export async function readLessonFile(
 // Function to read all lesson files from a language directory
 export async function readLessonsFromDirectory(
   coursesDir: string,
+  dirName: string,
   languageCode: string
 ): Promise<InsertLesson[]> {
   try {
-    const languageDir = path.join(coursesDir, languageCode);
+    const languageDir = path.join(coursesDir, dirName);
     
     // Check if the language directory exists
     try {
       await fs.access(languageDir);
     } catch (error) {
-      console.warn(`Language directory not found for ${languageCode}`);
+      console.warn(`Language directory not found for ${dirName} (${languageCode})`);
       return [];
     }
     
@@ -73,7 +74,7 @@ export async function readLessonsFromDirectory(
     
     return lessons;
   } catch (error) {
-    console.error(`Error reading lessons from directory for ${languageCode}:`, error);
+    console.error(`Error reading lessons from directory for ${dirName} (${languageCode}):`, error);
     throw error;
   }
 }
@@ -83,8 +84,25 @@ export async function readAllLessons(coursesDir: string, languageCodes: string[]
   try {
     const allLessons: InsertLesson[] = [];
     
+    // Map language codes to directory names
+    const languageDirectories: Record<string, string> = {
+      'de': 'german',
+      'es': 'spanish',
+      'fr': 'french',
+      'hi': 'hindi',
+      'zh': 'chinese',
+      'ja': 'japanese'
+    };
+    
     for (const languageCode of languageCodes) {
-      const languageLessons = await readLessonsFromDirectory(coursesDir, languageCode);
+      // Get the directory name for this language code
+      const dirName = languageDirectories[languageCode];
+      if (!dirName) {
+        console.warn(`No directory mapping for language code: ${languageCode}`);
+        continue;
+      }
+      
+      const languageLessons = await readLessonsFromDirectory(coursesDir, dirName, languageCode);
       allLessons.push(...languageLessons);
     }
     
