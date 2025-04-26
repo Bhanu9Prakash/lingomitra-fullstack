@@ -8,16 +8,19 @@ import Home from "@/pages/Home";
 import LanguageSelection from "@/pages/LanguageSelection";
 import LessonView from "@/pages/LessonView";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import Layout from "@/components/Layout";
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/languages" component={LanguageSelection} />
-      <Route path="/language/:code" component={LessonView} />
-      <Route path="/lesson/:id" component={LessonView} />
-      <Route component={NotFound} />
-    </Switch>
+    <Layout>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/languages" component={LanguageSelection} />
+        <Route path="/language/:code" component={LessonView} />
+        <Route path="/lesson/:id" component={LessonView} />
+        <Route component={NotFound} />
+      </Switch>
+    </Layout>
   );
 }
 

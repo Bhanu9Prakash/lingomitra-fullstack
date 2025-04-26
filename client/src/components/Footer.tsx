@@ -1,11 +1,13 @@
+import { APP_NAME } from "@/lib/constants";
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  
+
   return (
-    <footer className="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-6">
+    <footer className="bg-background border-t border-border py-8 mt-auto">
       <div className="container mx-auto px-4">
-        <div className="text-center text-gray-600 dark:text-gray-400">
-          <p>© {currentYear} LingoMitra. Master languages naturally through pattern recognition.</p>
+        <div className="footer-bottom text-center text-muted-foreground text-sm">
+          <p>© {currentYear} {APP_NAME}. Master languages naturally through pattern recognition.</p>
         </div>
       </div>
     </footer>

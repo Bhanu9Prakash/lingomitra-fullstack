@@ -10,25 +10,35 @@ export default function LanguageGrid({ languages, isLoading }: LanguageGridProps
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-16">
-        <div className="w-10 h-10 border-4 border-secondary-light rounded-full border-t-secondary-dark animate-spin"></div>
+        <div className="spinner w-12 h-12 relative">
+          <div className="absolute w-full h-full border-4 border-primary rounded-full opacity-30"></div>
+          <div className="absolute w-full h-full border-4 border-primary-light rounded-full border-t-transparent animate-spin"></div>
+        </div>
+        <p className="ml-4 text-muted-foreground font-medium">Loading languages...</p>
+      </div>
+    );
+  }
+
+  if (!languages || languages.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-4">
+          <i className="fas fa-language text-3xl text-muted-foreground"></i>
+        </div>
+        <h3 className="text-xl font-bold mb-2">No Languages Available</h3>
+        <p className="text-muted-foreground max-w-md">
+          We're currently working on adding more languages to our platform.
+          Please check back soon for updates.
+        </p>
       </div>
     );
   }
 
   return (
-    <section className="py-16 bg-white dark:bg-gray-800">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-3">Choose Your Language Adventure</h2>
-        <p className="text-gray-600 dark:text-gray-300 text-center mb-12 max-w-2xl mx-auto">
-          Select a language to start your learning journey. Each language offers unique lessons designed to help you master new skills naturally.
-        </p>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {languages.map((language) => (
-            <LanguageCard key={language.code} language={language} />
-          ))}
-        </div>
-      </div>
-    </section>
+    <div className="language-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+      {languages.map((language) => (
+        <LanguageCard key={language.code} language={language} />
+      ))}
+    </div>
   );
 }
