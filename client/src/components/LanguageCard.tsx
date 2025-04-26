@@ -14,25 +14,23 @@ export default function LanguageCard({ language }: LanguageCardProps) {
 
   return (
     <div
-      className="rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 flex flex-col cursor-pointer group"
+      className="bg-background dark:bg-gray-700 rounded-lg shadow-md hover:shadow-lg transition-all border border-border dark:border-gray-600 flex flex-col cursor-pointer text-center p-8 hover:-translate-y-1"
       onClick={handleClick}
     >
-      <div className="h-36 bg-gray-100 dark:bg-gray-800 flex items-center justify-center p-6">
+      <div className="language-card-flag mb-5">
         <img
           src={`/flags/${language.flagCode}.svg`}
           alt={`${language.name} Flag`}
-          className="h-24 w-36 object-cover rounded shadow-sm group-hover:scale-105 transition-transform"
+          className="w-12 h-12 mx-auto object-contain"
         />
       </div>
-      <div className="p-6 flex-grow">
-        <h3 className="text-xl font-bold mb-2">{language.name}</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          {language.speakers} million speakers
-        </p>
-        <button className="w-full py-2 px-4 text-primary border border-primary hover:bg-primary hover:text-white rounded-lg transition-colors font-semibold mt-auto">
-          Start Learning
-        </button>
-      </div>
+      <h3 className="text-xl font-bold mb-2">{language.name}</h3>
+      <p className="text-sm text-muted-foreground mb-6">
+        {language.speakers} million speakers
+      </p>
+      <button className="language-btn bg-primary hover:bg-primary-dark text-white border-none py-2 px-5 rounded-lg font-semibold text-sm transition-colors mt-auto">
+        Start Learning
+      </button>
     </div>
   );
 }

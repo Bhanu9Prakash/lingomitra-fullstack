@@ -3,49 +3,59 @@
 @tailwind utilities;
 
 :root {
-      --background: 0 0% 100%;
---foreground: 20 14.3% 4.1%;
---muted: 60 4.8% 95.9%;
---muted-foreground: 25 5.3% 44.7%;
---popover: 0 0% 100%;
---popover-foreground: 20 14.3% 4.1%;
---card: 0 0% 100%;
---card-foreground: 20 14.3% 4.1%;
---border: 20 5.9% 90%;
---input: 20 5.9% 90%;
---primary: 207 90% 54%;
---primary-foreground: 211 100% 99%;
---secondary: 60 4.8% 95.9%;
---secondary-foreground: 24 9.8% 10%;
---accent: 60 4.8% 95.9%;
---accent-foreground: 24 9.8% 10%;
---destructive: 0 84.2% 60.2%;
---destructive-foreground: 60 9.1% 97.8%;
---ring: 20 14.3% 4.1%;
---radius: 0.5rem;
-  }
-  .dark {
-      --background: 240 10% 3.9%;
---foreground: 0 0% 98%;
---muted: 240 3.7% 15.9%;
---muted-foreground: 240 5% 64.9%;
---popover: 240 10% 3.9%;
---popover-foreground: 0 0% 98%;
---card: 240 10% 3.9%;
---card-foreground: 0 0% 98%;
---border: 240 3.7% 15.9%;
---input: 240 3.7% 15.9%;
---primary: 207 90% 54%;
---primary-foreground: 211 100% 99%;
---secondary: 240 3.7% 15.9%;
---secondary-foreground: 0 0% 98%;
---accent: 240 3.7% 15.9%;
---accent-foreground: 0 0% 98%;
---destructive: 0 62.8% 30.6%;
---destructive-foreground: 0 0% 98%;
---ring: 240 4.9% 83.9%;
---radius: 0.5rem;
-  }
+  /* Custom LingoMitra theme */
+  --primary: 24 100% 50%; /* #ff6600 */
+  --primary-light: 24 100% 60%; /* #ff8533 */
+  --primary-dark: 24 100% 40%; /* #cc5200 */
+  
+  --secondary: 220 94% 64%; /* #4c7ef9 */
+  --secondary-light: 220 94% 74%; /* #7a9dfb */
+  --secondary-dark: 220 94% 54%; /* #2b5bf7 */
+  
+  /* Base colors */
+  --background: 0 0% 100%; /* #ffffff */
+  --foreground: 0 0% 20%; /* #333333 */
+  --muted: 0 0% 96%; /* #f8f9fa */
+  --muted-foreground: 0 0% 40%; /* #666666 */
+  
+  /* UI components */
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 20%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 20%;
+  --border: 0 0% 88%; /* #e0e0e0 */
+  --input: 0 0% 88%;
+  
+  /* Accent and feedback colors */
+  --accent: 220 94% 74%;
+  --accent-foreground: 0 0% 20%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --success: 142 70% 45%; /* #28a745 */
+  --info: 191 76% 41%; /* #17a2b8 */
+  --warning: 45 100% 51%; /* #ffc107 */
+  
+  /* Misc */
+  --ring: 24 100% 50%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 0 0% 10%; /* #1a1a1a */
+  --foreground: 0 0% 94%; /* #f0f0f0 */
+  --muted: 0 0% 16%; /* #2a2a2a */
+  --muted-foreground: 0 0% 80%; /* #cccccc */
+  
+  --card: 0 0% 10%;
+  --card-foreground: 0 0% 94%;
+  --popover: 0 0% 10%;
+  --popover-foreground: 0 0% 94%;
+  --border: 0 0% 27%; /* #444444 */
+  --input: 0 0% 27%;
+  
+  --accent: 220 94% 64%;
+  --accent-foreground: 0 0% 94%;
+}
 
 @layer base {
   * {
@@ -54,6 +64,20 @@
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
+  }
+  
+  /* Hero animation */
+  .hero-animation {
+    animation: float 6s infinite ease-in-out;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
   }
 }
 

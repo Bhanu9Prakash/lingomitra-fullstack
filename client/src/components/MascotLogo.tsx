@@ -8,7 +8,7 @@ interface MascotLogoProps {
 export default function MascotLogo({ className = "" }: MascotLogoProps) {
   return (
     <Link href="/">
-      <a className={`flex items-center gap-3 ${className}`}>
+      <div className={`flex items-center gap-3 cursor-pointer ${className}`}>
         <img 
           src="/mascot.svg" 
           alt="LingoMitra Mascot" 
@@ -17,7 +17,7 @@ export default function MascotLogo({ className = "" }: MascotLogoProps) {
         <h1 className="text-xl font-bold text-primary dark:text-primary-light">
           LingoMitra
         </h1>
-      </a>
+      </div>
     </Link>
   );
 }
