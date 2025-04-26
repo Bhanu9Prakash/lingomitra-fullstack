@@ -101,7 +101,7 @@ export default function LessonView() {
       : "";
   
   return (
-    <div className="bg-muted dark:bg-gray-900">
+    <div className="lesson-view">
       {/* Lesson header */}
       {selectedLanguage && currentLesson && (
         <LessonHeader 
@@ -111,37 +111,29 @@ export default function LessonView() {
       )}
 
       {/* Main content */}
-      <div className="py-8">
-        <div className="container mx-auto px-4">
-          <div className="bg-background dark:bg-gray-800 rounded-xl shadow-md p-6 md:p-8 max-w-4xl mx-auto border border-border">
-            {/* Lesson content */}
-            {currentLesson ? (
-              <LessonContent 
-                lesson={currentLesson}
-                isLoading={isLoading}
-                error={error}
-              />
-            ) : (
-              <div className="flex justify-center items-center py-8 text-muted-foreground">
-                <div className="spinner w-6 h-6 relative mr-3">
-                  <div className="absolute w-full h-full border-4 border-primary rounded-full opacity-30"></div>
-                  <div className="absolute w-full h-full border-4 border-primary-light rounded-full border-t-transparent animate-spin"></div>
-                </div>
-                Loading lesson...
-              </div>
-            )}
-            
-            {/* Lesson navigation */}
-            {currentLesson && !isLoading && !error && (
-              <LessonNavigation 
-                currentLesson={currentLesson}
-                nextLesson={nextLesson}
-                prevLesson={prevLesson}
-                onNavigate={handleLessonSelect}
-              />
-            )}
+      <div className="container">
+        {/* Lesson content */}
+        {currentLesson ? (
+          <LessonContent 
+            lesson={currentLesson}
+            isLoading={isLoading}
+            error={error}
+          />
+        ) : (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
           </div>
-        </div>
+        )}
+        
+        {/* Lesson navigation */}
+        {currentLesson && !isLoading && !error && (
+          <LessonNavigation 
+            currentLesson={currentLesson}
+            nextLesson={nextLesson}
+            prevLesson={prevLesson}
+            onNavigate={handleLessonSelect}
+          />
+        )}
       </div>
 
       {/* Lesson selector modal */}
