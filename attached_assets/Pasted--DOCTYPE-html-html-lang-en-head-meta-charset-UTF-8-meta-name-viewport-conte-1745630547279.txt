@@ -1,0 +1,2906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="canonical" href="https://bhanu9prakash.github.io/lingomitra-html/">
+  <meta name="description"
+    content="Master languages with interactive, pattern-based lessons on LingoMitra. Choose from German, Spanish, French, and Hindi to boost your language skills!">
+
+  <head>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+  </head>
+
+
+  <link rel="canonical" href="https://bhanu9prakash.github.io/lingomitra-html/">
+
+
+  <meta property="og:title" content="LingoMitra - Learn Languages the Smart Way">
+  <meta property="og:description"
+    content="Master languages with interactive, pattern-based lessons on LingoMitra. Choose from German, Spanish, French, Chinese, Japanese, and Hindi to boost your language skills!">
+  <meta property="og:image" content="https://bhanu9prakash.github.io/lingomitra-html/og-image.png">
+  <meta property="og:url" content="https://bhanu9prakash.github.io/lingomitra-html/">
+  <meta property="og:type" content="website">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LingoMitra - Learn Languages the Smart Way">
+  <meta name="twitter:description"
+    content="Master languages with interactive, pattern-based lessons on LingoMitra. Choose from German, Spanish, French, Chinese, Japanese, and Hindi to boost your language skills!">
+  <meta name="twitter:image" content="https://bhanu9prakash.github.io/lingomitra-html/og-image.png">
+
+  <title>LingoMitra - Learn Languages the Smart Way</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" v-cloak>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <img src="mascot.svg" alt="LingoMitra Mascot" class="mascot-logo">
+          <h1>LingoMitra</h1>
+        </div>
+
+        <div class="header-controls">
+          <div class="language-dropdown" v-if="selectedLanguage && currentView !== 'language-grid'">
+            <div class="selected-language" @click="toggleHeaderLanguageDropdown">
+              <img :src="'flags/' + selectedLanguage.flagCode + '.svg'" :alt="selectedLanguage.name + ' Flag'"
+                class="language-flag">
+              <span>{{ selectedLanguage.name }}</span>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="language-dropdown-content" :class="{ 'show': showHeaderLanguageDropdown }">
+              <div class="dropdown-item" @click="goToLanguageSelection">
+                <i class="fas fa-th-large"></i> All Languages
+              </div>
+              <div v-for="lang in languages" :key="lang.code" class="dropdown-item" @click="selectLanguage(lang)">
+                <img :src="'flags/' + lang.flagCode + '.svg'" :alt="lang.name + ' Flag'" class="language-flag">
+                {{ lang.name }}
+              </div>
+            </div>
+          </div>
+
+          <div class="theme-container">
+            <button class="theme-toggle" @click="toggleTheme">
+              <i :class="darkTheme ? 'fas fa-sun' : 'fas fa-moon'"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero" v-if="currentView === 'hero'" v-show="!loading">
+      <div class="container">
+        <div class="hero-content">
+          <div class="badge">Language Learning Simplified</div>
+          <h2>Learn Languages The Smart Way</h2>
+          <p>Master new languages naturally through pattern-based lessons. Build your vocabulary and understanding step
+            by step with our interactive approach.</p>
+          <div class="cta-buttons">
+            <button class="primary-btn" @click="goToLanguageSelection">Get Started</button>
+          </div>
+        </div>
+        <div class="hero-image">
+          <div class="character character-1"><i class="fas fa-language"></i></div>
+          <div class="character character-2"><i class="fas fa-comment-dots"></i></div>
+          <div class="character character-3"><i class="fas fa-globe-americas"></i></div>
+          <div class="character character-4"><i class="fas fa-book"></i></div>
+          <div class="character character-5"><i class="fas fa-graduation-cap"></i></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="language-grid-section" v-if="currentView === 'language-grid'" v-show="!loading">
+      <div class="container">
+        <h2>Choose Your Language Adventure</h2>
+        <p class="section-intro">Select a language to start your learning journey. Each language offers unique lessons
+          designed to help you master new skills naturally.</p>
+
+        <div class="language-grid">
+          <div v-for="lang in languages" :key="lang.code" class="language-card" @click="selectLanguage(lang)">
+            <div class="language-card-flag">
+              <img :src="'flags/' + lang.flagCode + '.svg'" :alt="lang.name + ' Flag'">
+            </div>
+            <h3>{{ lang.name }}</h3>
+            <p class="speakers">{{ lang.speakers }} million speakers</p>
+            <button class="language-btn">Start Learning</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="floating-lesson-header" v-if="lessonContent && !loading && currentView === 'lesson-selector'">
+      <div class="container">
+        <div class="lesson-header-content">
+          <div class="lesson-selector-toggle" @click="openLessonModal">
+            <i class="fas fa-bars"></i>
+          </div>
+          <h2 v-if="currentLesson" class="centered-lesson-title">
+            <span v-if="getLessonNumber(currentLesson.id)">
+              Lesson {{ getLessonNumber(currentLesson.id) }}:
+            </span>
+            {{ formatLessonTitle(currentLesson.title) }}
+          </h2>
+        </div>
+      </div>
+    </section>
+
+    <main class="content"
+      v-show="currentView === 'lesson-selector' || (errorMessage && currentView !== 'hero') || comingSoon">
+      <div class="container">
+        <div class="lesson-content-wrapper">
+          <div class="placeholder-content"
+            v-if="!selectedLanguage && !loading && currentView !== 'hero' && currentView !== 'language-grid'">
+            <div class="placeholder-icon">
+              <i :class="placeholderIcon"></i>
+            </div>
+            <h3>{{ placeholderTitle }}</h3>
+            <p>{{ placeholderText }}</p>
+          </div>
+
+          <div class="loading" v-if="loading">
+            <div class="spinner"></div>
+            <p>Loading lesson content...</p>
+          </div>
+
+          <div class="lesson-content" v-if="lessonContent && !loading && !errorMessage && !comingSoon"
+            v-html="lessonContent"></div>
+
+          <div v-if="errorMessage && !loading" class="error-message">
+            <i class="fas fa-exclamation-triangle"
+              style="font-size: 40px; color: var(--danger-color); margin-bottom: 15px;"></i>
+            <h3>{{ errorTitle }}</h3>
+            <p>{{ errorMessage }}</p>
+            <p v-if="errorDetails" class="error-details">Details: {{ errorDetails }}</p>
+            <button class="primary-btn" @click="goToLanguageSelection" style="margin-top: 20px;">Choose
+              Language</button>
+          </div>
+
+          <div v-if="comingSoon && !loading && !errorMessage" class="coming-soon">
+            <div class="placeholder-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h3>{{ selectedLanguage.name }} Lessons Coming Soon!</h3>
+            <p>We're working hard to create a comprehensive {{ selectedLanguage.name.toLowerCase() }} learning
+              experience. Check back soon!</p>
+          </div>
+
+          <div class="lesson-navigation"
+            v-if="currentLesson && !loading && !errorMessage && !comingSoon && lessons.length > 1">
+            <button class="lesson-nav-btn prev" @click="goToPreviousLesson" :disabled="!previousLesson"
+              v-if="previousLesson">
+              <i class="fas fa-arrow-left"></i>
+              <span class="lesson-nav-label">Previous</span>
+              <span class="lesson-nav-title">{{ formatLessonTitle(previousLesson.title) }}</span>
+            </button>
+            <span v-else>&nbsp;</span> <button class="lesson-nav-btn next" @click="goToNextLesson"
+              :disabled="!nextLesson" v-if="nextLesson">
+              <span class="lesson-nav-title">{{ formatLessonTitle(nextLesson.title) }}</span>
+              <span class="lesson-nav-label">Next</span>
+              <i class="fas fa-arrow-right"></i>
+            </button>
+            <span v-else>&nbsp;</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal-overlay" v-if="showLessonModal" @click="closeLessonModal"></div>
+    <div class="lesson-selection-modal" v-if="showLessonModal">
+      <div class="modal-header">
+        <h3>Select a Lesson</h3>
+        <button class="modal-close" @click="closeLessonModal" aria-label="Close lesson selection">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="lesson-list">
+          <div class="lesson-item" v-for="lesson in lessons" :key="lesson.id"
+            :class="{ 'active': lesson.id === selectedLessonId }" @click="selectLessonFromModal(lesson.id)">
+            <span class="lesson-number" v-if="lesson.id.includes('-lesson-')">
+              Lesson {{ lesson.id.split('-lesson-')[1] }}:
+            </span>
+            <span v-else class="lesson-intro">Introduction:</span>
+            <span class="lesson-title">{{ formatLessonTitle(lesson.title) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        <div class="footer-bottom">
+          <p>© {{ currentYear }} LingoMitra. Master languages naturally through pattern recognition.</p>
+        </div>
+      </div>
+    </footer>
+
+    <button id="scrollToTop" class="scroll-to-top" :class="{ 'visible': showScrollTop }" @click="scrollToTop"
+      aria-label="Scroll to top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+  </div>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "LingoMitra",
+      "url": "https://bhanu9prakash.github.io/lingomitra-html/",
+      "logo": "https://bhanu9prakash.github.io/lingomitra-html/mascot.svg",
+      "description": "Master languages with interactive, pattern-based lessons."
+    }
+  </script>
+  <script src="script.js"></script>
+</body>
+
+</html>
+
+---
+/* styles.css */
+
+/* Root Variables */
+:root {
+  --primary-color: #ff6600;
+  --primary-light: #ff8533;
+  --primary-dark: #cc5200;
+  --secondary-color: #4c7ef9;
+  --secondary-light: #7a9dfb;
+  --secondary-dark: #2b5bf7;
+  --text-color: #333333;
+  --text-light: #666666;
+  --bg-color: #ffffff;
+  --bg-light: #f8f9fa;
+  --bg-dark: #eeeeee;
+  --success-color: #28a745;
+  --info-color: #17a2b8;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --border-color: #e0e0e0;
+  --border-radius: 8px;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+  --font-family: 'Nunito', sans-serif;
+}
+
+/* Dark Theme Variables */
+.dark-theme {
+  --text-color: #f0f0f0;
+  --text-light: #cccccc;
+  --bg-color: #1a1a1a;
+  --bg-light: #2a2a2a;
+  --bg-dark: #333333;
+  --border-color: #444444;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  line-height: 1.6;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+a {
+  text-decoration: none;
+  color: var(--primary-color);
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-family);
+  border: none;
+  transition: var(--transition);
+  background: none;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Header Styles */
+header {
+  background-color: var(--bg-color);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 15px 0;
+  transition: background-color 0.3s ease;
+}
+
+header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mascot-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.language-flag {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  vertical-align: middle;
+  border-radius: 3px;
+}
+
+.logo h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--primary-color);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.theme-container {
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle {
+  background-color: transparent;
+  color: var(--text-color);
+  font-size: 18px;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  transition: var(--transition);
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-dark);
+  transform: rotate(15deg);
+}
+
+.language-dropdown {
+  position: relative;
+}
+
+.selected-language {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-light);
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid var(--border-color);
+}
+
+.selected-language:hover {
+  background-color: var(--bg-dark);
+  border-color: var(--text-light);
+}
+
+.selected-language .language-flag {
+  margin-right: 8px;
+}
+
+.selected-language span {
+  font-weight: 600;
+}
+
+.selected-language i {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--text-light);
+  transition: transform 0.2s ease;
+}
+
+.language-dropdown .selected-language.open i {
+  transform: rotate(180deg);
+}
+
+.language-dropdown-content {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  min-width: 200px;
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 10px 0;
+  z-index: 101;
+  display: none;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.language-dropdown-content.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: var(--text-color);
+}
+
+.dropdown-item:hover {
+  background-color: var(--bg-light);
+}
+
+.dropdown-item .language-flag {
+  margin-right: 10px;
+}
+
+.dropdown-item i {
+  margin-right: 10px;
+  color: var(--primary-color);
+  width: 16px;
+  text-align: center;
+}
+
+/* Hero Section */
+.hero {
+  padding: 60px 0;
+  background-color: var(--bg-light);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.hero .container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.hero-content {
+  flex: 1;
+  z-index: 2;
+}
+
+.badge {
+  display: inline-block;
+  background-color: rgba(255, 102, 0, 0.1);
+  color: var(--primary-color);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.hero h2 {
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  line-height: 1.2;
+  color: var(--text-color);
+}
+
+.hero p {
+  font-size: 18px;
+  color: var(--text-light);
+  margin-bottom: 30px;
+  max-width: 500px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.primary-btn {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.primary-btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.secondary-btn {
+  background-color: transparent;
+  color: var(--text-color);
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  font-size: 16px;
+}
+
+.secondary-btn:hover {
+  background-color: var(--bg-dark);
+  border-color: var(--text-light);
+  transform: translateY(-2px);
+}
+
+.hero-image {
+  flex: 1;
+  position: relative;
+  height: 400px;
+  min-width: 300px;
+}
+
+.character {
+  position: absolute;
+  background-color: var(--bg-color);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  animation: float 6s infinite ease-in-out;
+  border: 2px solid var(--bg-light);
+}
+
+.character i {
+  font-size: 24px;
+  color: var(--primary-color);
+}
+
+.character-1 {
+  top: 25%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.character-2 {
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-delay: 1s;
+}
+
+.character-3 {
+  bottom: 25%;
+  left: 5%;
+  animation-delay: 2.5s;
+}
+
+.character-4 {
+  top: 45%;
+  right: 15%;
+  animation-delay: 1.8s;
+}
+
+.character-5 {
+  bottom: 15%;
+  right: 35%;
+  animation-delay: 0.5s;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+/* Language Grid Section Styles */
+.language-grid-section {
+  padding: 60px 0;
+  background-color: var(--bg-light);
+}
+
+.language-grid-section h2 {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.section-intro {
+  max-width: 700px;
+  margin: 0 auto 40px;
+  text-align: center;
+  color: var(--text-light);
+  font-size: 17px;
+}
+
+.language-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.language-card {
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 30px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid var(--border-color);
+}
+
+.language-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary-light);
+}
+
+/* --- Modified Language Grid Flag Styles --- */
+/* Remove styling from the container div */
+.language-card-flag {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  width: auto;
+  height: auto;
+}
+
+/* Style the flag image directly */
+.language-card-flag img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 20px;
+  /* Center horizontally, add margin below */
+  border-radius: 4px;
+  /* Optional: subtle rounded corners */
+}
+
+/* --- End of Modified Flag Styles --- */
+
+.language-card h3 {
+  margin-bottom: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.speakers {
+  color: var(--text-light);
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.language-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: var(--transition);
+  width: auto;
+  margin-top: auto;
+}
+
+.language-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Floating Lesson Header Styles */
+.floating-lesson-header {
+  background-color: var(--bg-color);
+  box-shadow: var(--shadow);
+  padding: 10px 0;
+  position: sticky;
+  top: 71px;
+  z-index: 90;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.3s ease;
+}
+
+.lesson-header-content {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.floating-lesson-header h2.centered-lesson-title {
+  font-size: 20px;
+  margin: 0;
+  color: var(--text-color);
+  font-weight: 700;
+  text-align: center;
+  flex-grow: 1;
+  padding: 0 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- Modified Rules for Lesson Selector Toggle --- */
+.lesson-selector-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  /* Removed background */
+  border: none;
+  /* Removed border */
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius);
+  /* Standard radius */
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  padding: 0;
+}
+
+.lesson-selector-toggle:hover {
+  background-color: var(--bg-light);
+  /* Subtle hover background */
+}
+
+.lesson-selector-toggle:hover i {
+  /* Optional: Darken icon on hover */
+  /* color: var(--primary-dark); */
+}
+
+.lesson-selector-toggle i {
+  color: var(--primary-color);
+  font-size: 20px;
+  transition: color 0.2s ease;
+}
+
+/* --- End of Modified Rules --- */
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.show {
+  opacity: 1;
+}
+
+.lesson-selection-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 550px;
+  max-height: 85vh;
+  z-index: 1001;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.lesson-selection-modal.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.modal-close {
+  background-color: transparent;
+  color: var(--text-light);
+  font-size: 20px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: var(--transition);
+  width: 30px;
+  height: 30px;
+}
+
+.modal-close:hover {
+  background-color: var(--bg-light);
+  color: var(--danger-color);
+}
+
+.modal-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.lesson-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.lesson-item {
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-left-color 0.2s ease;
+  display: flex;
+  align-items: baseline;
+  border-left: 4px solid transparent;
+  margin-left: -4px;
+}
+
+.lesson-item:last-child {
+  border-bottom: none;
+}
+
+.lesson-item:hover {
+  background-color: var(--bg-light);
+}
+
+.lesson-item.active {
+  background-color: rgba(255, 102, 0, 0.05);
+  border-left-color: var(--primary-color);
+  font-weight: 600;
+}
+
+.lesson-number,
+.lesson-intro {
+  color: var(--text-light);
+  font-weight: 600;
+  margin-right: 8px;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.lesson-item.active .lesson-number,
+.lesson-item.active .lesson-intro {
+  color: var(--primary-color);
+}
+
+.lesson-intro {
+  color: var(--secondary-color);
+}
+
+.lesson-item.active .lesson-intro {
+  color: var(--secondary-dark);
+}
+
+.lesson-title {
+  flex: 1;
+  color: var(--text-color);
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Content Styles */
+.content {
+  padding: 40px 0 80px;
+  background-color: var(--bg-light);
+  min-height: 500px;
+}
+
+.content .container {
+  position: relative;
+}
+
+.lesson-content-wrapper {
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  padding: 30px 40px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.placeholder-content,
+.loading,
+.error-message,
+.coming-soon {
+  text-align: center;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-icon {
+  font-size: 50px;
+  color: var(--text-light);
+  margin-bottom: 25px;
+}
+
+.placeholder-content h3,
+.error-message h3,
+.coming-soon h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.placeholder-content p,
+.error-message p,
+.coming-soon p {
+  color: var(--text-light);
+  max-width: 500px;
+  margin: 0 auto 15px auto;
+  line-height: 1.7;
+}
+
+.loading p {
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--bg-dark);
+  border-left-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Markdown Content Styling */
+.lesson-content {
+  padding: 0;
+}
+
+.lesson-content h2 {
+  font-size: 26px;
+  font-weight: 700;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.lesson-content h2:first-child {
+  margin-top: 0;
+}
+
+.lesson-content h3 {
+  font-size: 21px;
+  font-weight: 700;
+  margin-top: 35px;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.lesson-content h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 30px;
+  margin-bottom: 12px;
+  color: var(--text-light);
+}
+
+.lesson-content p {
+  margin-bottom: 20px;
+  line-height: 1.7;
+  color: var(--text-color);
+}
+
+.lesson-content em {
+  font-style: italic;
+}
+
+.lesson-content strong {
+  font-weight: 700;
+}
+
+.lesson-content ul,
+.lesson-content ol {
+  margin-bottom: 20px;
+  padding-left: 30px;
+}
+
+.lesson-content ul li,
+.lesson-content ol li {
+  margin-bottom: 10px;
+  line-height: 1.7;
+}
+
+.lesson-content ul {
+  list-style: disc;
+}
+
+.lesson-content ol {
+  list-style: decimal;
+}
+
+.lesson-content blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding: 15px 20px;
+  margin: 25px 0;
+  background-color: var(--bg-light);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  color: var(--text-light);
+}
+
+.lesson-content blockquote p {
+  margin-bottom: 0;
+  font-style: italic;
+}
+
+.lesson-content code {
+  background-color: var(--bg-dark);
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--primary-dark);
+  font-size: 0.9em;
+}
+
+.lesson-content pre {
+  background-color: var(--bg-dark);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  overflow-x: auto;
+  margin: 25px 0;
+  border: 1px solid var(--border-color);
+}
+
+.lesson-content pre code {
+  background-color: transparent;
+  padding: 0;
+  color: var(--text-color);
+  font-size: 0.9em;
+  font-family: 'Courier New', Courier, monospace;
+  border: none;
+  border-radius: 0;
+}
+
+.table-container {
+  overflow-x: auto;
+  margin: 25px 0;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  background-color: var(--bg-color);
+}
+
+.lesson-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lesson-content th {
+  background-color: var(--bg-light);
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 2px solid var(--border-color);
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.lesson-content td {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: top;
+}
+
+.dark-theme .lesson-content tr:nth-child(even),
+.lesson-content tr:nth-child(even) {
+  background-color: var(--bg-light);
+}
+
+.lesson-content tr:last-child td {
+  border-bottom: none;
+}
+
+/* Custom Blocks */
+.thinking-point {
+  background-color: rgba(76, 126, 249, 0.05);
+  border-left: 4px solid var(--secondary-color);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  padding: 20px;
+  margin: 25px 0;
+  border: 1px solid rgba(76, 126, 249, 0.2);
+  border-left-width: 4px;
+}
+
+.thinking-header {
+  font-weight: 700;
+  color: var(--secondary-dark);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  font-size: 1.1em;
+}
+
+.thinking-header::before {
+  content: '💡';
+  margin-right: 10px;
+  font-size: 1.2em;
+}
+
+.thinking-point p:last-child {
+  margin-bottom: 0;
+}
+
+.practice-answers {
+  background-color: rgba(40, 167, 69, 0.05);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin: 25px 0;
+  border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.practice-answers h4 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--success-color);
+  display: flex;
+  align-items: center;
+}
+
+.practice-answers h4::before {
+  content: '\f058';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  margin-right: 10px;
+  color: var(--success-color);
+}
+
+.practice-answers p:last-child,
+.practice-answers ul:last-child,
+.practice-answers ol:last-child {
+  margin-bottom: 0;
+}
+
+/* Language specific / misc */
+.lesson-content .language-highlight {
+  background-color: rgba(255, 102, 0, 0.1);
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-weight: 600;
+  color: var(--primary-dark);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 30px 0;
+}
+
+/* *** LESSON NAVIGATION BUTTON STYLES *** */
+.lesson-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.lesson-nav-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  flex-basis: calc(50% - 10px);
+  max-width: calc(50% - 10px);
+}
+
+.lesson-nav-btn:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-nav-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--primary-light);
+}
+
+.lesson-nav-btn.prev {
+  justify-content: flex-start;
+}
+
+.lesson-nav-btn.next {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.lesson-nav-btn i {
+  color: white;
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+.lesson-nav-label {
+  display: inline;
+  font-weight: 700;
+}
+
+/* Show Label */
+.lesson-nav-title {
+  display: none;
+  /* Hide Title by default (on small screens) */
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* *** END LESSON NAVIGATION BUTTON STYLES (General) *** */
+
+/* Footer */
+footer {
+  background-color: var(--bg-dark);
+  padding: 25px 0;
+  margin-top: 60px;
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-bottom {
+  text-align: center;
+}
+
+.footer-bottom p {
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+/* Scroll to Top Button */
+.scroll-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+  z-index: 99;
+  border: none;
+}
+
+.scroll-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-to-top:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-3px);
+}
+
+/* Error message styling */
+.error-message {
+  background-color: rgba(220, 53, 69, 0.05);
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  border-radius: var(--border-radius);
+  color: var(--text-color);
+}
+
+.error-message h3 {
+  color: var(--danger-color);
+}
+
+.error-message p {
+  color: var(--text-light);
+}
+
+.error-details {
+  font-family: monospace;
+  font-size: 0.9em;
+  background-color: var(--bg-dark);
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  margin-top: 15px;
+  text-align: left;
+  color: var(--text-light);
+  word-break: break-word;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 992px) {
+  .hero .container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-content {
+    order: 2;
+    text-align: center;
+  }
+
+  .hero-image {
+    order: 1;
+    height: 350px;
+    margin-bottom: 30px;
+  }
+
+  .hero p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .cta-buttons {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  header .container {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .logo {
+    flex-basis: 60%;
+  }
+
+  .header-controls {
+    flex-basis: 40%;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .selected-language span {
+    display: none;
+  }
+
+  .selected-language {
+    padding: 8px 10px;
+  }
+
+  .selected-language .language-flag {
+    margin-right: 0;
+  }
+
+  .selected-language i.fa-chevron-down {
+    margin-left: 6px;
+  }
+
+  .hero h2 {
+    font-size: 32px;
+  }
+
+  .hero-image {
+    height: 300px;
+    min-width: 0;
+  }
+
+  .character {
+    width: 50px;
+    height: 50px;
+  }
+
+  .character i {
+    font-size: 20px;
+  }
+
+  .lesson-content-wrapper {
+    padding: 20px;
+  }
+
+  .language-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .language-card {
+    padding: 20px;
+  }
+
+  /* --- Modified Flag Responsive Size --- */
+  .language-card-flag img {
+    width: 45px;
+    height: 45px;
+    margin-bottom: 15px;
+  }
+
+  /* --- End Modified Flag Size --- */
+  .floating-lesson-header {
+    top: 61px;
+  }
+
+  .floating-lesson-header h2.centered-lesson-title {
+    font-size: 18px;
+    padding: 0 45px;
+  }
+
+  .lesson-selector-toggle {
+    width: 36px;
+    height: 36px;
+  }
+
+  .lesson-selector-toggle i {
+    font-size: 16px;
+  }
+
+  /* Adjusted size */
+  .lesson-selection-modal {
+    width: 95%;
+    max-width: none;
+    max-height: 90vh;
+  }
+}
+
+/* --- Show Nav Title on Medium Screens and Up --- */
+@media (min-width: 768px) {
+  .lesson-navigation .lesson-nav-btn .lesson-nav-title {
+    display: inline-block;
+  }
+
+  /* Show title */
+}
+
+@media (max-width: 576px) {
+  .logo h1 {
+    font-size: 22px;
+  }
+
+  .mascot-logo {
+    width: 35px;
+    height: 35px;
+  }
+
+  .badge {
+    font-size: 13px;
+    padding: 5px 12px;
+  }
+
+  .hero h2 {
+    font-size: 26px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+
+  .hero-image {
+    height: 250px;
+  }
+
+  .lesson-content-wrapper {
+    padding: 15px;
+  }
+
+  .lesson-content h2 {
+    font-size: 22px;
+  }
+
+  .lesson-content h3 {
+    font-size: 19px;
+  }
+
+  .lesson-content h4 {
+    font-size: 17px;
+  }
+
+  .language-grid-section {
+    padding: 40px 0;
+  }
+
+  .language-grid-section h2 {
+    font-size: 28px;
+  }
+
+  .language-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* --- Modified Flag Responsive Size --- */
+  .language-card-flag img {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* --- End Modified Flag Size --- */
+  .floating-lesson-header h2.centered-lesson-title {
+    font-size: 16px;
+    padding: 0 40px;
+  }
+
+  .modal-header h3 {
+    font-size: 16px;
+  }
+
+  .modal-close {
+    font-size: 18px;
+  }
+
+  .lesson-item {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+
+  .lesson-number,
+  .lesson-intro {
+    font-size: 13px;
+  }
+
+  /* --- Responsive NAV BUTTONS (Small Screens <= 576px) --- */
+  .lesson-navigation {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .lesson-nav-btn {
+    flex-basis: auto;
+    max-width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .lesson-nav-btn.next,
+  .lesson-nav-btn.prev {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .lesson-nav-btn.prev {
+    order: 1;
+  }
+
+  .lesson-nav-btn.next {
+    order: 2;
+  }
+
+  /* Title remains hidden */
+
+  .scroll-to-top {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+------
+// Initialize marked.js renderer and options globally
+if (typeof marked !== 'undefined') {
+  marked.setOptions({
+    renderer: new marked.Renderer(),
+    highlight: null, // No syntax highlighting by default
+    pedantic: false,
+    gfm: true,    // Use GitHub Flavored Markdown
+    breaks: true,   // Convert single line breaks to <br>
+    sanitize: false, // IMPORTANT: Only use false if Markdown source is trusted
+    smartLists: true,
+    smartypants: false,
+    xhtml: false
+  });
+} else {
+  console.error("Marked.js library not loaded!");
+}
+
+
+// --- Service Worker Registration ---
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Register service worker from the root, scope is the whole origin
+    navigator.serviceWorker.register('/service-worker.js', { scope: '/' }) // CORRECTED PATH & SCOPE
+      .then(registration => {
+        console.log('Service Worker registered successfully with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error); // This will now hopefully succeed
+      });
+  });
+} else {
+  console.log('Service Worker is not supported by this browser.');
+}
+
+
+
+
+// --- Vue 3 Application Initialization ---
+const app = Vue.createApp({
+  // --- Data Option (now a function) ---
+  data() {
+    return {
+      // App state
+      currentView: 'hero', // 'hero', 'language-grid', 'lesson-selector'
+      loading: false,
+      darkTheme: false,
+      showHeaderLanguageDropdown: false,
+      showLessonModal: false,
+      showScrollTop: false,
+
+      // Content
+      selectedLanguage: null, // { name, code, flagCode, speakers }
+      selectedLessonId: '',   // e.g., 'german-lesson-1'
+      lessonContent: null,    // HTML content of the current lesson
+
+      // Error handling
+      errorMessage: '',
+      errorTitle: 'Oops! Something went wrong.',
+      errorDetails: '',
+
+      // Placeholder content
+      placeholderIcon: 'fas fa-book-open',
+      placeholderTitle: 'Welcome to LingoMitra!',
+      placeholderText: 'Your journey to mastering new languages begins here. Select a language to get started.',
+
+      // Data
+      lessons: [], // Array of { id, title, content }
+      comingSoon: false,
+      currentYear: new Date().getFullYear(),
+
+      // Available languages
+      languages: [
+        { name: 'German', code: 'german', flagCode: 'de', speakers: 132 },
+        { name: 'Spanish', code: 'spanish', flagCode: 'es', speakers: 534 },
+        { name: 'French', code: 'french', flagCode: 'fr', speakers: 280 },
+        { name: 'Hindi', code: 'hindi', flagCode: 'hi', speakers: 615 },
+        { name: 'Chinese', code: 'chinese', flagCode: 'zh', speakers: 1120 },
+        { name: 'Japanese', code: 'japanese', flagCode: 'jp', speakers: 128 }
+        // Add more languages here
+      ]
+    }; // End of return object for data()
+  }, // End of data() function
+
+  // --- Computed Properties ---
+  computed: {
+    // Get the current lesson object based on selectedLessonId
+    currentLesson() {
+      // Keep this existing computed property
+      if (!this.selectedLessonId || !this.lessons || this.lessons.length === 0) return null;
+      return this.lessons.find(lesson => lesson.id === this.selectedLessonId) || null;
+    },
+
+    // *** START: NEW COMPUTED PROPERTIES FOR NAVIGATION ***
+    // Find the index of the current lesson
+    currentLessonIndex() {
+      if (!this.selectedLessonId || !this.lessons || this.lessons.length === 0) {
+        return -1;
+      }
+      return this.lessons.findIndex(lesson => lesson.id === this.selectedLessonId);
+    },
+
+    // Get the previous lesson object
+    previousLesson() {
+      if (this.currentLessonIndex > 0) {
+        return this.lessons[this.currentLessonIndex - 1];
+      }
+      return null;
+    },
+
+    // Get the next lesson object
+    nextLesson() {
+      if (this.currentLessonIndex >= 0 && this.currentLessonIndex < this.lessons.length - 1) {
+        return this.lessons[this.currentLessonIndex + 1];
+      }
+      return null;
+    }
+    // *** END: NEW COMPUTED PROPERTIES FOR NAVIGATION ***
+
+  }, // End of computed
+
+  // --- Lifecycle Hooks ---
+  created() {
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    // --- MODIFIED: Get the meta tag ---
+    const themeMetaTag = document.querySelector('meta[name="theme-color"]');
+
+    if (savedTheme === 'dark') {
+      this.darkTheme = true;
+      document.body.classList.add('dark-theme');
+      // --- MODIFIED: Set initial dark theme color ---
+      if (themeMetaTag) {
+        themeMetaTag.setAttribute('content', '#1a1a1a');
+      }
+    } else {
+      this.darkTheme = false;
+      document.body.classList.remove('dark-theme');
+      // --- MODIFIED: Set initial light theme color ---
+      if (themeMetaTag) {
+        themeMetaTag.setAttribute('content', '#ffffff');
+      }
+      // Ensure light theme is default if no setting or invalid setting
+      localStorage.setItem('theme', 'light');
+    }
+
+    // Check if user has visited before to potentially skip hero
+    const hasVisitedBefore = localStorage.getItem('hasVisited');
+    if (hasVisitedBefore === 'true') {
+      this.currentView = 'language-grid';
+      // Reset placeholder for returning users who haven't selected a language yet
+      this.placeholderTitle = 'Choose Your Language';
+      this.placeholderText = 'Select a language from the grid to start learning.';
+      this.placeholderIcon = 'fas fa-language';
+    } else {
+      // Set initial placeholder text for first-time visitors
+      this.placeholderTitle = 'Welcome to LingoMitra!';
+      this.placeholderText = 'Your journey to mastering new languages begins here. Click "Get Started" above or choose a language below.';
+      this.placeholderIcon = 'fas fa-book-open';
+    }
+
+
+    // Add global event listeners
+    // Note: In Vue 3 Options API, 'this' still correctly refers to the component instance
+    document.addEventListener('click', this.handleOutsideClick);
+    window.addEventListener('scroll', this.handleScroll);
+    document.addEventListener('keydown', this.handleKeyDown);
+  },
+
+  // Renamed from beforeDestroy
+  beforeUnmount() {
+    // Clean up global event listeners
+    document.removeEventListener('click', this.handleOutsideClick);
+    window.removeEventListener('scroll', this.handleScroll);
+    document.removeEventListener('keydown', this.handleKeyDown);
+  },
+
+  // --- Methods ---
+  methods: {
+    // --- Theme Handling ---
+    toggleTheme() {
+      this.darkTheme = !this.darkTheme;
+      document.body.classList.toggle('dark-theme');
+      localStorage.setItem('theme', this.darkTheme ? 'dark' : 'light');
+
+      // --- MODIFIED: Update meta tag ---
+      const themeMetaTag = document.querySelector('meta[name="theme-color"]');
+      if (themeMetaTag) {
+        // --- MODIFIED: Use background colors ---
+        const newThemeColor = this.darkTheme ? '#1a1a1a' : '#ffffff';
+        themeMetaTag.setAttribute('content', newThemeColor);
+      }
+      // --- End of modification ---
+    },
+
+    // --- Navigation ---
+    goToLanguageSelection() {
+      this.currentView = 'language-grid';
+      this.resetLessonState(); // Clear language/lesson specific data
+      this.showHeaderLanguageDropdown = false; // Ensure dropdown is closed
+
+      // Mark user as having visited (for skipping hero next time)
+      localStorage.setItem('hasVisited', 'true');
+
+      // Optionally scroll to the top of the language grid section
+      // $nextTick is still available
+      this.$nextTick(() => {
+        // Use document.querySelector as $el might not be reliable in the same way or needed
+        const gridSection = document.querySelector('.language-grid-section');
+        if (gridSection) {
+          gridSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    },
+
+    // --- Dropdown Handling ---
+    toggleHeaderLanguageDropdown() {
+      this.showHeaderLanguageDropdown = !this.showHeaderLanguageDropdown;
+    },
+
+    // --- Get Lesson Number ---
+    getLessonNumber(lessonId) {
+      if (!lessonId || typeof lessonId !== 'string') return null; // Basic validation
+      if (lessonId.includes('-lesson-')) {
+        const parts = lessonId.split('-lesson-');
+        return parts.length > 1 && !isNaN(parts[1]) ? parts[1] : null;
+      }
+      return null;
+    },
+
+    handleOutsideClick(event) {
+      // In Vue 3, accessing DOM elements directly might be discouraged in favor of refs,
+      // but for this simple case targeting document elements might be okay.
+      // However, using document.querySelector is safer than relying on this.$el within a global listener.
+      const headerDropdown = document.querySelector('.language-dropdown');
+      if (this.showHeaderLanguageDropdown && headerDropdown && !headerDropdown.contains(event.target)) {
+        this.showHeaderLanguageDropdown = false;
+      }
+      const modalOverlay = document.querySelector('.modal-overlay');
+      // Check if the modal is actually shown in the data property
+      if (this.showLessonModal && event.target === modalOverlay) {
+        this.closeLessonModal();
+      }
+    },
+
+
+    // --- Lesson Modal Handling ---
+    openLessonModal() {
+      this.showLessonModal = true;
+      document.body.classList.add('modal-open');
+      this.$nextTick(() => {
+        // Use document.querySelector
+        const modal = document.querySelector('.lesson-selection-modal');
+        const overlay = document.querySelector('.modal-overlay');
+        if (modal) modal.classList.add('show');
+        if (overlay) overlay.classList.add('show');
+      });
+    },
+
+    closeLessonModal() {
+      // Use document.querySelector
+      const modal = document.querySelector('.lesson-selection-modal');
+      const overlay = document.querySelector('.modal-overlay');
+      if (modal) modal.classList.remove('show');
+      if (overlay) overlay.classList.remove('show');
+
+      setTimeout(() => {
+        this.showLessonModal = false;
+        document.body.classList.remove('modal-open');
+      }, 300);
+    },
+
+
+    selectLessonFromModal(lessonId) {
+      if (lessonId === this.selectedLessonId) {
+        this.closeLessonModal();
+        return;
+      }
+      this.selectedLessonId = lessonId;
+      this.selectLesson();
+      this.closeLessonModal();
+    },
+
+    // --- Keyboard Handling ---
+    handleKeyDown(event) {
+      if (event.key === 'Escape' && this.showLessonModal) {
+        this.closeLessonModal();
+      }
+    },
+
+    // --- Language & Lesson Loading ---
+    selectLanguage(language) {
+      if (this.selectedLanguage && this.selectedLanguage.code === language.code && this.currentView === 'lesson-selector') {
+        this.showHeaderLanguageDropdown = false;
+        return;
+      }
+
+      this.selectedLanguage = language;
+      this.showHeaderLanguageDropdown = false;
+
+      if (language) {
+        this.loading = true;
+        this.resetLessonState(false);
+        setTimeout(() => {
+          this.fetchLanguageContent(language.code);
+        }, 300); // Short delay for visual feedback
+      } else {
+        this.goToLanguageSelection();
+      }
+    },
+
+    async fetchLanguageContent(languageCode) {
+      this.loading = true;
+      this.errorMessage = '';
+      this.errorDetails = '';
+      this.comingSoon = false;
+
+      try {
+        // IMPORTANT: Adjust this path if your files are located elsewhere
+        const fileName = ./courses/${languageCode}-lesson.md;
+        const response = await fetch(fileName);
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            console.warn(Lesson file not found: ${fileName});
+            this.renderComingSoon();
+          } else {
+            throw new Error(HTTP error ${response.status}: ${response.statusText});
+          }
+        } else {
+          const markdown = await response.text();
+          this.lessons = this.splitIntoLessons(markdown, languageCode);
+
+          if (this.lessons && this.lessons.length > 0) {
+            this.currentView = 'lesson-selector';
+            this.selectedLessonId = this.lessons[0].id; // Select the first lesson
+            this.selectLesson(); // Render the first lesson (will also scroll)
+          } else {
+            console.warn(No lessons found in file: ${fileName});
+            this.renderComingSoon();
+          }
+        }
+      } catch (error) {
+        console.error('Error loading or processing lesson:', error);
+        this.errorMessage = 'Sorry, we couldn\'t load the lessons for this language.';
+        this.errorTitle = 'Failed to Load Lessons';
+        this.errorDetails = error.message;
+        this.resetLessonState();
+        this.currentView = 'lesson-selector'; // Stay on lesson view to show error
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    splitIntoLessons(markdown, languageCode) {
+      const lessons = [];
+      if (!markdown) return lessons;
+
+      // Split by H2 headings (##), keeping the heading with the content
+      const sections = markdown.split(/(?=^##\s)/gm);
+      let lessonIndex = 1;
+      let introContent = '';
+
+      sections.forEach((section, index) => {
+        section = section.trim();
+        if (!section) return;
+
+        // If the first chunk doesn't start with ##, treat it as intro
+        if (index === 0 && !section.startsWith('## ')) {
+          introContent = section;
+          if (introContent) {
+            // Try to extract H1 title if present, otherwise default
+            const introTitleMatch = introContent.match(/^#\s+(.*)/);
+            const introTitle = introTitleMatch ? introTitleMatch[1].trim() : 'Introduction';
+            lessons.push({
+              id: ${languageCode}-intro,
+              title: introTitle,
+              content: introContent // Keep the H1 in the content for rendering
+            });
+          }
+        }
+        // Process sections starting with ## as lessons
+        else if (section.startsWith('## ')) {
+          const lines = section.split('\n');
+          const title = lines[0].substring(3).trim(); // Get text after '## '
+          const content = section; // Content includes the '## Title' line
+          lessons.push({
+            id: ${languageCode}-lesson-${lessonIndex},
+            title: title,
+            content: content
+          });
+          lessonIndex++;
+        }
+        // Handle edge case where the *very first* section IS a lesson (starts with ##)
+        else if (index === 0 && section.startsWith('## ')) {
+          const lines = section.split('\n');
+          const title = lines[0].substring(3).trim();
+          const content = section;
+          lessons.push({
+            id: ${languageCode}-lesson-${lessonIndex},
+            title: title,
+            content: content
+          });
+          lessonIndex++;
+        }
+      });
+      return lessons;
+    },
+
+    // Method to load the selected lesson's content
+    selectLesson() {
+      if (this.selectedLessonId && this.lessons.length > 0) {
+        const lesson = this.lessons.find(l => l.id === this.selectedLessonId);
+        if (lesson) {
+          this.renderMarkdown(lesson.content);
+          // Use $nextTick to ensure the DOM is updated before scrolling
+          this.$nextTick(() => this.scrollToContentTop());
+        } else {
+          console.warn("Selected lesson ID not found:", this.selectedLessonId);
+          this.lessonContent = '<p>Error: Could not find the selected lesson.</p>'; // Display error inline
+          this.errorMessage = ''; // Clear global error message
+        }
+      }
+    },
+
+    // *** START: NEW NAVIGATION METHODS ***
+    goToPreviousLesson() {
+      if (this.previousLesson) {
+        this.selectedLessonId = this.previousLesson.id;
+        this.selectLesson(); // Re-use existing method to load content and scroll
+      }
+    },
+
+    goToNextLesson() {
+      if (this.nextLesson) {
+        this.selectedLessonId = this.nextLesson.id;
+        this.selectLesson(); // Re-use existing method to load content and scroll
+      }
+    },
+    // *** END: NEW NAVIGATION METHODS ***
+
+    // Render Markdown to HTML
+    renderMarkdown(markdown) {
+      if (typeof marked === 'undefined') {
+        console.error("marked.js library is not loaded.");
+        this.errorMessage = "Error: Markdown parser not available.";
+        this.errorTitle = "Display Error";
+        this.lessonContent = null;
+        return;
+      }
+      if (!markdown) {
+        this.lessonContent = ''; // Handle empty markdown case
+        return;
+      }
+
+      try {
+        // 1. Remove the main H1/H2 title from the content before rendering
+        //    (it's already displayed in the header/modal/buttons)
+        let processedMarkdown = markdown
+          .replace(/^#\s+.*/, '')   // Remove H1 if it was part of intro
+          .replace(/^##\s+.*/, '')  // Remove H2 if it was part of a lesson
+          .trim();
+
+        // 2. Parse the remaining Markdown
+        let html = marked.parse(processedMarkdown);
+
+        // 3. Post-process HTML (Table Containers, Thinking Points, Practice Answers)
+        // Wrap tables
+        html = html.replace(/<table([\s\S]*?)>/g, '<div class="table-container"><table$1>');
+        html = html.replace(/<\/table>/g, '</table></div>');
+
+        // Transform Thinking Point blockquotes
+        html = html.replace(
+          /<blockquote>\s*<p>\s*<strong>Thinking Point:?(.*?)<\/strong>([\s\S]*?)<\/p>\s*<\/blockquote>/gi,
+          (match, title, content) => {
+            const trimmedTitle = title ? title.trim() : '';
+            // Need to handle potential paragraphs within the blockquote content
+            let formattedContent = content.trim().replace(/<\/?p>/g, ''); // Basic removal of inner <p> tags
+            return <div class="thinking-point"><div class="thinking-header">Thinking Point${trimmedTitle ? ': ' + trimmedTitle : ''}</div><div>${formattedContent}</div></div>;
+          }
+        );
+
+        // Transform Practice Answers sections
+        const practiceStartMarker = '<p><em><strong>Practice Answers:</strong></em></p>';
+        let practiceEndMarker = '<hr>'; // Assumes HR separates the answers section
+        let startIndex = html.indexOf(practiceStartMarker);
+
+        while (startIndex !== -1) {
+          const replacementStart = '<div class="practice-answers"><h4>Practice Answers</h4>'; // Simple title
+          // Remove the original marker and insert the new div start
+          html = html.substring(0, startIndex) + replacementStart + html.substring(startIndex + practiceStartMarker.length);
+
+          // Find the *next* <hr> tag after the inserted div start
+          let endIndex = html.indexOf(practiceEndMarker, startIndex + replacementStart.length);
+
+          if (endIndex !== -1) {
+            // Replace the <hr> with the closing div tag
+            html = html.substring(0, endIndex) + '</div>' + html.substring(endIndex + practiceEndMarker.length);
+          } else {
+            // If no <hr> is found after the start marker, close the div at the end of the content
+            html += '</div>';
+            console.warn("Practice Answers section started but no subsequent <hr> found. Closed at end of content.");
+            break; // Exit loop as we can't find more markers reliably
+          }
+
+          // Look for the next start marker *after* the section we just processed
+          startIndex = html.indexOf(practiceStartMarker, startIndex + replacementStart.length); // Corrected search position
+        }
+
+
+        // Set the final processed HTML
+        this.lessonContent = html;
+        this.errorMessage = ''; // Clear any previous errors
+        this.comingSoon = false; // Ensure coming soon is false
+
+      } catch (error) {
+        console.error("Error rendering Markdown:", error);
+        this.errorMessage = "Sorry, we couldn't display the lesson content correctly.";
+        this.errorTitle = "Display Error";
+        this.errorDetails = error.message;
+        this.lessonContent = null; // Clear content on error
+      }
+    },
+
+    // --- UI Helpers ---
+    renderComingSoon() {
+      this.comingSoon = true;
+      this.lessonContent = null;
+      this.lessons = [];
+      this.selectedLessonId = '';
+      this.errorMessage = '';
+      this.currentView = 'lesson-selector'; // Stay on view to show message
+    },
+
+    resetLessonState(resetLanguage = true) {
+      if (resetLanguage) {
+        this.selectedLanguage = null;
+      }
+      this.lessons = [];
+      this.selectedLessonId = '';
+      this.lessonContent = null;
+      this.errorMessage = '';
+      this.errorDetails = '';
+      this.comingSoon = false;
+      // Don't change currentView here automatically
+    },
+
+    // Format lesson titles (remove "Lesson X:" prefix)
+    formatLessonTitle(title) {
+      if (!title) return '';
+      // Remove prefixes like "Lesson 1:", "1:", "Introduction:", etc.
+      return title.replace(/^(Lesson\s+\d+:?|Intro(?:duction)?:?|\d+:?)\s*/i, '').trim();
+    },
+
+
+    handleScroll() {
+      this.showScrollTop = window.pageYOffset > 300;
+    },
+
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+
+    // Scroll to the top of the lesson content area
+    // *** UPDATED scrollToContentTop ***
+    scrollToContentTop() {
+      // Use document.querySelector
+      const contentArea = document.querySelector('.content');
+      if (contentArea) {
+        const header = document.querySelector('header');
+        const floatingHeader = document.querySelector('.floating-lesson-header');
+        const headerHeight = header ? header.offsetHeight : 0;
+        // Get height of floating header ONLY if it's actually displayed
+        const floatingHeaderHeight = (floatingHeader && this.lessonContent && !this.loading && this.currentView === 'lesson-selector') ? floatingHeader.offsetHeight : 0;
+        const topPadding = 20; // Extra space above content
+
+        const offset = headerHeight + floatingHeaderHeight + topPadding;
+
+        // Get the top position of the content area WRAPPER (which contains the content)
+        const contentWrapper = document.querySelector('.lesson-content-wrapper');
+        // If wrapper exists, scroll to it, otherwise fallback to the main content area
+        const elementToScrollTo = contentWrapper || contentArea;
+
+        // Calculate the absolute top position of the element relative to the document
+        const elementTop = elementToScrollTo.getBoundingClientRect().top + window.pageYOffset;
+
+        // Calculate the final scroll position
+        const scrollToPosition = elementTop - offset;
+
+
+        window.scrollTo({
+          top: scrollToPosition < 0 ? 0 : scrollToPosition, // Prevent scrolling above 0
+          behavior: 'smooth'
+        });
+      }
+    } // End of scrollToContentTop
+  } // End of methods
+}); // End of Vue.createApp({})
+
+// --- Mount the Application ---
+app.mount('#app');// Initialize marked.js renderer and options globally
+if (typeof marked !== 'undefined') {
+  marked.setOptions({
+    renderer: new marked.Renderer(),
+    highlight: null, // No syntax highlighting by default
+    pedantic: false,
+    gfm: true,    // Use GitHub Flavored Markdown
+    breaks: true,   // Convert single line breaks to <br>
+    sanitize: false, // IMPORTANT: Only use false if Markdown source is trusted
+    smartLists: true,
+    smartypants: false,
+    xhtml: false
+  });
+} else {
+  console.error("Marked.js library not loaded!");
+}
+
+
+// --- Service Worker Registration ---
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Register service worker from the root, scope is the whole origin
+    navigator.serviceWorker.register('/service-worker.js', { scope: '/' }) // CORRECTED PATH & SCOPE
+      .then(registration => {
+        console.log('Service Worker registered successfully with scope:', registration.scope);
+      })
+      .catch(error => {
+        console.error('Service Worker registration failed:', error); // This will now hopefully succeed
+      });
+  });
+} else {
+  console.log('Service Worker is not supported by this browser.');
+}
+
+
+
+
+// --- Vue 3 Application Initialization ---
+const app = Vue.createApp({
+  // --- Data Option (now a function) ---
+  data() {
+    return {
+      // App state
+      currentView: 'hero', // 'hero', 'language-grid', 'lesson-selector'
+      loading: false,
+      darkTheme: false,
+      showHeaderLanguageDropdown: false,
+      showLessonModal: false,
+      showScrollTop: false,
+
+      // Content
+      selectedLanguage: null, // { name, code, flagCode, speakers }
+      selectedLessonId: '',   // e.g., 'german-lesson-1'
+      lessonContent: null,    // HTML content of the current lesson
+
+      // Error handling
+      errorMessage: '',
+      errorTitle: 'Oops! Something went wrong.',
+      errorDetails: '',
+
+      // Placeholder content
+      placeholderIcon: 'fas fa-book-open',
+      placeholderTitle: 'Welcome to LingoMitra!',
+      placeholderText: 'Your journey to mastering new languages begins here. Select a language to get started.',
+
+      // Data
+      lessons: [], // Array of { id, title, content }
+      comingSoon: false,
+      currentYear: new Date().getFullYear(),
+
+      // Available languages
+      languages: [
+        { name: 'German', code: 'german', flagCode: 'de', speakers: 132 },
+        { name: 'Spanish', code: 'spanish', flagCode: 'es', speakers: 534 },
+        { name: 'French', code: 'french', flagCode: 'fr', speakers: 280 },
+        { name: 'Hindi', code: 'hindi', flagCode: 'hi', speakers: 615 },
+        { name: 'Chinese', code: 'chinese', flagCode: 'zh', speakers: 1120 },
+        { name: 'Japanese', code: 'japanese', flagCode: 'jp', speakers: 128 }
+        // Add more languages here
+      ]
+    }; // End of return object for data()
+  }, // End of data() function
+
+  // --- Computed Properties ---
+  computed: {
+    // Get the current lesson object based on selectedLessonId
+    currentLesson() {
+      // Keep this existing computed property
+      if (!this.selectedLessonId || !this.lessons || this.lessons.length === 0) return null;
+      return this.lessons.find(lesson => lesson.id === this.selectedLessonId) || null;
+    },
+
+    // *** START: NEW COMPUTED PROPERTIES FOR NAVIGATION ***
+    // Find the index of the current lesson
+    currentLessonIndex() {
+      if (!this.selectedLessonId || !this.lessons || this.lessons.length === 0) {
+        return -1;
+      }
+      return this.lessons.findIndex(lesson => lesson.id === this.selectedLessonId);
+    },
+
+    // Get the previous lesson object
+    previousLesson() {
+      if (this.currentLessonIndex > 0) {
+        return this.lessons[this.currentLessonIndex - 1];
+      }
+      return null;
+    },
+
+    // Get the next lesson object
+    nextLesson() {
+      if (this.currentLessonIndex >= 0 && this.currentLessonIndex < this.lessons.length - 1) {
+        return this.lessons[this.currentLessonIndex + 1];
+      }
+      return null;
+    }
+    // *** END: NEW COMPUTED PROPERTIES FOR NAVIGATION ***
+
+  }, // End of computed
+
+  // --- Lifecycle Hooks ---
+  created() {
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    // --- MODIFIED: Get the meta tag ---
+    const themeMetaTag = document.querySelector('meta[name="theme-color"]');
+
+    if (savedTheme === 'dark') {
+      this.darkTheme = true;
+      document.body.classList.add('dark-theme');
+      // --- MODIFIED: Set initial dark theme color ---
+      if (themeMetaTag) {
+        themeMetaTag.setAttribute('content', '#1a1a1a');
+      }
+    } else {
+      this.darkTheme = false;
+      document.body.classList.remove('dark-theme');
+      // --- MODIFIED: Set initial light theme color ---
+      if (themeMetaTag) {
+        themeMetaTag.setAttribute('content', '#ffffff');
+      }
+      // Ensure light theme is default if no setting or invalid setting
+      localStorage.setItem('theme', 'light');
+    }
+
+    // Check if user has visited before to potentially skip hero
+    const hasVisitedBefore = localStorage.getItem('hasVisited');
+    if (hasVisitedBefore === 'true') {
+      this.currentView = 'language-grid';
+      // Reset placeholder for returning users who haven't selected a language yet
+      this.placeholderTitle = 'Choose Your Language';
+      this.placeholderText = 'Select a language from the grid to start learning.';
+      this.placeholderIcon = 'fas fa-language';
+    } else {
+      // Set initial placeholder text for first-time visitors
+      this.placeholderTitle = 'Welcome to LingoMitra!';
+      this.placeholderText = 'Your journey to mastering new languages begins here. Click "Get Started" above or choose a language below.';
+      this.placeholderIcon = 'fas fa-book-open';
+    }
+
+
+    // Add global event listeners
+    // Note: In Vue 3 Options API, 'this' still correctly refers to the component instance
+    document.addEventListener('click', this.handleOutsideClick);
+    window.addEventListener('scroll', this.handleScroll);
+    document.addEventListener('keydown', this.handleKeyDown);
+  },
+
+  // Renamed from beforeDestroy
+  beforeUnmount() {
+    // Clean up global event listeners
+    document.removeEventListener('click', this.handleOutsideClick);
+    window.removeEventListener('scroll', this.handleScroll);
+    document.removeEventListener('keydown', this.handleKeyDown);
+  },
+
+  // --- Methods ---
+  methods: {
+    // --- Theme Handling ---
+    toggleTheme() {
+      this.darkTheme = !this.darkTheme;
+      document.body.classList.toggle('dark-theme');
+      localStorage.setItem('theme', this.darkTheme ? 'dark' : 'light');
+
+      // --- MODIFIED: Update meta tag ---
+      const themeMetaTag = document.querySelector('meta[name="theme-color"]');
+      if (themeMetaTag) {
+        // --- MODIFIED: Use background colors ---
+        const newThemeColor = this.darkTheme ? '#1a1a1a' : '#ffffff';
+        themeMetaTag.setAttribute('content', newThemeColor);
+      }
+      // --- End of modification ---
+    },
+
+    // --- Navigation ---
+    goToLanguageSelection() {
+      this.currentView = 'language-grid';
+      this.resetLessonState(); // Clear language/lesson specific data
+      this.showHeaderLanguageDropdown = false; // Ensure dropdown is closed
+
+      // Mark user as having visited (for skipping hero next time)
+      localStorage.setItem('hasVisited', 'true');
+
+      // Optionally scroll to the top of the language grid section
+      // $nextTick is still available
+      this.$nextTick(() => {
+        // Use document.querySelector as $el might not be reliable in the same way or needed
+        const gridSection = document.querySelector('.language-grid-section');
+        if (gridSection) {
+          gridSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    },
+
+    // --- Dropdown Handling ---
+    toggleHeaderLanguageDropdown() {
+      this.showHeaderLanguageDropdown = !this.showHeaderLanguageDropdown;
+    },
+
+    // --- Get Lesson Number ---
+    getLessonNumber(lessonId) {
+      if (!lessonId || typeof lessonId !== 'string') return null; // Basic validation
+      if (lessonId.includes('-lesson-')) {
+        const parts = lessonId.split('-lesson-');
+        return parts.length > 1 && !isNaN(parts[1]) ? parts[1] : null;
+      }
+      return null;
+    },
+
+    handleOutsideClick(event) {
+      // In Vue 3, accessing DOM elements directly might be discouraged in favor of refs,
+      // but for this simple case targeting document elements might be okay.
+      // However, using document.querySelector is safer than relying on this.$el within a global listener.
+      const headerDropdown = document.querySelector('.language-dropdown');
+      if (this.showHeaderLanguageDropdown && headerDropdown && !headerDropdown.contains(event.target)) {
+        this.showHeaderLanguageDropdown = false;
+      }
+      const modalOverlay = document.querySelector('.modal-overlay');
+      // Check if the modal is actually shown in the data property
+      if (this.showLessonModal && event.target === modalOverlay) {
+        this.closeLessonModal();
+      }
+    },
+
+
+    // --- Lesson Modal Handling ---
+    openLessonModal() {
+      this.showLessonModal = true;
+      document.body.classList.add('modal-open');
+      this.$nextTick(() => {
+        // Use document.querySelector
+        const modal = document.querySelector('.lesson-selection-modal');
+        const overlay = document.querySelector('.modal-overlay');
+        if (modal) modal.classList.add('show');
+        if (overlay) overlay.classList.add('show');
+      });
+    },
+
+    closeLessonModal() {
+      // Use document.querySelector
+      const modal = document.querySelector('.lesson-selection-modal');
+      const overlay = document.querySelector('.modal-overlay');
+      if (modal) modal.classList.remove('show');
+      if (overlay) overlay.classList.remove('show');
+
+      setTimeout(() => {
+        this.showLessonModal = false;
+        document.body.classList.remove('modal-open');
+      }, 300);
+    },
+
+
+    selectLessonFromModal(lessonId) {
+      if (lessonId === this.selectedLessonId) {
+        this.closeLessonModal();
+        return;
+      }
+      this.selectedLessonId = lessonId;
+      this.selectLesson();
+      this.closeLessonModal();
+    },
+
+    // --- Keyboard Handling ---
+    handleKeyDown(event) {
+      if (event.key === 'Escape' && this.showLessonModal) {
+        this.closeLessonModal();
+      }
+    },
+
+    // --- Language & Lesson Loading ---
+    selectLanguage(language) {
+      if (this.selectedLanguage && this.selectedLanguage.code === language.code && this.currentView === 'lesson-selector') {
+        this.showHeaderLanguageDropdown = false;
+        return;
+      }
+
+      this.selectedLanguage = language;
+      this.showHeaderLanguageDropdown = false;
+
+      if (language) {
+        this.loading = true;
+        this.resetLessonState(false);
+        setTimeout(() => {
+          this.fetchLanguageContent(language.code);
+        }, 300); // Short delay for visual feedback
+      } else {
+        this.goToLanguageSelection();
+      }
+    },
+
+    async fetchLanguageContent(languageCode) {
+      this.loading = true;
+      this.errorMessage = '';
+      this.errorDetails = '';
+      this.comingSoon = false;
+
+      try {
+        // IMPORTANT: Adjust this path if your files are located elsewhere
+        const fileName = ./courses/${languageCode}-lesson.md;
+        const response = await fetch(fileName);
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            console.warn(Lesson file not found: ${fileName});
+            this.renderComingSoon();
+          } else {
+            throw new Error(HTTP error ${response.status}: ${response.statusText});
+          }
+        } else {
+          const markdown = await response.text();
+          this.lessons = this.splitIntoLessons(markdown, languageCode);
+
+          if (this.lessons && this.lessons.length > 0) {
+            this.currentView = 'lesson-selector';
+            this.selectedLessonId = this.lessons[0].id; // Select the first lesson
+            this.selectLesson(); // Render the first lesson (will also scroll)
+          } else {
+            console.warn(No lessons found in file: ${fileName});
+            this.renderComingSoon();
+          }
+        }
+      } catch (error) {
+        console.error('Error loading or processing lesson:', error);
+        this.errorMessage = 'Sorry, we couldn\'t load the lessons for this language.';
+        this.errorTitle = 'Failed to Load Lessons';
+        this.errorDetails = error.message;
+        this.resetLessonState();
+        this.currentView = 'lesson-selector'; // Stay on lesson view to show error
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    splitIntoLessons(markdown, languageCode) {
+      const lessons = [];
+      if (!markdown) return lessons;
+
+      // Split by H2 headings (##), keeping the heading with the content
+      const sections = markdown.split(/(?=^##\s)/gm);
+      let lessonIndex = 1;
+      let introContent = '';
+
+      sections.forEach((section, index) => {
+        section = section.trim();
+        if (!section) return;
+
+        // If the first chunk doesn't start with ##, treat it as intro
+        if (index === 0 && !section.startsWith('## ')) {
+          introContent = section;
+          if (introContent) {
+            // Try to extract H1 title if present, otherwise default
+            const introTitleMatch = introContent.match(/^#\s+(.*)/);
+            const introTitle = introTitleMatch ? introTitleMatch[1].trim() : 'Introduction';
+            lessons.push({
+              id: ${languageCode}-intro,
+              title: introTitle,
+              content: introContent // Keep the H1 in the content for rendering
+            });
+          }
+        }
+        // Process sections starting with ## as lessons
+        else if (section.startsWith('## ')) {
+          const lines = section.split('\n');
+          const title = lines[0].substring(3).trim(); // Get text after '## '
+          const content = section; // Content includes the '## Title' line
+          lessons.push({
+            id: ${languageCode}-lesson-${lessonIndex},
+            title: title,
+            content: content
+          });
+          lessonIndex++;
+        }
+        // Handle edge case where the *very first* section IS a lesson (starts with ##)
+        else if (index === 0 && section.startsWith('## ')) {
+          const lines = section.split('\n');
+          const title = lines[0].substring(3).trim();
+          const content = section;
+          lessons.push({
+            id: ${languageCode}-lesson-${lessonIndex},
+            title: title,
+            content: content
+          });
+          lessonIndex++;
+        }
+      });
+      return lessons;
+    },
+
+    // Method to load the selected lesson's content
+    selectLesson() {
+      if (this.selectedLessonId && this.lessons.length > 0) {
+        const lesson = this.lessons.find(l => l.id === this.selectedLessonId);
+        if (lesson) {
+          this.renderMarkdown(lesson.content);
+          // Use $nextTick to ensure the DOM is updated before scrolling
+          this.$nextTick(() => this.scrollToContentTop());
+        } else {
+          console.warn("Selected lesson ID not found:", this.selectedLessonId);
+          this.lessonContent = '<p>Error: Could not find the selected lesson.</p>'; // Display error inline
+          this.errorMessage = ''; // Clear global error message
+        }
+      }
+    },
+
+    // *** START: NEW NAVIGATION METHODS ***
+    goToPreviousLesson() {
+      if (this.previousLesson) {
+        this.selectedLessonId = this.previousLesson.id;
+        this.selectLesson(); // Re-use existing method to load content and scroll
+      }
+    },
+
+    goToNextLesson() {
+      if (this.nextLesson) {
+        this.selectedLessonId = this.nextLesson.id;
+        this.selectLesson(); // Re-use existing method to load content and scroll
+      }
+    },
+    // *** END: NEW NAVIGATION METHODS ***
+
+    // Render Markdown to HTML
+    renderMarkdown(markdown) {
+      if (typeof marked === 'undefined') {
+        console.error("marked.js library is not loaded.");
+        this.errorMessage = "Error: Markdown parser not available.";
+        this.errorTitle = "Display Error";
+        this.lessonContent = null;
+        return;
+      }
+      if (!markdown) {
+        this.lessonContent = ''; // Handle empty markdown case
+        return;
+      }
+
+      try {
+        // 1. Remove the main H1/H2 title from the content before rendering
+        //    (it's already displayed in the header/modal/buttons)
+        let processedMarkdown = markdown
+          .replace(/^#\s+.*/, '')   // Remove H1 if it was part of intro
+          .replace(/^##\s+.*/, '')  // Remove H2 if it was part of a lesson
+          .trim();
+
+        // 2. Parse the remaining Markdown
+        let html = marked.parse(processedMarkdown);
+
+        // 3. Post-process HTML (Table Containers, Thinking Points, Practice Answers)
+        // Wrap tables
+        html = html.replace(/<table([\s\S]*?)>/g, '<div class="table-container"><table$1>');
+        html = html.replace(/<\/table>/g, '</table></div>');
+
+        // Transform Thinking Point blockquotes
+        html = html.replace(
+          /<blockquote>\s*<p>\s*<strong>Thinking Point:?(.*?)<\/strong>([\s\S]*?)<\/p>\s*<\/blockquote>/gi,
+          (match, title, content) => {
+            const trimmedTitle = title ? title.trim() : '';
+            // Need to handle potential paragraphs within the blockquote content
+            let formattedContent = content.trim().replace(/<\/?p>/g, ''); // Basic removal of inner <p> tags
+            return <div class="thinking-point"><div class="thinking-header">Thinking Point${trimmedTitle ? ': ' + trimmedTitle : ''}</div><div>${formattedContent}</div></div>;
+          }
+        );
+
+        // Transform Practice Answers sections
+        const practiceStartMarker = '<p><em><strong>Practice Answers:</strong></em></p>';
+        let practiceEndMarker = '<hr>'; // Assumes HR separates the answers section
+        let startIndex = html.indexOf(practiceStartMarker);
+
+        while (startIndex !== -1) {
+          const replacementStart = '<div class="practice-answers"><h4>Practice Answers</h4>'; // Simple title
+          // Remove the original marker and insert the new div start
+          html = html.substring(0, startIndex) + replacementStart + html.substring(startIndex + practiceStartMarker.length);
+
+          // Find the *next* <hr> tag after the inserted div start
+          let endIndex = html.indexOf(practiceEndMarker, startIndex + replacementStart.length);
+
+          if (endIndex !== -1) {
+            // Replace the <hr> with the closing div tag
+            html = html.substring(0, endIndex) + '</div>' + html.substring(endIndex + practiceEndMarker.length);
+          } else {
+            // If no <hr> is found after the start marker, close the div at the end of the content
+            html += '</div>';
+            console.warn("Practice Answers section started but no subsequent <hr> found. Closed at end of content.");
+            break; // Exit loop as we can't find more markers reliably
+          }
+
+          // Look for the next start marker *after* the section we just processed
+          startIndex = html.indexOf(practiceStartMarker, startIndex + replacementStart.length); // Corrected search position
+        }
+
+
+        // Set the final processed HTML
+        this.lessonContent = html;
+        this.errorMessage = ''; // Clear any previous errors
+        this.comingSoon = false; // Ensure coming soon is false
+
+      } catch (error) {
+        console.error("Error rendering Markdown:", error);
+        this.errorMessage = "Sorry, we couldn't display the lesson content correctly.";
+        this.errorTitle = "Display Error";
+        this.errorDetails = error.message;
+        this.lessonContent = null; // Clear content on error
+      }
+    },
+
+    // --- UI Helpers ---
+    renderComingSoon() {
+      this.comingSoon = true;
+      this.lessonContent = null;
+      this.lessons = [];
+      this.selectedLessonId = '';
+      this.errorMessage = '';
+      this.currentView = 'lesson-selector'; // Stay on view to show message
+    },
+
+    resetLessonState(resetLanguage = true) {
+      if (resetLanguage) {
+        this.selectedLanguage = null;
+      }
+      this.lessons = [];
+      this.selectedLessonId = '';
+      this.lessonContent = null;
+      this.errorMessage = '';
+      this.errorDetails = '';
+      this.comingSoon = false;
+      // Don't change currentView here automatically
+    },
+
+    // Format lesson titles (remove "Lesson X:" prefix)
+    formatLessonTitle(title) {
+      if (!title) return '';
+      // Remove prefixes like "Lesson 1:", "1:", "Introduction:", etc.
+      return title.replace(/^(Lesson\s+\d+:?|Intro(?:duction)?:?|\d+:?)\s*/i, '').trim();
+    },
+
+
+    handleScroll() {
+      this.showScrollTop = window.pageYOffset > 300;
+    },
+
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+
+    // Scroll to the top of the lesson content area
+    // *** UPDATED scrollToContentTop ***
+    scrollToContentTop() {
+      // Use document.querySelector
+      const contentArea = document.querySelector('.content');
+      if (contentArea) {
+        const header = document.querySelector('header');
+        const floatingHeader = document.querySelector('.floating-lesson-header');
+        const headerHeight = header ? header.offsetHeight : 0;
+        // Get height of floating header ONLY if it's actually displayed
+        const floatingHeaderHeight = (floatingHeader && this.lessonContent && !this.loading && this.currentView === 'lesson-selector') ? floatingHeader.offsetHeight : 0;
+        const topPadding = 20; // Extra space above content
+
+        const offset = headerHeight + floatingHeaderHeight + topPadding;
+
+        // Get the top position of the content area WRAPPER (which contains the content)
+        const contentWrapper = document.querySelector('.lesson-content-wrapper');
+        // If wrapper exists, scroll to it, otherwise fallback to the main content area
+        const elementToScrollTo = contentWrapper || contentArea;
+
+        // Calculate the absolute top position of the element relative to the document
+        const elementTop = elementToScrollTo.getBoundingClientRect().top + window.pageYOffset;
+
+        // Calculate the final scroll position
+        const scrollToPosition = elementTop - offset;
+
+
+        window.scrollTo({
+          top: scrollToPosition < 0 ? 0 : scrollToPosition, // Prevent scrolling above 0
+          behavior: 'smooth'
+        });
+      }
+    } // End of scrollToContentTop
+  } // End of methods
+}); // End of Vue.createApp({})
+
+// --- Mount the Application ---
+app.mount('#app');
+----
+so, this is an app I have created using html css js and now would like to create an exact style one manageable in the next js environment shown. please help me on this 
