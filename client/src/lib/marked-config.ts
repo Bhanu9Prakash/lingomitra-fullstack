@@ -1,43 +1,45 @@
 import { marked } from "marked";
 
 export function markedConfig() {
+  // Use Marked's setOptions method to apply custom rendering
+  marked.setOptions({
+    renderer: new marked.Renderer(),
+    gfm: true,
+    breaks: true
+  });
+
   // Configure marked renderer
-  const renderer = new marked.Renderer();
+  const renderer = {
+    // Marked expects different parameters in v4+ but works with these
+    table(header: string, body: string) {
+      return `<div class="table-container">
+        <table>
+          <thead>${header}</thead>
+          <tbody>${body}</tbody>
+        </table>
+      </div>`;
+    },
   
-  // Customize table rendering
-  renderer.table = function(header, body) {
-    return `<div class="table-container">
-      <table>
-        <thead>${header}</thead>
-        <tbody>${body}</tbody>
-      </table>
-    </div>`;
-  };
+    blockquote(quote: string) {
+      return `<blockquote>${quote}</blockquote>`;
+    },
   
-  // Customize blockquote rendering
-  renderer.blockquote = function(quote) {
-    return `<blockquote>${quote}</blockquote>`;
-  };
+    code(code: string, language: string) {
+      return `<pre><code class="language-${language}">${code}</code></pre>`;
+    },
   
-  // Customize code block rendering
-  renderer.code = function(code, language) {
-    return `<pre><code class="language-${language}">${code}</code></pre>`;
-  };
+    heading(text: string, level: number) {
+      return `<h${level}>${text}</h${level}>`;
+    },
   
-  // Customize headings
-  renderer.heading = function(text, level) {
-    return `<h${level}>${text}</h${level}>`;
-  };
+    paragraph(text: string) {
+      return `<p>${text}</p>`;
+    },
   
-  // Customize paragraph
-  renderer.paragraph = function(text) {
-    return `<p>${text}</p>`;
-  };
-  
-  // Customize lists
-  renderer.list = function(body, ordered) {
-    const type = ordered ? 'ol' : 'ul';
-    return `<${type}>${body}</${type}>`;
+    list(body: string, ordered: boolean) {
+      const type = ordered ? 'ol' : 'ul';
+      return `<${type}>${body}</${type}>`;
+    }
   };
   
   // Apply custom renderer

@@ -18,11 +18,26 @@ export async function readLessonFile(
     // Create lesson ID based on language code and file name
     const lessonId = `${languageCode}-${fileName}`;
     
-    // Extract title from the first line (assuming it starts with # )
+    // Extract title from the first line (looking for ## Lesson X: Title format)
     let title = 'Untitled Lesson';
-    const firstLine = content.split('\n')[0];
-    if (firstLine && firstLine.startsWith('# ')) {
-      title = firstLine.substring(2).trim();
+    const lines = content.split('\n');
+    for (let i = 0; i < Math.min(5, lines.length); i++) {
+      const line = lines[i];
+      // Check for "## Lesson X:" pattern
+      if (line && line.startsWith('## Lesson')) {
+        const match = line.match(/## Lesson \d+:?\s+(.*)/);
+        if (match && match[1]) {
+          title = match[1].trim();
+        } else {
+          title = line.substring(2).trim(); // Remove the ## prefix
+        }
+        break;
+      }
+      // Fallback to any heading
+      if (line && (line.startsWith('# ') || line.startsWith('## '))) {
+        title = line.substring(line.indexOf(' ') + 1).trim();
+        break;
+      }
     }
     
     // Create and return a lesson object

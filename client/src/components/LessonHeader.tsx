@@ -1,4 +1,5 @@
 import { Lesson } from "@shared/schema";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LessonHeaderProps {
   currentLesson: Lesson | null;
@@ -9,6 +10,8 @@ export default function LessonHeader({
   currentLesson, 
   onOpenLessonSelector 
 }: LessonHeaderProps) {
+  const isMobile = useIsMobile();
+  
   // Extract lesson number from lessonId (e.g., "de-lesson01" -> "01")
   const getLessonNumber = (lessonId: string) => {
     const match = lessonId.match(/lesson(\d+)$/);
@@ -23,7 +26,7 @@ export default function LessonHeader({
       fr: "French",
       hi: "Hindi",
       zh: "Chinese",
-      jp: "Japanese"
+      ja: "Japanese"
     };
     return languages[languageCode] || languageCode;
   };
@@ -36,7 +39,12 @@ export default function LessonHeader({
             {currentLesson && (
               <>
                 <h1>
-                  Lesson {getLessonNumber(currentLesson.lessonId)}: {currentLesson.title}
+                  {isMobile ? (
+                    // Simplified heading for mobile
+                    <>Lesson {getLessonNumber(currentLesson.lessonId)}</>
+                  ) : (
+                    <>Lesson {getLessonNumber(currentLesson.lessonId)}: {currentLesson.title}</>
+                  )}
                 </h1>
                 <div className="lesson-language">
                   <img 
@@ -53,9 +61,10 @@ export default function LessonHeader({
           <button 
             className="lesson-selector-btn"
             onClick={onOpenLessonSelector}
+            aria-label="View all lessons"
           >
             <i className="fas fa-list"></i>
-            <span>All Lessons</span>
+            {!isMobile && <span>All Lessons</span>}
           </button>
         </div>
       </div>
