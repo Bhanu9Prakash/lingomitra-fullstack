@@ -219,7 +219,7 @@ header .container {
   border-radius: 0 0 var(--border-radius) var(--border-radius); /* Only round bottom corners */
   box-shadow: var(--shadow);
   padding: 10px 0;
-  z-index: 101;
+  z-index: 999; /* Increased z-index to ensure it appears above the lesson header */
   display: none;
   opacity: 0;
   transform: translateY(-10px);
