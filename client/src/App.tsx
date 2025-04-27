@@ -16,8 +16,11 @@ function Router() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/languages" component={LanguageSelection} />
+        {/* Legacy routes - keep for compatibility but will redirect */}
         <Route path="/language/:code" component={LessonView} />
         <Route path="/lesson/:id" component={LessonView} />
+        {/* New standard route format */}
+        <Route path="/:language/lesson/:lessonNumber" component={LessonView} />
         <Route component={NotFound} />
       </Switch>
     </Layout>

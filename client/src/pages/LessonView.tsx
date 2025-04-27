@@ -10,13 +10,33 @@ import LessonSelector from "@/components/LessonSelector";
 export default function LessonView() {
   const [_, navigate] = useLocation();
   
-  // Get route params
+  // Helper functions for lesson ID manipulation
+  const getLessonNumber = (lessonId: string) => {
+    const match = lessonId.match(/lesson(\d+)$/);
+    return match ? parseInt(match[1]) : 0;
+  };
+  
+  const extractLessonNumber = (lessonId: string) => {
+    const match = lessonId.match(/lesson(\d+)$/);
+    return match ? match[1] : "01";
+  };
+  
+  // Get route params for all supported URL formats
   const [matchLanguage, paramsLanguage] = useRoute("/language/:code");
   const [matchLesson, paramsLesson] = useRoute("/lesson/:id");
+  const [matchStandardRoute, paramsStandardRoute] = useRoute("/:language/lesson/:lessonNumber");
   
-  // Determine whether we're accessing by language code or specific lesson
-  const languageCode = paramsLanguage?.code;
-  const specificLessonId = paramsLesson?.id;
+  // Extract parameters from URL
+  const languageCode = paramsLanguage?.code || 
+                       paramsStandardRoute?.language || 
+                       (paramsLesson?.id ? paramsLesson.id.split('-')[0] : null);
+                       
+  // For the standard route, construct the lesson ID from language and lesson number
+  let specificLessonId = paramsLesson?.id;
+  if (paramsStandardRoute?.language && paramsStandardRoute?.lessonNumber) {
+    const lessonNum = paramsStandardRoute.lessonNumber.padStart(2, '0');
+    specificLessonId = `${paramsStandardRoute.language}-lesson${lessonNum}`;
+  }
   
   // State for lesson modal
   const [isLessonSelectorOpen, setLessonSelectorOpen] = useState(false);
@@ -55,7 +75,7 @@ export default function LessonView() {
   // Determine current lesson
   const [currentLessonId, setCurrentLessonId] = useState<string | null>(null);
   
-  // Set current lesson based on available data
+  // Set current lesson ID based on URL parameters
   useEffect(() => {
     if (specificLessonId) {
       setCurrentLessonId(specificLessonId);
@@ -71,11 +91,17 @@ export default function LessonView() {
       ? lessons.find(l => l.lessonId === currentLessonId) 
       : null);
   
-  // Helper to extract lesson number for sorting
-  const getLessonNumber = (lessonId: string) => {
-    const match = lessonId.match(/lesson(\d+)$/);
-    return match ? parseInt(match[1]) : 0;
-  };
+  // Handle redirects from legacy URLs to new URL format
+  useEffect(() => {
+    if ((matchLanguage || matchLesson) && !matchStandardRoute && currentLesson) {
+      // Extract language code and lesson number
+      const langCode = currentLesson.languageCode;
+      const lessonNumber = extractLessonNumber(currentLesson.lessonId);
+      
+      // Redirect to the new URL format
+      navigate(`/${langCode}/lesson/${lessonNumber}`, { replace: true });
+    }
+  }, [matchLanguage, matchLesson, matchStandardRoute, currentLesson, navigate, extractLessonNumber]);
   
   // Sort lessons by number for proper navigation
   const sortedLessons = lessons ? [...lessons].sort((a, b) => 
@@ -97,9 +123,14 @@ export default function LessonView() {
       ? languages.find(l => l.code === currentLesson.languageCode) 
       : null);
   
-  // Navigation handlers
+  // Navigation handlers - use new URL format
   const handleLessonSelect = (lessonId: string) => {
-    navigate(`/lesson/${lessonId}`);
+    // Extract language code and lesson number from the lesson ID
+    const [langCode, lessonPart] = lessonId.split('-');
+    const lessonNumber = extractLessonNumber(lessonPart || "lesson01");
+    
+    // Navigate to the new URL format
+    navigate(`/${langCode}/lesson/${lessonNumber}`);
     setLessonSelectorOpen(false);
   };
   
