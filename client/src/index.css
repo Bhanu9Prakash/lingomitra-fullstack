@@ -635,10 +635,10 @@ header .container {
 }
 
 .lesson-header {
-  padding: 20px 0;
+  padding: 15px 0;
   background-color: var(--bg-color);
   border-bottom: 1px solid var(--border-color);
-  margin-bottom: 30px;
+  margin-bottom: 0; /* Remove the gap between header and content */
 }
 
 .lesson-header-content {
@@ -734,7 +734,7 @@ header .container {
 
 .lesson-content {
   flex: 1;
-  padding-bottom: 40px;
+  padding: 20px 0 40px; /* Add top padding to replace the removed margin */
   width: 100%;
   overflow-x: hidden; /* Prevent horizontal overflow */
 }
