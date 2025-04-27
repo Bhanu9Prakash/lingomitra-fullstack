@@ -833,6 +833,26 @@ header .container {
   overflow-x: auto; /* Make tables scrollable horizontally */
   max-width: 100%; /* Ensure it doesn't overflow its container */
   white-space: nowrap; /* Prevent cell content from wrapping */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(255, 102, 0, 0.3) transparent; /* Firefox */
+}
+
+/* Webkit scrollbar styling (Chrome, Safari, newer Edge) */
+.lesson-markdown table::-webkit-scrollbar {
+  height: 6px; /* Thin scrollbar */
+}
+
+.lesson-markdown table::-webkit-scrollbar-track {
+  background: transparent; /* Transparent track */
+}
+
+.lesson-markdown table::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 102, 0, 0.3); /* Semi-transparent primary color */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.lesson-markdown table::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 102, 0, 0.5); /* Darker on hover */
 }
 
 .lesson-markdown th,
@@ -1345,12 +1365,23 @@ footer {
   }
   
   .lesson-markdown table::before {
-    content: "↔️ Scroll horizontally to view more";
+    content: "↔️ Scroll horizontally";
     display: block;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-light);
     margin-bottom: 5px;
-    text-align: center;
+    text-align: right;
+    opacity: 0.7;
+    font-style: italic;
+  }
+  
+  /* Mobile-specific scrollbar styling */
+  .lesson-markdown table::-webkit-scrollbar {
+    height: 4px; /* Even thinner on mobile */
+  }
+  
+  .lesson-markdown table::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 102, 0, 0.2); /* More transparent on mobile */
   }
   
   .lesson-markdown th,
