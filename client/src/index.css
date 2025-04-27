@@ -597,6 +597,25 @@ header .container {
   align-items: center;
 }
 
+/* Mobile header styles */
+.mobile-lesson-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile-lesson-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobile-lesson-info h1 {
+  font-size: 18px;
+  margin: 0;
+}
+
 .lesson-title {
   display: flex;
   align-items: center;
@@ -1095,7 +1114,8 @@ footer {
     justify-content: center;
   }
 
-  .lesson-header-content {
+  /* These styles are now handled by the mobile-specific layout */
+  /* .lesson-header-content {
     flex-direction: column;
     gap: 20px;
   }
@@ -1104,7 +1124,7 @@ footer {
     flex-direction: column;
     gap: 10px;
     text-align: center;
-  }
+  } */
 }
 
 @media (max-width: 768px) {

@@ -35,37 +35,54 @@ export default function LessonHeader({
     <div className="lesson-header">
       <div className="container">
         <div className="lesson-header-content">
-          <div className="lesson-title">
-            {currentLesson && (
-              <>
-                <h1>
-                  {isMobile ? (
-                    // Simplified heading for mobile
-                    <>Lesson {getLessonNumber(currentLesson.lessonId)}</>
-                  ) : (
-                    <>Lesson {getLessonNumber(currentLesson.lessonId)}: {currentLesson.title}</>
-                  )}
-                </h1>
-                <div className="lesson-language">
-                  <img 
-                    src={`/flags/${currentLesson.languageCode}.svg`} 
-                    alt={`${getLanguageName(currentLesson.languageCode)} Flag`}
-                    className="language-flag" 
-                  />
-                  <span>{getLanguageName(currentLesson.languageCode)}</span>
-                </div>
-              </>
-            )}
-          </div>
-          
-          <button 
-            className="lesson-selector-btn"
-            onClick={onOpenLessonSelector}
-            aria-label="View all lessons"
-          >
-            <i className="fas fa-list"></i>
-            {!isMobile && <span>All Lessons</span>}
-          </button>
+          {isMobile ? (
+            // Mobile layout - single row with compact header
+            <div className="mobile-lesson-header">
+              <div className="mobile-lesson-info">
+                <img 
+                  src={`/flags/${currentLesson?.languageCode}.svg`} 
+                  alt={currentLesson ? `${getLanguageName(currentLesson.languageCode)} Flag` : "Language Flag"}
+                  className="language-flag" 
+                />
+                <h1>Lesson {currentLesson ? getLessonNumber(currentLesson.lessonId) : ""}</h1>
+              </div>
+              <button 
+                className="lesson-selector-btn"
+                onClick={onOpenLessonSelector}
+                aria-label="View all lessons"
+              >
+                <i className="fas fa-list"></i>
+              </button>
+            </div>
+          ) : (
+            // Desktop layout
+            <>
+              <div className="lesson-title">
+                {currentLesson && (
+                  <>
+                    <h1>Lesson {getLessonNumber(currentLesson.lessonId)}: {currentLesson.title}</h1>
+                    <div className="lesson-language">
+                      <img 
+                        src={`/flags/${currentLesson.languageCode}.svg`} 
+                        alt={`${getLanguageName(currentLesson.languageCode)} Flag`}
+                        className="language-flag" 
+                      />
+                      <span>{getLanguageName(currentLesson.languageCode)}</span>
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              <button 
+                className="lesson-selector-btn"
+                onClick={onOpenLessonSelector}
+                aria-label="View all lessons"
+              >
+                <i className="fas fa-list"></i>
+                <span>All Lessons</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>
