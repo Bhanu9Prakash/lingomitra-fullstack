@@ -618,52 +618,31 @@ header .container {
   white-space: nowrap;
 }
 
-.language-selector-mobile {
+/* Lesson header layout */
+.lesson-header-content {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
 }
 
-.language-selector-mobile img {
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
+.header-spacer {
+  /* Empty div for flex spacing */
+  width: 100px; /* Match the width of the lesson selector button */
 }
 
-/* Language dropdown in lesson header */
-.language-dropdown {
-  position: relative;
-  margin-right: 10px;
-}
-
-.selected-language {
+.mobile-lesson-header {
+  width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  background-color: var(--bg-light);
-  padding: 8px 15px;
-  border-radius: var(--border-radius);
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.selected-language:hover {
-  background-color: var(--bg-dark);
-  border-color: var(--text-light);
-}
-
-.selected-language img {
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
 }
 
 .lesson-title {
   display: flex;
   align-items: center;
-  gap: 15px;
+  justify-content: center;
+  flex: 1;
+  text-align: center;
 }
 
 .lesson-title h1 {
