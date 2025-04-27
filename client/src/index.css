@@ -832,6 +832,7 @@ header .container {
   display: block;
   overflow-x: auto; /* Make tables scrollable horizontally */
   max-width: 100%; /* Ensure it doesn't overflow its container */
+  white-space: nowrap; /* Prevent cell content from wrapping */
 }
 
 .lesson-markdown th,
@@ -839,11 +840,16 @@ header .container {
   padding: 12px 15px;
   border: 1px solid var(--border-color);
   text-align: left;
+  min-width: 100px; /* Ensure columns have a minimum width */
+  vertical-align: top; /* Align content to top */
 }
 
 .lesson-markdown th {
   background-color: var(--bg-light);
   font-weight: 700;
+  position: sticky; /* Keep header visible when scrolling */
+  top: 0;
+  z-index: 1;
 }
 
 .lesson-markdown tr:nth-child(even) {
@@ -1330,6 +1336,35 @@ footer {
     padding: 10px;
     margin: 15px 0;
   }
+  
+  /* Enhanced table styles for mobile */
+  .lesson-markdown table {
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin: 15px 0;
+  }
+  
+  .lesson-markdown table::before {
+    content: "↔️ Scroll horizontally to view more";
+    display: block;
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 5px;
+    text-align: center;
+  }
+  
+  .lesson-markdown th,
+  .lesson-markdown td {
+    padding: 8px 10px;
+    font-size: 14px;
+    min-width: 120px; /* Ensure columns have a good size */
+  }
+  
+  .lesson-markdown th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+  }
 
   .hero h2 {
     font-size: 24px;
@@ -1369,13 +1404,6 @@ footer {
     flex-direction: column;
     gap: 10px;
     align-items: center;
-  }
-  
-  /* Reduce spacing in tables for mobile */
-  .lesson-markdown th,
-  .lesson-markdown td {
-    padding: 8px 10px;
-    font-size: 14px;
   }
 }
 
