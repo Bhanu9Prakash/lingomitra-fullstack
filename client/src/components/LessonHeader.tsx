@@ -1,5 +1,7 @@
-import { Lesson } from "@shared/schema";
+import { Lesson, Language } from "@shared/schema";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 
 interface LessonHeaderProps {
   currentLesson: Lesson | null;
@@ -11,6 +13,12 @@ export default function LessonHeader({
   onOpenLessonSelector 
 }: LessonHeaderProps) {
   const isMobile = useIsMobile();
+  const [_, navigate] = useLocation();
+  
+  // Fetch all languages for the language selector
+  const { data: languages = [] } = useQuery<Language[]>({
+    queryKey: ["/api/languages"],
+  });
   
   // Extract lesson number from lessonId (e.g., "de-lesson01" -> "01")
   const getLessonNumber = (lessonId: string) => {
@@ -30,49 +38,75 @@ export default function LessonHeader({
     };
     return languages[languageCode] || languageCode;
   };
+  
+  // Language selection handler
+  const handleLanguageChange = (languageCode: string) => {
+    navigate(`/language/${languageCode}`);
+  };
 
   return (
-    <div className="lesson-header">
+    <header className="lesson-header">
       <div className="container">
-        <div className="lesson-header-content">
-          {isMobile ? (
-            // Mobile layout - single row with compact header
-            <div className="mobile-lesson-header">
-              <div className="mobile-lesson-info">
-                <img 
-                  src={`/flags/${currentLesson?.languageCode}.svg`} 
-                  alt={currentLesson ? `${getLanguageName(currentLesson.languageCode)} Flag` : "Language Flag"}
-                  className="language-flag" 
-                />
-                <h1>Lesson {currentLesson ? getLessonNumber(currentLesson.lessonId) : ""}</h1>
+        {isMobile ? (
+          // Mobile layout - single row with compact header
+          <div className="mobile-lesson-header">
+            {currentLesson && (
+              <div className="mobile-lesson-title">
+                <div className="language-selector-mobile" onClick={() => currentLesson && handleLanguageChange(currentLesson.languageCode)}>
+                  <img 
+                    src={`/flags/${currentLesson.languageCode}.svg`} 
+                    alt={`${getLanguageName(currentLesson.languageCode)} Flag`}
+                    className="language-flag" 
+                  />
+                </div>
+                <span>Lesson {getLessonNumber(currentLesson.lessonId)}</span>
               </div>
-              <button 
-                className="lesson-selector-btn"
-                onClick={onOpenLessonSelector}
-                aria-label="View all lessons"
-              >
-                <i className="fas fa-list"></i>
-              </button>
+            )}
+            <button 
+              className="lesson-selector-btn"
+              onClick={onOpenLessonSelector}
+              aria-label="View all lessons"
+            >
+              <i className="fas fa-list"></i>
+            </button>
+          </div>
+        ) : (
+          // Desktop layout
+          <div className="lesson-header-content">
+            <div className="lesson-title">
+              {currentLesson && (
+                <>
+                  <h1>Lesson {getLessonNumber(currentLesson.lessonId)}: {currentLesson.title}</h1>
+                  <div className="lesson-language">
+                    <img 
+                      src={`/flags/${currentLesson.languageCode}.svg`} 
+                      alt={`${getLanguageName(currentLesson.languageCode)} Flag`}
+                      className="language-flag" 
+                    />
+                    <span>{getLanguageName(currentLesson.languageCode)}</span>
+                  </div>
+                </>
+              )}
             </div>
-          ) : (
-            // Desktop layout
-            <>
-              <div className="lesson-title">
-                {currentLesson && (
-                  <>
-                    <h1>Lesson {getLessonNumber(currentLesson.lessonId)}: {currentLesson.title}</h1>
-                    <div className="lesson-language">
+            
+            <div className="header-controls">
+              {/* Language selector dropdown */}
+              <div className="language-dropdown">
+                <div className="selected-language" onClick={() => currentLesson && handleLanguageChange(currentLesson.languageCode)}>
+                  {currentLesson && (
+                    <>
                       <img 
                         src={`/flags/${currentLesson.languageCode}.svg`} 
                         alt={`${getLanguageName(currentLesson.languageCode)} Flag`}
                         className="language-flag" 
                       />
                       <span>{getLanguageName(currentLesson.languageCode)}</span>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
+                </div>
               </div>
               
+              {/* Lesson selector button */}
               <button 
                 className="lesson-selector-btn"
                 onClick={onOpenLessonSelector}
@@ -81,10 +115,10 @@ export default function LessonHeader({
                 <i className="fas fa-list"></i>
                 <span>All Lessons</span>
               </button>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </header>
   );
 }

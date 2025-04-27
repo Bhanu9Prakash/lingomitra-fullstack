@@ -603,17 +603,61 @@ header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 5px 0;
 }
 
-.mobile-lesson-info {
+.mobile-lesson-title {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.mobile-lesson-info h1 {
-  font-size: 18px;
-  margin: 0;
+.mobile-lesson-title span {
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.language-selector-mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.language-selector-mobile img {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+}
+
+/* Language dropdown in lesson header */
+.language-dropdown {
+  position: relative;
+  margin-right: 10px;
+}
+
+.selected-language {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-light);
+  padding: 8px 15px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.selected-language:hover {
+  background-color: var(--bg-dark);
+  border-color: var(--text-light);
+}
+
+.selected-language img {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
 }
 
 .lesson-title {
@@ -1175,6 +1219,16 @@ footer {
   .header-controls {
     width: 100%;
     justify-content: center;
+  }
+  
+  /* Fix lesson header for mobile */
+  .lesson-header .container {
+    flex-direction: row;
+    padding: 0 10px;
+  }
+  
+  .lesson-header .mobile-lesson-header {
+    gap: 10px;
   }
 
   .hero h2 {
