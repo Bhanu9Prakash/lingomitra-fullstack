@@ -653,19 +653,21 @@ header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 0;
+  padding: 10px 0;
 }
 
 .mobile-lesson-title {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: flex-end;
+  flex: 1;
 }
 
 .mobile-lesson-title span {
   font-size: 16px;
   font-weight: 600;
   white-space: nowrap;
+  color: var(--text-color);
 }
 
 /* Lesson header layout */
@@ -680,12 +682,7 @@ header .container {
   width: 100px; /* Match the width of the lesson selector button */
 }
 
-.mobile-lesson-header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+/* This duplicate class was removed to avoid styling conflicts */
 
 .lesson-title {
   display: flex;

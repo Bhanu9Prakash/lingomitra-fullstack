@@ -24,7 +24,7 @@ export default function LessonHeader({
     <header className="lesson-header">
       <div className="container">
         {isMobile ? (
-          // Mobile layout - simplified single row header
+          // Mobile layout - simplified single row header with fixed spacing
           <div className="mobile-lesson-header">
             {/* Lesson selector button (left) */}
             <button 
@@ -36,11 +36,11 @@ export default function LessonHeader({
             </button>
             
             {/* Lesson number (right) */}
-            {currentLesson && (
-              <div className="mobile-lesson-title">
+            <div className="mobile-lesson-title">
+              {currentLesson && (
                 <span>Lesson {getLessonNumber(currentLesson.lessonId)}</span>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         ) : (
           // Desktop layout
