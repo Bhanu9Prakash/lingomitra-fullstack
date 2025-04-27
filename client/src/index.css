@@ -180,6 +180,12 @@ header .container {
   border: 1px solid var(--border-color);
 }
 
+/* When dropdown is open, change border radius */
+.language-dropdown .selected-language.open {
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  border-bottom-color: transparent;
+}
+
 .selected-language:hover {
   background-color: var(--bg-dark);
   border-color: var(--text-light);
@@ -206,11 +212,11 @@ header .container {
 
 .language-dropdown-content {
   position: absolute;
-  top: calc(100% + 5px);
+  top: 100%; /* Remove the gap */
   right: 0;
   min-width: 200px;
-  background-color: var(--bg-color);
-  border-radius: var(--border-radius);
+  background-color: var(--bg-light); /* Match the selected language background */
+  border-radius: 0 0 var(--border-radius) var(--border-radius); /* Only round bottom corners */
   box-shadow: var(--shadow);
   padding: 10px 0;
   z-index: 101;
@@ -218,6 +224,10 @@ header .container {
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 0.2s ease, transform 0.2s ease;
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  border-top: none;
 }
 
 .language-dropdown-content.show {
@@ -236,7 +246,7 @@ header .container {
 }
 
 .dropdown-item:hover {
-  background-color: var(--bg-light);
+  background-color: rgba(255, 102, 0, 0.1); /* Use primary color with transparency for better hover effect */
 }
 
 .dropdown-item .language-flag {
