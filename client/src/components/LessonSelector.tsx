@@ -1,5 +1,6 @@
 import { Lesson } from "@shared/schema";
 import { useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LessonSelectorProps {
   lessons: Lesson[];
@@ -16,6 +17,8 @@ export default function LessonSelector({
   onClose,
   onSelectLesson,
 }: LessonSelectorProps) {
+  const isMobile = useIsMobile();
+  
   // Helper to extract lesson number for display
   const getLessonNumber = (lessonId: string) => {
     const match = lessonId.match(/lesson(\d+)$/);
@@ -50,6 +53,18 @@ export default function LessonSelector({
 
   if (!isOpen) return null;
 
+  // Sort lessons by lesson number
+  const sortedLessons = [...lessons].sort((a, b) => {
+    const numA = getLessonNumber(a.lessonId);
+    const numB = getLessonNumber(b.lessonId);
+    
+    if (numA && numB) {
+      return parseInt(numA) - parseInt(numB);
+    }
+    
+    return 0;
+  });
+
   return (
     <div className={`lesson-selector ${isOpen ? 'open' : ''}`}>
       <div className="lesson-selector-content">
@@ -58,15 +73,24 @@ export default function LessonSelector({
           <button 
             className="close-selector"
             onClick={onClose}
+            aria-label="Close lesson selector"
           >
             <i className="fas fa-times"></i>
           </button>
         </div>
         
         <div className="lesson-list">
-          {lessons.map((lesson) => {
+          {sortedLessons.map((lesson) => {
             const lessonNumber = getLessonNumber(lesson.lessonId);
             const isActive = lesson.lessonId === currentLessonId;
+            
+            // Format the title based on device
+            let displayTitle;
+            if (isMobile && lessonNumber) {
+              displayTitle = `Lesson ${lessonNumber}`;
+            } else {
+              displayTitle = lessonNumber ? `Lesson ${lessonNumber}: ${lesson.title}` : lesson.title;
+            }
             
             return (
               <div
@@ -78,9 +102,7 @@ export default function LessonSelector({
                 }}
               >
                 <i className="fas fa-book"></i>
-                <span>
-                  {lessonNumber ? `Lesson ${lessonNumber}: ${lesson.title}` : lesson.title}
-                </span>
+                <span>{displayTitle}</span>
               </div>
             );
           })}

@@ -71,13 +71,24 @@ export default function LessonView() {
       ? lessons.find(l => l.lessonId === currentLessonId) 
       : null);
   
-  // Find next and previous lessons
-  const currentIndex = lessons?.findIndex(l => l.lessonId === currentLessonId) ?? -1;
-  const nextLesson = currentIndex >= 0 && lessons && currentIndex < lessons.length - 1 
-    ? lessons[currentIndex + 1] 
+  // Helper to extract lesson number for sorting
+  const getLessonNumber = (lessonId: string) => {
+    const match = lessonId.match(/lesson(\d+)$/);
+    return match ? parseInt(match[1]) : 0;
+  };
+  
+  // Sort lessons by number for proper navigation
+  const sortedLessons = lessons ? [...lessons].sort((a, b) => 
+    getLessonNumber(a.lessonId) - getLessonNumber(b.lessonId)
+  ) : [];
+  
+  // Find next and previous lessons using sorted lessons
+  const currentIndex = sortedLessons?.findIndex(l => l.lessonId === currentLessonId) ?? -1;
+  const nextLesson = currentIndex >= 0 && sortedLessons && currentIndex < sortedLessons.length - 1 
+    ? sortedLessons[currentIndex + 1] 
     : null;
-  const prevLesson = currentIndex > 0 && lessons 
-    ? lessons[currentIndex - 1] 
+  const prevLesson = currentIndex > 0 && sortedLessons 
+    ? sortedLessons[currentIndex - 1] 
     : null;
   
   // Determine selected language
