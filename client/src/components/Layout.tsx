@@ -1,4 +1,4 @@
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode } from "react";
 import MascotLogo from "./MascotLogo";
 import { useTheme } from "./ThemeProvider";
 import Footer from "./Footer";
@@ -15,31 +15,6 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const [location] = useLocation();
-  const [scrolled, setScrolled] = useState(false);
-  const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('up');
-  const [lastScrollTop, setLastScrollTop] = useState(0);
-  
-  // Handle scroll events to show/hide header
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollTop = window.scrollY;
-      
-      // Set scrolled state (used for styling)
-      setScrolled(currentScrollTop > 50);
-      
-      // Determine scroll direction
-      if (currentScrollTop > lastScrollTop && currentScrollTop > 70) {
-        setScrollDirection('down');
-      } else {
-        setScrollDirection('up');
-      }
-      
-      setLastScrollTop(currentScrollTop);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollTop]);
   
   // Get the language code from the location if we're on a language page
   const languageCode = location.startsWith("/language/") 
@@ -61,7 +36,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className={theme === 'dark' ? 'dark-theme' : ''}>
-      <header className={`${scrolled ? 'scrolled' : ''} ${scrollDirection === 'down' ? 'header-hidden' : ''}`}>
+      <header>
         <div className="container">
           <div className="logo">
             <MascotLogo className="mascot-logo" />

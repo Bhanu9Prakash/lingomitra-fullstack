@@ -55,7 +55,6 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-top: 70px; /* Add padding to compensate for fixed header height */
 }
 
 #root {
@@ -97,25 +96,12 @@ ul {
 header {
   background-color: var(--bg-color);
   box-shadow: var(--shadow);
-  position: fixed; /* Keep fixed to the top */
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: 900; /* Higher z-index but below dropdown menu */
   padding: 15px 0;
-  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease;
   width: 100%;
-}
-
-/* Header state when scrolled */
-header.scrolled {
-  padding: 10px 0; /* Reduce padding to make it more compact */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Stronger shadow when scrolled */
-}
-
-/* Header state when scrolling down (hide it) */
-header.header-hidden {
-  transform: translateY(-100%); /* Move it up to hide */
 }
 
 header .container {
