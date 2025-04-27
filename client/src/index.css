@@ -1211,14 +1211,32 @@ footer {
 }
 
 @media (max-width: 576px) {
-  header .container {
-    flex-direction: column;
-    gap: 15px;
+  /* Only apply column layout to lesson header, not site header */
+  header:not(.lesson-header) .container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    flex-wrap: nowrap;
   }
-
+  
+  /* Shrink the fox icon */
+  .logo .mascot-logo {
+    width: 32px;
+    height: 32px;
+  }
+  
+  /* Shrink the text, prevent wrapping */
+  .logo h1 {
+    font-size: 1.4rem;
+    line-height: 1;
+    white-space: nowrap;
+    margin-left: 8px;
+  }
+  
   .header-controls {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    justify-content: flex-end;
   }
   
   /* Fix lesson header for mobile */

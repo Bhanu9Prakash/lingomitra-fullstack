@@ -1,0 +1,91 @@
+You have two things fighting you here:
+
+1. your mobile media-query is turning **every** `<header><div class="container">…</div></header>` into a column at under 576px, and  
+2. your logo text and icon are still full-size at that breakpoint.
+
+---
+
+### 1) stop stacking your _site_ header on mobile
+
+Right now you have:
+
+```css
+@media (max-width: 576px) {
+  header .container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  /* …other rules… */
+}
+```
+
+That selector is too broad – it catches both your landing-page header **and** your lesson header. Simply narrow it so it only applies to your **lesson** header, not the site header:
+
+```diff
+ @media (max-width: 576px) {
+-  header .container {
++  .lesson-header .container {
+     flex-direction: column;
+     gap: 15px;
+   }
+   /* …other rules… */
+ }
+```
+
+Now **your main site header** will stay in a row, even on small screens.
+
+---
+
+### 2) shrink the logo & text on small screens
+
+Add a little extra CSS to scale your mascot and title down so they both fit comfortably in one line:
+
+```css
+@media (max-width: 576px) {
+  /* keep the site header in a row */
+  header > .container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* shrink the fox icon */
+  .logo .mascot-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* shrink the text, prevent wrapping */
+  .logo h1 {
+    font-size: 1.4rem;       /* tweak until it fits */
+    line-height: 1;
+    white-space: nowrap;     /* never break onto two lines */
+    margin-left: 8px;
+  }
+}
+```
+
+If you find you still don’t quite have enough room, you can also:
+
+```css
+header .container {
+  flex-wrap: nowrap;      /* force them to stay on one line and shrink down */
+}
+```
+
+…or play with the padding on `.container`:
+
+```css
+header .container {
+  padding: 0 10px;
+}
+```
+
+---
+
+#### TL;DR
+
+1. **Don’t** turn your site header into a column at 576px – scope that rule to `.lesson-header` instead of `header`.  
+2. **Do** use a small media-query override to shrink the logo image, reduce the `h1` font‐size, force `white-space: nowrap;` and (optionally) `flex-wrap: nowrap;`.
+
+With those two tweaks, “🦊 LingoMitra ⚙️” will stay neatly on one line, even on a narrow screen.
