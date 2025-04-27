@@ -52,6 +52,15 @@ body {
   background-color: var(--bg-color);
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .container {
@@ -384,7 +393,6 @@ header .container {
 }
 
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0);
@@ -571,8 +579,7 @@ header .container {
 
 /* Lesson View Styles */
 .lesson-view {
-  padding: 40px 0;
-  min-height: calc(100vh - 80px);
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -892,6 +899,7 @@ footer {
   background-color: var(--bg-light);
   padding: 40px 0;
   border-top: 1px solid var(--border-color);
+  margin-top: auto;
 }
 
 .footer-content {

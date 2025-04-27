@@ -12,6 +12,24 @@ export default function LanguageCard({ language }: LanguageCardProps) {
     navigate(`/language/${language.code}`);
   };
 
+  // Map of languages to their approximate number of speakers (in millions)
+  const speakerNumbers: Record<string, number> = {
+    de: 130,     // German - native + non-native speakers
+    fr: 267,     // French - native + non-native speakers
+    es: 543,     // Spanish - native + non-native speakers
+    hi: 602,     // Hindi
+    zh: 1117,    // Chinese (mostly Mandarin)
+    jp: 122,     // Japanese
+  };
+
+  // Get the speaker count for this language
+  const speakerCount = speakerNumbers[language.code] || language.speakers || 0;
+
+  // Format the speaker count for display
+  const formattedSpeakerCount = speakerCount > 999 
+    ? `${(speakerCount / 1000).toFixed(1)}B` 
+    : `${speakerCount}M`;
+
   return (
     <div className="language-card" onClick={handleClick}>
       <div className="language-card-flag">
@@ -22,7 +40,7 @@ export default function LanguageCard({ language }: LanguageCardProps) {
       </div>
       <h3>{language.name}</h3>
       <p className="speakers">
-        {language.speakers} million speakers
+        <i className="fas fa-users"></i> {formattedSpeakerCount} speakers worldwide
       </p>
       <button className="language-btn">
         Start Learning

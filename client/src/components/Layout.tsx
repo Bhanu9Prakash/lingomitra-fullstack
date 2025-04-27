@@ -3,9 +3,8 @@ import MascotLogo from "./MascotLogo";
 import { useTheme } from "./ThemeProvider";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
-import { Link, useLocation } from "wouter";
+import { useLocation } from "wouter";
 import { Language } from "@shared/schema";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import LanguageDropdown from "./LanguageDropdown";
 

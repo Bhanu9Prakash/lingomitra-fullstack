@@ -1,5 +1,8 @@
 import { Link } from "wouter";
 
+/**
+ * MascotLogo component displays the app logo and links to home page
+ */
 interface MascotLogoProps {
   className?: string;
 }
@@ -7,13 +10,11 @@ interface MascotLogoProps {
 export default function MascotLogo({ className = "" }: MascotLogoProps) {
   return (
     <Link href="/">
-      <div>
-        <img 
-          src="/mascot.svg" 
-          alt="LingoMitra Mascot" 
-          className={className}
-        />
-      </div>
+      <img 
+        src="/mascot.svg" 
+        alt="LingoMitra Mascot" 
+        className={className}
+      />
     </Link>
   );
 }

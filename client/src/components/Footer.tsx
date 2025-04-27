@@ -1,6 +1,9 @@
 import { APP_NAME } from "@/lib/constants";
 import MascotLogo from "./MascotLogo";
 
+/**
+ * Footer component that appears at the bottom of every page
+ */
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
