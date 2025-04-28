@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { Language } from "@shared/schema";
+import { Language, Lesson } from "@shared/schema";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 
 interface LanguageDropdownProps {
   selectedLanguage: Language | null;
@@ -19,9 +20,37 @@ export default function LanguageDropdown({
     setIsOpen(!isOpen);
   };
 
+  // Navigate to the first lesson of the selected language
   const handleLanguageSelect = (languageCode: string) => {
-    navigate(`/language/${languageCode}`);
-    setIsOpen(false);
+    // Use the proper route format for your application
+    // We're immediately redirecting to the first lesson of that language
+    navigateToFirstLesson(languageCode);
+  };
+  
+  // Function to navigate to the first lesson of a language
+  const navigateToFirstLesson = async (languageCode: string) => {
+    try {
+      // Fetch lessons for this language
+      const response = await fetch(`/api/languages/${languageCode}/lessons`);
+      const lessons: Lesson[] = await response.json();
+      
+      if (lessons && lessons.length > 0) {
+        // Extract lesson number from lessonId (e.g. "de-lesson01" → "1")
+        const lessonNumber = lessons[0].lessonId.split('-lesson')[1];
+        // Navigate directly to the first lesson
+        navigate(`/${languageCode}/lesson/${lessonNumber}`);
+      } else {
+        // Fallback if no lessons available
+        navigate(`/language/${languageCode}`);
+      }
+    } catch (error) {
+      console.error("Error fetching lessons:", error);
+      // Fallback to language page on error
+      navigate(`/language/${languageCode}`);
+    } finally {
+      // Always close the dropdown
+      setIsOpen(false);
+    }
   };
 
   const navigateToLanguageGrid = () => {
