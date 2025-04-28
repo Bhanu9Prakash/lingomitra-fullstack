@@ -4,7 +4,6 @@ import { useRoute, useLocation } from "wouter";
 import { Lesson, Language } from "@shared/schema";
 import LessonHeader from "@/components/LessonHeader";
 import LessonContent from "@/components/LessonContent";
-import LessonNavigation from "@/components/LessonNavigation";
 import LessonSelector from "@/components/LessonSelector";
 
 export default function LessonView() {
@@ -154,27 +153,20 @@ export default function LessonView() {
 
       {/* Main content */}
       <div className="container">
-        {/* Lesson content */}
+        {/* Lesson content with navigation */}
         {currentLesson ? (
           <LessonContent 
             lesson={currentLesson}
             isLoading={isLoading}
             error={error}
+            nextLesson={nextLesson}
+            prevLesson={prevLesson}
+            onNavigate={handleLessonSelect}
           />
         ) : (
           <div className="loading-container">
             <div className="loading-spinner"></div>
           </div>
-        )}
-        
-        {/* Lesson navigation */}
-        {currentLesson && !isLoading && !error && (
-          <LessonNavigation 
-            currentLesson={currentLesson}
-            nextLesson={nextLesson}
-            prevLesson={prevLesson}
-            onNavigate={handleLessonSelect}
-          />
         )}
       </div>
 
