@@ -1846,9 +1846,9 @@ footer {
 .chat-ui {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 120px); /* Full height minus header */
+  height: calc(100vh - 160px); /* Full height minus header and lesson header */
   position: fixed;
-  top: 100px; /* Approx header height */
+  top: 160px; /* Total height of both headers */
   left: 0;
   right: 0;
   max-width: 1200px;
@@ -1867,7 +1867,7 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: calc(100vh - 230px); /* Full height minus header and input area */
+  height: calc(100vh - 270px); /* Full height minus headers and input area */
 }
 
 .chat-message {
@@ -2041,8 +2041,8 @@ footer {
 
 @media (max-width: 768px) {
   .chat-ui {
-    height: calc(100vh - 80px); /* Mobile header is slightly smaller */
-    top: 80px;
+    height: calc(100vh - 140px); /* Mobile header + lesson header */
+    top: 140px; /* Account for both headers in mobile */
     position: fixed;
     left: 0;
     right: 0;
@@ -2053,7 +2053,7 @@ footer {
   }
   
   .chat-messages {
-    height: calc(100vh - 170px); /* Adjusted for mobile */
+    height: calc(100vh - 230px); /* Adjusted for mobile headers and input area */
     padding: 15px 10px;
   }
   
