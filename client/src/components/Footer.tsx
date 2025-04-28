@@ -16,8 +16,24 @@ export default function Footer() {
             <h3>{APP_NAME}</h3>
           </div>
           
-          {/* Footer links removed */}
-          {/* Social media links removed */}
+          <div className="footer-links">
+            <a href="#">About</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Contact</a>
+          </div>
+          
+          <div className="footer-social">
+            <a href="#" className="social-icon">
+              <i className="fab fa-facebook-f"></i>
+            </a>
+            <a href="#" className="social-icon">
+              <i className="fab fa-twitter"></i>
+            </a>
+            <a href="#" className="social-icon">
+              <i className="fab fa-instagram"></i>
+            </a>
+          </div>
         </div>
         
         <div className="footer-bottom">
