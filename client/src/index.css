@@ -95,7 +95,7 @@ ul {
 /* Header Styles */
 header {
   background-color: var(--bg-color);
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Distinct shadow for main header */
   position: sticky;
   top: 0;
   z-index: 900; /* Higher z-index but below dropdown menu */
@@ -636,10 +636,12 @@ header .container {
 
 .lesson-header {
   padding: 20px 0;
-  background-color: var(--bg-color);
+  background-color: var(--bg-light); /* Different background than main header */
   border-bottom: 1px solid var(--border-color);
   margin-bottom: 30px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Add subtle shadow matching main header */
+  position: relative;
+  z-index: 800; /* Below main header but above other content */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Different shadow from main header for visual distinction */
 }
 
 .lesson-header-content {
