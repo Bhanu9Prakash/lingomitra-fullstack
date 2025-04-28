@@ -1849,9 +1849,9 @@ footer {
   height: calc(100vh - 190px); /* Full height minus headers and space */
   position: fixed;
   top: 190px; /* Allow some space after the lesson header */
-  left: 0;
-  right: 0;
-  max-width: 1200px;
+  left: 20px; /* Add padding to match container */
+  right: 20px; /* Add padding to match container */
+  max-width: 1160px; /* 1200px - 20px*2 to account for the padding */
   margin: 0 auto;
   background-color: var(--bg-color);
   box-shadow: var(--shadow);
@@ -2071,8 +2071,8 @@ footer {
     height: calc(100vh - 160px); /* Mobile header + lesson header + space */
     top: 160px; /* Account for both headers plus some space in mobile */
     position: fixed;
-    left: 0;
-    right: 0;
+    left: 10px; /* Reduced padding for mobile */
+    right: 10px; /* Reduced padding for mobile */
     border-radius: 0;
     z-index: 10;
   }
