@@ -4,6 +4,9 @@ import { useTheme } from "./ThemeProvider";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
 import { useLocation } from "wouter";
+import { Language } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import LanguageSelector from "./LanguageSelector";
 
 interface LayoutProps {
   children: ReactNode;
@@ -12,6 +15,24 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const [location] = useLocation();
+  
+  // Get the language code from the location if we're on a language page
+  const languageCode = location.startsWith("/language/") 
+    ? location.split("/language/")[1].split("/")[0] // Extract just the language code
+    : null;
+  
+  // Fetch all languages
+  const { data: languages = [] } = useQuery<Language[]>({
+    queryKey: ["/api/languages"],
+  });
+  
+  // Find the selected language
+  const selectedLanguage = languageCode 
+    ? languages.find(lang => lang.code === languageCode) || null 
+    : null;
+  
+  const isLanguageSelectionPage = location === "/languages";
+  const isHomePage = location === "/";
 
   return (
     <div className={theme === 'dark' ? 'dark-theme' : ''}>
@@ -23,6 +44,12 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           
           <div className="header-controls">
+            {/* Always show the language selector, even on home page */}
+            <LanguageSelector
+              selectedLanguage={selectedLanguage}
+              languages={languages}
+            />
+            
             <div className="theme-container">
               <button 
                 onClick={toggleTheme}
