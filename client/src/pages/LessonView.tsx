@@ -160,6 +160,9 @@ export default function LessonView() {
             lesson={currentLesson}
             isLoading={isLoading}
             error={error}
+            prevLesson={prevLesson}
+            nextLesson={nextLesson}
+            onNavigate={handleLessonSelect}
           />
         ) : (
           <div className="loading-container">
@@ -167,7 +170,7 @@ export default function LessonView() {
           </div>
         )}
         
-        {/* Lesson navigation */}
+        {/* Main Lesson navigation (outside card) */}
         {currentLesson && !isLoading && !error && (
           <LessonNavigation 
             currentLesson={currentLesson}
