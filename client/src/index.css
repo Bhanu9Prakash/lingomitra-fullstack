@@ -1089,21 +1089,9 @@ header .container {
   z-index: 5;
 }
 
-/* Content cover to hide content behind the drawer */
+/* Content cover to hide content behind the drawer - DISABLED FOR NOW */
 .lesson-selector-content-cover {
   display: none;
-}
-
-.lesson-selector.mobile-drawer.open .lesson-selector-content-cover {
-  display: block;
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--bg-color);
-  z-index: 9;
-  pointer-events: none;
 }
 
 .mobile-drawer .lesson-list::-webkit-scrollbar {

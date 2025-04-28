@@ -98,8 +98,6 @@ export default function LessonSelector({
         onClick={onClose}
         aria-label="Close selector"
       ></div>
-      {/* This is a full-screen overlay behind the drawer to hide content */}
-      <div className="lesson-selector-content-cover"></div>
       <div className="lesson-selector-content">
         <div className="lesson-selector-header">
           {isMobile && currentLanguage ? (
