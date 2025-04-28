@@ -1390,6 +1390,12 @@ header .container {
   margin-bottom: 3px;
 }
 
+/* For completed lessons in mobile drawer */
+.mobile-drawer .lesson-item.completed:not(.active) {
+  border-left: 3px solid #4caf50; /* Maintain the green border */
+  padding-left: 13px; /* Adjust padding for mobile */
+}
+
 .mobile-drawer .lesson-item span {
   font-size: 14px; /* Decreased from 15px to match desktop */
   line-height: 1.4;
@@ -1408,6 +1414,22 @@ header .container {
 .lesson-item.active {
   background-color: var(--primary-color);
   color: white;
+}
+
+/* Completed lesson indicator */
+.lesson-item.completed:not(.active) {
+  border-left: 3px solid #4caf50; /* Subtle green border */
+  padding-left: 12px; /* Adjust padding to account for border */
+}
+
+.lesson-item.completed i.fa-check-circle {
+  color: #4caf50; /* Green check icon */
+  opacity: 0.9;
+}
+
+/* Maintain check icon visibility even when lesson is active */
+.lesson-item.active.completed i.fa-check-circle {
+  color: white; /* Make the check icon white when the item is active */
 }
 
 .lesson-item i {

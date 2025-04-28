@@ -160,16 +160,21 @@ export default function LessonSelector({
               ? `Lesson ${lessonNumber}: ${lesson.title}`
               : lesson.title;
 
+            // For demo purposes, consider lessons with lower numbers as completed
+            // In a real app, this would come from user progress data
+            const isCompleted = lessonNumber && parseInt(lessonNumber) < 3;
+            
             return (
               <div
                 key={lesson.lessonId}
-                className={`lesson-item ${isActive ? "active" : ""}`}
+                className={`lesson-item ${isActive ? "active" : ""} ${isCompleted ? "completed" : ""}`}
                 onClick={() => {
                   onSelectLesson(lesson.lessonId);
                   onClose();
                 }}
               >
-                <i className="fas fa-book"></i>
+                {/* Use check-circle for completed lessons, otherwise use book icon */}
+                <i className={`fas ${isCompleted ? "fa-check-circle" : "fa-book"}`}></i>
                 <span>{displayTitle}</span>
               </div>
             );
