@@ -1900,6 +1900,13 @@ footer {
 .chat-message.assistant .avatar {
   background-color: var(--primary-light);
   color: var(--primary-color);
+  padding: 4px;
+}
+
+.chat-bot-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 .chat-message.user .avatar {
@@ -2044,6 +2051,12 @@ footer {
 .chat-toggle.active {
   background-color: var(--primary-color);
   color: white;
+}
+
+.header-chat-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
 @media (max-width: 768px) {
