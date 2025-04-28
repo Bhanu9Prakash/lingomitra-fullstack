@@ -3,6 +3,7 @@ import { Lesson } from "@shared/schema";
 import { marked } from "marked";
 import { markedConfig } from "@/lib/marked-config";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useCompletedLessons } from "@/hooks/use-completed-lessons";
 
 interface LessonContentProps {
   lesson: Lesson;
@@ -23,6 +24,7 @@ export default function LessonContent({
 }: LessonContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const { markLessonCompleted, isLessonCompleted } = useCompletedLessons();
 
   // Function to process content and hide the first h1 title on mobile
   const processContent = () => {
@@ -93,6 +95,19 @@ export default function LessonContent({
     }
   }, [lesson]);
   
+  // #3: Mark lesson as completed when the user has spent some time on it
+  useEffect(() => {
+    if (lesson) {
+      // We'll mark the lesson as completed after the user has spent 30 seconds on it
+      // This simulates the user having read enough of the content to consider it "completed"
+      const timer = setTimeout(() => {
+        markLessonCompleted(lesson.lessonId);
+      }, 30000); // 30 seconds
+      
+      return () => clearTimeout(timer);
+    }
+  }, [lesson, markLessonCompleted]);
+  
   // #3: Add event handlers after component mounts or updates
   // IMPORTANT: This useEffect MUST be declared before any conditional returns
   useEffect(() => {
@@ -103,7 +118,13 @@ export default function LessonContent({
       
       // Define the handlers
       const handlePrevClick = () => prevLesson && onNavigate(prevLesson.lessonId);
-      const handleNextClick = () => nextLesson && onNavigate(nextLesson.lessonId);
+      const handleNextClick = () => {
+        // Mark current lesson as completed when moving to the next one
+        if (lesson) {
+          markLessonCompleted(lesson.lessonId);
+        }
+        nextLesson && onNavigate(nextLesson.lessonId);
+      };
       
       // Add event listeners
       if (prevButton && prevLesson) {
@@ -125,7 +146,7 @@ export default function LessonContent({
         }
       };
     }
-  }, [lesson, nextLesson, prevLesson, onNavigate, isLoading]);
+  }, [lesson, nextLesson, prevLesson, onNavigate, isLoading, markLessonCompleted]);
 
   // Now the conditional returns are safe because all hooks are above them
   if (isLoading) {
