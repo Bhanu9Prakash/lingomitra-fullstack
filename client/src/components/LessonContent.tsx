@@ -95,21 +95,7 @@ export default function LessonContent({
     }
   }, [lesson]);
   
-  // #3: Mark lesson as completed when the user has spent some time on it
-  useEffect(() => {
-    if (lesson) {
-      // We'll mark the lesson as completed after the user has spent time on it
-      // This simulates the user having read enough of the content to consider it "completed"
-      // Reduced to 5 seconds for testing
-      console.log(`Setting auto-complete timer for lesson ${lesson.lessonId}`);
-      const timer = setTimeout(() => {
-        console.log(`Auto-completing lesson ${lesson.lessonId} after timeout`);
-        markLessonCompleted(lesson.lessonId);
-      }, 5000); // 5 seconds for testing
-      
-      return () => clearTimeout(timer);
-    }
-  }, [lesson, markLessonCompleted]);
+  // Removed the auto-completion timer as requested
   
   // #3: Add event handlers after component mounts or updates
   // IMPORTANT: This useEffect MUST be declared before any conditional returns
