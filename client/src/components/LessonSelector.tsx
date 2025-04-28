@@ -1,6 +1,7 @@
 import { Lesson } from "@shared/schema";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { isLessonCompleted } from "@/lib/progress";
 
 interface LessonSelectorProps {
   lessons: Lesson[];
@@ -18,6 +19,9 @@ export default function LessonSelector({
   onSelectLesson,
 }: LessonSelectorProps) {
   const isMobile = useIsMobile();
+  
+  // State to force refresh when opened to show updated completion status
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Helper to extract lesson number for display
   const getLessonNumber = (lessonId: string) => {
@@ -43,6 +47,8 @@ export default function LessonSelector({
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      // Force refresh when opened to get latest completion status
+      setRefreshTrigger(prev => prev + 1);
     } else {
       document.body.style.overflow = "";
     }
@@ -160,9 +166,9 @@ export default function LessonSelector({
               ? `Lesson ${lessonNumber}: ${lesson.title}`
               : lesson.title;
 
-            // For demo purposes, consider lessons with lower numbers as completed
-            // In a real app, this would come from user progress data
-            const isCompleted = lessonNumber && parseInt(lessonNumber) < 3;
+            // Check if the lesson is completed using the localStorage data
+            // Including refreshTrigger ensures this updates when modal is opened
+            const isCompleted = refreshTrigger > 0 && isLessonCompleted(lesson.lessonId);
             
             return (
               <div

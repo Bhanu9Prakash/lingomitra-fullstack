@@ -3,6 +3,7 @@ import { Lesson } from "@shared/schema";
 import { marked } from "marked";
 import { markedConfig } from "@/lib/marked-config";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { markLessonAsCompleted } from "@/lib/progress";
 
 interface LessonContentProps {
   lesson: Lesson;
@@ -85,11 +86,17 @@ export default function LessonContent({
     markedConfig();
   }, []);
   
-  // #2: Scroll to top when lesson changes
+  // #2: Scroll to top when lesson changes and mark the lesson as completed
   useEffect(() => {
     if (contentRef.current) {
       contentRef.current.scrollTop = 0;
       window.scrollTo(0, 0);
+      
+      // Mark the current lesson as completed when it's viewed
+      if (lesson?.lessonId) {
+        // Mark the lesson as completed in localStorage
+        markLessonAsCompleted(lesson.lessonId);
+      }
     }
   }, [lesson]);
   
