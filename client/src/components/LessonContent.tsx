@@ -67,18 +67,21 @@ export default function LessonContent({
 
   // Function to process content and hide the first h1 title on mobile
   const processContent = () => {
+    // Get the content with appropriate processing
+    let contentToUse = lesson.content;
+    
     if (isMobile) {
       // On mobile, hide the first H1 title since it's displayed in the header
-      const parsed = lesson.content;
-      
       // Get content without the first H1 header (attempt to find and remove the first title)
       const titlePattern = /^#\s+.+(\r\n|\n|\r)/;
-      const processedContent = parsed.replace(titlePattern, '');
-      
-      return marked(processedContent);
+      contentToUse = contentToUse.replace(titlePattern, '');
     }
     
-    return marked(lesson.content);
+    // Remove any trailing horizontal rules to avoid duplicate separators
+    const trailingHRPattern = /(\r\n|\n|\r)-{3,}(\r\n|\n|\r)*$/;
+    contentToUse = contentToUse.replace(trailingHRPattern, '');
+    
+    return marked(contentToUse);
   };
 
   // Create a new combined content with navigation buttons
@@ -86,6 +89,7 @@ export default function LessonContent({
     const lessonHtml = processContent();
     
     const navigationHtml = `
+      <!-- Remove the hr before the navigation -->
       <div class="lesson-navigation">
         ${prevLesson ? 
           `<button class="nav-button prev-button" data-lesson-id="${prevLesson.lessonId}">

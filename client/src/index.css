@@ -952,7 +952,7 @@ header .container {
   justify-content: space-between;
   margin-top: 40px;
   padding-top: 20px;
-  border-top: 1px solid var(--border-color);
+  /* Removed border-top to eliminate duplicate separator */
 }
 
 .nav-button {
