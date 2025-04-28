@@ -46,7 +46,7 @@ export default function LanguageDropdown({
     };
   }, []);
 
-  if (!selectedLanguage) return null;
+  // If no language is selected, show a default "Select Language" button
 
   return (
     <div className="language-dropdown" ref={dropdownRef}>
@@ -54,12 +54,21 @@ export default function LanguageDropdown({
         className={`selected-language ${isOpen ? 'open' : ''}`} 
         onClick={toggleDropdown}
       >
-        <img
-          src={`/flags/${selectedLanguage.flagCode}.svg`}
-          alt={`${selectedLanguage.name} Flag`}
-          className="language-flag"
-        />
-        <span>{selectedLanguage.name}</span>
+        {selectedLanguage && selectedLanguage.flagCode ? (
+          <>
+            <img
+              src={`/flags/${selectedLanguage.flagCode}.svg`}
+              alt={`${selectedLanguage.name} Flag`}
+              className="language-flag"
+            />
+            <span>{selectedLanguage.name}</span>
+          </>
+        ) : (
+          <>
+            <i className="fas fa-globe" style={{ marginRight: '8px', color: 'var(--primary-color)' }}></i>
+            <span>Select Language</span>
+          </>
+        )}
         <i className="fas fa-chevron-down"></i>
       </div>
 
