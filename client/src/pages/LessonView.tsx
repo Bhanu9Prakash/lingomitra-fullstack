@@ -6,7 +6,6 @@ import LessonHeader from "@/components/LessonHeader";
 import LessonContent from "@/components/LessonContent";
 import LessonSelector from "@/components/LessonSelector";
 import ChatUI from "@/components/ChatUI";
-import { LessonDebugMenu } from "@/components/LessonDebugMenu";
 
 export default function LessonView() {
   const [_, navigate] = useLocation();
@@ -194,9 +193,6 @@ export default function LessonView() {
           onSelectLesson={handleLessonSelect}
         />
       )}
-      
-      {/* Debug menu for testing lesson completion */}
-      <LessonDebugMenu />
     </div>
   );
 }

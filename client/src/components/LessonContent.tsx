@@ -3,7 +3,6 @@ import { Lesson } from "@shared/schema";
 import { marked } from "marked";
 import { markedConfig } from "@/lib/marked-config";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useCompletedLessons } from "@/hooks/use-completed-lessons";
 
 interface LessonContentProps {
   lesson: Lesson;
@@ -24,7 +23,6 @@ export default function LessonContent({
 }: LessonContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
-  const { markLessonCompleted, isLessonCompleted } = useCompletedLessons();
 
   // Function to process content and hide the first h1 title on mobile
   const processContent = () => {
@@ -95,8 +93,6 @@ export default function LessonContent({
     }
   }, [lesson]);
   
-  // Removed the auto-completion timer as requested
-  
   // #3: Add event handlers after component mounts or updates
   // IMPORTANT: This useEffect MUST be declared before any conditional returns
   useEffect(() => {
@@ -107,14 +103,7 @@ export default function LessonContent({
       
       // Define the handlers
       const handlePrevClick = () => prevLesson && onNavigate(prevLesson.lessonId);
-      const handleNextClick = () => {
-        // Mark current lesson as completed when moving to the next one
-        if (lesson) {
-          console.log(`Next button clicked - marking lesson ${lesson.lessonId} as completed`);
-          markLessonCompleted(lesson.lessonId);
-        }
-        nextLesson && onNavigate(nextLesson.lessonId);
-      };
+      const handleNextClick = () => nextLesson && onNavigate(nextLesson.lessonId);
       
       // Add event listeners
       if (prevButton && prevLesson) {
@@ -136,7 +125,7 @@ export default function LessonContent({
         }
       };
     }
-  }, [lesson, nextLesson, prevLesson, onNavigate, isLoading, markLessonCompleted]);
+  }, [lesson, nextLesson, prevLesson, onNavigate, isLoading]);
 
   // Now the conditional returns are safe because all hooks are above them
   if (isLoading) {

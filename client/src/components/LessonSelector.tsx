@@ -1,7 +1,6 @@
 import { Lesson } from "@shared/schema";
 import { useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useCompletedLessons } from "@/hooks/use-completed-lessons";
 
 interface LessonSelectorProps {
   lessons: Lesson[];
@@ -19,7 +18,6 @@ export default function LessonSelector({
   onSelectLesson,
 }: LessonSelectorProps) {
   const isMobile = useIsMobile();
-  const { isLessonCompleted } = useCompletedLessons();
 
   // Helper to extract lesson number for display
   const getLessonNumber = (lessonId: string) => {
@@ -162,8 +160,9 @@ export default function LessonSelector({
               ? `Lesson ${lessonNumber}: ${lesson.title}`
               : lesson.title;
 
-            // Check if this lesson is completed using our localStorage hook
-            const isCompleted = isLessonCompleted(lesson.lessonId);
+            // For demo purposes, consider lessons with lower numbers as completed
+            // In a real app, this would come from user progress data
+            const isCompleted = lessonNumber && parseInt(lessonNumber) < 3;
             
             return (
               <div
