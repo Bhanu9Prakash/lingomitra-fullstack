@@ -18,7 +18,7 @@ export default function Layout({ children }: LayoutProps) {
   
   // Get the language code from the location if we're on a language page
   const languageCode = location.startsWith("/language/") 
-    ? location.split("/language/")[1]
+    ? location.split("/language/")[1].split("/")[0] // Extract just the language code
     : null;
   
   // Fetch all languages
@@ -28,7 +28,7 @@ export default function Layout({ children }: LayoutProps) {
   
   // Find the selected language
   const selectedLanguage = languageCode 
-    ? languages.find(lang => lang.code === languageCode) 
+    ? languages.find(lang => lang.code === languageCode) || null 
     : null;
   
   const isLanguageSelectionPage = location === "/languages";

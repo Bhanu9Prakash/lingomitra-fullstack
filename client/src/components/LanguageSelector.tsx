@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LanguageSelectorProps {
-  selectedLanguage: Language | null;
+  selectedLanguage: Language | null | undefined;
   languages: Language[];
 }
 
