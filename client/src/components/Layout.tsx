@@ -46,6 +46,9 @@ export default function Layout({ children }: LayoutProps) {
   
   const isLanguageSelectionPage = location === "/languages";
   const isHomePage = location === "/";
+  
+  // Check if we're on a lesson page to hide the footer
+  const isLessonPage = location.includes("/lesson/");
 
   return (
     <div className={theme === 'dark' ? 'dark-theme' : ''}>
@@ -84,7 +87,8 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
       
-      <Footer />
+      {/* Only show footer on non-lesson pages */}
+      {!isLessonPage && <Footer />}
       <ScrollToTop />
     </div>
   );
