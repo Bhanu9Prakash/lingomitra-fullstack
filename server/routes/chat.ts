@@ -142,6 +142,14 @@ Based on the conversation history and ScratchPad, please respond according to th
     }
     
     // Remove any remaining JSON that appears to be a scratchpad
+    
+    // Remove any [SCRATCHPAD] text and backticks that might remain
+    responseText = responseText.replace(/\[SCRATCHPAD\]\s*```/g, '');
+    responseText = responseText.replace(/\[SCRATCHPAD\]/g, '');
+    
+    // Remove any isolated triple backticks that might remain at the end of the text
+    responseText = responseText.replace(/```\s*$/g, '');
+    
     // First try to match just the JSON portion with knownVocabulary
     if (responseText.includes('"knownVocabulary"')) {
       // Find the starting position of a JSON object containing ScratchPad content
