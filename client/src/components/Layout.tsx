@@ -6,7 +6,7 @@ import ScrollToTop from "./ScrollToTop";
 import { useLocation } from "wouter";
 import { Language } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import LanguageSelector from "./LanguageSelector";
+import LanguageDropdown from "./LanguageDropdown";
 
 interface LayoutProps {
   children: ReactNode;
@@ -44,8 +44,8 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           
           <div className="header-controls">
-            {/* Always show the language selector, even on home page */}
-            <LanguageSelector
+            {/* now shows the little flag + name dropdown instead */}
+            <LanguageDropdown
               selectedLanguage={selectedLanguage}
               languages={languages}
             />
