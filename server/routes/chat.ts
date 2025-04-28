@@ -126,15 +126,45 @@ Based on the conversation history and ScratchPad, please respond according to th
     let updatedScratchPad = scratchPad || getDefaultScratchPad();
     let responseText = fullResponse;
     
-    // Check if the response contains a ScratchPad section
-    const scratchPadMatch = fullResponse.match(/\[SCRATCHPAD\]\s*```([\s\S]*?)```/);
-    if (scratchPadMatch && scratchPadMatch[1]) {
+    // Check if the response contains a ScratchPad section (with multiple pattern matching for robustness)
+    const scratchPadPatterns = [
+      /\[SCRATCHPAD\]\s*```([\s\S]*?)```/,    // [SCRATCHPAD] ```{...}```
+      /\[SCRATCHPAD\]([\s\S]*?)```([\s\S]*?)```/, // [SCRATCHPAD]```{...}```
+      /\{[\s\S]*?"knownVocabulary"\s*:[\s\S]*?"knownStructures"\s*:[\s\S]*?"struggles"\s*:[\s\S]*?"nextFocus"\s*:[\s\S]*?\}/ // Raw JSON
+    ];
+    
+    // Try each pattern
+    let scratchPadMatch = null;
+    for (const pattern of scratchPadPatterns) {
+      const match = fullResponse.match(pattern);
+      if (match) {
+        scratchPadMatch = match;
+        break;
+      }
+    }
+    
+    if (scratchPadMatch) {
       try {
-        // Parse the JSON ScratchPad
-        updatedScratchPad = JSON.parse(scratchPadMatch[1].trim());
+        // Extract JSON text depending on pattern matched
+        let jsonText;
+        if (scratchPadMatch[2]) { // If the second pattern matched
+          jsonText = scratchPadMatch[2].trim();
+        } else if (scratchPadMatch[1]) { // If the first pattern matched
+          jsonText = scratchPadMatch[1].trim();
+        } else { // If the raw JSON pattern matched
+          jsonText = scratchPadMatch[0].trim();
+        }
         
-        // Remove the ScratchPad section from the response
-        responseText = fullResponse.replace(/\[SCRATCHPAD\]\s*```[\s\S]*?```/, '').trim();
+        // Parse the JSON ScratchPad
+        updatedScratchPad = JSON.parse(jsonText);
+        
+        // Remove the ScratchPad section and any JSON objects from the response
+        responseText = fullResponse
+          // Remove markdown-formatted scratchpad
+          .replace(/\[SCRATCHPAD\]\s*```[\s\S]*?```/, '')
+          // Remove raw JSON that matches the scratch pad format
+          .replace(/\{[\s\n\r\t ]*"knownVocabulary"[\s\S]*?"nextFocus"[\s\S]*?\}/, '')
+          .trim();
       } catch (e) {
         console.error('Error parsing ScratchPad:', e);
         // If parsing fails, keep the original ScratchPad
