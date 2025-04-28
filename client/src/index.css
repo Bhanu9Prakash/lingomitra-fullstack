@@ -1048,19 +1048,22 @@ header .container {
   position: fixed;
   top: 0;
   right: 0;
+  bottom: 0;            /* ← stretch to the bottom */
   width: 85%;
   max-width: 350px;
-  height: 100%;
+  
+  height: 100%;         /* ← keeps full height */
+  max-height: 100vh;    /* ← override the 80vh cap */
+  
+  margin: 0;            /* ← kill the desktop centering margins */
   border-radius: 0;
   padding: 15px;
-  transform: translateX(100%);
-  transition: transform 0.3s ease-in-out;
-  margin: 0;
-  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
   
-  /* Better vertical space utilization */
   display: flex;
   flex-direction: column;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
 }
 
 .lesson-selector.mobile-drawer.open .lesson-selector-content {
