@@ -100,7 +100,7 @@ header {
   top: 0;
   z-index: 900; /* Higher z-index but below dropdown menu */
   padding: 15px 0;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
 }
 
@@ -635,13 +635,15 @@ header .container {
 }
 
 .lesson-header {
-  padding: 20px 0;
+  padding: 15px 0;
   background-color: var(--bg-light); /* Different background than main header */
   border-bottom: 1px solid var(--border-color);
   margin-bottom: 30px;
-  position: relative;
+  position: sticky;
+  top: 72px; /* Position below the main header (adjust this value based on main header height) */
   z-index: 800; /* Below main header but above other content */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Different shadow from main header for visual distinction */
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
 .lesson-header-content {
@@ -699,6 +701,7 @@ header .container {
   .lesson-header {
     padding: 10px 0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    top: 57px; /* Adjusted for smaller main header on mobile */
   }
   
   .mobile-lesson-header {
@@ -786,7 +789,7 @@ header .container {
   
   /* Add more spacing to lesson content in mobile view */
   .lesson-markdown.mobile-view {
-    padding-top: 15px;
+    padding-top: 20px; /* Increased padding for better spacing below sticky headers */
   }
 }
 
