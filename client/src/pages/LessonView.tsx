@@ -162,25 +162,24 @@ export default function LessonView() {
 
       {/* Main content */}
       <div className="container">
+        {/* Show chat UI or lesson content based on isChatActive */}
         {!currentLesson ? (
           <div className="loading-container">
             <div className="loading-spinner"></div>
           </div>
+        ) : isChatActive ? (
+          /* AI Tutor Chat UI - renders in full screen */
+          <ChatUI lesson={currentLesson} />
         ) : (
-          <div className={`lesson-container ${isChatActive ? 'with-chat' : ''}`}>
-            {/* Regular Lesson Content - always shown */}
-            <LessonContent 
-              lesson={currentLesson}
-              isLoading={isLoading}
-              error={error}
-              nextLesson={nextLesson}
-              prevLesson={prevLesson}
-              onNavigate={handleLessonSelect}
-            />
-            
-            {/* Chat UI shown conditionally */}
-            {isChatActive && <ChatUI lesson={currentLesson} />}
-          </div>
+          /* Regular Lesson Content */
+          <LessonContent 
+            lesson={currentLesson}
+            isLoading={isLoading}
+            error={error}
+            nextLesson={nextLesson}
+            prevLesson={prevLesson}
+            onNavigate={handleLessonSelect}
+          />
         )}
       </div>
 
