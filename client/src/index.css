@@ -866,7 +866,7 @@ header .container {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  padding: 12px 20px; /* Add vertical and horizontal padding */
+  padding: 12px 0; /* Remove horizontal padding to let container handle it */
   gap: 15px; /* Add some spacing between columns */
 }
 
@@ -935,7 +935,7 @@ header .container {
   /* Adjust mobile header layout for small screens */
   .mobile-lesson-header {
     justify-content: flex-start; /* Keep items left-aligned */
-    padding: 12px 15px; /* Add horizontal padding */
+    padding: 12px 0; /* Remove horizontal padding to match container */
   }
   
   /* Override desktop-specific settings for mobile */
