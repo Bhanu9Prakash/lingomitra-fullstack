@@ -178,6 +178,137 @@ header .container {
   transform: rotate(15deg);
 }
 
+/* Header Language Selector */
+.header-language-selector {
+  position: relative;
+}
+
+.language-selector-btn {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 8px 12px;
+  gap: 8px;
+  transition: var(--transition);
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.language-selector-btn:hover,
+.language-selector-btn.active {
+  background-color: var(--bg-dark);
+  border-color: var(--text-light);
+}
+
+.language-selector-btn .language-flag {
+  width: 22px;
+  height: 15px;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.language-selector-btn .language-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Hide text on smaller screens */
+@media (max-width: 768px) {
+  .language-selector-btn {
+    padding: 8px;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+  }
+
+  .language-selector-btn .language-flag {
+    margin-right: 0;
+  }
+}
+
+.language-selector-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+  width: 200px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: fadeInDown 0.2s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.language-selector-header {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.language-selector-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.language-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.language-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  gap: 10px;
+  color: var(--text-color);
+}
+
+.language-item:hover {
+  background-color: rgba(255, 102, 0, 0.1);
+}
+
+.language-item.active {
+  background-color: rgba(255, 102, 0, 0.15);
+  font-weight: 600;
+}
+
+.language-item.view-all {
+  color: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+}
+
+.language-item .language-flag {
+  width: 22px;
+  height: 15px;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
+.language-item i {
+  width: 22px;
+  text-align: center;
+  color: var(--primary-color);
+}
+
 .language-dropdown {
   position: relative;
 }

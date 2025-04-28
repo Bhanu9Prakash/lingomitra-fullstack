@@ -6,7 +6,7 @@ import ScrollToTop from "./ScrollToTop";
 import { useLocation } from "wouter";
 import { Language } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
-import LanguageDropdown from "./LanguageDropdown";
+import LanguageSelector from "./LanguageSelector";
 
 interface LayoutProps {
   children: ReactNode;
@@ -44,12 +44,11 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           
           <div className="header-controls">
-            {!isHomePage && !isLanguageSelectionPage && selectedLanguage && (
-              <LanguageDropdown
-                selectedLanguage={selectedLanguage}
-                languages={languages}
-              />
-            )}
+            {/* Always show the language selector, even on home page */}
+            <LanguageSelector
+              selectedLanguage={selectedLanguage}
+              languages={languages}
+            />
             
             <div className="theme-container">
               <button 
