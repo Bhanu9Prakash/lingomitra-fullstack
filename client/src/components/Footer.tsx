@@ -16,7 +16,8 @@ export default function Footer() {
             <h3>{APP_NAME}</h3>
           </div>
           
-          {/* Footer links and social media links removed */}
+          {/* Footer links removed */}
+          {/* Social media links removed */}
         </div>
         
         <div className="footer-bottom">
