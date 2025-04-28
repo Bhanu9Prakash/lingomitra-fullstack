@@ -4,18 +4,6 @@ import remarkGfm from "remark-gfm";
 import { Lesson } from "@shared/schema";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
 
-// Define TypeScript interfaces for ReactMarkdown props to fix LSP errors
-interface CodeProps {
-  node?: any;
-  inline?: boolean;
-  className?: string;
-  children?: React.ReactNode;
-}
-
-interface MarkdownProps {
-  children?: React.ReactNode;
-}
-
 interface Message {
   role: "user" | "assistant";
   content: string;
@@ -146,23 +134,18 @@ export default function ChatUI({ lesson }: ChatUIProps) {
                 remarkPlugins={[remarkGfm]}
                 components={{
                   p: ({ children }) => <p className="mb-2">{children}</p>,
-                  code: (props: CodeProps) => {
-                    const { children, className } = props;
-                    const match = /language-(\w+)/.exec(className || '');
-                    const language = match ? match[1] : '';
-                    
-                    if (props.inline) {
-                      return <code className={`inline-code ${className || ''}`}>{children}</code>;
-                    }
-                    
-                    return (
-                      <div className="code-block-wrapper">
-                        <pre className={`code-block ${language ? `language-${language}` : ''}`}>
-                          <code>{children}</code>
-                        </pre>
-                      </div>
-                    );
-                  },
+                  code: ({ node, inline, className, children, ...props }) =>
+                    inline ? (
+                      <code className={`inline-code ${className || ''}`} {...props}>
+                        {children}
+                      </code>
+                    ) : (
+                      <pre className={`code-block ${className || ''}`} {...props}>
+                        <code className={className || ''}>
+                          {children}
+                        </code>
+                      </pre>
+                    ),
                 }}
               >
                 {m.content}
