@@ -141,6 +141,41 @@ Based on the conversation history and ScratchPad, please respond according to th
       }
     }
     
+    // Remove any remaining JSON that appears to be a scratchpad
+    // First try to match just the JSON portion with knownVocabulary
+    if (responseText.includes('"knownVocabulary"')) {
+      // Find the starting position of a JSON object containing ScratchPad content
+      const startPos = responseText.indexOf('{');
+      if (startPos !== -1) {
+        // Find the matching closing brace
+        let depth = 0;
+        let endPos = -1;
+        
+        for (let i = startPos; i < responseText.length; i++) {
+          if (responseText[i] === '{') {
+            depth++;
+          } else if (responseText[i] === '}') {
+            depth--;
+            if (depth === 0) {
+              endPos = i + 1;
+              break;
+            }
+          }
+        }
+        
+        if (endPos !== -1) {
+          const jsonPart = responseText.substring(startPos, endPos);
+          // Only remove if it looks like a ScratchPad
+          if (jsonPart.includes('"knownVocabulary"') && 
+              jsonPart.includes('"knownStructures"') && 
+              jsonPart.includes('"struggles"') && 
+              jsonPart.includes('"nextFocus"')) {
+            responseText = responseText.substring(0, startPos) + responseText.substring(endPos);
+          }
+        }
+      }
+    }
+    
     return res.json({ 
       response: responseText,
       scratchPad: updatedScratchPad

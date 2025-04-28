@@ -134,18 +134,20 @@ export default function ChatUI({ lesson }: ChatUIProps) {
                 remarkPlugins={[remarkGfm]}
                 components={{
                   p: ({ children }) => <p className="mb-2">{children}</p>,
-                  code: ({ node, inline, className, children, ...props }) =>
-                    inline ? (
+                  code: ({ className, children, ...props }: any) => {
+                    const isInline = !props.node?.position?.start.line;
+                    return isInline ? (
                       <code className={`inline-code ${className || ''}`} {...props}>
                         {children}
                       </code>
                     ) : (
-                      <pre className={`code-block ${className || ''}`} {...props}>
-                        <code className={className || ''}>
+                      <pre className={`code-block ${className || ''}`}>
+                        <code className={className || ''} {...props}>
                           {children}
                         </code>
                       </pre>
-                    ),
+                    );
+                  },
                 }}
               >
                 {m.content}
