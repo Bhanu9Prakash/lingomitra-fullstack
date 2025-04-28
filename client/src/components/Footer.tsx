@@ -23,17 +23,7 @@ export default function Footer() {
             <a href="#">Contact</a>
           </div>
           
-          <div className="footer-social">
-            <a href="#" className="social-icon">
-              <i className="fab fa-facebook-f"></i>
-            </a>
-            <a href="#" className="social-icon">
-              <i className="fab fa-twitter"></i>
-            </a>
-            <a href="#" className="social-icon">
-              <i className="fab fa-instagram"></i>
-            </a>
-          </div>
+          {/* Social media links removed */}
         </div>
         
         <div className="footer-bottom">
