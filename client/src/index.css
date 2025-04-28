@@ -1856,7 +1856,6 @@ footer {
   background-color: var(--bg-color);
   box-shadow: var(--shadow);
   overflow: hidden;
-  border-top: 1px solid var(--border-color);
   z-index: 5;
 }
 
@@ -2047,8 +2046,6 @@ footer {
     left: 0;
     right: 0;
     border-radius: 0;
-    border-left: 0;
-    border-right: 0;
     z-index: 10;
   }
   
