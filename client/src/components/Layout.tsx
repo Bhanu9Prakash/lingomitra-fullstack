@@ -16,10 +16,23 @@ export default function Layout({ children }: LayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const [location] = useLocation();
   
-  // Get the language code from the location if we're on a language page
-  const languageCode = location.startsWith("/language/") 
-    ? location.split("/language/")[1].split("/")[0] // Extract just the language code
-    : null;
+  // Extract language code from URL path
+  let languageCode = null;
+  const pathParts = location.split('/').filter(Boolean); // Split and remove empty strings
+  
+  if (pathParts.length > 0) {
+    // The first part of the path might be the language code
+    const possibleCode = pathParts[0];
+    // If it's a 2-letter code, it's likely a language code
+    if (possibleCode.length === 2) {
+      languageCode = possibleCode;
+    }
+  }
+  
+  // Handle old format: /language/xx/...
+  if (location.startsWith("/language/")) {
+    languageCode = location.split("/language/")[1].split("/")[0];
+  }
   
   // Fetch all languages
   const { data: languages = [] } = useQuery<Language[]>({

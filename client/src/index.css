@@ -347,10 +347,25 @@ header .container {
 @media (max-width: 768px) {
   .selected-language {
     padding: 6px 10px; /* Smaller padding on mobile */
+    justify-content: center;
+    width: 40px;
+    height: 40px;
   }
   
   .selected-language span {
-    font-size: 14px; /* Smaller font on mobile */
+    display: none; /* Hide text on mobile */
+  }
+  
+  .selected-language .language-flag {
+    margin-right: 0; /* Remove right margin when text is hidden */
+  }
+  
+  .selected-language i.fas.fa-chevron-down {
+    display: none; /* Hide dropdown chevron on mobile */
+  }
+  
+  .selected-language i.fas.fa-globe {
+    margin-right: 0; /* Remove right margin when text is hidden */
   }
 }
 
