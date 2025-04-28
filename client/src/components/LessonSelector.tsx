@@ -116,7 +116,7 @@ export default function LessonSelector({
                 onClick={onClose}
                 aria-label="Close lesson selector"
               >
-                ✕
+                <i className="fas fa-times"></i>
               </button>
             </div>
           ) : (
@@ -127,7 +127,7 @@ export default function LessonSelector({
                 onClick={onClose}
                 aria-label="Close lesson selector"
               >
-                ✕
+                <i className="fas fa-times"></i>
               </button>
             </>
           )}
@@ -158,7 +158,7 @@ export default function LessonSelector({
                   onClose();
                 }}
               >
-                <span className="lesson-icon">📚</span>
+                <i className="fas fa-book"></i>
                 <span>{displayTitle}</span>
               </div>
             );
