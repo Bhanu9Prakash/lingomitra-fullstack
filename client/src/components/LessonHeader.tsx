@@ -35,10 +35,10 @@ export default function LessonHeader({
               <i className="fas fa-list"></i>
             </button>
             
-            {/* Lesson number (right) */}
+            {/* Full lesson title */}
             <div className="mobile-lesson-title">
               {currentLesson && (
-                <span>Lesson {getLessonNumber(currentLesson.lessonId)}</span>
+                <span className="full-lesson-title">{currentLesson.title}</span>
               )}
             </div>
           </div>

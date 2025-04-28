@@ -667,14 +667,27 @@ header .container {
   align-items: center;
   justify-content: flex-start; /* Left-align the text */
   min-width: 0; /* Allow flex item to shrink below content size */
-  flex: 0 1 auto; /* Only take as much space as needed */
+  flex: 1; /* Take available space */
+  margin-right: 10px; /* Add some right margin */
 }
 
 .mobile-lesson-title span {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   white-space: nowrap;
   color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis for very long titles */
+}
+
+.mobile-lesson-title .full-lesson-title {
+  white-space: normal; /* Allow wrapping for very long titles */
+  line-height: 1.2;
+  max-height: 2.4em; /* Limit to 2 lines of text */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Lesson header layout */

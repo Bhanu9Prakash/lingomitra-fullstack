@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Lesson } from "@shared/schema";
 import { marked } from "marked";
 import { markedConfig } from "@/lib/marked-config";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LessonContentProps {
   lesson: Lesson;
@@ -15,6 +16,7 @@ export default function LessonContent({
   error 
 }: LessonContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // Initialize marked configuration
