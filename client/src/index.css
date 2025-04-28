@@ -992,14 +992,19 @@ header .container {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.lesson-selector-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .lesson-selector.open {
@@ -1007,7 +1012,9 @@ header .container {
   visibility: visible;
 }
 
+/* Default centered modal for desktop */
 .lesson-selector-content {
+  position: relative;
   background-color: var(--bg-color);
   border-radius: var(--border-radius);
   width: 90%;
@@ -1016,12 +1023,44 @@ header .container {
   overflow-y: auto;
   padding: 30px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  transform: translateY(-20px);
   transition: transform 0.3s ease;
+  margin: 10vh auto;
 }
 
-.lesson-selector.open .lesson-selector-content {
+/* Center the selector on desktop */
+.lesson-selector:not(.mobile-drawer) {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 5vh;
+}
+
+.lesson-selector:not(.mobile-drawer) .lesson-selector-content {
+  transform: translateY(-20px);
+}
+
+.lesson-selector.open:not(.mobile-drawer) .lesson-selector-content {
   transform: translateY(0);
+}
+
+/* Mobile drawer styles */
+.lesson-selector.mobile-drawer .lesson-selector-content {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 85%;
+  max-width: 350px;
+  height: 100%;
+  border-radius: 0;
+  padding: 20px;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  margin: 0;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.lesson-selector.mobile-drawer.open .lesson-selector-content {
+  transform: translateX(0);
 }
 
 .lesson-selector-header {
@@ -1037,6 +1076,25 @@ header .container {
   font-size: 24px;
   font-weight: 800;
   color: var(--text-color);
+}
+
+/* Mobile drawer specific header */
+.mobile-drawer .lesson-selector-header {
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+}
+
+.mobile-drawer .lesson-selector-header h2 {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-drawer .lesson-selector-header h2::before {
+  content: "📚";
+  display: inline-block;
+  margin-bottom: 2px;
 }
 
 .close-selector {
@@ -1074,6 +1132,30 @@ header .container {
   color: var(--text-color);
 }
 
+.lesson-item span {
+  flex: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 1.3;
+}
+
+/* Improve lesson item text readability on mobile */
+.mobile-drawer .lesson-item {
+  padding: 14px 16px;
+  margin-bottom: 3px;
+}
+
+.mobile-drawer .lesson-item span {
+  font-size: 15px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
 .lesson-item:hover {
   background-color: rgba(255, 102, 0, 0.1);
 }
@@ -1085,6 +1167,12 @@ header .container {
 
 .lesson-item i {
   font-size: 16px;
+  flex-shrink: 0;
+}
+
+.mobile-drawer .lesson-item i {
+  font-size: 18px;
+  margin-top: 2px;
 }
 
 .lesson-item.active i {

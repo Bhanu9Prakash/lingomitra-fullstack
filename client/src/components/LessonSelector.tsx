@@ -66,7 +66,12 @@ export default function LessonSelector({
   });
 
   return (
-    <div className={`lesson-selector ${isOpen ? 'open' : ''}`}>
+    <div className={`lesson-selector ${isOpen ? 'open' : ''} ${isMobile ? 'mobile-drawer' : ''}`}>
+      <div 
+        className="lesson-selector-backdrop"
+        onClick={onClose}
+        aria-label="Close selector"
+      ></div>
       <div className="lesson-selector-content">
         <div className="lesson-selector-header">
           <h2>Select a Lesson</h2>
@@ -84,13 +89,10 @@ export default function LessonSelector({
             const lessonNumber = getLessonNumber(lesson.lessonId);
             const isActive = lesson.lessonId === currentLessonId;
             
-            // Format the title based on device
-            let displayTitle;
-            if (isMobile && lessonNumber) {
-              displayTitle = `Lesson ${lessonNumber}`;
-            } else {
-              displayTitle = lessonNumber ? `Lesson ${lessonNumber}: ${lesson.title}` : lesson.title;
-            }
+            // Always show full lesson title with number for better readability
+            const displayTitle = lessonNumber 
+              ? `Lesson ${lessonNumber}: ${lesson.title}` 
+              : lesson.title;
             
             return (
               <div
