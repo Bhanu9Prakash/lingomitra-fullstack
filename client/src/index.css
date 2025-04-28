@@ -1865,20 +1865,51 @@ footer {
 }
 
 /* Chat UI Styles */
+.lesson-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.lesson-container.with-chat {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 20px;
+}
+
+/* Media query for mobile */
+@media (max-width: 768px) {
+  .lesson-container.with-chat {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .chat-ui {
+    min-height: 400px;
+    height: auto;
+    max-height: 500px;
+  }
+  
+  .chat-messages {
+    height: auto;
+    min-height: 300px;
+    max-height: 350px;
+  }
+}
+
 .chat-ui {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 190px); /* Full height minus headers and space */
-  position: fixed;
+  position: sticky;
   top: 190px; /* Allow some space after the lesson header */
-  left: 20px; /* Add padding to match container */
-  right: 20px; /* Add padding to match container */
-  max-width: 1160px; /* 1200px - 20px*2 to account for the padding */
-  margin: 0 auto;
   background-color: var(--bg-color);
   box-shadow: var(--shadow);
+  border-radius: var(--border-radius);
   overflow: hidden;
   z-index: 5;
+  border: 1px solid var(--border-color);
 }
 
 .chat-messages {
@@ -2089,18 +2120,20 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .chat-ui {
-    height: calc(100vh - 160px); /* Mobile header + lesson header + space */
-    top: 160px; /* Account for both headers plus some space in mobile */
-    position: fixed;
-    left: 10px; /* Reduced padding for mobile */
-    right: 10px; /* Reduced padding for mobile */
-    border-radius: 0;
-    z-index: 10;
+  /* Ensure chat UI in the new layout fits well in mobile */
+  .lesson-container.with-chat .chat-ui {
+    position: relative;
+    top: 0;
+    height: auto;
+    min-height: 400px;
+    max-height: 500px;
+    border-radius: var(--border-radius);
   }
   
-  .chat-messages {
-    height: calc(100vh - 250px); /* Adjusted for mobile headers and input area */
+  .lesson-container.with-chat .chat-messages {
+    height: auto;
+    min-height: 300px;
+    max-height: 350px;
     padding: 15px 10px;
   }
   
