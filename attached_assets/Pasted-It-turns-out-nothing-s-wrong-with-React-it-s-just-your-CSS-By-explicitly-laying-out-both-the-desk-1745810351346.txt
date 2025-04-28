@@ -1,0 +1,128 @@
+It turns out nothing’s wrong with React – it’s just your CSS. By explicitly laying out both the desktop and mobile headers as flex-containers with sensible flex: values (and by centering the title instead of letting it “stick”), you can collapse that mysterious gap and also give both views a bit more breathing room.
+
+---
+
+### 1. Base header styles
+
+Give your `<header>` and its inner `.container` some consistent padding and max-width:
+
+```css
+.lesson-header {
+  background: var(--bg-dark);
+  padding: 0.75rem 0;
+}
+
+.lesson-header .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+```
+
+---
+
+### 2. Desktop layout
+
+```css
+.lesson-header-content {
+  display: flex;
+  align-items: center;
+  /* space-between pushes the selector to the left, the spacer to the right */
+  justify-content: space-between;
+}
+
+.lesson-selector-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.lesson-selector-btn i {
+  font-size: 1.25rem;
+}
+
+.lesson-title {
+  flex: 1;
+  text-align: center;
+  margin: 0 1rem;             /* give some horizontal breathing room */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-spacer {
+  flex: 1;
+}
+```
+
+This will center the “Lesson 01: Introduction to German” title, keep the “All Lessons” button flush left, and use the flexible spacer on the right to balance things out.
+
+---
+
+### 3. Mobile layout
+
+```css
+.mobile-lesson-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.lesson-selector-btn {
+  /* same as desktop */
+}
+
+.mobile-lesson-title {
+  flex: 1;                    /* take all the available middle space */
+  text-align: center;
+  margin: 0 0.5rem;           /* a little gap around the text */
+  white-space: nowrap;        /* prevent wrapping */
+  overflow: hidden;           /* clip the overflow */
+  text-overflow: ellipsis;    /* show “…” if it’s too long */
+}
+```
+
+By giving `.mobile-lesson-title` a `flex: 1` and centering its contents, the button and the title will hug the edges with no giant gap. The ellipsis rules make sure a very long lesson name won’t overflow.
+
+---
+
+### 4. Final structure recap
+
+```jsx
+{isMobile ? (
+  <div className="mobile-lesson-header">
+    <button className="lesson-selector-btn" onClick={onOpenLessonSelector}>
+      <i className="fas fa-list"></i>
+    </button>
+    <div className="mobile-lesson-title">
+      {currentLesson && `Lesson ${getLessonNumber(currentLesson.lessonId)}`}
+    </div>
+  </div>
+) : (
+  <div className="lesson-header-content">
+    <button className="lesson-selector-btn" onClick={onOpenLessonSelector}>
+      <i className="fas fa-list"></i>
+      <span>All Lessons</span>
+    </button>
+    <div className="lesson-title">
+      {currentLesson && (
+        <h1>
+          Lesson {getLessonNumber(currentLesson.lessonId)}: {currentLesson.title}
+        </h1>
+      )}
+    </div>
+    <div className="header-spacer" />
+  </div>
+)}
+```
+
+With those CSS tweaks you’ll get:
+
+- **Mobile**: selector on the left, title perfectly centered, no odd white-space.
+- **Desktop**: selector on the left, title centered, spacer balancing to the right, and consistent gutters on all sides.
