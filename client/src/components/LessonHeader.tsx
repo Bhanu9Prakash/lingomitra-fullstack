@@ -55,11 +55,7 @@ export default function LessonHeader({
               aria-label={isChatActive ? "Close tutor chat" : "Open tutor chat"}
               title={isChatActive ? "Close tutor chat" : "Open tutor chat"}
             >
-              {isChatActive ? (
-                <i className="fas fa-times"></i>
-              ) : (
-                <img src="/chat-icon.svg" alt="Chat" className="header-chat-icon" />
-              )}
+              <i className={`fas ${isChatActive ? 'fa-times' : 'fa-comment'}`}></i>
             </button>
           </div>
         ) : (
@@ -88,11 +84,7 @@ export default function LessonHeader({
               aria-label={isChatActive ? "Close tutor chat" : "Open tutor chat"}
               title={isChatActive ? "Close tutor chat" : "Open tutor chat"}
             >
-              {isChatActive ? (
-                <i className="fas fa-times"></i>
-              ) : (
-                <img src="/chat-icon.svg" alt="Chat" className="header-chat-icon" />
-              )}
+              <i className={`fas ${isChatActive ? 'fa-times' : 'fa-comment'}`}></i>
             </button>
           </div>
         )}
