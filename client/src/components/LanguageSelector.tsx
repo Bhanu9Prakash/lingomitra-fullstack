@@ -62,12 +62,14 @@ export default function LanguageSelector({
               alt={`${selectedLanguage.name} Flag`}
               className="language-flag"
             />
-            {!isMobile && <span className="language-name">{selectedLanguage.name}</span>}
+            <span className="language-name">{selectedLanguage.name}</span>
+            <i className="fas fa-chevron-down chevron-icon"></i>
           </>
         ) : (
           <>
             <i className="fas fa-globe"></i>
             {!isMobile && <span className="language-name">Select Language</span>}
+            <i className="fas fa-chevron-down chevron-icon"></i>
           </>
         )}
       </button>

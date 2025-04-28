@@ -186,8 +186,8 @@ header .container {
 .language-selector-btn {
   display: flex;
   align-items: center;
-  background-color: var(--bg-light);
-  border: 1px solid var(--border-color);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius);
   padding: 8px 12px;
   gap: 8px;
@@ -198,16 +198,16 @@ header .container {
 
 .language-selector-btn:hover,
 .language-selector-btn.active {
-  background-color: var(--bg-dark);
-  border-color: var(--text-light);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .language-selector-btn .language-flag {
-  width: 22px;
-  height: 15px;
+  width: 20px;
+  height: 14px;
   border-radius: 2px;
   object-fit: cover;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .language-selector-btn .language-name {
@@ -215,17 +215,25 @@ header .container {
   font-weight: 600;
 }
 
-/* Hide text on smaller screens */
+.language-selector-btn .chevron-icon {
+  font-size: 10px;
+  margin-left: 4px;
+  opacity: 0.7;
+}
+
+/* Adjust for mobile screens */
 @media (max-width: 768px) {
   .language-selector-btn {
-    padding: 8px;
-    width: 40px;
-    height: 40px;
-    justify-content: center;
+    padding: 6px 10px;
+    min-width: 40px;
   }
-
-  .language-selector-btn .language-flag {
-    margin-right: 0;
+  
+  .language-selector-btn .language-name {
+    display: none;
+  }
+  
+  .language-selector-btn .chevron-icon {
+    display: none;
   }
 }
 
