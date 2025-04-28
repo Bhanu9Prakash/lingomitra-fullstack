@@ -757,17 +757,19 @@ header .container {
   background-color: var(--bg-light);
   border: 1px solid var(--border-color);
   color: var(--text-color);
-  padding: 8px 15px;
+  padding: 8px;
   border-radius: var(--border-radius);
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
   transition: var(--transition);
+  width: 40px;
+  height: 40px;
   min-width: 40px; /* Ensure minimum width */
 }
 
-/* Smaller, more compact button on mobile */
+/* Adjust for mobile screens */
 @media (max-width: 576px) {
   /* Adjust mobile header layout for small screens */
   .mobile-lesson-header {
@@ -778,13 +780,7 @@ header .container {
   .lesson-selector-btn {
     padding: 8px;
     width: 40px;
-    justify-content: center;
     flex-shrink: 0; /* Prevent button from shrinking */
-  }
-  
-  /* Hide text, only show icon on mobile */
-  .lesson-selector-btn span {
-    display: none;
   }
   
   /* Add more spacing to lesson content in mobile view */
@@ -799,7 +795,7 @@ header .container {
 }
 
 .lesson-selector-btn i {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--primary-color);
 }
 

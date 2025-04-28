@@ -54,7 +54,6 @@ export default function LessonHeader({
               aria-label="View all lessons"
             >
               <i className="fas fa-list"></i>
-              <span>All Lessons</span>
             </button>
             
             {/* Lesson title (center) */}
