@@ -1,4 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from '@google/genai';
 import { Lesson } from '../../shared/schema';
 
 // Initialize the Gemini API client
@@ -39,41 +39,13 @@ You can provide examples, additional context, or explanations to help the studen
 export async function generateGeminiResponse(lesson: Lesson, userMessage: string) {
   try {
     const genAI = initializeGenAI();
-    const model = genAI.getGenerativeModel('gemini-2.0-flash'); // Using the flash model as specified
     
     // Format the system instructions with lesson content as context
     const systemInstruction = formatLessonContext(lesson);
     
-    // Configure generation parameters
-    const generationConfig = {
-      maxOutputTokens: 1024,
-      temperature: 0.7,
-      topP: 0.8,
-      topK: 40,
-    };
-    
-    // Safety settings to ensure appropriate content
-    const safetySettings = [
-      {
-        category: 'HARM_CATEGORY_HARASSMENT',
-        threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-      },
-      {
-        category: 'HARM_CATEGORY_HATE_SPEECH',
-        threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-      },
-      {
-        category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-        threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-      },
-      {
-        category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-        threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-      }
-    ];
-    
-    // Generate the response
-    const result = await model.generateContent({
+    // Generate the response using the Gemini model
+    const result = await genAI.models.generateContent({
+      model: 'gemini-2.0-flash', // Using the flash model as specified
       contents: [
         {
           role: 'user',
@@ -83,12 +55,34 @@ export async function generateGeminiResponse(lesson: Lesson, userMessage: string
           ]
         }
       ],
-      generationConfig,
-      safetySettings
+      config: {
+        maxOutputTokens: 1024,
+        temperature: 0.7,
+        topP: 0.8,
+        topK: 40,
+        safetySettings: [
+          {
+            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+          }
+        ]
+      }
     });
     
     // Extract the text from the response
-    const responseText = result?.response?.text();
+    const responseText = result.text();
     
     if (!responseText) {
       throw new Error('Empty response from Gemini API');
