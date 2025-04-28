@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import { z } from "zod";
 import { insertLanguageSchema, insertLessonSchema } from "@shared/schema";
 import { readAllLessons } from "./utils";
+import chatRouter from "./routes/chat";
 
 // Sample data
 const languages = [
@@ -812,6 +813,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch lesson" });
     }
   });
+
+  // Register chat API router
+  app.use("/api/chat", chatRouter);
 
   const httpServer = createServer(app);
 

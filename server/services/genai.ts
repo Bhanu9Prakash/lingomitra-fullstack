@@ -39,12 +39,38 @@ You can provide examples, additional context, or explanations to help the studen
 export async function generateGeminiResponse(lesson: Lesson, userMessage: string) {
   try {
     const genAI = initializeGenAI();
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash', // Using the flash model as specified
-    });
+    const model = genAI.getGenerativeModel('gemini-2.0-flash'); // Using the flash model as specified
     
     // Format the system instructions with lesson content as context
     const systemInstruction = formatLessonContext(lesson);
+    
+    // Configure generation parameters
+    const generationConfig = {
+      maxOutputTokens: 1024,
+      temperature: 0.7,
+      topP: 0.8,
+      topK: 40,
+    };
+    
+    // Safety settings to ensure appropriate content
+    const safetySettings = [
+      {
+        category: 'HARM_CATEGORY_HARASSMENT',
+        threshold: 'BLOCK_MEDIUM_AND_ABOVE'
+      },
+      {
+        category: 'HARM_CATEGORY_HATE_SPEECH',
+        threshold: 'BLOCK_MEDIUM_AND_ABOVE'
+      },
+      {
+        category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+        threshold: 'BLOCK_MEDIUM_AND_ABOVE'
+      },
+      {
+        category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+        threshold: 'BLOCK_MEDIUM_AND_ABOVE'
+      }
+    ];
     
     // Generate the response
     const result = await model.generateContent({
@@ -57,30 +83,8 @@ export async function generateGeminiResponse(lesson: Lesson, userMessage: string
           ]
         }
       ],
-      generationConfig: {
-        maxOutputTokens: 1024,
-        temperature: 0.7,
-        topP: 0.8,
-        topK: 40,
-      },
-      safetySettings: [
-        {
-          category: 'HARM_CATEGORY_HARASSMENT',
-          threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-        },
-        {
-          category: 'HARM_CATEGORY_HATE_SPEECH',
-          threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-        },
-        {
-          category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-          threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-        },
-        {
-          category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
-          threshold: 'BLOCK_MEDIUM_AND_ABOVE'
-        }
-      ]
+      generationConfig,
+      safetySettings
     });
     
     // Extract the text from the response
