@@ -113,22 +113,24 @@ As this is a demo, I'm providing a simulated response. In a production version, 
         <div ref={chatEndRef} />
       </div>
       
-      <form className="chat-input" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask me anything about this lesson..."
-          disabled={isLoading}
-        />
-        <button 
-          type="submit" 
-          disabled={isLoading || !input.trim()}
-          className="send-button"
-        >
-          <i className="fas fa-paper-plane"></i>
-        </button>
-      </form>
+      <div className="chat-input">
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Ask me anything about this lesson..."
+            disabled={isLoading}
+          />
+          <button 
+            type="submit" 
+            disabled={isLoading || !input.trim()}
+            className="send-button"
+          >
+            <i className="fas fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

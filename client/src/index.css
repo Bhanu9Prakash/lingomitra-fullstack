@@ -1959,27 +1959,32 @@ footer {
 
 .chat-input {
   display: flex;
-  padding: 12px;
-  background-color: var(--bg-light);
-  border-top: 1px solid var(--border-color);
-  gap: 10px;
+  padding: 12px 20px;
+  background-color: var(--bg-color);
+  gap: 5px;
+  position: relative;
+}
+
+.chat-input form {
+  display: flex;
+  width: 100%;
 }
 
 .chat-input input {
   flex: 1;
-  padding: 12px 16px;
-  border-radius: 24px;
-  border: 1px solid var(--border-color);
-  background-color: var(--bg-color);
+  padding: 12px 50px 12px 16px;
+  border-radius: 30px;
+  border: 2px solid var(--primary-color);
+  background-color: transparent;
   font-size: 15px;
   color: var(--text-color);
   transition: var(--transition);
+  width: 100%;
 }
 
 .chat-input input:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px var(--primary-light);
+  box-shadow: 0 0 0 1px var(--primary-light);
 }
 
 .chat-input input::placeholder {
@@ -1993,23 +1998,26 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--primary-color);
-  color: white;
+  background-color: transparent;
+  color: var(--primary-color);
   border: none;
   cursor: pointer;
   transition: var(--transition);
+  position: absolute;
+  right: 25px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .send-button:hover {
-  background-color: var(--primary-dark);
-  transform: scale(1.05);
+  color: var(--primary-dark);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .send-button:disabled {
-  background-color: var(--border-color);
   color: var(--text-light);
   cursor: not-allowed;
-  transform: none;
+  transform: translateY(-50%);
 }
 
 /* Chat toggle button in header */
@@ -2064,17 +2072,18 @@ footer {
   }
   
   .chat-input {
-    padding: 10px;
+    padding: 10px 15px;
   }
   
   .chat-input input {
-    padding: 10px 14px;
+    padding: 10px 40px 10px 14px;
     font-size: 14px;
   }
   
   .send-button {
     width: 36px;
     height: 36px;
+    right: 20px;
   }
 }
 
