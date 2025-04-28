@@ -41,28 +41,32 @@ export default function ChatUI({ lesson }: ChatUIProps) {
     setIsLoading(true);
     
     try {
-      // This is a placeholder for the OpenAI API integration
-      // In a production app, this would be replaced with actual API calls
+      // Make a request to our chat API endpoint
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lessonId: lesson.lessonId,
+          message: userMessage.content,
+        }),
+      });
       
-      // Note: In the real implementation, we would check for an OpenAI API key
-      // const apiKey = process.env.OPENAI_API_KEY;
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`);
+      }
       
-      // For demo purposes, we'll simulate a response after a short delay
-      setTimeout(() => {
-        // In production, this would be replaced with a real API call
-        // if (!apiKey) {
-        //   throw new Error("OpenAI API key not found");
-        // }
-        
-        const assistantResponse: Message = { 
-          role: "assistant", 
-          content: `I understand you're asking about "${input}". This is related to our lesson "${lesson.title}". 
-          
-As this is a demo, I'm providing a simulated response. In a production version, this would connect to the OpenAI API to generate a helpful, contextual response about the lesson content.`
-        };
-        setMessages(prev => [...prev, assistantResponse]);
-        setIsLoading(false);
-      }, 1000);
+      const data = await response.json();
+      
+      // Add the AI response to chat
+      const assistantResponse: Message = { 
+        role: "assistant", 
+        content: data.response
+      };
+      
+      setMessages(prev => [...prev, assistantResponse]);
+      setIsLoading(false);
       
     } catch (error) {
       console.error("Error getting AI response:", error);
