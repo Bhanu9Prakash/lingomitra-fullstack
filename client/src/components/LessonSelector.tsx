@@ -18,7 +18,7 @@ export default function LessonSelector({
   onSelectLesson,
 }: LessonSelectorProps) {
   const isMobile = useIsMobile();
-  
+
   // Helper to extract lesson number for display
   const getLessonNumber = (lessonId: string) => {
     const match = lessonId.match(/lesson(\d+)$/);
@@ -57,43 +57,51 @@ export default function LessonSelector({
   const sortedLessons = [...lessons].sort((a, b) => {
     const numA = getLessonNumber(a.lessonId);
     const numB = getLessonNumber(b.lessonId);
-    
+
     if (numA && numB) {
       return parseInt(numA) - parseInt(numB);
     }
-    
+
     return 0;
   });
 
   // Get the language code from lessons
   const languageCode = lessons.length > 0 ? lessons[0].languageCode : null;
-  
-  // Create language display data 
-  const currentLanguage = languageCode ? {
-    code: languageCode,
-    // Convert language code to proper name (assuming ISO language codes)
-    name: {
-      'de': 'German',
-      'fr': 'French',
-      'es': 'Spanish',
-      'hi': 'Hindi',
-      'zh': 'Chinese',
-      'ja': 'Japanese'
-    }[languageCode] || languageCode,
-    // Map language codes to flag codes (some differ from language code)
-    flagCode: {
-      'de': 'de',
-      'fr': 'fr',
-      'es': 'es',
-      'hi': 'hi',
-      'zh': 'zh',
-      'ja': 'jp'
-    }[languageCode] || languageCode
-  } : null;
+
+  // Create language display data
+  const currentLanguage = languageCode
+    ? {
+        code: languageCode,
+        // Convert language code to proper name (assuming ISO language codes)
+        name:
+          {
+            de: "German",
+            fr: "French",
+            es: "Spanish",
+            hi: "Hindi",
+            zh: "Chinese",
+            ja: "Japanese",
+            kn: "Kannada",
+          }[languageCode] || languageCode,
+        // Map language codes to flag codes (some differ from language code)
+        flagCode:
+          {
+            de: "de",
+            fr: "fr",
+            es: "es",
+            hi: "hi",
+            zh: "zh",
+            ja: "jp",
+            kn: "kn",
+          }[languageCode] || languageCode,
+      }
+    : null;
 
   return (
-    <div className={`lesson-selector ${isOpen ? 'open' : ''} ${isMobile ? 'mobile-drawer' : ''}`}>
-      <div 
+    <div
+      className={`lesson-selector ${isOpen ? "open" : ""} ${isMobile ? "mobile-drawer" : ""}`}
+    >
+      <div
         className="lesson-selector-backdrop"
         onClick={onClose}
         aria-label="Close selector"
@@ -104,14 +112,17 @@ export default function LessonSelector({
             <div className="mobile-drawer-header">
               <div className="language-info">
                 <div className="language-flag">
-                  <img 
-                    src={`/flags/${currentLanguage.flagCode}.svg`} 
+                  <img
+                    src={`/flags/${currentLanguage.flagCode}.svg`}
                     alt={`${currentLanguage.name} Flag`}
                   />
                 </div>
-                <h2>{currentLanguage.name} <span className="subtitle">Lessons</span></h2>
+                <h2>
+                  {currentLanguage.name}{" "}
+                  <span className="subtitle">Lessons</span>
+                </h2>
               </div>
-              <button 
+              <button
                 className="close-selector"
                 onClick={onClose}
                 aria-label="Close lesson selector"
@@ -122,7 +133,7 @@ export default function LessonSelector({
           ) : (
             <>
               <h2>Select a Lesson</h2>
-              <button 
+              <button
                 className="close-selector"
                 onClick={onClose}
                 aria-label="Close lesson selector"
@@ -132,27 +143,27 @@ export default function LessonSelector({
             </>
           )}
         </div>
-        
+
         {isMobile && currentLanguage && (
           <div className="mobile-drawer-subheader">
             <p>Select a lesson to continue learning</p>
           </div>
         )}
-        
+
         <div className="lesson-list">
           {sortedLessons.map((lesson) => {
             const lessonNumber = getLessonNumber(lesson.lessonId);
             const isActive = lesson.lessonId === currentLessonId;
-            
+
             // Always show full lesson title with number for better readability
-            const displayTitle = lessonNumber 
-              ? `Lesson ${lessonNumber}: ${lesson.title}` 
+            const displayTitle = lessonNumber
+              ? `Lesson ${lessonNumber}: ${lesson.title}`
               : lesson.title;
-            
+
             return (
               <div
                 key={lesson.lessonId}
-                className={`lesson-item ${isActive ? 'active' : ''}`}
+                className={`lesson-item ${isActive ? "active" : ""}`}
                 onClick={() => {
                   onSelectLesson(lesson.lessonId);
                   onClose();

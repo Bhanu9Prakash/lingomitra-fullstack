@@ -56,7 +56,7 @@ const languages = [
   {
     code: "kn",
     name: "Kannada",
-    flagCode: "in-kn", // Using 'in-kn' for Karnataka state in India
+    flagCode: "kn", // Using 'in-kn' for Karnataka state in India
     speakers: 45,
     isAvailable: true,
   },
@@ -669,29 +669,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }
 
   // Define the path to the courses directory
-  const coursesDir = path.join(process.cwd(), 'server', 'courses');
-  
+  const coursesDir = path.join(process.cwd(), "server", "courses");
+
   try {
     console.log(`Loading lessons from ${coursesDir}`);
-    
+
     // Get language codes from initialized languages
-    const languageCodes = languages.map(lang => lang.code);
-    
+    const languageCodes = languages.map((lang) => lang.code);
+
     // Check if the courses directory exists, create it if it doesn't
     try {
       await fs.access(coursesDir);
     } catch (error) {
-      console.log('Courses directory does not exist, creating it...');
+      console.log("Courses directory does not exist, creating it...");
       await fs.mkdir(coursesDir, { recursive: true });
     }
-    
+
     // First, try to load lessons from the filesystem
     const lessons = await readAllLessons(coursesDir, languageCodes);
-    
+
     // If no lessons were found in the filesystem, use the hardcoded ones
     if (lessons.length === 0) {
-      console.log('No lessons found in the filesystem, using hardcoded lessons');
-      
+      console.log(
+        "No lessons found in the filesystem, using hardcoded lessons",
+      );
+
       // Add German lessons
       for (const lesson of germanLessons) {
         try {
@@ -701,7 +703,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error("Error adding German lesson:", error);
         }
       }
-      
+
       // Add Spanish lessons
       for (const lesson of spanishLessons) {
         try {
@@ -721,7 +723,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error("Error adding French lesson:", error);
         }
       }
-      
+
       // Add Chinese lessons
       for (const lesson of chineseLessons) {
         try {
@@ -731,7 +733,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error("Error adding Chinese lesson:", error);
         }
       }
-      
+
       // Add Japanese lessons
       for (const lesson of japaneseLessons) {
         try {
@@ -741,7 +743,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error("Error adding Japanese lesson:", error);
         }
       }
-      
+
       // Add Hindi lessons
       for (const lesson of hindiLessons) {
         try {
@@ -753,7 +755,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } else {
       console.log(`Loaded ${lessons.length} lessons from the filesystem`);
-      
+
       // Add lessons from the filesystem
       for (const lesson of lessons) {
         try {
@@ -765,7 +767,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     }
   } catch (error) {
-    console.error('Error loading lessons:', error);
+    console.error("Error loading lessons:", error);
   }
 
   // API routes

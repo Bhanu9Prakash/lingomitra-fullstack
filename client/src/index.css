@@ -1903,14 +1903,15 @@ footer {
   padding: 0;
 }
 
-.chat-bot-icon {
+.chat-bot-icon,
+.chat-user-icon {
   width: 32px;
   height: 32px;
   object-fit: contain;
 }
 
 .chat-message.user .avatar {
-  background-color: var(--secondary-light);
+  background-color: transparent;
   color: var(--secondary-color);
 }
 

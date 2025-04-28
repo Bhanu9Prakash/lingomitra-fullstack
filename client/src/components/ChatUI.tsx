@@ -93,7 +93,7 @@ As this is a demo, I'm providing a simulated response. In a production version, 
             </div>
             {message.role === "user" && (
               <div className="avatar">
-                <i className="fas fa-user"></i>
+                <img src="/user-icon.svg" alt="User" className="chat-user-icon" />
               </div>
             )}
           </div>
