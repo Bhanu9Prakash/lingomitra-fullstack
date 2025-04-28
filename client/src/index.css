@@ -53,14 +53,20 @@ body {
   line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  margin: 0;
+  padding: 0;
 }
 
 #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
@@ -1448,10 +1454,11 @@ header .container {
 
 /* Footer Styles */
 footer {
-  background-color: var(--bg-light);
+  background-color: #1a1a1a;
   padding: 20px 0;
   border-top: 1px solid var(--border-color);
   margin-top: auto;
+  width: 100%;
 }
 
 .footer-content {
@@ -1478,6 +1485,7 @@ footer {
   font-size: 22px;
   font-weight: 800;
   color: var(--primary-color);
+  color: #ffffff;
 }
 
 .footer-links {
@@ -1521,9 +1529,8 @@ footer {
 .footer-bottom {
   margin-top: 10px;
   padding-top: 10px;
-  border-top: 1px solid var(--border-color);
   text-align: center;
-  color: var(--text-light);
+  color: #ffffff;
   font-size: 14px;
 }
 
