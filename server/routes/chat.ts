@@ -50,7 +50,9 @@ router.post('/init', async (req: Request, res: Response) => {
     }
     
     // Generate an initial greeting using the Gemini API
-    const initialPrompt = `As LingoMitra, introduce yourself and this lesson (${lesson.title}) to the student. Be brief, welcoming, and mention 1-2 key things they'll learn. End with an engaging question to start the learning process.`;
+    const initialPrompt = `As LingoMitra, introduce yourself and this lesson (${lesson.title}) to the student. Be brief, welcoming, and mention 1-2 key things they'll learn. 
+    
+IMPORTANT: Start by teaching the absolute basics first. Always introduce new vocabulary or concepts before asking students to use them. Begin with a simple teaching point, explain it clearly, and only then ask a simple practice question.`;
     
     const response = await generateGeminiResponse(lesson, initialPrompt);
     const scratchPad = getDefaultScratchPad();
@@ -116,7 +118,11 @@ ${JSON.stringify(scratchPad || getDefaultScratchPad(), null, 2)}
 
 Student's latest message: ${latestUserMessage.content}
 
-Based on the conversation history and ScratchPad, please respond according to the Thinking Method guidelines. Include an updated ScratchPad as a JSON object at the end of your response, prefixed with [SCRATCHPAD] and surrounded by triple backticks.
+Based on the conversation history and ScratchPad, please respond according to the Thinking Method guidelines. 
+
+IMPORTANT: Remember to teach before testing. Always introduce and clearly explain any new vocabulary, grammar, or concepts before asking the student to use them. If the student's message indicates confusion or a lack of understanding, take a step back and provide clearer explanations.
+
+Include an updated ScratchPad as a JSON object at the end of your response, prefixed with [SCRATCHPAD] and surrounded by triple backticks.
 `;
     
     // Generate response using the Gemini API
