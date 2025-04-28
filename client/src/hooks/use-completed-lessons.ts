@@ -28,6 +28,7 @@ export function useCompletedLessons() {
   // Mark a lesson as completed
   const markLessonCompleted = (lessonId: string) => {
     if (!completedLessons.includes(lessonId)) {
+      console.log(`Marking lesson as completed: ${lessonId}`);
       setCompletedLessons([...completedLessons, lessonId]);
     }
   };
@@ -37,9 +38,21 @@ export function useCompletedLessons() {
     setCompletedLessons(completedLessons.filter(id => id !== lessonId));
   };
 
+  // Track which lessons we've already logged
+  const loggedLessons = new Set<string>();
+  
   // Check if a lesson is completed
   const isLessonCompleted = (lessonId: string) => {
-    return completedLessons.includes(lessonId);
+    const isCompleted = completedLessons.includes(lessonId);
+    
+    // Only log once per lesson per session to avoid spamming console
+    const logKey = `${lessonId}-${isCompleted}`;
+    if (!loggedLessons.has(logKey)) {
+      console.log(`Checking lesson ${lessonId} - completed: ${isCompleted}`);
+      loggedLessons.add(logKey);
+    }
+    
+    return isCompleted;
   };
 
   // Reset all completed lessons

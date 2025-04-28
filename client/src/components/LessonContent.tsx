@@ -98,11 +98,14 @@ export default function LessonContent({
   // #3: Mark lesson as completed when the user has spent some time on it
   useEffect(() => {
     if (lesson) {
-      // We'll mark the lesson as completed after the user has spent 30 seconds on it
+      // We'll mark the lesson as completed after the user has spent time on it
       // This simulates the user having read enough of the content to consider it "completed"
+      // Reduced to 5 seconds for testing
+      console.log(`Setting auto-complete timer for lesson ${lesson.lessonId}`);
       const timer = setTimeout(() => {
+        console.log(`Auto-completing lesson ${lesson.lessonId} after timeout`);
         markLessonCompleted(lesson.lessonId);
-      }, 30000); // 30 seconds
+      }, 5000); // 5 seconds for testing
       
       return () => clearTimeout(timer);
     }
@@ -121,6 +124,7 @@ export default function LessonContent({
       const handleNextClick = () => {
         // Mark current lesson as completed when moving to the next one
         if (lesson) {
+          console.log(`Next button clicked - marking lesson ${lesson.lessonId} as completed`);
           markLessonCompleted(lesson.lessonId);
         }
         nextLesson && onNavigate(nextLesson.lessonId);
