@@ -65,6 +65,24 @@ export default function LessonSelector({
     return 0;
   });
 
+  // Get the language code from lessons
+  const languageCode = lessons.length > 0 ? lessons[0].languageCode : null;
+  
+  // Create language display data 
+  const currentLanguage = languageCode ? {
+    code: languageCode,
+    // Convert language code to proper name (assuming ISO language codes)
+    name: {
+      'de': 'German',
+      'fr': 'French',
+      'es': 'Spanish',
+      'hi': 'Hindi',
+      'zh': 'Chinese',
+      'ja': 'Japanese'
+    }[languageCode] || languageCode,
+    flag: languageCode
+  } : null;
+
   return (
     <div className={`lesson-selector ${isOpen ? 'open' : ''} ${isMobile ? 'mobile-drawer' : ''}`}>
       <div 
@@ -74,15 +92,39 @@ export default function LessonSelector({
       ></div>
       <div className="lesson-selector-content">
         <div className="lesson-selector-header">
-          <h2>Select a Lesson</h2>
-          <button 
-            className="close-selector"
-            onClick={onClose}
-            aria-label="Close lesson selector"
-          >
-            <i className="fas fa-times"></i>
-          </button>
+          {isMobile && currentLanguage ? (
+            <div className="mobile-drawer-header">
+              <div className="language-info">
+                <span className={`flag-icon flag-icon-${currentLanguage.flag.toLowerCase()}`}></span>
+                <h2>{currentLanguage.name} <span className="subtitle">Lessons</span></h2>
+              </div>
+              <button 
+                className="close-selector"
+                onClick={onClose}
+                aria-label="Close lesson selector"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+          ) : (
+            <>
+              <h2>Select a Lesson</h2>
+              <button 
+                className="close-selector"
+                onClick={onClose}
+                aria-label="Close lesson selector"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </>
+          )}
         </div>
+        
+        {isMobile && currentLanguage && (
+          <div className="mobile-drawer-subheader">
+            <p>Select a lesson to continue learning</p>
+          </div>
+        )}
         
         <div className="lesson-list">
           {sortedLessons.map((lesson) => {
