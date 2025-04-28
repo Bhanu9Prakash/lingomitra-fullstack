@@ -5,6 +5,7 @@ import { Lesson, Language } from "@shared/schema";
 import LessonHeader from "@/components/LessonHeader";
 import LessonContent from "@/components/LessonContent";
 import LessonSelector from "@/components/LessonSelector";
+import ChatUI from "@/components/ChatUI";
 
 export default function LessonView() {
   const [_, navigate] = useLocation();
@@ -37,8 +38,9 @@ export default function LessonView() {
     specificLessonId = `${paramsStandardRoute.language}-lesson${lessonNum}`;
   }
   
-  // State for lesson modal
+  // State for lesson modal and chat
   const [isLessonSelectorOpen, setLessonSelectorOpen] = useState(false);
+  const [isChatActive, setIsChatActive] = useState(false);
   
   // Fetch all languages
   const { data: languages } = useQuery<Language[]>({
@@ -141,6 +143,11 @@ export default function LessonView() {
       ? "Failed to load the selected lesson" 
       : "";
   
+  // Toggle between chat and lesson content
+  const handleToggleChat = () => {
+    setIsChatActive(!isChatActive);
+  };
+
   return (
     <div className="lesson-view">
       {/* Lesson header */}
@@ -148,13 +155,23 @@ export default function LessonView() {
         <LessonHeader 
           currentLesson={currentLesson}
           onOpenLessonSelector={() => setLessonSelectorOpen(true)}
+          onToggleChat={handleToggleChat}
+          isChatActive={isChatActive}
         />
       )}
 
       {/* Main content */}
       <div className="container">
-        {/* Lesson content with navigation */}
-        {currentLesson ? (
+        {/* Show chat UI or lesson content based on isChatActive */}
+        {!currentLesson ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+          </div>
+        ) : isChatActive ? (
+          /* AI Tutor Chat UI */
+          <ChatUI lesson={currentLesson} />
+        ) : (
+          /* Regular Lesson Content */
           <LessonContent 
             lesson={currentLesson}
             isLoading={isLoading}
@@ -163,10 +180,6 @@ export default function LessonView() {
             prevLesson={prevLesson}
             onNavigate={handleLessonSelect}
           />
-        ) : (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-          </div>
         )}
       </div>
 

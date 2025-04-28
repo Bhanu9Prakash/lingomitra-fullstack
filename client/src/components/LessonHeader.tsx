@@ -6,11 +6,15 @@ import { useLocation } from "wouter";
 interface LessonHeaderProps {
   currentLesson: Lesson | null;
   onOpenLessonSelector: () => void;
+  onToggleChat: () => void;
+  isChatActive: boolean;
 }
 
 export default function LessonHeader({ 
   currentLesson, 
-  onOpenLessonSelector 
+  onOpenLessonSelector,
+  onToggleChat,
+  isChatActive
 }: LessonHeaderProps) {
   const isMobile = useIsMobile();
   
@@ -43,6 +47,16 @@ export default function LessonHeader({
                 </span>
               )}
             </div>
+            
+            {/* Chat toggle button (right) */}
+            <button 
+              className={`chat-toggle ${isChatActive ? 'active' : ''}`}
+              onClick={onToggleChat}
+              aria-label={isChatActive ? "Close tutor chat" : "Open tutor chat"}
+              title={isChatActive ? "Close tutor chat" : "Open tutor chat"}
+            >
+              <i className={`fas ${isChatActive ? 'fa-times' : 'fa-comment'}`}></i>
+            </button>
           </div>
         ) : (
           // Desktop layout
@@ -63,8 +77,15 @@ export default function LessonHeader({
               )}
             </div>
             
-            {/* Empty right element for flex spacing */}
-            <div className="header-spacer"></div>
+            {/* Chat toggle button (right) */}
+            <button 
+              className={`chat-toggle ${isChatActive ? 'active' : ''}`}
+              onClick={onToggleChat}
+              aria-label={isChatActive ? "Close tutor chat" : "Open tutor chat"}
+              title={isChatActive ? "Close tutor chat" : "Open tutor chat"}
+            >
+              <i className={`fas ${isChatActive ? 'fa-times' : 'fa-comment'}`}></i>
+            </button>
           </div>
         )}
       </div>
