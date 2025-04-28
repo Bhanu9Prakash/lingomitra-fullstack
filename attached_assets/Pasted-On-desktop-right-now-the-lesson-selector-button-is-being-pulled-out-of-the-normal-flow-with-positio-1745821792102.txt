@@ -1,0 +1,67 @@
+On desktop right now the lesson‐selector button is being pulled out of the normal flow with `position: absolute` and you’re “faking” a centered title with an equally‐sized empty spacer. That works in a pinch, but it:
+
+1. **Misaligns on ultra–wide screens**  
+   Because you’re absolutely positioning the button against the full-width `<header>` (not the centered `.container`), on really large viewports it will drift left of the rest of your content.  
+2. **Is fragile**  
+   If your lesson title wraps to two lines, or you ever change the button’s padding/width, your “40 px spacer” will no longer perfectly counterbalance it and the heading will creep off–center.
+
+---
+
+### How to fix it
+
+#### 1) Switch to a true three-column flex or grid layout
+
+Remove **all** of the `position: absolute` on both the button and the spacer, and turn your `.lesson-header-content` into a three-cell layout:
+
+```css
+/* Pick one of these: */
+
+/* ── Option A: Flexbox ── */
+.lesson-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.lesson-selector-btn,
+.header-spacer {
+  /* Lock them to the same exact width */
+  flex: 0 0 40px;
+}
+
+.lesson-title {
+  flex: 1;
+  text-align: center;
+}
+
+/* ── Option B: CSS Grid ── */
+.lesson-header-content {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.lesson-title {
+  justify-self: center;
+}
+```
+
+And in your JSX **don’t** absolutely position anything:
+
+```diff
+- <button className="lesson-selector-btn" style={{ position: 'absolute', left: 20 }} …>
++ <button className="lesson-selector-btn" …>
+
+…
+
+- <div className="header-spacer" style={{ position: 'absolute', right: 20 }}></div>
++ <div className="header-spacer"></div>
+```
+
+#### 2) Result
+
+- The **button** will sit flush at the left edge of your `.container` (and never wander on ultra-wide screens).  
+- The **title** will always be perfectly centered between those two fixed-width slots.  
+- You’ve completely eliminated the “empty-div hack,” so future changes to button size, padding or title length won’t throw things out of whack.
