@@ -1052,7 +1052,7 @@ header .container {
   max-width: 350px;
   height: 100%;
   border-radius: 0;
-  padding: 15px;
+  padding: 12px;
   transform: translateX(100%);
   transition: transform 0.3s ease-in-out;
   margin: 0;
@@ -1071,10 +1071,39 @@ header .container {
 .mobile-drawer .lesson-list {
   flex: 1;
   overflow-y: auto;
-  padding: 5px 2px 20px 2px;
+  padding: 5px 2px 10px 2px;
+  margin-bottom: 0;
   /* Nice scrollbar for the list */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 102, 0, 0.3) transparent;
+  
+  /* Create space at the bottom to not overlap with content */
+  position: relative;
+  z-index: 10;
+  /* Make it taller to use all available vertical space */
+  max-height: calc(100vh - 100px);
+}
+
+/* Drawer backdrop - make it cover everything behind the drawer */
+.lesson-selector.mobile-drawer .lesson-selector-backdrop {
+  z-index: 5;
+}
+
+/* Content cover to hide content behind the drawer */
+.lesson-selector-content-cover {
+  display: none;
+}
+
+.lesson-selector.mobile-drawer.open .lesson-selector-content-cover {
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-color);
+  z-index: 9;
+  pointer-events: none;
 }
 
 .mobile-drawer .lesson-list::-webkit-scrollbar {
@@ -1088,6 +1117,12 @@ header .container {
 .mobile-drawer .lesson-list::-webkit-scrollbar-thumb {
   background-color: rgba(255, 102, 0, 0.3);
   border-radius: 10px;
+}
+
+/* Improve drawer content alignment */
+.mobile-drawer .lesson-selector-header {
+  margin-bottom: 3px;
+  padding-bottom: 8px;
 }
 
 .lesson-selector-header {
@@ -1180,6 +1215,9 @@ header .container {
   align-items: center;
   justify-content: center;
   transition: var(--transition);
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
 }
 
 .close-selector:hover {
@@ -1238,18 +1276,20 @@ header .container {
   color: white;
 }
 
-.lesson-item i {
+.lesson-icon {
   font-size: 16px;
   flex-shrink: 0;
+  line-height: 1;
+  margin-top: -2px;
 }
 
-.mobile-drawer .lesson-item i {
+.mobile-drawer .lesson-icon {
   font-size: 18px;
-  margin-top: 2px;
+  margin-top: 0;
 }
 
-.lesson-item.active i {
-  color: white;
+.lesson-item.active .lesson-icon {
+  filter: brightness(1.5);
 }
 
 /* Footer Styles */

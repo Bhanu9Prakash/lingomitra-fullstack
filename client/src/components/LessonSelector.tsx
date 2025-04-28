@@ -98,6 +98,8 @@ export default function LessonSelector({
         onClick={onClose}
         aria-label="Close selector"
       ></div>
+      {/* This is a full-screen overlay behind the drawer to hide content */}
+      <div className="lesson-selector-content-cover"></div>
       <div className="lesson-selector-content">
         <div className="lesson-selector-header">
           {isMobile && currentLanguage ? (
@@ -116,7 +118,7 @@ export default function LessonSelector({
                 onClick={onClose}
                 aria-label="Close lesson selector"
               >
-                <i className="fas fa-times"></i>
+                ✕
               </button>
             </div>
           ) : (
@@ -127,7 +129,7 @@ export default function LessonSelector({
                 onClick={onClose}
                 aria-label="Close lesson selector"
               >
-                <i className="fas fa-times"></i>
+                ✕
               </button>
             </>
           )}
@@ -158,7 +160,7 @@ export default function LessonSelector({
                   onClose();
                 }}
               >
-                <i className="fas fa-book"></i>
+                <span className="lesson-icon">📚</span>
                 <span>{displayTitle}</span>
               </div>
             );
