@@ -8,18 +8,12 @@ interface LessonContentProps {
   lesson: Lesson;
   isLoading: boolean;
   error?: string;
-  prevLesson?: Lesson | null;
-  nextLesson?: Lesson | null;
-  onNavigate?: (lessonId: string) => void;
 }
 
 export default function LessonContent({ 
   lesson, 
   isLoading,
-  error,
-  prevLesson,
-  nextLesson,
-  onNavigate
+  error 
 }: LessonContentProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
@@ -81,13 +75,6 @@ export default function LessonContent({
     return marked(lesson.content);
   };
 
-  // Handle lesson navigation
-  const handleNavigation = (lesson: Lesson | null) => {
-    if (lesson && onNavigate) {
-      onNavigate(lesson.lessonId);
-    }
-  };
-
   return (
     <div className="lesson-content">
       <div 
@@ -95,35 +82,6 @@ export default function LessonContent({
         className={`lesson-markdown ${isMobile ? 'mobile-view' : ''}`}
         dangerouslySetInnerHTML={{ __html: processContent() }}
       />
-      
-      {/* In-Card Navigation */}
-      {(prevLesson || nextLesson) && (
-        <div className="lesson-card-navigation">
-          <div className="card-nav-buttons">
-            {prevLesson ? (
-              <button 
-                className="card-nav-button prev-lesson" 
-                onClick={() => handleNavigation(prevLesson)}
-              >
-                <i className="fas fa-arrow-left"></i>
-                Previous: {prevLesson.title}
-              </button>
-            ) : (
-              <div className="nav-placeholder"></div>
-            )}
-            
-            {nextLesson && (
-              <button 
-                className="card-nav-button next-lesson" 
-                onClick={() => handleNavigation(nextLesson)}
-              >
-                Next: {nextLesson.title}
-                <i className="fas fa-arrow-right"></i>
-              </button>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }

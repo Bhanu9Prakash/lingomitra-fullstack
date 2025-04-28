@@ -986,67 +986,6 @@ header .container {
   transform: none;
 }
 
-/* In-Card Lesson Navigation */
-.lesson-card-navigation {
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-color);
-}
-
-.card-nav-buttons {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 15px;
-}
-
-.card-nav-button {
-  background-color: var(--bg-dark);
-  color: var(--text-color);
-  padding: 15px 20px;
-  border-radius: var(--border-radius);
-  border: 1px solid var(--border-color);
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: var(--transition);
-  flex: 1;
-  min-width: 200px;
-  max-width: 100%;
-}
-
-.card-nav-button:hover {
-  background-color: var(--primary-light);
-  color: white;
-  border-color: var(--primary-light);
-}
-
-.prev-lesson {
-  justify-content: flex-start;
-  text-align: left;
-}
-
-.next-lesson {
-  justify-content: flex-end;
-  text-align: right;
-}
-
-.nav-placeholder {
-  flex: 1;
-}
-
-@media (max-width: 768px) {
-  .card-nav-buttons {
-    flex-direction: column;
-  }
-  
-  .card-nav-button {
-    width: 100%;
-    max-width: none;
-  }
-}
-
 .lesson-selector {
   position: fixed;
   top: 0;
