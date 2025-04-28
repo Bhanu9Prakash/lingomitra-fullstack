@@ -80,7 +80,15 @@ export default function LessonSelector({
       'zh': 'Chinese',
       'ja': 'Japanese'
     }[languageCode] || languageCode,
-    flag: languageCode
+    // Map language codes to flag codes (some differ from language code)
+    flagCode: {
+      'de': 'de',
+      'fr': 'fr',
+      'es': 'es',
+      'hi': 'hi',
+      'zh': 'zh',
+      'ja': 'jp'
+    }[languageCode] || languageCode
   } : null;
 
   return (
@@ -95,7 +103,12 @@ export default function LessonSelector({
           {isMobile && currentLanguage ? (
             <div className="mobile-drawer-header">
               <div className="language-info">
-                <span className={`flag-icon flag-icon-${currentLanguage.flag.toLowerCase()}`}></span>
+                <div className="language-flag">
+                  <img 
+                    src={`/flags/${currentLanguage.flagCode}.svg`} 
+                    alt={`${currentLanguage.name} Flag`}
+                  />
+                </div>
                 <h2>{currentLanguage.name} <span className="subtitle">Lessons</span></h2>
               </div>
               <button 

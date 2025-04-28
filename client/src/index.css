@@ -1124,68 +1124,21 @@ header .container {
   gap: 12px;
 }
 
-.language-info .flag-icon {
-  width: 30px;
-  height: 20px;
+.language-flag {
+  display: inline-block;
+  width: 36px;
+  height: 24px;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: inline-block;
-  background-size: cover;
-  background-position: center;
+  overflow: hidden;
   position: relative;
-  background-color: var(--bg-light);
 }
 
-/* Language flags */
-.flag-icon-de::before {
-  content: "🇩🇪";
-  position: absolute;
-  font-size: 24px;
-  left: 3px;
-  top: -2px;
-}
-
-.flag-icon-fr::before {
-  content: "🇫🇷";
-  position: absolute;
-  font-size: 24px;
-  left: 3px;
-  top: -2px;
-}
-
-.flag-icon-es::before {
-  content: "🇪🇸";
-  position: absolute;
-  font-size: 24px;
-  left: 3px;
-  top: -2px;
-}
-
-.flag-icon-zh::before,
-.flag-icon-cn::before {
-  content: "🇨🇳";
-  position: absolute;
-  font-size: 24px;
-  left: 3px;
-  top: -2px;
-}
-
-.flag-icon-hi::before,
-.flag-icon-in::before {
-  content: "🇮🇳";
-  position: absolute;
-  font-size: 24px;
-  left: 3px;
-  top: -2px;
-}
-
-.flag-icon-ja::before,
-.flag-icon-jp::before {
-  content: "🇯🇵";
-  position: absolute;
-  font-size: 24px;
-  left: 3px;
-  top: -2px;
+.language-flag img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .language-info h2 {
