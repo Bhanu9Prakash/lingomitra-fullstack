@@ -720,6 +720,7 @@ header .container {
   justify-content: center;
   align-items: center;
   position: relative;
+  padding: 12px 0; /* Add some vertical padding */
 }
 
 .header-spacer {
@@ -740,9 +741,22 @@ header .container {
 }
 
 .lesson-title h1 {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 800;
   color: var(--text-color);
+}
+
+/* Responsive text size adjustments */
+@media (max-width: 768px) {
+  .lesson-title h1 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 576px) {
+  .lesson-title h1 {
+    font-size: 20px;
+  }
 }
 
 .lesson-language {
@@ -782,12 +796,22 @@ header .container {
     padding: 12px 15px; /* Add horizontal padding */
   }
   
+  /* Override desktop-specific settings for mobile */
+  .lesson-header-content {
+    padding: 0; /* Remove vertical padding for mobile */
+  }
+  
   /* Override absolute positioning for mobile */
   .lesson-selector-btn {
     position: static; /* Reset absolute positioning for mobile */
     padding: 8px;
     width: 40px;
     flex-shrink: 0; /* Prevent button from shrinking */
+  }
+  
+  /* Make spacer invisible in mobile view */
+  .header-spacer {
+    display: none;
   }
   
   /* Add more spacing to lesson content in mobile view */
