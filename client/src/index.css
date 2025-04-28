@@ -734,7 +734,7 @@ header .container {
 @media (max-width: 576px) {
   /* Adjust mobile header layout for small screens */
   .mobile-lesson-header {
-    justify-content: center; /* Center items on very small screens */
+    justify-content: flex-start; /* Keep items left-aligned */
     padding: 10px 15px; /* Add horizontal padding */
   }
   
