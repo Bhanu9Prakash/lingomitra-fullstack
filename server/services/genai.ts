@@ -81,13 +81,8 @@ export async function generateGeminiResponse(lesson: Lesson, userMessage: string
       }
     });
     
-    // Extract the text from the response
-    if (!result.response) {
-      throw new Error('Empty response from Gemini API');
-    }
-    
-    // Access the text from the response
-    const responseText = result.response.text();
+    // Extract the text from the response using the text getter
+    const responseText = result.text;
     
     if (!responseText) {
       throw new Error('Empty response text from Gemini API');
