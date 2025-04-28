@@ -657,13 +657,17 @@ header .container {
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
+  max-width: 100%;
+  overflow: hidden; /* Prevent overflow */
 }
 
 .mobile-lesson-title {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  flex: 1;
+  justify-content: flex-end; /* Right align the text */
+  padding-left: 15px; /* Add padding to prevent text from being too close to the button */
+  min-width: 0; /* Allow flex item to shrink below content size */
+  max-width: calc(100% - 50px); /* Give room for the button */
 }
 
 .mobile-lesson-title span {
@@ -671,6 +675,8 @@ header .container {
   font-weight: 600;
   white-space: nowrap;
   color: var(--text-color);
+  overflow: hidden;
+  text-overflow: ellipsis; /* Add ellipsis if text is too long */
 }
 
 /* Lesson header layout */
@@ -723,6 +729,21 @@ header .container {
   align-items: center;
   gap: 8px;
   transition: var(--transition);
+  min-width: 40px; /* Ensure minimum width */
+}
+
+/* Smaller, more compact button on mobile */
+@media (max-width: 576px) {
+  .lesson-selector-btn {
+    padding: 8px;
+    width: 40px;
+    justify-content: center;
+  }
+  
+  /* Hide text, only show icon on mobile */
+  .lesson-selector-btn span {
+    display: none;
+  }
 }
 
 .lesson-selector-btn:hover {
