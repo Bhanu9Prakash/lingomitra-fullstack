@@ -636,15 +636,14 @@ header .container {
 
 .lesson-header {
   padding: 15px 0;
-  background-color: #222; /* Dark background */
-  border-bottom: 1px solid #333;
+  background-color: var(--bg-light); /* Different background than main header */
+  border-bottom: 1px solid var(--border-color);
   margin-bottom: 30px;
   position: sticky;
   top: 72px; /* Position below the main header (adjust this value based on main header height) */
   z-index: 800; /* Below main header but above other content */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Different shadow from main header for visual distinction */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Different shadow from main header for visual distinction */
   transition: box-shadow 0.3s ease, background-color 0.3s ease;
-  color: white; /* Light text for dark background */
 }
 
 .lesson-header-content {
@@ -678,7 +677,7 @@ header .container {
   font-size: 15px;
   font-weight: 600;
   white-space: nowrap;
-  color: white; /* White text for dark background */
+  color: var(--text-color);
   overflow: hidden;
   text-overflow: ellipsis; /* Add ellipsis for very long titles */
 }
@@ -693,7 +692,7 @@ header .container {
   overflow: hidden;
   font-size: 14px;
   font-weight: 700;
-  color: white; /* White text for dark background */
+  color: var(--text-color);
   padding: 4px 0;
 }
 
@@ -744,7 +743,7 @@ header .container {
 .lesson-title h1 {
   font-size: 24px;
   font-weight: 800;
-  color: white; /* White text for dark background */
+  color: var(--text-color);
 }
 
 /* Responsive text size adjustments */
@@ -772,9 +771,9 @@ header .container {
 }
 
 .lesson-selector-btn {
-  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
   padding: 8px;
   border-radius: var(--border-radius);
   font-weight: 600;
@@ -786,9 +785,7 @@ header .container {
   height: 40px;
   min-width: 40px; /* Ensure minimum width */
   position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%); /* Center vertically */
+  left: 20px;
 }
 
 /* Adjust for mobile screens */
