@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Lesson } from "@shared/schema";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
+import { generateChatResponse, AIMessage } from "@/lib/ai-service";
 
 interface Message {
   role: "user" | "assistant";
@@ -41,28 +42,31 @@ export default function ChatUI({ lesson }: ChatUIProps) {
     setIsLoading(true);
     
     try {
-      // This is a placeholder for the OpenAI API integration
-      // In a production app, this would be replaced with actual API calls
+      // Get all messages for the conversation context
+      const conversationMessages = messages.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      })) as AIMessage[];
       
-      // Note: In the real implementation, we would check for an OpenAI API key
-      // const apiKey = process.env.OPENAI_API_KEY;
+      // Add the new user message
+      conversationMessages.push({
+        role: "user",
+        content: input
+      });
       
-      // For demo purposes, we'll simulate a response after a short delay
-      setTimeout(() => {
-        // In production, this would be replaced with a real API call
-        // if (!apiKey) {
-        //   throw new Error("OpenAI API key not found");
-        // }
-        
-        const assistantResponse: Message = { 
-          role: "assistant", 
-          content: `I understand you're asking about "${input}". This is related to our lesson "${lesson.title}". 
-          
-As this is a demo, I'm providing a simulated response. In a production version, this would connect to the OpenAI API to generate a helpful, contextual response about the lesson content.`
-        };
-        setMessages(prev => [...prev, assistantResponse]);
-        setIsLoading(false);
-      }, 1000);
+      // Get response from Google Gemini AI with lesson context
+      const aiResponse = await generateChatResponse(
+        conversationMessages, 
+        lesson.content
+      );
+      
+      // Add AI response to chat
+      const assistantResponse: Message = { 
+        role: "assistant", 
+        content: aiResponse
+      };
+      
+      setMessages(prev => [...prev, assistantResponse]);
       
     } catch (error) {
       console.error("Error getting AI response:", error);
@@ -71,6 +75,7 @@ As this is a demo, I'm providing a simulated response. In a production version, 
         content: `I'm sorry, I encountered an error. ${DEFAULT_ERROR_MESSAGE}`
       };
       setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
     }
   };
