@@ -106,7 +106,8 @@ export async function readAllLessons(coursesDir: string, languageCodes: string[]
       'fr': 'french',
       'hi': 'hindi',
       'zh': 'chinese',
-      'ja': 'japanese'
+      'ja': 'japanese',
+      'kn': 'kannada'
     };
     
     for (const languageCode of languageCodes) {

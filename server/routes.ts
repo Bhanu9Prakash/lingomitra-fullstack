@@ -53,6 +53,13 @@ const languages = [
     speakers: 126,
     isAvailable: true,
   },
+  {
+    code: "kn",
+    name: "Kannada",
+    flagCode: "in-kn", // Using 'in-kn' for Karnataka state in India
+    speakers: 45,
+    isAvailable: true,
+  },
 ];
 
 const germanLessons = [
