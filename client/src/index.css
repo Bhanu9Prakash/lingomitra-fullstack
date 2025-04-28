@@ -717,13 +717,16 @@ header .container {
 /* Lesson header layout */
 .lesson-header-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .header-spacer {
   /* Empty div for flex spacing */
-  width: 100px; /* Match the width of the lesson selector button */
+  width: 40px; /* Match the width of the lesson selector button */
+  position: absolute;
+  right: 20px;
 }
 
 /* This duplicate class was removed to avoid styling conflicts */
@@ -767,6 +770,8 @@ header .container {
   width: 40px;
   height: 40px;
   min-width: 40px; /* Ensure minimum width */
+  position: absolute;
+  left: 20px;
 }
 
 /* Adjust for mobile screens */
@@ -777,7 +782,9 @@ header .container {
     padding: 12px 15px; /* Add horizontal padding */
   }
   
+  /* Override absolute positioning for mobile */
   .lesson-selector-btn {
+    position: static; /* Reset absolute positioning for mobile */
     padding: 8px;
     width: 40px;
     flex-shrink: 0; /* Prevent button from shrinking */
