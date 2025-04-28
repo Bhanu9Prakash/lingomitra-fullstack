@@ -688,6 +688,27 @@ header .container {
   -webkit-line-clamp: 2; /* Limit to 2 lines */
   -webkit-box-orient: vertical;
   overflow: hidden;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-color);
+  padding: 4px 0;
+}
+
+/* Enhanced mobile lesson header */
+@media (max-width: 576px) {
+  .lesson-header {
+    padding: 10px 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mobile-lesson-header {
+    min-height: 45px; /* Ensure consistent height */
+  }
+  
+  /* Hide the first H1 title in lesson content on mobile */
+  .lesson-markdown.mobile-view > h1:first-of-type {
+    display: none;
+  }
 }
 
 /* Lesson header layout */
@@ -748,18 +769,24 @@ header .container {
   /* Adjust mobile header layout for small screens */
   .mobile-lesson-header {
     justify-content: flex-start; /* Keep items left-aligned */
-    padding: 10px 15px; /* Add horizontal padding */
+    padding: 12px 15px; /* Add horizontal padding */
   }
   
   .lesson-selector-btn {
     padding: 8px;
     width: 40px;
     justify-content: center;
+    flex-shrink: 0; /* Prevent button from shrinking */
   }
   
   /* Hide text, only show icon on mobile */
   .lesson-selector-btn span {
     display: none;
+  }
+  
+  /* Add more spacing to lesson content in mobile view */
+  .lesson-markdown.mobile-view {
+    padding-top: 15px;
   }
 }
 

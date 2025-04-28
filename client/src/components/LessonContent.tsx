@@ -59,12 +59,28 @@ export default function LessonContent({
     );
   }
 
+  // Function to process content and hide the first h1 title on mobile
+  const processContent = () => {
+    if (isMobile) {
+      // On mobile, hide the first H1 title since it's displayed in the header
+      const parsed = lesson.content;
+      
+      // Get content without the first H1 header (attempt to find and remove the first title)
+      const titlePattern = /^#\s+.+(\r\n|\n|\r)/;
+      const processedContent = parsed.replace(titlePattern, '');
+      
+      return marked(processedContent);
+    }
+    
+    return marked(lesson.content);
+  };
+
   return (
     <div className="lesson-content">
       <div 
         ref={contentRef}
-        className="lesson-markdown"
-        dangerouslySetInnerHTML={{ __html: marked(lesson.content) }}
+        className={`lesson-markdown ${isMobile ? 'mobile-view' : ''}`}
+        dangerouslySetInnerHTML={{ __html: processContent() }}
       />
     </div>
   );
