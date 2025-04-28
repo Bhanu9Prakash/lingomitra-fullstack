@@ -41,16 +41,24 @@ export default function ChatUI({ lesson }: ChatUIProps) {
     setIsLoading(true);
     
     try {
-      // Here you would typically call your AI service
-      // For now, we'll simulate a response
+      // This is a placeholder for the OpenAI API integration
+      // In a production app, this would be replaced with actual API calls
       
-      // Note: In a real implementation, you would send a request to OpenAI or your backend
-      // that handles the OpenAI integration using the OPENAI_API_KEY
+      // Note: In the real implementation, we would check for an OpenAI API key
+      // const apiKey = process.env.OPENAI_API_KEY;
       
+      // For demo purposes, we'll simulate a response after a short delay
       setTimeout(() => {
+        // In production, this would be replaced with a real API call
+        // if (!apiKey) {
+        //   throw new Error("OpenAI API key not found");
+        // }
+        
         const assistantResponse: Message = { 
           role: "assistant", 
-          content: `I understand you're asking about "${input}". This is related to our lesson "${lesson.title}". Let me help you with that...`
+          content: `I understand you're asking about "${input}". This is related to our lesson "${lesson.title}". 
+          
+As this is a demo, I'm providing a simulated response. In a production version, this would connect to the OpenAI API to generate a helpful, contextual response about the lesson content.`
         };
         setMessages(prev => [...prev, assistantResponse]);
         setIsLoading(false);

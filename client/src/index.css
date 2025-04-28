@@ -1846,14 +1846,18 @@ footer {
 .chat-ui {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  max-height: calc(80vh - 100px);
-  border-radius: var(--border-radius);
+  height: calc(100vh - 120px); /* Full height minus header */
+  position: fixed;
+  top: 100px; /* Approx header height */
+  left: 0;
+  right: 0;
+  max-width: 1200px;
+  margin: 0 auto;
   background-color: var(--bg-color);
   box-shadow: var(--shadow);
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  margin-bottom: 20px;
+  border-top: 1px solid var(--border-color);
+  z-index: 5;
 }
 
 .chat-messages {
@@ -1863,7 +1867,7 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  max-height: calc(80vh - 170px);
+  height: calc(100vh - 230px); /* Full height minus header and input area */
 }
 
 .chat-message {
@@ -2037,15 +2041,19 @@ footer {
 
 @media (max-width: 768px) {
   .chat-ui {
-    height: 100%;
-    max-height: none;
+    height: calc(100vh - 80px); /* Mobile header is slightly smaller */
+    top: 80px;
+    position: fixed;
+    left: 0;
+    right: 0;
     border-radius: 0;
     border-left: 0;
     border-right: 0;
+    z-index: 10;
   }
   
   .chat-messages {
-    max-height: calc(70vh - 120px);
+    height: calc(100vh - 170px); /* Adjusted for mobile */
     padding: 15px 10px;
   }
   

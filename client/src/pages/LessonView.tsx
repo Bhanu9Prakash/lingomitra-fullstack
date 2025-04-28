@@ -168,7 +168,7 @@ export default function LessonView() {
             <div className="loading-spinner"></div>
           </div>
         ) : isChatActive ? (
-          /* AI Tutor Chat UI */
+          /* AI Tutor Chat UI - renders in full screen */
           <ChatUI lesson={currentLesson} />
         ) : (
           /* Regular Lesson Content */
