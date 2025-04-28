@@ -1872,7 +1872,7 @@ footer {
 .chat-message {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 8px;
   max-width: 85%;
   animation: fadeIn 0.3s ease;
 }
@@ -1898,14 +1898,14 @@ footer {
 }
 
 .chat-message.assistant .avatar {
-  background-color: var(--primary-light);
+  background-color: transparent;
   color: var(--primary-color);
-  padding: 4px;
+  padding: 0;
 }
 
 .chat-bot-icon {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
 }
 

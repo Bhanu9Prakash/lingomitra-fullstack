@@ -101,7 +101,7 @@ As this is a demo, I'm providing a simulated response. In a production version, 
         {isLoading && (
           <div className="chat-message assistant">
             <div className="avatar">
-              <img src="/chat-icon.svg" alt="AI" className="chat-bot-icon" />
+              <img src="/tutor-icon.svg" alt="AI Tutor" className="chat-bot-icon" />
             </div>
             <div className="message-content typing">
               <span className="dot"></span>
