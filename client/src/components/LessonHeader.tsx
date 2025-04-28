@@ -28,27 +28,24 @@ export default function LessonHeader({
     <header className="lesson-header">
       <div className="container">
         {isMobile ? (
-          // Mobile layout - simplified single row header with space-between layout
+          // Mobile layout - simplified single row header with fixed spacing
           <div className="mobile-lesson-header">
-            {/* Left section with button and title */}
-            <div className="mobile-lesson-left">
-              {/* Lesson selector button */}
-              <button 
-                className="lesson-selector-btn"
-                onClick={onOpenLessonSelector}
-                aria-label="View all lessons"
-              >
-                <i className="fas fa-list"></i>
-              </button>
-              
-              {/* Full lesson title with lesson number */}
-              <div className="mobile-lesson-title">
-                {currentLesson && (
-                  <span className="full-lesson-title">
-                    Lesson {getLessonNumber(currentLesson.lessonId)}: {currentLesson.title}
-                  </span>
-                )}
-              </div>
+            {/* Lesson selector button (left) */}
+            <button 
+              className="lesson-selector-btn"
+              onClick={onOpenLessonSelector}
+              aria-label="View all lessons"
+            >
+              <i className="fas fa-list"></i>
+            </button>
+            
+            {/* Full lesson title with lesson number */}
+            <div className="mobile-lesson-title">
+              {currentLesson && (
+                <span className="full-lesson-title">
+                  Lesson {getLessonNumber(currentLesson.lessonId)}: {currentLesson.title}
+                </span>
+              )}
             </div>
             
             {/* Chat toggle button (right) */}

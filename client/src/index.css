@@ -802,18 +802,12 @@ header .container {
 .mobile-lesson-header {
   width: 100%;
   display: flex;
-  justify-content: space-between; /* Change to space-between to push chat icon to right */
+  justify-content: flex-start; /* Pack items at the start instead of space-between */
   align-items: center;
   padding: 10px 0;
   max-width: 100%;
   overflow: hidden; /* Prevent overflow */
-}
-
-/* Wrapper for lesson button and title */
-.mobile-lesson-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 12px; /* Add consistent gap between items */
 }
 
 .mobile-lesson-title {
@@ -822,6 +816,7 @@ header .container {
   justify-content: flex-start; /* Left-align the text */
   min-width: 0; /* Allow flex item to shrink below content size */
   flex: 1; /* Take available space */
+  margin-right: 10px; /* Add some right margin */
 }
 
 .mobile-lesson-title span {
@@ -939,6 +934,7 @@ header .container {
 @media (max-width: 576px) {
   /* Adjust mobile header layout for small screens */
   .mobile-lesson-header {
+    justify-content: flex-start; /* Keep items left-aligned */
     padding: 12px 0; /* Remove horizontal padding to match container */
   }
   
