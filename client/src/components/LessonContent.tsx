@@ -24,20 +24,19 @@ export default function LessonContent({
   const contentRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
-  // Initialize marked configuration
   useEffect(() => {
+    // Initialize marked configuration
     markedConfig();
   }, []);
   
-  // Scroll to top when lesson changes
   useEffect(() => {
-    if (!isLoading && lesson && contentRef.current) {
+    // Scroll to top when lesson changes
+    if (contentRef.current) {
       contentRef.current.scrollTop = 0;
       window.scrollTo(0, 0);
     }
-  }, [lesson, isLoading]);
+  }, [lesson]);
 
-  // Handle loading and error states
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -66,73 +65,94 @@ export default function LessonContent({
     );
   }
 
-  // Process content for display
+  // Function to process content and hide the first h1 title on mobile
   const processContent = () => {
+    // Get the content with appropriate processing
     let contentToUse = lesson.content;
     
     if (isMobile) {
       // On mobile, hide the first H1 title since it's displayed in the header
+      // Get content without the first H1 header (attempt to find and remove the first title)
       const titlePattern = /^#\s+.+(\r\n|\n|\r)/;
       contentToUse = contentToUse.replace(titlePattern, '');
     }
     
-    // Remove any trailing horizontal rules
+    // Remove any trailing horizontal rules to avoid duplicate separators
     const trailingHRPattern = /(\r\n|\n|\r)-{3,}(\r\n|\n|\r)*$/;
     contentToUse = contentToUse.replace(trailingHRPattern, '');
     
     return marked(contentToUse);
   };
 
-  // Handle navigation
-  const handlePrevClick = () => {
-    if (prevLesson) {
-      onNavigate(prevLesson.lessonId);
-    }
+  // Create a new combined content with navigation buttons
+  const combinedContent = () => {
+    const lessonHtml = processContent();
+    
+    const navigationHtml = `
+      <!-- Remove the hr before the navigation -->
+      <div class="lesson-navigation">
+        ${prevLesson ? 
+          `<button class="nav-button prev-button" data-lesson-id="${prevLesson.lessonId}">
+            <i class="fas fa-arrow-left"></i>
+            <span>Previous: ${prevLesson.title}</span>
+          </button>` 
+          : 
+          `<div></div>`
+        }
+        
+        ${nextLesson ? 
+          `<button class="nav-button next-button" data-lesson-id="${nextLesson.lessonId}">
+            <span>Next: ${nextLesson.title}</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>` 
+          : 
+          `<button class="nav-button disabled">
+            <span>Course Complete</span>
+            <i class="fas fa-check-circle"></i>
+          </button>`
+        }
+      </div>
+    `;
+    
+    return lessonHtml + navigationHtml;
   };
-
-  const handleNextClick = () => {
-    if (nextLesson) {
-      onNavigate(nextLesson.lessonId);
+  
+  // Add event handlers after component mounts or updates
+  useEffect(() => {
+    if (!isLoading && lesson) {
+      // Add click handlers for navigation buttons
+      const prevButton = document.querySelector('.prev-button');
+      if (prevButton && prevLesson) {
+        prevButton.addEventListener('click', () => onNavigate(prevLesson.lessonId));
+      }
+      
+      const nextButton = document.querySelector('.next-button');
+      if (nextButton && nextLesson) {
+        nextButton.addEventListener('click', () => onNavigate(nextLesson.lessonId));
+      }
     }
-  };
+    
+    // Cleanup
+    return () => {
+      const prevButton = document.querySelector('.prev-button');
+      if (prevButton) {
+        prevButton.removeEventListener('click', () => {});
+      }
+      
+      const nextButton = document.querySelector('.next-button');
+      if (nextButton) {
+        nextButton.removeEventListener('click', () => {});
+      }
+    };
+  }, [lesson, nextLesson, prevLesson, onNavigate, isLoading]);
 
   return (
     <div className="lesson-content">
       <div 
         ref={contentRef}
         className={`lesson-markdown ${isMobile ? 'mobile-view' : ''}`}
-        dangerouslySetInnerHTML={{ __html: processContent() }}
+        dangerouslySetInnerHTML={{ __html: combinedContent() }}
       />
-      
-      {/* Navigation buttons */}
-      <div className="lesson-navigation">
-        {prevLesson ? (
-          <button 
-            className="nav-button" 
-            onClick={handlePrevClick}
-          >
-            <i className="fas fa-arrow-left"></i>
-            <span>Previous: {prevLesson.title}</span>
-          </button>
-        ) : (
-          <div></div> // Empty div for spacing
-        )}
-        
-        {nextLesson ? (
-          <button 
-            className="nav-button" 
-            onClick={handleNextClick}
-          >
-            <span>Next: {nextLesson.title}</span>
-            <i className="fas fa-arrow-right"></i>
-          </button>
-        ) : (
-          <button className="nav-button disabled">
-            <span>Course Complete</span>
-            <i className="fas fa-check-circle"></i>
-          </button>
-        )}
-      </div>
     </div>
   );
 }
