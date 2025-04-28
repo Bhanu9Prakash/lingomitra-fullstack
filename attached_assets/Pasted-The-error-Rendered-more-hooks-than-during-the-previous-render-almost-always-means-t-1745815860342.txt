@@ -1,0 +1,80 @@
+The error
+
+```
+Rendered more hooks than during the previous render.
+```
+
+almost always means that on one render you called, say, 4 hooks, and on another render you called 5. In your case the culprit is the third `useEffect` (the one that wires up your “Previous”/“Next” buttons) being *below* your early `return`-statements:
+
+```tsx
+// — these hooks always run —
+const contentRef = useRef<HTMLDivElement>(null)
+const isMobile   = useIsMobile()
+
+useEffect(/* marked config */, [])
+useEffect(/* scroll to top */, [lesson])
+
+if (isLoading)  return <Loading…/>
+if (error)      return <Error…/>
+if (!lesson)    return <NoLesson…/>
+
+//
+// ← only *after* those returns do you hit this useEffect
+//
+useEffect(/* attach navigation listeners */, [lesson, nextLesson,…])
+```
+
+When `isLoading===true` (or `error`/`!lesson`) React bails out *before* it ever reaches that third `useEffect`, so you only invoked 4 hooks. Then once your lesson finally arrives, you hit that extra `useEffect` and suddenly you’ve tried to invoke 5 hooks. React sees the mismatch and throws.
+
+---
+
+## Fix
+
+**Move all your `useEffect` calls (and any other hooks) *above* any early return.** You can still guard inside the effect callback, but the *declaration* of the hook must be unconditional.
+
+```diff
+ export default function LessonContent({ /*…*/ }: LessonContentProps) {
+-  // hook #1
+   const contentRef = useRef<HTMLDivElement>(null);
+-  // hook #2
+   const isMobile   = useIsMobile();
+
++  // hook #1: marked config
+   useEffect(() => {
+     markedConfig();
+   }, []);
+
++  // hook #2: scroll to top on lesson change
+   useEffect(() => {
+     if (contentRef.current) contentRef.current.scrollTop = 0;
+     window.scrollTo(0, 0);
+   }, [lesson]);
+
++  // hook #3: wire up nav buttons (guards inside)
+   useEffect(() => {
+     if (isLoading || !lesson) return;
+     const prevBtn = document.getElementById("prev-lesson-btn");
+     const nextBtn = document.getElementById("next-lesson-btn");
+
+     const handlePrev = () => prevLesson && onNavigate(prevLesson.lessonId);
+     const handleNext = () => nextLesson && onNavigate(nextLesson.lessonId);
+
+     prevBtn?.addEventListener("click", handlePrev);
+     nextBtn?.addEventListener("click", handleNext);
+
+     return () => {
+       prevBtn?.removeEventListener("click", handlePrev);
+       nextBtn?.removeEventListener("click", handleNext);
+     };
+   }, [isLoading, lesson, prevLesson, nextLesson, onNavigate]);
+
+   // now your early returns are safe:
+   if (isLoading) return <Loading…/>;
+   if (error)     return <Error…/>;
+   if (!lesson)   return <NoLesson…/>;
+
+   // …rest of render…
+ }
+```
+
+With all three hooks declared *before* any `return`, every render will always call the same number of hooks (in the same order), and the error will go away.
