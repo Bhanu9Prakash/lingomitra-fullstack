@@ -135,6 +135,11 @@ export default function ChatUI({ lesson }: ChatUIProps) {
                 components={{
                   p: ({ children }) => <p className="mb-2">{children}</p>,
                   code: ({ className, children, ...props }: any) => {
+                    // Handle empty code blocks
+                    if (!children || (typeof children === 'string' && children.trim() === '')) {
+                      return null; // Don't render empty code blocks
+                    }
+                    
                     const isInline = !props.node?.position?.start.line;
                     return isInline ? (
                       <code className={`inline-code ${className || ''}`} {...props}>

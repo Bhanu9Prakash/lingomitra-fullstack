@@ -27,6 +27,36 @@ const getDefaultScratchPad = (): ScratchPad => ({
 });
 
 /**
+ * Clean AI responses of any ScratchPad content and markdown artifacts
+ */
+const cleanResponse = (text: string): string => {
+  let cleaned = text;
+  
+  // Remove [SCRATCHPAD] markers and their content
+  cleaned = cleaned.replace(/\[SCRATCHPAD\][\s\S]*?```[\s\S]*?```/g, '');
+  cleaned = cleaned.replace(/\[SCRATCHPAD\]/g, '');
+  
+  // Remove empty code blocks
+  cleaned = cleaned.replace(/```[\s\n]*```/g, '');
+  cleaned = cleaned.replace(/```[a-z]*[\s\n]*```/g, '');
+  
+  // Remove trailing/leading backticks
+  cleaned = cleaned.replace(/```\s*$/g, '');
+  cleaned = cleaned.replace(/^\s*```/g, '');
+  
+  // Remove alternative triple backtick styles
+  cleaned = cleaned.replace(/`\s*`\s*`/g, '');
+  
+  // Remove standalone backtick pairs
+  cleaned = cleaned.replace(/([^\w`])`{1,2}([^\w`])/g, '$1$2');
+  
+  // Trim any excess whitespace
+  cleaned = cleaned.trim();
+  
+  return cleaned;
+};
+
+/**
  * POST /api/chat/init
  * Initialize a chat session with a greeting based on the lesson
  */
@@ -54,8 +84,12 @@ router.post('/init', async (req: Request, res: Response) => {
     
 IMPORTANT: Keep your response extremely short and focused. Start by teaching only the absolute basics. Always introduce new vocabulary or concepts before asking students to use them. Begin with a single teaching point, explain it clearly in 2-3 sentences max, and only then ask a simple practice question.`;
     
-    const response = await generateGeminiResponse(lesson, initialPrompt);
+    // Get the initial response
+    let response = await generateGeminiResponse(lesson, initialPrompt);
     const scratchPad = getDefaultScratchPad();
+    
+    // Apply the cleaning function
+    response = cleanResponse(response);
     
     return res.json({ 
       response,
@@ -153,48 +187,70 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
       }
     }
     
-    // Remove any remaining JSON that appears to be a scratchpad
+    // Apply the cleaning function to remove ScratchPad content and markdown artifacts
+    responseText = cleanResponse(responseText);
     
-    // Remove any [SCRATCHPAD] text and backticks that might remain
-    responseText = responseText.replace(/\[SCRATCHPAD\]\s*```/g, '');
-    responseText = responseText.replace(/\[SCRATCHPAD\]/g, '');
-    
-    // Remove any isolated triple backticks that might remain at the end of the text
-    responseText = responseText.replace(/```\s*$/g, '');
-    
-    // First try to match just the JSON portion with knownVocabulary
-    if (responseText.includes('"knownVocabulary"')) {
-      // Find the starting position of a JSON object containing ScratchPad content
-      const startPos = responseText.indexOf('{');
-      if (startPos !== -1) {
+    // Attempt to detect and remove any lingering JSON that looks like a ScratchPad
+    const removeScratchPadJSON = (text: string): string => {
+      // Only proceed if there are keywords suggesting ScratchPad content
+      if (!text.includes('"knownVocabulary"') && 
+          !text.includes('"knownStructures"') && 
+          !text.includes('"struggles"') && 
+          !text.includes('"nextFocus"')) {
+        return text;
+      }
+      
+      // Find all potential JSON objects in the text
+      let result = text;
+      let jsonStartPos = result.indexOf('{');
+      
+      while (jsonStartPos !== -1) {
         // Find the matching closing brace
         let depth = 0;
-        let endPos = -1;
+        let jsonEndPos = -1;
         
-        for (let i = startPos; i < responseText.length; i++) {
-          if (responseText[i] === '{') {
+        for (let i = jsonStartPos; i < result.length; i++) {
+          if (result[i] === '{') {
             depth++;
-          } else if (responseText[i] === '}') {
+          } else if (result[i] === '}') {
             depth--;
             if (depth === 0) {
-              endPos = i + 1;
+              jsonEndPos = i + 1;
               break;
             }
           }
         }
         
-        if (endPos !== -1) {
-          const jsonPart = responseText.substring(startPos, endPos);
-          // Only remove if it looks like a ScratchPad
-          if (jsonPart.includes('"knownVocabulary"') && 
-              jsonPart.includes('"knownStructures"') && 
-              jsonPart.includes('"struggles"') && 
-              jsonPart.includes('"nextFocus"')) {
-            responseText = responseText.substring(0, startPos) + responseText.substring(endPos);
+        if (jsonEndPos !== -1) {
+          const jsonPart = result.substring(jsonStartPos, jsonEndPos);
+          
+          // Only remove if it looks like a ScratchPad (has at least 3 of the 4 fields)
+          let scratchPadFieldCount = 0;
+          if (jsonPart.includes('"knownVocabulary"')) scratchPadFieldCount++;
+          if (jsonPart.includes('"knownStructures"')) scratchPadFieldCount++;
+          if (jsonPart.includes('"struggles"')) scratchPadFieldCount++;
+          if (jsonPart.includes('"nextFocus"')) scratchPadFieldCount++;
+          
+          if (scratchPadFieldCount >= 3) {
+            // Remove the JSON part
+            result = result.substring(0, jsonStartPos) + result.substring(jsonEndPos);
+            // Continue searching from the current position
+            jsonStartPos = result.indexOf('{', jsonStartPos);
+          } else {
+            // Move to the next JSON object, if any
+            jsonStartPos = result.indexOf('{', jsonStartPos + 1);
           }
+        } else {
+          // No matching closing brace, exit the loop
+          break;
         }
       }
-    }
+      
+      return result.trim();
+    };
+    
+    // Apply the JSON cleaning
+    responseText = removeScratchPadJSON(responseText);
     
     return res.json({ 
       response: responseText,
