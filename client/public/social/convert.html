@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SVG to PNG Converter</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    #instructions {
+      margin-bottom: 20px;
+    }
+    #svg-container {
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #ff6600;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #e55b00;
+    }
+  </style>
+</head>
+<body>
+  <div id="instructions">
+    <h1>SVG to PNG Converter</h1>
+    <p>Click the button below to convert the SVG to a PNG. The download will begin automatically.</p>
+  </div>
+  
+  <div id="svg-container">
+    <!-- SVG will be loaded here -->
+  </div>
+  
+  <button id="convert-btn">Convert and Download PNG</button>
+  
+  <script>
+    // Load the SVG
+    const svgContainer = document.getElementById('svg-container');
+    fetch('og-image.svg')
+      .then(response => response.text())
+      .then(svgContent => {
+        svgContainer.innerHTML = svgContent;
+      });
+    
+    // Convert to PNG and download
+    document.getElementById('convert-btn').addEventListener('click', function() {
+      const svgElement = svgContainer.querySelector('svg');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas dimensions to match SVG
+      canvas.width = 1200;
+      canvas.height = 630;
+      
+      // Create image from SVG
+      const img = new Image();
+      const svgBlob = new Blob([new XMLSerializer().serializeToString(svgElement)], {type: 'image/svg+xml'});
+      const url = URL.createObjectURL(svgBlob);
+      
+      img.onload = function() {
+        // Draw image to canvas
+        ctx.drawImage(img, 0, 0);
+        
+        // Convert canvas to PNG and download
+        const pngUrl = canvas.toDataURL('image/png');
+        const downloadLink = document.createElement('a');
+        downloadLink.href = pngUrl;
+        downloadLink.download = 'og-image.png';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(url);
+      };
+      
+      img.src = url;
+    });
+  </script>
+</body>
+</html>
