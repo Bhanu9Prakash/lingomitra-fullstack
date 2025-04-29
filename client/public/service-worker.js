@@ -10,7 +10,8 @@ const PRECACHE_ASSETS = [
   '/manifest-dark.webmanifest',
   '/favicon.ico',
   '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/icons/icon-512x512.png',
+  '/social/og-image.svg'
 ];
 
 // Install event - precache assets
