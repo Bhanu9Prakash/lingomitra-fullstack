@@ -50,9 +50,9 @@ router.post('/init', async (req: Request, res: Response) => {
     }
     
     // Generate an initial greeting using the Gemini API
-    const initialPrompt = `As LingoMitra, introduce yourself and this lesson (${lesson.title}) to the student. Be brief, welcoming, and mention 1-2 key things they'll learn. 
+    const initialPrompt = `As LingoMitra, introduce yourself and this lesson (${lesson.title}) to the student. Be very brief (50-100 words maximum), welcoming, and mention just 1 key thing they'll learn first. 
     
-IMPORTANT: Start by teaching the absolute basics first. Always introduce new vocabulary or concepts before asking students to use them. Begin with a simple teaching point, explain it clearly, and only then ask a simple practice question.`;
+IMPORTANT: Keep your response extremely short and focused. Start by teaching only the absolute basics. Always introduce new vocabulary or concepts before asking students to use them. Begin with a single teaching point, explain it clearly in 2-3 sentences max, and only then ask a simple practice question.`;
     
     const response = await generateGeminiResponse(lesson, initialPrompt);
     const scratchPad = getDefaultScratchPad();
@@ -120,7 +120,13 @@ Student's latest message: ${latestUserMessage.content}
 
 Based on the conversation history and ScratchPad, please respond according to the Thinking Method guidelines. 
 
-IMPORTANT: Remember to teach before testing. Always introduce and clearly explain any new vocabulary, grammar, or concepts before asking the student to use them. If the student's message indicates confusion or a lack of understanding, take a step back and provide clearer explanations.
+IMPORTANT GUIDELINES:
+1. Keep your response extremely short and focused (50-150 words maximum).
+2. Focus on only ONE concept at a time.
+3. Use simple language with 2-3 short paragraphs at most.
+4. Remember to teach before testing. Always introduce and clearly explain any new vocabulary, grammar, or concepts before asking the student to use them.
+5. If the student's message indicates confusion, take a step back and provide clearer, simpler explanations.
+6. Break down complex explanations into multiple short messages rather than one long explanation.
 
 Include an updated ScratchPad as a JSON object at the end of your response, prefixed with [SCRATCHPAD] and surrounded by triple backticks.
 `;
