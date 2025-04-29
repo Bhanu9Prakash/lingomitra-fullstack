@@ -50,6 +50,12 @@ const cleanResponse = (text: string): string => {
   // Remove standalone backtick pairs
   cleaned = cleaned.replace(/([^\w`])`{1,2}([^\w`])/g, '$1$2');
   
+  // Remove trailing words that could be leftover language identifiers from markdown
+  cleaned = cleaned.replace(/\s+(json|javascript|js|ts|typescript|python|java|cpp|csharp|ruby|go|bash|shell)$/gi, '');
+  
+  // Remove common markdown artifacts like underscores and asterisks that might be left at the end
+  cleaned = cleaned.replace(/[\*\_\`]+\s*$/g, '');
+  
   // Trim any excess whitespace
   cleaned = cleaned.trim();
   
@@ -90,6 +96,12 @@ IMPORTANT: Keep your response extremely short and focused. Start by teaching onl
     
     // Apply the cleaning function
     response = cleanResponse(response);
+    
+    // Final cleanup - remove any lingering indicators or markdown language hints
+    response = response
+      .replace(/\b(json|markdown|javascript|typescript|js|ts)\b\s*$/i, '') // Remove language names at the end
+      .replace(/```\s*$/g, '') // Remove any triple backticks that might have been missed
+      .trim();
     
     return res.json({ 
       response,
@@ -251,6 +263,12 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     
     // Apply the JSON cleaning
     responseText = removeScratchPadJSON(responseText);
+    
+    // Final cleanup - remove any lingering indicators or markdown language hints
+    responseText = responseText
+      .replace(/\b(json|markdown|javascript|typescript|js|ts)\b\s*$/i, '') // Remove language names at the end
+      .replace(/```\s*$/g, '') // Remove any triple backticks that might have been missed
+      .trim();
     
     return res.json({ 
       response: responseText,
