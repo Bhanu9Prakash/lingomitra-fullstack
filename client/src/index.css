@@ -1955,6 +1955,7 @@ footer {
   word-break: break-word;
   max-width: 100%;
   width: 100%;
+  display: inline-block; /* Only take up the space needed by content */
 }
 
 /* Add specific styles for code blocks in messages */
@@ -2024,6 +2025,7 @@ footer {
   word-break: break-word;
   max-width: 100%;
   width: 100%;
+  display: inline-block; /* Only take up the space needed by content */
 }
 
 .message-content.typing {
@@ -2031,6 +2033,7 @@ footer {
   align-items: center;
   gap: 4px;
   padding: 8px 12px;
+  width: auto; /* Override the 100% width */
 }
 
 .dot {
@@ -2184,6 +2187,7 @@ footer {
     word-wrap: break-word;
     word-break: break-word;
     hyphens: auto;
+    display: inline-block; /* Keep the inline-block for mobile too */
   }
   
   /* Ensure code blocks don't overflow */
