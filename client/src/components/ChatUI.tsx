@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Lesson } from "@shared/schema";
@@ -147,6 +147,28 @@ export default function ChatUI({ lesson }: ChatUIProps) {
                         </code>
                       </pre>
                     );
+                  },
+                  // Override the pre tag to ensure raw <pre> tags aren't displayed
+                  pre: ({ children, ...props }: any) => {
+                    // Check if this is a standalone pre tag or code block
+                    // Since we can't easily check the child types, we'll just check if the content
+                    // appears to be dimensions (which is what we're trying to filter out)
+                    const preContent = String(
+                      Array.isArray(children) 
+                        ? children.map(c => (typeof c === 'object' ? '' : c)).join('')
+                        : children || ''
+                    );
+                    
+                    // If it contains dimensions like "214.75 × 48", filter it out
+                    if (
+                      /\d+(\.\d+)?\s*[×x]\s*\d+/.test(preContent) || 
+                      (preContent.includes('width') && preContent.includes('height'))
+                    ) {
+                      return null; // Don't render anything
+                    }
+                    
+                    // Otherwise, render normally
+                    return <pre {...props}>{children}</pre>;
                   },
                   table: ({ children }) => (
                     <div className="table-container">
