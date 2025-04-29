@@ -88,7 +88,15 @@ router.post('/init', async (req: Request, res: Response) => {
     // Generate an initial greeting using the Gemini API
     const initialPrompt = `As LingoMitra, introduce yourself and this lesson (${lesson.title}) to the student. Be very brief (50-100 words maximum), welcoming, and mention just 1 key thing they'll learn first. 
     
-IMPORTANT: Keep your response extremely short and focused. Start by teaching only the absolute basics. Always introduce new vocabulary or concepts before asking students to use them. Begin with a single teaching point, explain it clearly in 2-3 sentences max, and only then ask a simple practice question.`;
+IMPORTANT: 
+1. Keep your response extremely short and focused. 
+2. Start by teaching only the absolute basics. 
+3. Always introduce new vocabulary or concepts before asking students to use them. 
+4. Begin with a single teaching point, explain it clearly in 2-3 sentences max.
+5. ALWAYS end your message with a clear, simple question or prompt for the student to respond to.
+6. NEVER add language identifiers like "json", "javascript", etc. at the end of your message.
+7. Use a friendly, encouraging tone that makes learning fun.
+8. Make sure your ending question is specific and requires only a short response from the student.`;
     
     // Get the initial response
     let response = await generateGeminiResponse(lesson, initialPrompt);
@@ -173,6 +181,10 @@ IMPORTANT GUIDELINES:
 4. Remember to teach before testing. Always introduce and clearly explain any new vocabulary, grammar, or concepts before asking the student to use them.
 5. If the student's message indicates confusion, take a step back and provide clearer, simpler explanations.
 6. Break down complex explanations into multiple short messages rather than one long explanation.
+7. NEVER add language identifiers like "json", "javascript", etc. at the end of your message.
+8. ALWAYS be respectful and supportive even if the student is confused or provides an incorrect answer.
+9. ALWAYS end your message with a clear question or prompt for the student to respond to. This is critical for guiding their learning journey.
+10. Make your questions progressively build on previous knowledge and guide the student to the next logical concept.
 
 Include an updated ScratchPad as a JSON object at the end of your response, prefixed with [SCRATCHPAD] and surrounded by triple backticks.
 `;
