@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useTheme } from './ThemeProvider';
 
 export default function NetworkStatus() {
+  const { theme } = useTheme();
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   
   useEffect(() => {

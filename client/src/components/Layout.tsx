@@ -4,6 +4,7 @@ import { useTheme } from "./ThemeProvider";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
 import NetworkStatus from "./NetworkStatus";
+import InstallPrompt from "./InstallPrompt";
 import { useLocation } from "wouter";
 import { Language } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
@@ -91,6 +92,8 @@ export default function Layout({ children }: LayoutProps) {
       {/* Only show footer on non-lesson pages */}
       {!isLessonPage && <Footer />}
       <ScrollToTop />
+      <NetworkStatus />
+      <InstallPrompt />
     </div>
   );
 }
