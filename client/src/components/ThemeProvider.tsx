@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { updateThemeColor } from "../theme-color";
 
 type Theme = "dark" | "light";
 
@@ -34,6 +35,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     } else {
       document.body.classList.remove("dark-theme");
     }
+    
+    // Update the theme-color meta tag and PWA manifest
+    updateThemeColor(theme);
     
     // Save to localStorage
     localStorage.setItem("theme", theme);
