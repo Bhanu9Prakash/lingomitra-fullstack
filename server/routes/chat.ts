@@ -192,84 +192,59 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     
     // Attempt to detect and remove any lingering JSON that looks like a ScratchPad
     const removeScratchPadJSON = (text: string): string => {
-      let result = text;
-      
-      // First pass: Try to remove explicitly formed ScratchPad JSON
-      const scratchPadIndicators = ['"knownVocabulary"', '"knownStructures"', '"struggles"', '"nextFocus"', 'who'];
-      
-      // Check for any ScratchPad indicators
-      if (scratchPadIndicators.some(indicator => result.includes(indicator))) {
-        // Find all potential JSON objects in the text
-        let jsonStartPos = result.indexOf('{');
-        
-        while (jsonStartPos !== -1) {
-          // Find the matching closing brace
-          let depth = 0;
-          let jsonEndPos = -1;
-          
-          for (let i = jsonStartPos; i < result.length; i++) {
-            if (result[i] === '{') {
-              depth++;
-            } else if (result[i] === '}') {
-              depth--;
-              if (depth === 0) {
-                jsonEndPos = i + 1;
-                break;
-              }
-            }
-          }
-          
-          if (jsonEndPos !== -1) {
-            const jsonPart = result.substring(jsonStartPos, jsonEndPos);
-            
-            // Remove if looks like a ScratchPad (has at least 2 of the 5 fields or keywords)
-            let matchCount = 0;
-            scratchPadIndicators.forEach(indicator => {
-              if (jsonPart.includes(indicator)) matchCount++;
-            });
-            
-            if (matchCount >= 2) {
-              // Remove the JSON part
-              result = result.substring(0, jsonStartPos) + result.substring(jsonEndPos);
-              // Continue searching from the current position
-              jsonStartPos = result.indexOf('{', jsonStartPos);
-            } else {
-              // Move to the next JSON object, if any
-              jsonStartPos = result.indexOf('{', jsonStartPos + 1);
-            }
-          } else {
-            // No matching closing brace, exit the loop
-            break;
-          }
-        }
+      // Only proceed if there are keywords suggesting ScratchPad content
+      if (!text.includes('"knownVocabulary"') && 
+          !text.includes('"knownStructures"') && 
+          !text.includes('"struggles"') && 
+          !text.includes('"nextFocus"')) {
+        return text;
       }
       
-      // Second pass: Remove specific text patterns that might be remnants of JSON
-      // This handles incomplete JSON or text that looks like JSON but isn't properly formatted
-      const jsonPatterns = [
-        // Match "who we're talking about" and similar phrases which are often leftover from scratchpad explanation
-        /who\s+we['']re\s+talking\s+about/gi,
-        // Match "Notice how it starts with..." which is often explaining metadata
-        /Notice\s+how\s+it\s+starts\s+with\s+.*?,\s+which\s+can\s+mean\s+.*?[\.\!]/gi,
-        // Match "Notice how..." which is often explaining metadata
-        /Notice\s+how\s+.*?[\.\!]/gi,
-        // Match JSON key-value pair format that might be inline with text
-        /"(knownVocabulary|knownStructures|struggles|nextFocus)"\s*:\s*(\[[^\]]*\]|null|"[^"]*")/g,
-        // Match specific phrases like "telling you who we're talking about"
-        /telling\s+you\s+who\s+.*?about/gi
-      ];
+      // Find all potential JSON objects in the text
+      let result = text;
+      let jsonStartPos = result.indexOf('{');
       
-      jsonPatterns.forEach(pattern => {
-        result = result.replace(pattern, '');
-      });
-      
-      // Third pass: Clean up any trailing JSON artifacts and punctuation
-      result = result.replace(/\.\s*{/g, '.');  // Period followed by opening brace
-      result = result.replace(/,\s*$/g, '.');   // Trailing comma
-      result = result.replace(/:\s*$/g, '.');   // Trailing colon
-      
-      // Final pass: Remove any remnant "The" that might be left from "The 'nu'" after cleaning
-      result = result.replace(/\s+The\s*$/g, '');
+      while (jsonStartPos !== -1) {
+        // Find the matching closing brace
+        let depth = 0;
+        let jsonEndPos = -1;
+        
+        for (let i = jsonStartPos; i < result.length; i++) {
+          if (result[i] === '{') {
+            depth++;
+          } else if (result[i] === '}') {
+            depth--;
+            if (depth === 0) {
+              jsonEndPos = i + 1;
+              break;
+            }
+          }
+        }
+        
+        if (jsonEndPos !== -1) {
+          const jsonPart = result.substring(jsonStartPos, jsonEndPos);
+          
+          // Only remove if it looks like a ScratchPad (has at least 3 of the 4 fields)
+          let scratchPadFieldCount = 0;
+          if (jsonPart.includes('"knownVocabulary"')) scratchPadFieldCount++;
+          if (jsonPart.includes('"knownStructures"')) scratchPadFieldCount++;
+          if (jsonPart.includes('"struggles"')) scratchPadFieldCount++;
+          if (jsonPart.includes('"nextFocus"')) scratchPadFieldCount++;
+          
+          if (scratchPadFieldCount >= 3) {
+            // Remove the JSON part
+            result = result.substring(0, jsonStartPos) + result.substring(jsonEndPos);
+            // Continue searching from the current position
+            jsonStartPos = result.indexOf('{', jsonStartPos);
+          } else {
+            // Move to the next JSON object, if any
+            jsonStartPos = result.indexOf('{', jsonStartPos + 1);
+          }
+        } else {
+          // No matching closing brace, exit the loop
+          break;
+        }
+      }
       
       return result.trim();
     };
