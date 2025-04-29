@@ -96,7 +96,10 @@ IMPORTANT:
 5. ALWAYS end your message with a clear, simple question or prompt for the student to respond to.
 6. NEVER add language identifiers like "json", "javascript", etc. at the end of your message.
 7. Use a friendly, encouraging tone that makes learning fun.
-8. Make sure your ending question is specific and requires only a short response from the student.`;
+8. Make sure your ending question is specific and requires only a short response from the student.
+9. NEVER ask students to pronounce or "sound out" words - this is a text-based chat.
+10. When teaching pronunciation, show the written form with pronunciation hints, but ask students to type responses rather than pronounce words.
+11. Focus on text-based activities like typing words, identifying patterns, or answering questions about meaning/usage.`;
     
     // Get the initial response
     let response = await generateGeminiResponse(lesson, initialPrompt);
@@ -185,6 +188,8 @@ IMPORTANT GUIDELINES:
 8. ALWAYS be respectful and supportive even if the student is confused or provides an incorrect answer.
 9. ALWAYS end your message with a clear question or prompt for the student to respond to. This is critical for guiding their learning journey.
 10. Make your questions progressively build on previous knowledge and guide the student to the next logical concept.
+11. NEVER ask students to pronounce or "sound out" words - this is a text-based chat, so focus on text-based activities like typing words, identifying patterns, or answering questions about meaning/usage.
+12. When teaching language pronunciation or sounds, provide the information but don't ask students to practice speaking - instead ask them to identify patterns or provide written answers.
 
 Include an updated ScratchPad as a JSON object at the end of your response, prefixed with [SCRATCHPAD] and surrounded by triple backticks.
 `;
