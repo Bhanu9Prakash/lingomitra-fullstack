@@ -148,6 +148,11 @@ export default function ChatUI({ lesson }: ChatUIProps) {
                       </pre>
                     );
                   },
+                  table: ({ children }) => (
+                    <div className="table-container">
+                      <table className="markdown-table">{children}</table>
+                    </div>
+                  ),
                 }}
               >
                 {m.content}
