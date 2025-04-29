@@ -196,14 +196,6 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
       }
     }
     
-    // Remove any raw <pre> tags with dimensions information (those aren't code blocks)
-    responseText = responseText.replace(/<pre.*?\d+\.\d+\s*[×x]\s*\d+.*?<\/pre>/gi, '');
-    responseText = responseText.replace(/<pre.*?width.*?height.*?<\/pre>/gi, '');
-    
-    // A more aggressive approach to strip all raw <pre> tags that aren't code blocks
-    // This removes any <pre> tags that don't have a nested <code> element
-    responseText = responseText.replace(/<pre(?![^>]*<code)[^>]*>([^<]*)<\/pre>/gi, '$1');
-    
     return res.json({ 
       response: responseText,
       scratchPad: updatedScratchPad
