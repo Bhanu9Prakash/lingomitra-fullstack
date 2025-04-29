@@ -1940,7 +1940,7 @@ footer {
   color: var(--secondary-color);
 }
 
-.message-content {
+.message-bubble {
   background-color: var(--bg-light);
   padding: 8px 12px;
   border-radius: 12px;
@@ -1954,8 +1954,8 @@ footer {
   word-wrap: break-word;
   word-break: break-word;
   max-width: 100%;
-  width: 100%;
-  display: inline-block; /* Only take up the space needed by content */
+  width: auto; /* Only take the width needed */
+  display: inline-block;
 }
 
 /* Add specific styles for code blocks in messages */
@@ -2012,7 +2012,7 @@ footer {
   background-color: rgba(0, 0, 0, 0.02);
 }
 
-.chat-message.user .message-content {
+.chat-message.user .message-bubble {
   background-color: #FF6600; /* Using the suggested orange color */
   color: #FFFFFF; /* White text for better contrast */
   border-radius: 12px;
@@ -2024,16 +2024,14 @@ footer {
   word-wrap: break-word;
   word-break: break-word;
   max-width: 100%;
-  width: 100%;
-  display: inline-block; /* Only take up the space needed by content */
+  width: auto; /* Only take up the space needed by content */
+  display: inline-block;
 }
 
-.message-content.typing {
+.message-bubble {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 8px 12px;
-  width: auto; /* Override the 100% width */
 }
 
 .dot {

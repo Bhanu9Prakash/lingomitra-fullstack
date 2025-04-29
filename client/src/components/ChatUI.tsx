@@ -129,7 +129,7 @@ export default function ChatUI({ lesson }: ChatUIProps) {
               </div>
             )}
 
-            <div className="message-content">
+            <div className="message-bubble">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
@@ -172,7 +172,7 @@ export default function ChatUI({ lesson }: ChatUIProps) {
             <div className="avatar">
               <img src="/tutor-icon.svg" alt="AI Tutor" className="chat-bot-icon" />
             </div>
-            <div className="message-content typing">
+            <div className="message-bubble">
               <span className="dot"></span>
               <span className="dot"></span>
               <span className="dot"></span>
