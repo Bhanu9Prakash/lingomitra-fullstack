@@ -129,11 +129,11 @@ export default function ChatUI({ lesson }: ChatUIProps) {
               </div>
             )}
 
-            <div className="message-bubble">
+            <div className="message-content">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  p: ({ children }) => children ? <p className="mb-2">{children}</p> : null,
+                  p: ({ children }) => <p className="mb-2">{children}</p>,
                   code: ({ className, children, ...props }: any) => {
                     const isInline = !props.node?.position?.start.line;
                     return isInline ? (
@@ -155,7 +155,7 @@ export default function ChatUI({ lesson }: ChatUIProps) {
                   ),
                 }}
               >
-                {m.content.trim()}
+                {m.content}
               </ReactMarkdown>
             </div>
 
@@ -172,7 +172,7 @@ export default function ChatUI({ lesson }: ChatUIProps) {
             <div className="avatar">
               <img src="/tutor-icon.svg" alt="AI Tutor" className="chat-bot-icon" />
             </div>
-            <div className="message-bubble">
+            <div className="message-content typing">
               <span className="dot"></span>
               <span className="dot"></span>
               <span className="dot"></span>

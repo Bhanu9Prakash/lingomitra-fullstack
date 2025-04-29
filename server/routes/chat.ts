@@ -153,7 +153,7 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
       }
     }
     
-    // More thorough ScratchPad and JSON cleanup
+    // Remove any remaining JSON that appears to be a scratchpad
     
     // Remove any [SCRATCHPAD] text and backticks that might remain
     responseText = responseText.replace(/\[SCRATCHPAD\]\s*```/g, '');
@@ -162,32 +162,39 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     // Remove any isolated triple backticks that might remain at the end of the text
     responseText = responseText.replace(/```\s*$/g, '');
     
-    // Advanced JSON detection and removal - handle any ScratchPad-like JSON
-    // First look for any full JSON objects
-    const jsonPattern = /\{[\s\S]*?\}/g;
-    let match;
-    while ((match = jsonPattern.exec(responseText)) !== null) {
-      const potentialJson = match[0];
-      // Only remove JSON that looks like a ScratchPad
-      if (
-        (potentialJson.includes('"knownVocabulary"') || potentialJson.includes('"known_vocabulary"')) && 
-        (potentialJson.includes('"knownStructures"') || potentialJson.includes('"known_structures"')) && 
-        (potentialJson.includes('"struggles"')) && 
-        (potentialJson.includes('"nextFocus"') || potentialJson.includes('"next_focus"'))
-      ) {
-        responseText = responseText.replace(potentialJson, '');
+    // First try to match just the JSON portion with knownVocabulary
+    if (responseText.includes('"knownVocabulary"')) {
+      // Find the starting position of a JSON object containing ScratchPad content
+      const startPos = responseText.indexOf('{');
+      if (startPos !== -1) {
+        // Find the matching closing brace
+        let depth = 0;
+        let endPos = -1;
+        
+        for (let i = startPos; i < responseText.length; i++) {
+          if (responseText[i] === '{') {
+            depth++;
+          } else if (responseText[i] === '}') {
+            depth--;
+            if (depth === 0) {
+              endPos = i + 1;
+              break;
+            }
+          }
+        }
+        
+        if (endPos !== -1) {
+          const jsonPart = responseText.substring(startPos, endPos);
+          // Only remove if it looks like a ScratchPad
+          if (jsonPart.includes('"knownVocabulary"') && 
+              jsonPart.includes('"knownStructures"') && 
+              jsonPart.includes('"struggles"') && 
+              jsonPart.includes('"nextFocus"')) {
+            responseText = responseText.substring(0, startPos) + responseText.substring(endPos);
+          }
+        }
       }
     }
-    
-    // Final cleanup - remove any trailing whitespace or unnecessary newlines
-    responseText = responseText.trim();
-    // Replace multiple consecutive newlines with just two
-    responseText = responseText.replace(/\n{3,}/g, '\n\n');
-    // Remove any leftover whitespace-only lines
-    responseText = responseText.replace(/^\s*[\r\n]/gm, '');
-    
-    // Remove any empty or whitespace-only paragraphs
-    responseText = responseText.replace(/<p>\s*<\/p>/g, '');
     
     return res.json({ 
       response: responseText,
