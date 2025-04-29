@@ -133,14 +133,38 @@ export default function ChatUI({ lesson }: ChatUIProps) {
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  p: ({ children }) => <p className="mb-2">{children}</p>,
+                  p: ({ children }) => {
+                    // Check if paragraph content is empty or just whitespace
+                    const isEmpty = !children || 
+                      (Array.isArray(children) && 
+                       children.every(child => !child || 
+                         (typeof child === 'string' && !child.trim())));
+                    
+                    // Don't render empty paragraphs
+                    if (isEmpty) return null;
+                    
+                    return <p className="mb-2">{children}</p>;
+                  },
                   code: ({ className, children, ...props }: any) => {
                     const isInline = !props.node?.position?.start.line;
-                    return isInline ? (
-                      <code className={`inline-code ${className || ''}`} {...props}>
-                        {children}
-                      </code>
-                    ) : (
+                    // Check if children is empty or just whitespace
+                    const isEmpty = !children || (Array.isArray(children) && 
+                      children.every(child => typeof child === 'string' && !child.trim()));
+                    
+                    // For inline code
+                    if (isInline) {
+                      if (isEmpty) return null;
+                      return (
+                        <code className={`inline-code ${className || ''}`} {...props}>
+                          {children}
+                        </code>
+                      );
+                    }
+                    
+                    // For code blocks, don't render if empty
+                    if (isEmpty) return null;
+                    
+                    return (
                       <pre className={`code-block ${className || ''}`}>
                         <code className={className || ''} {...props}>
                           {children}
@@ -148,11 +172,21 @@ export default function ChatUI({ lesson }: ChatUIProps) {
                       </pre>
                     );
                   },
-                  table: ({ children }) => (
-                    <div className="table-container">
-                      <table className="markdown-table">{children}</table>
-                    </div>
-                  ),
+                  table: ({ children }) => {
+                    // Check if table has content
+                    const isEmpty = !children || 
+                      (Array.isArray(children) && 
+                       children.every(child => !child || 
+                         (typeof child === 'string' && !child.trim())));
+                    
+                    if (isEmpty) return null;
+                    
+                    return (
+                      <div className="table-container">
+                        <table className="markdown-table">{children}</table>
+                      </div>
+                    );
+                  },
                 }}
               >
                 {m.content}
