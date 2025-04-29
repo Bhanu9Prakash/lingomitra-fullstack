@@ -3,6 +3,7 @@ import MascotLogo from "./MascotLogo";
 import { useTheme } from "./ThemeProvider";
 import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
+import NetworkStatus from "./NetworkStatus";
 import { useLocation } from "wouter";
 import { Language } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";

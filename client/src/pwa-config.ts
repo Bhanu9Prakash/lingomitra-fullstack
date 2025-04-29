@@ -1,24 +1,31 @@
-import { registerSW } from 'virtual:pwa-register';
-
 // Register the service worker
 export function registerServiceWorker() {
   // Skip registration if not supported
   if ('serviceWorker' in navigator) {
-    const updateSW = registerSW({
-      onNeedRefresh() {
-        // When an update is available
-        console.log('New content available, click on reload button to update.');
-        if (confirm('New content available. Reload?')) {
-          updateSW(true);
-        }
-      },
-      onOfflineReady() {
-        // When the app is ready to work offline
-        console.log('App ready to work offline');
-      },
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(registration => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          
+          // Handle updates
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New content is available; notify the user
+                  if (confirm('New content available. Reload?')) {
+                    window.location.reload();
+                  }
+                }
+              });
+            }
+          });
+        })
+        .catch(error => {
+          console.error('ServiceWorker registration failed: ', error);
+        });
     });
-    
-    console.log('ServiceWorker registration successful');
   } else {
     console.log('ServiceWorker not supported in this browser');
   }
