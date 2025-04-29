@@ -133,7 +133,7 @@ export default function ChatUI({ lesson }: ChatUIProps) {
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  p: ({ children }) => <p className="mb-2">{children}</p>,
+                  p: ({ children }) => children ? <p className="mb-2">{children}</p> : null,
                   code: ({ className, children, ...props }: any) => {
                     const isInline = !props.node?.position?.start.line;
                     return isInline ? (
@@ -155,7 +155,7 @@ export default function ChatUI({ lesson }: ChatUIProps) {
                   ),
                 }}
               >
-                {m.content}
+                {m.content.trim()}
               </ReactMarkdown>
             </div>
 
