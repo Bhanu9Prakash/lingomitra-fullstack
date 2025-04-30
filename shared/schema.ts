@@ -110,7 +110,6 @@ export const insertChatMessageSchema = createInsertSchema(chatMessages).pick({
   sessionId: true,
   role: true,
   content: true,
-  createdAt: true,
 });
 
 // Type exports

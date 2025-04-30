@@ -131,8 +131,7 @@ IMPORTANT:
     await storage.addChatMessage({
       sessionId: chatSession.id,
       role: 'assistant',
-      content: response,
-      createdAt: new Date()
+      content: response
     });
     
     // Return the response and initial scratchPad
@@ -195,8 +194,7 @@ router.post('/', async (req: Request, res: Response) => {
     await storage.addChatMessage({
       sessionId: chatSession.id,
       role: 'user',
-      content: message,
-      createdAt: new Date()
+      content: message
     });
     
     // Format the conversation history for the AI
@@ -333,8 +331,7 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     await storage.addChatMessage({
       sessionId: chatSession.id,
       role: 'assistant',
-      content: responseText,
-      createdAt: new Date()
+      content: responseText
     });
     
     // Get updated chat history
