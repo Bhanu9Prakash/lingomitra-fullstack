@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import path from "path";
@@ -9,6 +9,7 @@ import { z } from "zod";
 import { insertLanguageSchema, insertLessonSchema } from "@shared/schema";
 import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
+import { setupAuth, isAuthenticated } from "./auth";
 
 // Sample data
 const languages = [
@@ -814,8 +815,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Register chat API router
-  app.use("/api/chat", chatRouter);
+  // Setup authentication
+  setupAuth(app);
+
+  // Register chat API router (protected by authentication)
+  app.use("/api/chat", isAuthenticated, chatRouter);
 
   const httpServer = createServer(app);
 
