@@ -246,7 +246,14 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
         updatedScratchPad = JSON.parse(scratchPadMatch[1].trim());
         
         // Update scratchPad in database
-        await storage.updateChatSessionScratchPad(chatSession.id, updatedScratchPad);
+        // Ensure the scratchPad has all required fields
+        const validatedScratchPad: ScratchPad = {
+          knownVocabulary: updatedScratchPad.knownVocabulary || [],
+          knownStructures: updatedScratchPad.knownStructures || [],
+          struggles: updatedScratchPad.struggles || [],
+          nextFocus: updatedScratchPad.nextFocus || null
+        };
+        await storage.updateChatSessionScratchPad(chatSession.id, validatedScratchPad);
         
         // Remove the ScratchPad section from the response
         responseText = fullResponse.replace(/\[SCRATCHPAD\]\s*```[\s\S]*?```/, '').trim();
