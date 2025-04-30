@@ -34,7 +34,12 @@ export const chatSessions = pgTable("chat_sessions", {
   lessonId: text("lesson_id").notNull().references(() => lessons.lessonId),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
-  scratchPad: jsonb("scratch_pad").notNull().default({}),
+  scratchPad: jsonb("scratch_pad").notNull().default({
+    knownVocabulary: [],
+    knownStructures: [],
+    struggles: [],
+    nextFocus: null
+  }),
 });
 
 export const chatMessages = pgTable("chat_messages", {
@@ -105,6 +110,7 @@ export const insertChatMessageSchema = createInsertSchema(chatMessages).pick({
   sessionId: true,
   role: true,
   content: true,
+  createdAt: true,
 });
 
 // Type exports

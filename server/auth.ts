@@ -8,10 +8,16 @@ import { storage } from "./storage";
 import { User } from "@shared/schema";
 import { z } from "zod";
 
-// Typescript declaration merging to add User type to Express.User
+// Typescript declaration merging to add our User type to Express.User
 declare global {
   namespace Express {
-    interface User extends User {}
+    // Use our User type from schema.ts
+    interface User {
+      id: number;
+      username: string;
+      password: string;
+      createdAt: Date;
+    }
   }
 }
 

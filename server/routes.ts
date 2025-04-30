@@ -761,8 +761,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add lessons from the filesystem
       for (const lesson of lessons) {
         try {
-          const validatedLesson = insertLessonSchema.parse(lesson);
-          await storage.createLesson(validatedLesson);
+          // Check if lesson already exists
+          const existingLesson = await storage.getLessonById(lesson.lessonId);
+          if (!existingLesson) {
+            const validatedLesson = insertLessonSchema.parse(lesson);
+            await storage.createLesson(validatedLesson);
+            console.log(`Added lesson ${lesson.lessonId}`);
+          } else {
+            // Lesson already exists, skip it
+            console.log(`Lesson ${lesson.lessonId} already exists, skipping`);
+          }
         } catch (error) {
           console.error(`Error adding lesson ${lesson.lessonId}:`, error);
         }

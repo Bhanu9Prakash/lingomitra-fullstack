@@ -34,6 +34,7 @@ export interface IStorage {
   // Chat methods
   getChatSessionsForUser(userId: number): Promise<ChatSession[]>;
   getChatSessionForUserAndLesson(userId: number, lessonId: string): Promise<ChatSession | undefined>;
+  getChatSession(sessionId: number): Promise<ChatSession | undefined>;
   createChatSession(session: InsertChatSession): Promise<ChatSession>;
   updateChatSessionScratchPad(sessionId: number, scratchPad: ScratchPad): Promise<void>;
   getChatMessagesForSession(sessionId: number): Promise<Message[]>;
@@ -119,6 +120,15 @@ export class DatabaseStorage implements IStorage {
       .from(chatSessions)
       .where(eq(chatSessions.userId, userId))
       .orderBy(desc(chatSessions.updatedAt));
+  }
+  
+  async getChatSession(sessionId: number): Promise<ChatSession | undefined> {
+    const result = await db
+      .select()
+      .from(chatSessions)
+      .where(eq(chatSessions.id, sessionId));
+    
+    return result[0];
   }
   
   async getChatSessionForUserAndLesson(userId: number, lessonId: string): Promise<ChatSession | undefined> {
@@ -278,6 +288,10 @@ export class MemStorage implements IStorage {
       .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
   }
   
+  async getChatSession(sessionId: number): Promise<ChatSession | undefined> {
+    return this.chatSessions.get(sessionId);
+  }
+
   async getChatSessionForUserAndLesson(userId: number, lessonId: string): Promise<ChatSession | undefined> {
     return Array.from(this.chatSessions.values())
       .filter(session => session.userId === userId && session.lessonId === lessonId)

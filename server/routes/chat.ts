@@ -1,22 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { storage } from '../storage';
 import { generateGeminiResponse } from '../services/genai';
+import { type Message, type ScratchPad, type User } from '@shared/schema';
 
 const router = Router();
-
-// Define the ScratchPad interface
-interface ScratchPad {
-  knownVocabulary: string[];
-  knownStructures: string[];
-  struggles: string[];
-  nextFocus: string | null;
-}
-
-// Define the Message interface
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
 
 // Initialize a default ScratchPad
 const getDefaultScratchPad = (): ScratchPad => ({
@@ -85,7 +72,34 @@ router.post('/init', async (req: Request, res: Response) => {
       });
     }
     
-    // Generate an initial greeting using the Gemini API
+    // Get authenticated user from session
+    const user = req.user as User;
+    
+    // Check if a chat session already exists for this user and lesson
+    let chatSession = await storage.getChatSessionForUserAndLesson(user.id, lessonId);
+    
+    // If no chat session exists, create one
+    if (!chatSession) {
+      chatSession = await storage.createChatSession({
+        userId: user.id,
+        lessonId: lessonId,
+        scratchPad: getDefaultScratchPad()
+      });
+    }
+    
+    // Get existing chat messages if any
+    const existingMessages = await storage.getChatMessagesForSession(chatSession.id);
+    
+    // If chat history exists, return it
+    if (existingMessages.length > 0) {
+      return res.json({
+        existingSession: true,
+        messages: existingMessages,
+        scratchPad: chatSession.scratchPad
+      });
+    }
+    
+    // If no chat history, generate an initial greeting
     const initialPrompt = `As LingoMitra, introduce yourself and this lesson (${lesson.title}) to the student. Be very brief (50-100 words maximum), welcoming, and mention just 1 key thing they'll learn first. 
     
 IMPORTANT: 
@@ -103,7 +117,6 @@ IMPORTANT:
     
     // Get the initial response
     let response = await generateGeminiResponse(lesson, initialPrompt);
-    const scratchPad = getDefaultScratchPad();
     
     // Apply the cleaning function
     response = cleanResponse(response);
@@ -114,9 +127,19 @@ IMPORTANT:
       .replace(/```\s*$/g, '') // Remove any triple backticks that might have been missed
       .trim();
     
+    // Save assistant message to database
+    await storage.addChatMessage({
+      sessionId: chatSession.id,
+      role: 'assistant',
+      content: response,
+      createdAt: new Date()
+    });
+    
+    // Return the response and initial scratchPad
     return res.json({ 
-      response,
-      scratchPad
+      existingSession: false,
+      messages: [{ role: 'assistant', content: response }],
+      scratchPad: chatSession.scratchPad
     });
     
   } catch (error) {
@@ -134,11 +157,11 @@ IMPORTANT:
  */
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const { lessonId, conversation, scratchPad } = req.body;
+    const { lessonId, message, scratchPad } = req.body;
     
-    if (!lessonId || !conversation || !Array.isArray(conversation) || conversation.length === 0) {
+    if (!lessonId || !message) {
       return res.status(400).json({ 
-        error: 'Missing required fields. Please provide lessonId and conversation history.' 
+        error: 'Missing required fields. Please provide lessonId and message.' 
       });
     }
     
@@ -151,17 +174,33 @@ router.post('/', async (req: Request, res: Response) => {
       });
     }
     
-    // Extract the latest user message
-    const latestUserMessage = conversation[conversation.length - 1];
-    if (latestUserMessage.role !== 'user') {
-      return res.status(400).json({
-        error: 'The last message in the conversation must be from the user.'
+    // Get authenticated user
+    const user = req.user as User;
+    
+    // Get or create chat session
+    let chatSession = await storage.getChatSessionForUserAndLesson(user.id, lessonId);
+    
+    if (!chatSession) {
+      chatSession = await storage.createChatSession({
+        userId: user.id,
+        lessonId: lessonId,
+        scratchPad: scratchPad || getDefaultScratchPad()
       });
     }
     
+    // Get chat history
+    const chatHistory = await storage.getChatMessagesForSession(chatSession.id);
+    
+    // Save user message to database
+    await storage.addChatMessage({
+      sessionId: chatSession.id,
+      role: 'user',
+      content: message,
+      createdAt: new Date()
+    });
+    
     // Format the conversation history for the AI
-    const conversationHistory = conversation
-      .slice(0, -1) // exclude the latest message which we're responding to
+    const conversationHistory = chatHistory
       .map(msg => `${msg.role === 'user' ? 'Student' : 'LingoMitra'}: ${msg.content}`)
       .join('\n\n');
     
@@ -171,9 +210,9 @@ Here's the conversation so far:
 ${conversationHistory}
 
 Current ScratchPad state:
-${JSON.stringify(scratchPad || getDefaultScratchPad(), null, 2)}
+${JSON.stringify(chatSession.scratchPad || getDefaultScratchPad(), null, 2)}
 
-Student's latest message: ${latestUserMessage.content}
+Student's latest message: ${message}
 
 Based on the conversation history and ScratchPad, please respond according to the Thinking Method guidelines. 
 
@@ -198,7 +237,7 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     let fullResponse = await generateGeminiResponse(lesson, fullPrompt);
     
     // Extract the updated ScratchPad if it exists
-    let updatedScratchPad = scratchPad || getDefaultScratchPad();
+    let updatedScratchPad = chatSession.scratchPad || getDefaultScratchPad();
     let responseText = fullResponse;
     
     // Check if the response contains a ScratchPad section
@@ -207,6 +246,9 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
       try {
         // Parse the JSON ScratchPad
         updatedScratchPad = JSON.parse(scratchPadMatch[1].trim());
+        
+        // Update scratchPad in database
+        await storage.updateChatSessionScratchPad(chatSession.id, updatedScratchPad);
         
         // Remove the ScratchPad section from the response
         responseText = fullResponse.replace(/\[SCRATCHPAD\]\s*```[\s\S]*?```/, '').trim();
@@ -287,8 +329,19 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
       .replace(/```\s*$/g, '') // Remove any triple backticks that might have been missed
       .trim();
     
+    // Save assistant message to database
+    await storage.addChatMessage({
+      sessionId: chatSession.id,
+      role: 'assistant',
+      content: responseText,
+      createdAt: new Date()
+    });
+    
+    // Get updated chat history
+    const updatedChatHistory = await storage.getChatMessagesForSession(chatSession.id);
+    
     return res.json({ 
-      response: responseText,
+      messages: updatedChatHistory,
       scratchPad: updatedScratchPad
     });
     
@@ -298,6 +351,83 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     return res.status(500).json({ 
       error: 'Failed to generate response. Please try again later.' 
     });
+  }
+});
+
+/**
+ * GET /api/chat/sessions
+ * Get a list of all chat sessions for the authenticated user
+ */
+router.get('/sessions', async (req: Request, res: Response) => {
+  try {
+    const user = req.user as User;
+    const sessions = await storage.getChatSessionsForUser(user.id);
+    
+    // For each session, get the associated lesson title
+    const sessionsWithLessonInfo = await Promise.all(
+      sessions.map(async (session) => {
+        const lesson = await storage.getLessonById(session.lessonId);
+        return {
+          id: session.id,
+          lessonId: session.lessonId,
+          lessonTitle: lesson ? lesson.title : 'Unknown Lesson',
+          updatedAt: session.updatedAt
+        };
+      })
+    );
+    
+    return res.json(sessionsWithLessonInfo);
+  } catch (error) {
+    console.error('Error getting chat sessions:', error);
+    return res.status(500).json({ error: 'Failed to fetch chat sessions' });
+  }
+});
+
+/**
+ * GET /api/chat/session/:id
+ * Get details of a specific chat session including messages
+ */
+router.get('/session/:id', async (req: Request, res: Response) => {
+  try {
+    const sessionId = parseInt(req.params.id);
+    if (isNaN(sessionId)) {
+      return res.status(400).json({ error: 'Invalid session ID' });
+    }
+    
+    // Get the chat session
+    const chatSession = await storage.getChatSession(sessionId);
+    
+    if (!chatSession) {
+      return res.status(404).json({ error: 'Chat session not found' });
+    }
+    
+    // Ensure the session belongs to the authenticated user
+    const user = req.user as User;
+    if (chatSession.userId !== user.id) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    
+    // Get the lesson details
+    const lesson = await storage.getLessonById(chatSession.lessonId);
+    if (!lesson) {
+      return res.status(404).json({ error: 'Lesson not found' });
+    }
+    
+    // Get the chat messages
+    const messages = await storage.getChatMessagesForSession(sessionId);
+    
+    return res.json({
+      session: chatSession,
+      lesson: {
+        id: lesson.lessonId,
+        title: lesson.title,
+        languageCode: lesson.languageCode
+      },
+      messages
+    });
+  } catch (error) {
+    console.error('Error getting chat session details:', error);
+    return res.status(500).json({ error: 'Failed to fetch chat session details' });
   }
 });
 
