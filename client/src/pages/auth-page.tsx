@@ -331,7 +331,12 @@ export default function AuthPage() {
           {/* Hero Section */}
           <div className="hidden md:flex flex-col justify-center items-start p-12 text-[#f0f0f0]">
             <div className="max-w-md space-y-5">
-              <h1 className="text-4xl font-bold">LingoMitra</h1>
+              <div className="flex items-center gap-3 mb-4">
+                <MascotLogo className="h-10 w-10" />
+                <h1 className="text-4xl font-bold">
+                  <span className="text-[#ff6600]">Lingo</span>Mitra
+                </h1>
+              </div>
               <p className="text-xl">
                 Your personal language learning companion with AI assistance.
               </p>
