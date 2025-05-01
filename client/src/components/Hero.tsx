@@ -1,47 +1,64 @@
 import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Hero() {
   const [_, navigate] = useLocation();
+  const { user } = useAuth();
 
   return (
-    <section className="hero">
-      <div className="container">
-        <div className="hero-content">
-          <div className="badge">
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted">
+      <div className="container px-4 py-16 md:py-24 lg:py-32 flex flex-col lg:flex-row gap-10 lg:gap-20 items-center">
+        <div className="flex-1 space-y-6 text-center lg:text-left">
+          <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
             Language Learning Simplified
           </div>
-          <h2>Learn Languages The Smart Way</h2>
-          <p>
-            Master new languages naturally through pattern-based lessons. Build your vocabulary and understanding step by step with our interactive approach.
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+            Learn Languages The Smart Way
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-prose">
+            Master new languages naturally through pattern-based lessons. Build your vocabulary and understanding step by step with our intelligent AI tutor.
           </p>
-          <div className="cta-buttons">
-            <button 
-              className="primary-btn"
-              onClick={() => navigate("/languages")}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <Button 
+              size="lg"
+              className="rounded-full font-medium"
+              onClick={() => user ? navigate("/languages") : navigate("/auth")}
             >
-              Get Started
-            </button>
-            <button className="secondary-btn">
+              {user ? "Start Learning" : "Get Started"}
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="rounded-full font-medium"
+            >
               Learn More
-            </button>
+            </Button>
           </div>
         </div>
         
-        <div className="hero-image">
-          <div className="character character-1">
-            <i className="fas fa-language"></i>
+        <div className="flex-1 flex justify-center">
+          <div className="relative w-full max-w-md">
+            <img 
+              src="/mascot.svg" 
+              alt="LingoMitra Fox Mascot" 
+              className="w-full h-auto"
+            />
+            <div className="absolute -top-4 -left-4 md:top-0 md:left-5 bg-background rounded-2xl p-4 shadow-lg">
+              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+                <div className="text-3xl">💬</div>
+              </div>
+            </div>
           </div>
-          <div className="character character-2">
-            <i className="fas fa-comment-dots"></i>
-          </div>
-          <div className="character character-3">
-            <i className="fas fa-globe-americas"></i>
-          </div>
-          <div className="character character-4">
-            <i className="fas fa-book"></i>
-          </div>
-          <div className="character character-5">
-            <i className="fas fa-graduation-cap"></i>
+        </div>
+
+        {/* PWA Install Prompt */}
+        <div className="absolute bottom-8 right-8 max-w-xs bg-card rounded-xl shadow-lg p-4 border border-border">
+          <h3 className="font-semibold mb-1">Install LingoMitra</h3>
+          <p className="text-sm text-muted-foreground mb-3">Add LingoMitra to your home screen for quick access to your language lessons, even offline!</p>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" size="sm">Not Now</Button>
+            <Button size="sm">Install</Button>
           </div>
         </div>
       </div>
