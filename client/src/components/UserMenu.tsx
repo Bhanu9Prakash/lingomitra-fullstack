@@ -16,7 +16,7 @@ import { User, LogOut, Settings } from "lucide-react";
 export default function UserMenu() {
   const { user, logoutMutation } = useAuth();
   const { toast } = useToast();
-  const [_, navigate] = useNavigate();
+  const [_, navigate] = useLocation();
 
   const handleLogout = async () => {
     try {

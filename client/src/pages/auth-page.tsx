@@ -75,7 +75,7 @@ export default function AuthPage() {
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
-        variant: "success",
+        variant: "default",
       });
       navigate("/");
     } catch (error) {
@@ -90,7 +90,7 @@ export default function AuthPage() {
       toast({
         title: "Registration successful!",
         description: "Your account has been created.",
-        variant: "success",
+        variant: "default",
       });
       navigate("/");
     } catch (error) {
