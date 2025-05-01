@@ -26,6 +26,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MascotLogo from "@/components/MascotLogo";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "@/components/ThemeProvider";
 
 // Extend the user schema with client-side validation
 const loginSchema = z.object({
@@ -54,6 +55,7 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>(getInitialTab());
   const { user, loginMutation, registerMutation } = useAuth();
   const { toast } = useToast();
+  const { theme } = useTheme();
   const [_, navigate] = useLocation();
 
   // Set the active tab based on URL parameter
