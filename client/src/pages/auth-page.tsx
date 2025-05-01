@@ -186,7 +186,11 @@ export default function AuthPage() {
                               <Input
                                 placeholder="Enter your username"
                                 {...field}
-                                className={`${theme === 'dark' ? 'bg-[#232323] border-[#333333]' : 'bg-white border-gray-300'} px-3 py-2 rounded-md w-full text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                  theme === 'dark' 
+                                    ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
+                                    : 'bg-white border-gray-300 text-gray-800'
+                                }`}
                               />
                             </FormControl>
                             <FormMessage />
@@ -205,7 +209,11 @@ export default function AuthPage() {
                                 type="password"
                                 placeholder="Enter your password"
                                 {...field}
-                                className={`${theme === 'dark' ? 'bg-[#232323] border-[#333333]' : 'bg-white border-gray-300'} px-3 py-2 rounded-md w-full text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                  theme === 'dark' 
+                                    ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
+                                    : 'bg-white border-gray-300 text-gray-800'
+                                }`}
                               />
                             </FormControl>
                             <FormMessage />
@@ -264,7 +272,11 @@ export default function AuthPage() {
                               <Input
                                 placeholder="Choose a username"
                                 {...field}
-                                className={`${theme === 'dark' ? 'bg-[#232323] border-[#333333]' : 'bg-white border-gray-300'} px-3 py-2 rounded-md w-full text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                  theme === 'dark' 
+                                    ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
+                                    : 'bg-white border-gray-300 text-gray-800'
+                                }`}
                               />
                             </FormControl>
                             <FormMessage />
@@ -283,7 +295,11 @@ export default function AuthPage() {
                                 type="password"
                                 placeholder="Create a password"
                                 {...field}
-                                className={`${theme === 'dark' ? 'bg-[#232323] border-[#333333]' : 'bg-white border-gray-300'} px-3 py-2 rounded-md w-full text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                  theme === 'dark' 
+                                    ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
+                                    : 'bg-white border-gray-300 text-gray-800'
+                                }`}
                               />
                             </FormControl>
                             <FormMessage />
@@ -302,7 +318,11 @@ export default function AuthPage() {
                                 type="password"
                                 placeholder="Confirm your password"
                                 {...field}
-                                className={`${theme === 'dark' ? 'bg-[#232323] border-[#333333]' : 'bg-white border-gray-300'} px-3 py-2 rounded-md w-full text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                  theme === 'dark' 
+                                    ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
+                                    : 'bg-white border-gray-300 text-gray-800'
+                                }`}
                               />
                             </FormControl>
                             <FormMessage />
