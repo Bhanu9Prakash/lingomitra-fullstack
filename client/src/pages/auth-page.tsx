@@ -121,31 +121,39 @@ export default function AuthPage() {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#111111]' : 'bg-white'}`}>
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#111111]' : 'bg-[#f9f9f9]'}`}>
       <div className="container mx-auto py-10">
         <div className="min-h-screen grid md:grid-cols-2 gap-0 max-w-6xl mx-auto">
           {/* Auth Form */}
-          <div className={`flex flex-col justify-center items-center p-4 md:p-8 ${theme === 'dark' ? 'bg-[#111111]' : 'bg-white'}`}>
+          <div className={`flex flex-col justify-center items-center p-4 md:p-8 ${theme === 'dark' ? 'bg-[#111111]' : 'bg-[#f9f9f9]'}`}>
             <div className="w-full max-w-md">
               {/* Top tabs */}
-              <div className="flex w-full mb-6 rounded-md overflow-hidden">
+              <div className="flex w-full mb-6 rounded-md overflow-hidden border border-gray-200">
                 <button 
                   onClick={() => setActiveTab("login")}
-                  className={`flex-1 py-3 px-4 text-center transition-colors ${
+                  className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
                     activeTab === 'login' 
-                      ? theme === 'dark' ? 'bg-[#232323]' : 'bg-gray-100' 
-                      : theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-50'
-                  } ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                      ? theme === 'dark' 
+                        ? 'bg-[#232323] border-b-2 border-[#ff6600]' 
+                        : 'bg-white border-b-2 border-[#ff6600]' 
+                      : theme === 'dark' 
+                        ? 'bg-[#1a1a1a]' 
+                        : 'bg-[#f0f0f0]'
+                  } ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`}
                 >
                   Login
                 </button>
                 <button 
                   onClick={() => setActiveTab("register")}
-                  className={`flex-1 py-3 px-4 text-center transition-colors ${
+                  className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
                     activeTab === 'register' 
-                      ? theme === 'dark' ? 'bg-[#232323]' : 'bg-gray-100' 
-                      : theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-50'
-                  } ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                      ? theme === 'dark' 
+                        ? 'bg-[#232323] border-b-2 border-[#ff6600]' 
+                        : 'bg-white border-b-2 border-[#ff6600]' 
+                      : theme === 'dark' 
+                        ? 'bg-[#1a1a1a]' 
+                        : 'bg-[#f0f0f0]'
+                  } ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`}
                 >
                   Register
                 </button>
@@ -153,12 +161,12 @@ export default function AuthPage() {
               
               {/* Login Form */}
               {activeTab === 'login' && (
-                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-white border border-gray-200'}`}>
+                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-white border border-gray-200 shadow-sm'}`}>
                   <div className="mb-6">
                     <h2 className={`text-2xl font-bold mb-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                       Welcome Back
                     </h2>
-                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                       Login to your LingoMitra account
                     </p>
                   </div>
@@ -172,8 +180,8 @@ export default function AuthPage() {
                         control={loginForm.control}
                         name="username"
                         render={({ field }) => (
-                          <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
-                            <FormLabel className="mb-1">Username</FormLabel>
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>
+                            <FormLabel className="mb-1 font-medium">Username</FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="Enter your username"
@@ -190,8 +198,8 @@ export default function AuthPage() {
                         control={loginForm.control}
                         name="password"
                         render={({ field }) => (
-                          <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
-                            <FormLabel className="mb-1">Password</FormLabel>
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>
+                            <FormLabel className="mb-1 font-medium">Password</FormLabel>
                             <FormControl>
                               <Input
                                 type="password"
@@ -216,7 +224,7 @@ export default function AuthPage() {
                   </Form>
                   
                   <div className="mt-6 text-center">
-                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                       Don't have an account?{' '}
                       <button 
                         onClick={() => setActiveTab("register")}
@@ -231,12 +239,12 @@ export default function AuthPage() {
               
               {/* Register Form */}
               {activeTab === 'register' && (
-                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-white border border-gray-200'}`}>
+                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-white border border-gray-200 shadow-sm'}`}>
                   <div className="mb-6">
                     <h2 className={`text-2xl font-bold mb-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                       Create Account
                     </h2>
-                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                       Register for a new LingoMitra account
                     </p>
                   </div>
@@ -250,8 +258,8 @@ export default function AuthPage() {
                         control={registerForm.control}
                         name="username"
                         render={({ field }) => (
-                          <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
-                            <FormLabel className="mb-1">Username</FormLabel>
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>
+                            <FormLabel className="mb-1 font-medium">Username</FormLabel>
                             <FormControl>
                               <Input
                                 placeholder="Choose a username"
@@ -268,8 +276,8 @@ export default function AuthPage() {
                         control={registerForm.control}
                         name="password"
                         render={({ field }) => (
-                          <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
-                            <FormLabel className="mb-1">Password</FormLabel>
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>
+                            <FormLabel className="mb-1 font-medium">Password</FormLabel>
                             <FormControl>
                               <Input
                                 type="password"
@@ -287,8 +295,8 @@ export default function AuthPage() {
                         control={registerForm.control}
                         name="confirmPassword"
                         render={({ field }) => (
-                          <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
-                            <FormLabel className="mb-1">Confirm Password</FormLabel>
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>
+                            <FormLabel className="mb-1 font-medium">Confirm Password</FormLabel>
                             <FormControl>
                               <Input
                                 type="password"
@@ -313,7 +321,7 @@ export default function AuthPage() {
                   </Form>
                   
                   <div className="mt-6 text-center">
-                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                       Already have an account?{' '}
                       <button 
                         onClick={() => setActiveTab("login")}
@@ -329,7 +337,7 @@ export default function AuthPage() {
           </div>
           
           {/* Hero Section */}
-          <div className="hidden md:flex flex-col justify-center items-center p-12 text-[#f0f0f0]">
+          <div className={`hidden md:flex flex-col justify-center items-center p-12 ${theme === 'dark' ? 'text-[#f0f0f0]' : 'text-[#333333] bg-white'}`}>
             <div className="max-w-md space-y-5 text-center">
               <div className="mb-8">
                 <div className="flex flex-col items-center mb-2">
@@ -339,27 +347,33 @@ export default function AuthPage() {
                   </h1>
                 </div>
               </div>
-              <p className="text-xl">
+              <p className={`text-xl ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`}>
                 Your personal language learning companion with AI assistance.
               </p>
               <div className="space-y-6 mt-8 text-left">
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="h-4 w-4 rounded-full bg-gray-500"></div>
+                    <div className={`h-4 w-4 rounded-full ${theme === 'dark' ? 'bg-gray-500' : 'bg-[#ff6600]'}`}></div>
                   </div>
-                  <p className="text-gray-300">Personalized AI language tutor available 24/7</p>
+                  <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
+                    <strong>Personalized AI language tutor</strong> available 24/7
+                  </p>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="h-4 w-4 rounded-full bg-gray-500"></div>
+                    <div className={`h-4 w-4 rounded-full ${theme === 'dark' ? 'bg-gray-500' : 'bg-[#ff6600]'}`}></div>
                   </div>
-                  <p className="text-gray-300">Interactive lessons in multiple languages</p>
+                  <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
+                    <strong>Interactive lessons</strong> in multiple languages
+                  </p>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0 mt-1">
-                    <div className="h-4 w-4 rounded-full bg-gray-500"></div>
+                    <div className={`h-4 w-4 rounded-full ${theme === 'dark' ? 'bg-gray-500' : 'bg-[#ff6600]'}`}></div>
                   </div>
-                  <p className="text-gray-300">Track your progress and master new languages faster</p>
+                  <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
+                    <strong>Track your progress</strong> and master new languages faster
+                  </p>
                 </div>
               </div>
             </div>
