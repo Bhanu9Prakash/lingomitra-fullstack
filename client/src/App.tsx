@@ -7,20 +7,24 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import LanguageSelection from "@/pages/LanguageSelection";
 import LessonView from "@/pages/LessonView";
+import AuthPage from "@/pages/auth-page";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
 
 function Router() {
   return (
     <Layout>
       <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/languages" component={LanguageSelection} />
+        <ProtectedRoute path="/" component={Home} />
+        <ProtectedRoute path="/languages" component={LanguageSelection} />
         {/* Legacy routes - keep for compatibility but will redirect */}
-        <Route path="/language/:code" component={LessonView} />
-        <Route path="/lesson/:id" component={LessonView} />
+        <ProtectedRoute path="/language/:code" component={LessonView} />
+        <ProtectedRoute path="/lesson/:id" component={LessonView} />
         {/* New standard route format */}
-        <Route path="/:language/lesson/:lessonNumber" component={LessonView} />
+        <ProtectedRoute path="/:language/lesson/:lessonNumber" component={LessonView} />
+        <Route path="/auth" component={AuthPage} />
         <Route component={NotFound} />
       </Switch>
     </Layout>
@@ -32,8 +36,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <Toaster />
-          <Router />
+          <AuthProvider>
+            <Toaster />
+            <Router />
+          </AuthProvider>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
