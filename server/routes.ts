@@ -1,4 +1,4 @@
-import type { Express, Request, Response } from "express";
+import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import path from "path";
@@ -9,7 +9,6 @@ import { z } from "zod";
 import { insertLanguageSchema, insertLessonSchema } from "@shared/schema";
 import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
-import { setupAuth, isAuthenticated } from "./auth";
 
 // Sample data
 const languages = [
@@ -761,16 +760,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add lessons from the filesystem
       for (const lesson of lessons) {
         try {
-          // Check if lesson already exists
-          const existingLesson = await storage.getLessonById(lesson.lessonId);
-          if (!existingLesson) {
-            const validatedLesson = insertLessonSchema.parse(lesson);
-            await storage.createLesson(validatedLesson);
-            console.log(`Added lesson ${lesson.lessonId}`);
-          } else {
-            // Lesson already exists, skip it
-            console.log(`Lesson ${lesson.lessonId} already exists, skipping`);
-          }
+          const validatedLesson = insertLessonSchema.parse(lesson);
+          await storage.createLesson(validatedLesson);
         } catch (error) {
           console.error(`Error adding lesson ${lesson.lessonId}:`, error);
         }
@@ -823,11 +814,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Setup authentication
-  setupAuth(app);
-
-  // Register chat API router (protected by authentication)
-  app.use("/api/chat", isAuthenticated, chatRouter);
+  // Register chat API router
+  app.use("/api/chat", chatRouter);
 
   const httpServer = createServer(app);
 
