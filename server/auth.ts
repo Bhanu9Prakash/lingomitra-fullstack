@@ -72,10 +72,10 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
-      const { username, password } = req.body;
+      const { username, email, password } = req.body;
       
-      if (!username || !password) {
-        return res.status(400).send("Username and password are required");
+      if (!username || !email || !password) {
+        return res.status(400).send("Username, email, and password are required");
       }
       
       const existingUser = await storage.getUserByUsername(username);
@@ -85,6 +85,7 @@ export function setupAuth(app: Express) {
 
       const user = await storage.createUser({
         username,
+        email,
         password: await hashPassword(password),
       });
 

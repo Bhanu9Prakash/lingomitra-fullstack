@@ -35,6 +35,7 @@ const loginSchema = z.object({
 });
 
 const registerSchema = loginSchema.extend({
+  email: z.string().email("Please enter a valid email address"),
   confirmPassword: z.string().min(1, "Confirm password is required"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
@@ -85,6 +86,7 @@ export default function AuthPage() {
     resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
+      email: "",
       password: "",
       confirmPassword: "",
     },
@@ -271,6 +273,29 @@ export default function AuthPage() {
                             <FormControl>
                               <Input
                                 placeholder="Choose a username"
+                                {...field}
+                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                  theme === 'dark' 
+                                    ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
+                                    : 'bg-white border-gray-300 text-gray-800'
+                                }`}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={registerForm.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>
+                            <FormLabel className="mb-1 font-medium">Email</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="email"
+                                placeholder="Enter your email address"
                                 {...field}
                                 className={`px-3 py-2 rounded-md w-full text-sm ${
                                   theme === 'dark' 
