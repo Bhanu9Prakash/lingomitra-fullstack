@@ -121,211 +121,225 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2 gap-0">
-      {/* Auth Form */}
-      <div className="flex flex-col justify-center items-center p-4 md:p-8">
-        <div className="w-full max-w-md space-y-6">
-          <div className="flex justify-center mb-8">
-            <MascotLogo className="h-16 w-16" />
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#1a1a1a] text-[#f0f0f0]' : 'bg-white text-[#333333]'}`}>
+      <div className="container mx-auto">
+        <div className="min-h-screen grid md:grid-cols-2 gap-0 max-w-6xl mx-auto shadow-xl overflow-hidden rounded-lg">
+          {/* Auth Form */}
+          <div className={`flex flex-col justify-center items-center p-4 md:p-8 ${theme === 'dark' ? 'bg-[#2a2a2a]' : 'bg-white'}`}>
+            <div className="w-full max-w-md space-y-6">
+              <div className="flex justify-center mb-8">
+                <MascotLogo className="h-16 w-16" />
+              </div>
+              
+              <Tabs
+                defaultValue={activeTab}
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
+                <TabsList className={`grid grid-cols-2 w-full mb-6 ${theme === 'dark' ? 'bg-[#333333]' : ''}`}>
+                  <TabsTrigger value="login" className={theme === 'dark' ? 'data-[state=active]:bg-[#2a2a2a]' : ''}>Login</TabsTrigger>
+                  <TabsTrigger value="register" className={theme === 'dark' ? 'data-[state=active]:bg-[#2a2a2a]' : ''}>Register</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="login">
+                  <Card className={theme === 'dark' ? 'border-[#444444] bg-[#2a2a2a]' : 'border-gray-200'}>
+                    <CardHeader>
+                      <CardTitle className={theme === 'dark' ? 'text-white' : ''}>Welcome Back</CardTitle>
+                      <CardDescription className={theme === 'dark' ? 'text-gray-300' : ''}>
+                        Login to your LingoMitra account
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Form {...loginForm}>
+                        <form
+                          onSubmit={loginForm.handleSubmit(onLoginSubmit)}
+                          className="space-y-4"
+                        >
+                          <FormField
+                            control={loginForm.control}
+                            name="username"
+                            render={({ field }) => (
+                              <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
+                                <FormLabel>Username</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Enter your username"
+                                    {...field}
+                                    className={theme === 'dark' ? 'bg-[#333333] border-[#444444] text-white' : ''}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={loginForm.control}
+                            name="password"
+                            render={({ field }) => (
+                              <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
+                                <FormLabel>Password</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    {...field}
+                                    className={theme === 'dark' ? 'bg-[#333333] border-[#444444] text-white' : ''}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <Button
+                            type="submit"
+                            className={`w-full bg-[#ff6600] hover:bg-[#cc5200] text-white ${loginMutation.isPending ? 'opacity-70' : ''}`}
+                            disabled={loginMutation.isPending}
+                          >
+                            {loginMutation.isPending ? "Logging in..." : "Login"}
+                          </Button>
+                        </form>
+                      </Form>
+                    </CardContent>
+                    <CardFooter className="flex justify-center">
+                      <Button
+                        variant="ghost"
+                        onClick={() => setActiveTab("register")}
+                        className={theme === 'dark' ? 'text-gray-300 hover:text-white hover:bg-[#333333]' : ''}
+                      >
+                        Don't have an account? Register
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+                
+                <TabsContent value="register">
+                  <Card className={theme === 'dark' ? 'border-[#444444] bg-[#2a2a2a]' : 'border-gray-200'}>
+                    <CardHeader>
+                      <CardTitle className={theme === 'dark' ? 'text-white' : ''}>Create Account</CardTitle>
+                      <CardDescription className={theme === 'dark' ? 'text-gray-300' : ''}>
+                        Register for a new LingoMitra account
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Form {...registerForm}>
+                        <form
+                          onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
+                          className="space-y-4"
+                        >
+                          <FormField
+                            control={registerForm.control}
+                            name="username"
+                            render={({ field }) => (
+                              <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
+                                <FormLabel>Username</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder="Choose a username"
+                                    {...field}
+                                    className={theme === 'dark' ? 'bg-[#333333] border-[#444444] text-white' : ''}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={registerForm.control}
+                            name="password"
+                            render={({ field }) => (
+                              <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
+                                <FormLabel>Password</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="password"
+                                    placeholder="Create a password"
+                                    {...field}
+                                    className={theme === 'dark' ? 'bg-[#333333] border-[#444444] text-white' : ''}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={registerForm.control}
+                            name="confirmPassword"
+                            render={({ field }) => (
+                              <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
+                                <FormLabel>Confirm Password</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="password"
+                                    placeholder="Confirm your password"
+                                    {...field}
+                                    className={theme === 'dark' ? 'bg-[#333333] border-[#444444] text-white' : ''}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <Button
+                            type="submit"
+                            className={`w-full bg-[#ff6600] hover:bg-[#cc5200] text-white ${registerMutation.isPending ? 'opacity-70' : ''}`}
+                            disabled={registerMutation.isPending}
+                          >
+                            {registerMutation.isPending ? "Registering..." : "Register"}
+                          </Button>
+                        </form>
+                      </Form>
+                    </CardContent>
+                    <CardFooter className="flex justify-center">
+                      <Button
+                        variant="ghost"
+                        onClick={() => setActiveTab("login")}
+                        className={theme === 'dark' ? 'text-gray-300 hover:text-white hover:bg-[#333333]' : ''}
+                      >
+                        Already have an account? Login
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </div>
           </div>
           
-          <Tabs
-            defaultValue={activeTab}
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            <TabsList className="grid grid-cols-2 w-full mb-6">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="register">Register</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="login">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Welcome Back</CardTitle>
-                  <CardDescription>
-                    Login to your LingoMitra account
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Form {...loginForm}>
-                    <form
-                      onSubmit={loginForm.handleSubmit(onLoginSubmit)}
-                      className="space-y-4"
-                    >
-                      <FormField
-                        control={loginForm.control}
-                        name="username"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter your username"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={loginForm.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="password"
-                                placeholder="Enter your password"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <Button
-                        type="submit"
-                        className="w-full"
-                        disabled={loginMutation.isPending}
-                      >
-                        {loginMutation.isPending ? "Logging in..." : "Login"}
-                      </Button>
-                    </form>
-                  </Form>
-                </CardContent>
-                <CardFooter className="flex justify-center">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setActiveTab("register")}
-                  >
-                    Don't have an account? Register
-                  </Button>
-                </CardFooter>
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="register">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Create Account</CardTitle>
-                  <CardDescription>
-                    Register for a new LingoMitra account
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Form {...registerForm}>
-                    <form
-                      onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
-                      className="space-y-4"
-                    >
-                      <FormField
-                        control={registerForm.control}
-                        name="username"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Choose a username"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={registerForm.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="password"
-                                placeholder="Create a password"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={registerForm.control}
-                        name="confirmPassword"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Confirm Password</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="password"
-                                placeholder="Confirm your password"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <Button
-                        type="submit"
-                        className="w-full"
-                        disabled={registerMutation.isPending}
-                      >
-                        {registerMutation.isPending ? "Registering..." : "Register"}
-                      </Button>
-                    </form>
-                  </Form>
-                </CardContent>
-                <CardFooter className="flex justify-center">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setActiveTab("login")}
-                  >
-                    Already have an account? Login
-                  </Button>
-                </CardFooter>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </div>
-      
-      {/* Hero Section */}
-      <div className="hidden md:flex flex-col justify-center items-center p-8 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
-        <div className="max-w-md space-y-6">
-          <h1 className="text-4xl font-bold">LingoMitra</h1>
-          <p className="text-xl">
-            Your personal language learning companion with AI assistance.
-          </p>
-          <div className="space-y-4">
-            <div className="flex items-start space-x-3">
-              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary-700 flex items-center justify-center">
-                ✓
+          {/* Hero Section */}
+          <div className="hidden md:flex flex-col justify-center items-center p-8 bg-[#ff6600] text-white">
+            <div className="max-w-md space-y-6">
+              <div className="flex justify-center mb-4">
+                <MascotLogo className="h-24 w-24" />
               </div>
-              <p>Personalized AI language tutor available 24/7</p>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary-700 flex items-center justify-center">
-                ✓
+              <h1 className="text-4xl font-bold text-center">LingoMitra</h1>
+              <p className="text-xl text-center">
+                Your personal language learning companion with AI assistance.
+              </p>
+              <div className="space-y-4 mt-8">
+                <div className="flex items-start space-x-3">
+                  <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-[#ff6600] flex items-center justify-center">
+                    ✓
+                  </div>
+                  <p>Personalized AI language tutor available 24/7</p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-[#ff6600] flex items-center justify-center">
+                    ✓
+                  </div>
+                  <p>Interactive lessons in multiple languages</p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-[#ff6600] flex items-center justify-center">
+                    ✓
+                  </div>
+                  <p>Track your progress and master new languages faster</p>
+                </div>
               </div>
-              <p>Interactive lessons in multiple languages</p>
-            </div>
-            <div className="flex items-start space-x-3">
-              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary-700 flex items-center justify-center">
-                ✓
-              </div>
-              <p>Track your progress and master new languages faster</p>
             </div>
           </div>
         </div>
