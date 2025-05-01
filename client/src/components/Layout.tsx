@@ -50,8 +50,9 @@ export default function Layout({ children }: LayoutProps) {
   const isLanguageSelectionPage = location === "/languages";
   const isHomePage = location === "/";
   
-  // Check if we're on a lesson page to hide the footer
+  // Check if we're on specific pages
   const isLessonPage = location.includes("/lesson/");
+  const isAuthPage = location === "/auth";
 
   return (
     <div className={theme === 'dark' ? 'dark-theme' : ''}>
@@ -63,16 +64,16 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           
           <div className="header-controls">
-            {/* Shows flag + name dropdown in the header - hide on homepage */}
-            {!isHomePage && (
+            {/* Shows flag + name dropdown in the header - hide on homepage and auth page */}
+            {!isHomePage && !isAuthPage && (
               <LanguageDropdown
                 selectedLanguage={selectedLanguage}
                 languages={languages}
               />
             )}
             
-            {/* User menu dropdown - hide on homepage */}
-            {!isHomePage && <UserMenu />}
+            {/* User menu dropdown - hide on homepage and auth page */}
+            {!isHomePage && !isAuthPage && <UserMenu />}
             
             <div className="theme-container">
               <button 
