@@ -18,10 +18,10 @@ export default function Hero() {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted">
+    <section className="min-h-screen flex items-center justify-center bg-white">
       <div className="container px-4 py-16 md:py-24 lg:py-32 flex flex-col lg:flex-row gap-10 lg:gap-20 items-center">
         <div className="flex-1 space-y-6 text-center lg:text-left">
-          <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
+          <div className="inline-block rounded-lg bg-[#ff6600] px-3 py-1 text-sm text-white">
             Language Learning Simplified
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
@@ -33,7 +33,7 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <Button 
               size="lg"
-              className="rounded-full font-medium bg-orange-500 hover:bg-orange-600 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              className="rounded-full font-medium bg-[#ff6600] hover:bg-[#e55c00] text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
               onClick={handleGetStarted}
             >
               {user ? "Start Learning" : "Get Started For Free"}
