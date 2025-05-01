@@ -121,223 +121,238 @@ export default function AuthPage() {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#1a1a1a] text-[#f0f0f0]' : 'bg-white text-[#333333]'}`}>
-      <div className="container mx-auto">
-        <div className="min-h-screen grid md:grid-cols-2 gap-0 max-w-6xl mx-auto shadow-xl overflow-hidden rounded-lg">
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#111111]' : 'bg-white'}`}>
+      <div className="container mx-auto py-10">
+        <div className="min-h-screen grid md:grid-cols-2 gap-0 max-w-6xl mx-auto">
           {/* Auth Form */}
-          <div className={`flex flex-col justify-center items-center p-4 md:p-8 ${theme === 'dark' ? 'bg-[#2a2a2a]' : 'bg-white'}`}>
-            <div className="w-full max-w-md space-y-6">
-              <div className="flex justify-center mb-8">
-                <MascotLogo className="h-16 w-16" />
+          <div className={`flex flex-col justify-center items-center p-4 md:p-8 ${theme === 'dark' ? 'bg-[#111111]' : 'bg-white'}`}>
+            <div className="w-full max-w-md">
+              {/* Top tabs */}
+              <div className="flex w-full mb-6 rounded-md overflow-hidden">
+                <button 
+                  onClick={() => setActiveTab("login")}
+                  className={`flex-1 py-3 px-4 text-center transition-colors ${
+                    activeTab === 'login' 
+                      ? theme === 'dark' ? 'bg-[#232323]' : 'bg-gray-100' 
+                      : theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-50'
+                  } ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                >
+                  Login
+                </button>
+                <button 
+                  onClick={() => setActiveTab("register")}
+                  className={`flex-1 py-3 px-4 text-center transition-colors ${
+                    activeTab === 'register' 
+                      ? theme === 'dark' ? 'bg-[#232323]' : 'bg-gray-100' 
+                      : theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-50'
+                  } ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                >
+                  Register
+                </button>
               </div>
               
-              <Tabs
-                defaultValue={activeTab}
-                value={activeTab}
-                onValueChange={setActiveTab}
-                className="w-full"
-              >
-                <TabsList className={`grid grid-cols-2 w-full mb-6 ${theme === 'dark' ? 'bg-[#333333]' : ''}`}>
-                  <TabsTrigger value="login" className={theme === 'dark' ? 'data-[state=active]:bg-[#2a2a2a]' : ''}>Login</TabsTrigger>
-                  <TabsTrigger value="register" className={theme === 'dark' ? 'data-[state=active]:bg-[#2a2a2a]' : ''}>Register</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="login">
-                  <Card className={theme === 'dark' ? 'border-[#444444] bg-[#2a2a2a]' : 'border-gray-200'}>
-                    <CardHeader>
-                      <CardTitle className={theme === 'dark' ? 'text-white' : ''}>Welcome Back</CardTitle>
-                      <CardDescription className={theme === 'dark' ? 'text-gray-300' : ''}>
-                        Login to your LingoMitra account
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Form {...loginForm}>
-                        <form
-                          onSubmit={loginForm.handleSubmit(onLoginSubmit)}
-                          className="space-y-4"
-                        >
-                          <FormField
-                            control={loginForm.control}
-                            name="username"
-                            render={({ field }) => (
-                              <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
-                                <FormLabel>Username</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="Enter your username"
-                                    {...field}
-                                    className={theme === 'dark' ? 'bg-[#333333] border-[#444444] text-white' : ''}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <FormField
-                            control={loginForm.control}
-                            name="password"
-                            render={({ field }) => (
-                              <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="password"
-                                    placeholder="Enter your password"
-                                    {...field}
-                                    className={theme === 'dark' ? 'bg-[#333333] border-[#444444] text-white' : ''}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <Button
-                            type="submit"
-                            className={`w-full bg-[#ff6600] hover:bg-[#cc5200] text-white ${loginMutation.isPending ? 'opacity-70' : ''}`}
-                            disabled={loginMutation.isPending}
-                          >
-                            {loginMutation.isPending ? "Logging in..." : "Login"}
-                          </Button>
-                        </form>
-                      </Form>
-                    </CardContent>
-                    <CardFooter className="flex justify-center">
+              {/* Login Form */}
+              {activeTab === 'login' && (
+                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-white border border-gray-200'}`}>
+                  <div className="mb-6">
+                    <h2 className={`text-2xl font-bold mb-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                      Welcome Back
+                    </h2>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                      Login to your LingoMitra account
+                    </p>
+                  </div>
+                  
+                  <Form {...loginForm}>
+                    <form
+                      onSubmit={loginForm.handleSubmit(onLoginSubmit)}
+                      className="space-y-4"
+                    >
+                      <FormField
+                        control={loginForm.control}
+                        name="username"
+                        render={({ field }) => (
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
+                            <FormLabel className="mb-1">Username</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Enter your username"
+                                {...field}
+                                className={`${theme === 'dark' ? 'bg-[#232323] border-[#333333]' : 'bg-white border-gray-300'} px-3 py-2 rounded-md w-full text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={loginForm.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
+                            <FormLabel className="mb-1">Password</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="password"
+                                placeholder="Enter your password"
+                                {...field}
+                                className={`${theme === 'dark' ? 'bg-[#232323] border-[#333333]' : 'bg-white border-gray-300'} px-3 py-2 rounded-md w-full text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
                       <Button
-                        variant="ghost"
+                        type="submit"
+                        className={`w-full bg-[#ff6600] hover:bg-[#cc5200] text-white rounded-md py-2 mt-2 ${loginMutation.isPending ? 'opacity-70' : ''}`}
+                        disabled={loginMutation.isPending}
+                      >
+                        {loginMutation.isPending ? "Logging in..." : "Login"}
+                      </Button>
+                    </form>
+                  </Form>
+                  
+                  <div className="mt-6 text-center">
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                      Don't have an account?{' '}
+                      <button 
                         onClick={() => setActiveTab("register")}
-                        className={theme === 'dark' ? 'text-gray-300 hover:text-white hover:bg-[#333333]' : ''}
+                        className={`text-[#ff6600] hover:underline font-medium`}
                       >
-                        Don't have an account? Register
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="register">
-                  <Card className={theme === 'dark' ? 'border-[#444444] bg-[#2a2a2a]' : 'border-gray-200'}>
-                    <CardHeader>
-                      <CardTitle className={theme === 'dark' ? 'text-white' : ''}>Create Account</CardTitle>
-                      <CardDescription className={theme === 'dark' ? 'text-gray-300' : ''}>
-                        Register for a new LingoMitra account
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Form {...registerForm}>
-                        <form
-                          onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
-                          className="space-y-4"
-                        >
-                          <FormField
-                            control={registerForm.control}
-                            name="username"
-                            render={({ field }) => (
-                              <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
-                                <FormLabel>Username</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="Choose a username"
-                                    {...field}
-                                    className={theme === 'dark' ? 'bg-[#333333] border-[#444444] text-white' : ''}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <FormField
-                            control={registerForm.control}
-                            name="password"
-                            render={({ field }) => (
-                              <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="password"
-                                    placeholder="Create a password"
-                                    {...field}
-                                    className={theme === 'dark' ? 'bg-[#333333] border-[#444444] text-white' : ''}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <FormField
-                            control={registerForm.control}
-                            name="confirmPassword"
-                            render={({ field }) => (
-                              <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
-                                <FormLabel>Confirm Password</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="password"
-                                    placeholder="Confirm your password"
-                                    {...field}
-                                    className={theme === 'dark' ? 'bg-[#333333] border-[#444444] text-white' : ''}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <Button
-                            type="submit"
-                            className={`w-full bg-[#ff6600] hover:bg-[#cc5200] text-white ${registerMutation.isPending ? 'opacity-70' : ''}`}
-                            disabled={registerMutation.isPending}
-                          >
-                            {registerMutation.isPending ? "Registering..." : "Register"}
-                          </Button>
-                        </form>
-                      </Form>
-                    </CardContent>
-                    <CardFooter className="flex justify-center">
+                        Register
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              {/* Register Form */}
+              {activeTab === 'register' && (
+                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-white border border-gray-200'}`}>
+                  <div className="mb-6">
+                    <h2 className={`text-2xl font-bold mb-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                      Create Account
+                    </h2>
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                      Register for a new LingoMitra account
+                    </p>
+                  </div>
+                  
+                  <Form {...registerForm}>
+                    <form
+                      onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
+                      className="space-y-4"
+                    >
+                      <FormField
+                        control={registerForm.control}
+                        name="username"
+                        render={({ field }) => (
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
+                            <FormLabel className="mb-1">Username</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Choose a username"
+                                {...field}
+                                className={`${theme === 'dark' ? 'bg-[#232323] border-[#333333]' : 'bg-white border-gray-300'} px-3 py-2 rounded-md w-full text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={registerForm.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
+                            <FormLabel className="mb-1">Password</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="password"
+                                placeholder="Create a password"
+                                {...field}
+                                className={`${theme === 'dark' ? 'bg-[#232323] border-[#333333]' : 'bg-white border-gray-300'} px-3 py-2 rounded-md w-full text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={registerForm.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                          <FormItem className={theme === 'dark' ? 'text-gray-200' : ''}>
+                            <FormLabel className="mb-1">Confirm Password</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="password"
+                                placeholder="Confirm your password"
+                                {...field}
+                                className={`${theme === 'dark' ? 'bg-[#232323] border-[#333333]' : 'bg-white border-gray-300'} px-3 py-2 rounded-md w-full text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
                       <Button
-                        variant="ghost"
-                        onClick={() => setActiveTab("login")}
-                        className={theme === 'dark' ? 'text-gray-300 hover:text-white hover:bg-[#333333]' : ''}
+                        type="submit"
+                        className={`w-full bg-[#ff6600] hover:bg-[#cc5200] text-white rounded-md py-2 mt-2 ${registerMutation.isPending ? 'opacity-70' : ''}`}
+                        disabled={registerMutation.isPending}
                       >
-                        Already have an account? Login
+                        {registerMutation.isPending ? "Registering..." : "Register"}
                       </Button>
-                    </CardFooter>
-                  </Card>
-                </TabsContent>
-              </Tabs>
+                    </form>
+                  </Form>
+                  
+                  <div className="mt-6 text-center">
+                    <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                      Already have an account?{' '}
+                      <button 
+                        onClick={() => setActiveTab("login")}
+                        className={`text-[#ff6600] hover:underline font-medium`}
+                      >
+                        Login
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           
           {/* Hero Section */}
-          <div className="hidden md:flex flex-col justify-center items-center p-8 bg-[#ff6600] text-white">
-            <div className="max-w-md space-y-6">
-              <div className="flex justify-center mb-4">
-                <MascotLogo className="h-24 w-24" />
-              </div>
-              <h1 className="text-4xl font-bold text-center">LingoMitra</h1>
-              <p className="text-xl text-center">
+          <div className="hidden md:flex flex-col justify-center items-start p-12 text-[#f0f0f0]">
+            <div className="max-w-md space-y-5">
+              <h1 className="text-4xl font-bold">LingoMitra</h1>
+              <p className="text-xl">
                 Your personal language learning companion with AI assistance.
               </p>
-              <div className="space-y-4 mt-8">
+              <div className="space-y-6 mt-8">
                 <div className="flex items-start space-x-3">
-                  <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-[#ff6600] flex items-center justify-center">
-                    ✓
+                  <div className="flex-shrink-0 mt-1">
+                    <div className="h-4 w-4 rounded-full bg-gray-500"></div>
                   </div>
-                  <p>Personalized AI language tutor available 24/7</p>
+                  <p className="text-gray-300">Personalized AI language tutor available 24/7</p>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-[#ff6600] flex items-center justify-center">
-                    ✓
+                  <div className="flex-shrink-0 mt-1">
+                    <div className="h-4 w-4 rounded-full bg-gray-500"></div>
                   </div>
-                  <p>Interactive lessons in multiple languages</p>
+                  <p className="text-gray-300">Interactive lessons in multiple languages</p>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-[#ff6600] flex items-center justify-center">
-                    ✓
+                  <div className="flex-shrink-0 mt-1">
+                    <div className="h-4 w-4 rounded-full bg-gray-500"></div>
                   </div>
-                  <p>Track your progress and master new languages faster</p>
+                  <p className="text-gray-300">Track your progress and master new languages faster</p>
                 </div>
               </div>
             </div>
