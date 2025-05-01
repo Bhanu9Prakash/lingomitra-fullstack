@@ -329,11 +329,11 @@ export default function AuthPage() {
           </div>
           
           {/* Hero Section */}
-          <div className="hidden md:flex flex-col justify-center items-start p-12 text-[#f0f0f0]">
-            <div className="max-w-md space-y-5">
-              <div className="mb-4">
-                <div className="flex items-center gap-3 mb-2">
-                  <MascotLogo className="h-9 w-9" />
+          <div className="hidden md:flex flex-col justify-center items-center p-12 text-[#f0f0f0]">
+            <div className="max-w-md space-y-5 text-center">
+              <div className="mb-8">
+                <div className="flex flex-col items-center mb-2">
+                  <MascotLogo className="h-16 w-16 mb-4" />
                   <h1 className="text-4xl font-bold">
                     <span className="text-[#ff6600]">LingoMitra</span>
                   </h1>
@@ -342,7 +342,7 @@ export default function AuthPage() {
               <p className="text-xl">
                 Your personal language learning companion with AI assistance.
               </p>
-              <div className="space-y-6 mt-8">
+              <div className="space-y-6 mt-8 text-left">
                 <div className="flex items-start space-x-3">
                   <div className="flex-shrink-0 mt-1">
                     <div className="h-4 w-4 rounded-full bg-gray-500"></div>
