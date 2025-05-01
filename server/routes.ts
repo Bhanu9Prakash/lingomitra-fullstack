@@ -659,6 +659,9 @@ Remember, learning Hindi opens doors to understanding one of the world's oldest 
 ];
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup authentication
+  setupAuth(app);
+  
   // Initialize data
   // Add languages
   for (const language of languages) {
@@ -815,9 +818,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Set up authentication
-  setupAuth(app);
-  
   // Register chat API router
   app.use("/api/chat", chatRouter);
 
