@@ -8,12 +8,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function AuthPage() {
-  const [_, navigate] = useLocation();
+  const [location, navigate] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
   const [registerForm, setRegisterForm] = useState({ username: "", password: "", confirmPassword: "" });
-  const [activeTab, setActiveTab] = useState("login");
   const [passwordError, setPasswordError] = useState("");
+  
+  // Get the default tab from URL query parameter (e.g., /auth?tab=register)
+  const defaultTab = location.includes("?tab=register") ? "register" : "login";
 
   // If user is already logged in, redirect to home page
   if (user) {
@@ -70,7 +72,7 @@ export default function AuthPage() {
             Please sign in or create an account to continue your language learning journey.
           </p>
           
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs defaultValue={defaultTab} className="w-full">
             <TabsList className="grid grid-cols-2 w-full">
               <TabsTrigger value="login">Login</TabsTrigger>
               <TabsTrigger value="register">Register</TabsTrigger>

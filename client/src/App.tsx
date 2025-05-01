@@ -7,8 +7,10 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import LanguageSelection from "@/pages/LanguageSelection";
 import LessonView from "@/pages/LessonView";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import AuthPage from "@/pages/AuthPage";
+// Temporarily removed theme provider to fix React hook issues
 import Layout from "@/components/Layout";
+import { AuthProvider } from "@/hooks/use-auth";
 
 function Router() {
   return (
@@ -16,6 +18,7 @@ function Router() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/languages" component={LanguageSelection} />
+        <Route path="/auth" component={AuthPage} />
         {/* Legacy routes - keep for compatibility but will redirect */}
         <Route path="/language/:code" component={LessonView} />
         <Route path="/lesson/:id" component={LessonView} />
@@ -30,12 +33,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <TooltipProvider>
+      <TooltipProvider>
+        <AuthProvider>
           <Toaster />
           <Router />
-        </TooltipProvider>
-      </ThemeProvider>
+        </AuthProvider>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }
