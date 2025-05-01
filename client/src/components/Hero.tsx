@@ -40,9 +40,13 @@ export default function Hero() {
               {user ? "Start Learning" : "Get Started For Free"}
             </Button>
             <Button 
-              variant="outline" 
+              variant={theme === 'dark' ? 'outline' : 'outline'}
               size="lg"
-              className={`rounded-full font-medium ${theme === 'dark' ? 'text-[var(--text-color)] border-[var(--border-color)] hover:bg-[var(--bg-dark)]' : ''}`}
+              className={`rounded-full font-medium px-8 py-6 text-lg transition-all duration-200
+                ${theme === 'dark' 
+                  ? 'text-[var(--text-color)] border-[var(--border-color)] bg-transparent hover:bg-[var(--bg-dark)] hover:text-[var(--primary-color)]' 
+                  : 'text-[var(--text-color)] border-[var(--border-color)] hover:border-[var(--primary-color)] hover:text-[var(--primary-color)]'
+                }`}
             >
               Learn More
             </Button>
