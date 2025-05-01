@@ -702,8 +702,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add German lessons
       for (const lesson of germanLessons) {
         try {
-          const validatedLesson = insertLessonSchema.parse(lesson);
-          await storage.createLesson(validatedLesson);
+          // Check if the lesson already exists
+          const existingLesson = await storage.getLessonById(lesson.lessonId);
+          if (!existingLesson) {
+            const validatedLesson = insertLessonSchema.parse(lesson);
+            await storage.createLesson(validatedLesson);
+          } else {
+            console.log(`Lesson ${lesson.lessonId} already exists, skipping`);
+          }
         } catch (error) {
           console.error("Error adding German lesson:", error);
         }
@@ -712,8 +718,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add Spanish lessons
       for (const lesson of spanishLessons) {
         try {
-          const validatedLesson = insertLessonSchema.parse(lesson);
-          await storage.createLesson(validatedLesson);
+          // Check if the lesson already exists
+          const existingLesson = await storage.getLessonById(lesson.lessonId);
+          if (!existingLesson) {
+            const validatedLesson = insertLessonSchema.parse(lesson);
+            await storage.createLesson(validatedLesson);
+          } else {
+            console.log(`Lesson ${lesson.lessonId} already exists, skipping`);
+          }
         } catch (error) {
           console.error("Error adding Spanish lesson:", error);
         }
@@ -722,8 +734,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add French lessons
       for (const lesson of frenchLessons) {
         try {
-          const validatedLesson = insertLessonSchema.parse(lesson);
-          await storage.createLesson(validatedLesson);
+          // Check if the lesson already exists
+          const existingLesson = await storage.getLessonById(lesson.lessonId);
+          if (!existingLesson) {
+            const validatedLesson = insertLessonSchema.parse(lesson);
+            await storage.createLesson(validatedLesson);
+          } else {
+            console.log(`Lesson ${lesson.lessonId} already exists, skipping`);
+          }
         } catch (error) {
           console.error("Error adding French lesson:", error);
         }
@@ -732,8 +750,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add Chinese lessons
       for (const lesson of chineseLessons) {
         try {
-          const validatedLesson = insertLessonSchema.parse(lesson);
-          await storage.createLesson(validatedLesson);
+          // Check if the lesson already exists
+          const existingLesson = await storage.getLessonById(lesson.lessonId);
+          if (!existingLesson) {
+            const validatedLesson = insertLessonSchema.parse(lesson);
+            await storage.createLesson(validatedLesson);
+          } else {
+            console.log(`Lesson ${lesson.lessonId} already exists, skipping`);
+          }
         } catch (error) {
           console.error("Error adding Chinese lesson:", error);
         }
@@ -742,8 +766,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add Japanese lessons
       for (const lesson of japaneseLessons) {
         try {
-          const validatedLesson = insertLessonSchema.parse(lesson);
-          await storage.createLesson(validatedLesson);
+          // Check if the lesson already exists
+          const existingLesson = await storage.getLessonById(lesson.lessonId);
+          if (!existingLesson) {
+            const validatedLesson = insertLessonSchema.parse(lesson);
+            await storage.createLesson(validatedLesson);
+          } else {
+            console.log(`Lesson ${lesson.lessonId} already exists, skipping`);
+          }
         } catch (error) {
           console.error("Error adding Japanese lesson:", error);
         }
@@ -752,8 +782,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add Hindi lessons
       for (const lesson of hindiLessons) {
         try {
-          const validatedLesson = insertLessonSchema.parse(lesson);
-          await storage.createLesson(validatedLesson);
+          // Check if the lesson already exists
+          const existingLesson = await storage.getLessonById(lesson.lessonId);
+          if (!existingLesson) {
+            const validatedLesson = insertLessonSchema.parse(lesson);
+            await storage.createLesson(validatedLesson);
+          } else {
+            console.log(`Lesson ${lesson.lessonId} already exists, skipping`);
+          }
         } catch (error) {
           console.error("Error adding Hindi lesson:", error);
         }
@@ -764,8 +800,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Add lessons from the filesystem
       for (const lesson of lessons) {
         try {
-          const validatedLesson = insertLessonSchema.parse(lesson);
-          await storage.createLesson(validatedLesson);
+          // Check if the lesson already exists
+          const existingLesson = await storage.getLessonById(lesson.lessonId);
+          if (!existingLesson) {
+            const validatedLesson = insertLessonSchema.parse(lesson);
+            await storage.createLesson(validatedLesson);
+          } else {
+            console.log(`Lesson ${lesson.lessonId} already exists, skipping`);
+          }
         } catch (error) {
           console.error(`Error adding lesson ${lesson.lessonId}:`, error);
         }
