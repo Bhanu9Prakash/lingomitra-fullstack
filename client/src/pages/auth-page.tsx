@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { useAuth } from "../hooks/use-auth";
+import { useAuth } from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MascotLogo from "@/components/MascotLogo";
-import { useToast } from "../hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 // Extend the user schema with client-side validation
 const loginSchema = z.object({
@@ -119,9 +119,9 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2 gap-0 dark:bg-background">
+    <div className="min-h-screen grid md:grid-cols-2 gap-0">
       {/* Auth Form */}
-      <div className="flex flex-col justify-center items-center p-4 md:p-8 dark:bg-background">
+      <div className="flex flex-col justify-center items-center p-4 md:p-8">
         <div className="w-full max-w-md space-y-6">
           <div className="flex justify-center mb-8">
             <MascotLogo className="h-16 w-16" />
@@ -300,7 +300,7 @@ export default function AuthPage() {
       </div>
       
       {/* Hero Section */}
-      <div className="hidden md:flex flex-col justify-center items-center p-8 bg-gradient-to-r from-primary to-secondary dark:from-primary/90 dark:to-secondary/90 text-white">
+      <div className="hidden md:flex flex-col justify-center items-center p-8 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
         <div className="max-w-md space-y-6">
           <h1 className="text-4xl font-bold">LingoMitra</h1>
           <p className="text-xl">
@@ -308,19 +308,19 @@ export default function AuthPage() {
           </p>
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
-              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary flex items-center justify-center">
+              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary-700 flex items-center justify-center">
                 ✓
               </div>
               <p>Personalized AI language tutor available 24/7</p>
             </div>
             <div className="flex items-start space-x-3">
-              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary flex items-center justify-center">
+              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary-700 flex items-center justify-center">
                 ✓
               </div>
               <p>Interactive lessons in multiple languages</p>
             </div>
             <div className="flex items-start space-x-3">
-              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary flex items-center justify-center">
+              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary-700 flex items-center justify-center">
                 ✓
               </div>
               <p>Track your progress and master new languages faster</p>
