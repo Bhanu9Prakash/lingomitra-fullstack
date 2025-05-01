@@ -9,6 +9,7 @@ import { z } from "zod";
 import { insertLanguageSchema, insertLessonSchema } from "@shared/schema";
 import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
+import { setupAuth } from "./auth";
 
 // Sample data
 const languages = [
@@ -814,6 +815,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Set up authentication
+  setupAuth(app);
+  
   // Register chat API router
   app.use("/api/chat", chatRouter);
 

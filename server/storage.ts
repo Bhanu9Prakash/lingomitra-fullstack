@@ -3,6 +3,10 @@ import {
   languages, type Language, type InsertLanguage,
   lessons, type Lesson, type InsertLesson 
 } from "@shared/schema";
+import session from "express-session";
+import { Pool } from "@neondatabase/serverless";
+import connectPg from "connect-pg-simple";
+import { createHash } from "crypto";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -23,6 +27,9 @@ export interface IStorage {
   getLessonById(lessonId: string): Promise<Lesson | undefined>;
   getLessonsByLanguage(languageCode: string): Promise<Lesson[]>;
   createLesson(lesson: InsertLesson): Promise<Lesson>;
+  
+  // Session store
+  sessionStore: session.Store;
 }
 
 export class MemStorage implements IStorage {
@@ -32,6 +39,7 @@ export class MemStorage implements IStorage {
   private userCurrentId: number;
   private languageCurrentId: number;
   private lessonCurrentId: number;
+  public sessionStore: session.Store;
 
   constructor() {
     this.users = new Map();
@@ -40,6 +48,26 @@ export class MemStorage implements IStorage {
     this.userCurrentId = 1;
     this.languageCurrentId = 1;
     this.lessonCurrentId = 1;
+    
+    // Initialize the session store
+    if (process.env.DATABASE_URL) {
+      // Using PostgreSQL
+      const PostgresSessionStore = connectPg(session);
+      const pool = new Pool({
+        connectionString: process.env.DATABASE_URL,
+      });
+      this.sessionStore = new PostgresSessionStore({
+        pool,
+        createTableIfMissing: true, 
+        tableName: 'session'
+      });
+    } else {
+      // Using in-memory store (for development)
+      const MemoryStore = require('memorystore')(session);
+      this.sessionStore = new MemoryStore({
+        checkPeriod: 86400000 // 24h, prune expired entries
+      });
+    }
   }
 
   // User methods
