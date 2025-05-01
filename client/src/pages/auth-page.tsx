@@ -161,7 +161,7 @@ export default function AuthPage() {
               
               {/* Login Form */}
               {activeTab === 'login' && (
-                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-white border border-gray-200 shadow-sm'}`}>
+                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a] border border-[#222222]' : 'bg-white border border-gray-200 shadow-sm'}`}>
                   <div className="mb-6">
                     <h2 className={`text-2xl font-bold mb-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                       Welcome Back
@@ -247,7 +247,7 @@ export default function AuthPage() {
               
               {/* Register Form */}
               {activeTab === 'register' && (
-                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-white border border-gray-200 shadow-sm'}`}>
+                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a] border border-[#222222]' : 'bg-white border border-gray-200 shadow-sm'}`}>
                   <div className="mb-6">
                     <h2 className={`text-2xl font-bold mb-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                       Create Account
