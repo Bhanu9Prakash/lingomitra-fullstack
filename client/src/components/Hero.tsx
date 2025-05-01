@@ -21,7 +21,7 @@ export default function Hero() {
     <section className="min-h-screen flex items-center justify-center bg-white">
       <div className="container px-4 py-16 md:py-24 lg:py-32 flex flex-col lg:flex-row gap-10 lg:gap-20 items-center">
         <div className="flex-1 space-y-6 text-center lg:text-left">
-          <div className="inline-block rounded-lg bg-[#ff6600] px-3 py-1 text-sm text-white">
+          <div className="inline-block rounded-lg bg-[rgba(255,102,0,0.1)] px-3 py-1 text-sm text-[var(--primary-color)] font-semibold">
             Language Learning Simplified
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
@@ -32,8 +32,7 @@ export default function Hero() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <Button 
-              size="lg"
-              className="rounded-full font-medium bg-[#ff6600] hover:bg-[#e55c00] text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
+              className="primary-btn rounded-full font-medium bg-[var(--primary-color)] hover:bg-[var(--primary-dark)] text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
               onClick={handleGetStarted}
             >
               {user ? "Start Learning" : "Get Started For Free"}
@@ -64,12 +63,12 @@ export default function Hero() {
         </div>
 
         {/* PWA Install Prompt */}
-        <div className="absolute bottom-8 right-8 max-w-xs bg-card rounded-xl shadow-lg p-4 border border-border">
+        <div className="absolute bottom-8 right-8 max-w-xs bg-card rounded-xl shadow-lg p-4 border border-[var(--border-color)]">
           <h3 className="font-semibold mb-1">Install LingoMitra</h3>
-          <p className="text-sm text-muted-foreground mb-3">Add LingoMitra to your home screen for quick access to your language lessons, even offline!</p>
+          <p className="text-sm text-[var(--text-light)] mb-3">Add LingoMitra to your home screen for quick access to your language lessons, even offline!</p>
           <div className="flex justify-end gap-2">
-            <Button variant="outline" size="sm">Not Now</Button>
-            <Button size="sm">Install</Button>
+            <Button variant="outline" size="sm" className="text-[var(--text-color)]">Not Now</Button>
+            <Button size="sm" className="bg-[var(--primary-color)] hover:bg-[var(--primary-dark)] text-white">Install</Button>
           </div>
         </div>
       </div>
