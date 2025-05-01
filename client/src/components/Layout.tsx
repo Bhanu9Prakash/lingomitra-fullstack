@@ -9,6 +9,7 @@ import { useLocation } from "wouter";
 import { Language } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import LanguageDropdown from "./LanguageDropdown";
+import UserMenu from "./UserMenu";
 
 interface LayoutProps {
   children: ReactNode;
@@ -67,6 +68,9 @@ export default function Layout({ children }: LayoutProps) {
               selectedLanguage={selectedLanguage}
               languages={languages}
             />
+            
+            {/* User menu dropdown */}
+            <UserMenu />
             
             <div className="theme-container">
               <button 
