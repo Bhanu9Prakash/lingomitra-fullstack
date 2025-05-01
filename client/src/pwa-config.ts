@@ -8,15 +8,29 @@ export function registerServiceWorker() {
         .then(registration => {
           console.log('ServiceWorker registration successful with scope: ', registration.scope);
           
-          // Handle updates
+          // Handle updates - track if we've already shown the notification
+          let updateNotificationShown = false;
+          
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing;
-            if (newWorker) {
+            if (newWorker && !updateNotificationShown) {
               newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // New content is available; notify the user
-                  if (confirm('New content available. Reload?')) {
-                    window.location.reload();
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller && !updateNotificationShown) {
+                  // Set flag to prevent multiple notifications
+                  updateNotificationShown = true;
+                  
+                  // Store in sessionStorage to prevent showing again if user reloads without accepting
+                  const lastUpdateTime = sessionStorage.getItem('lastUpdatePrompt');
+                  const now = Date.now();
+                  
+                  // Only show if we haven't shown in the last 5 minutes
+                  if (!lastUpdateTime || (now - parseInt(lastUpdateTime)) > 5 * 60 * 1000) {
+                    sessionStorage.setItem('lastUpdatePrompt', now.toString());
+                    
+                    // New content is available; notify the user
+                    if (confirm('New content available. Reload once to see the latest version?')) {
+                      window.location.reload();
+                    }
                   }
                 }
               });
