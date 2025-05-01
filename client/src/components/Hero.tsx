@@ -13,6 +13,7 @@ export default function Hero() {
     } else {
       // Navigate to auth page with register tab active
       navigate("/auth?tab=register");
+      console.log("Navigating to auth page with register tab");
     }
   };
 
@@ -32,7 +33,7 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <Button 
               size="lg"
-              className="rounded-full font-medium"
+              className="rounded-full font-medium bg-orange-500 hover:bg-orange-600 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-200"
               onClick={handleGetStarted}
             >
               {user ? "Start Learning" : "Get Started For Free"}

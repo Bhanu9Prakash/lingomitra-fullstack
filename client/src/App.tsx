@@ -18,14 +18,22 @@ function Router() {
   return (
     <Layout>
       <Switch>
-        <ProtectedRoute path="/" component={Home} />
+        {/* Home page is public to show marketing content */}
+        <Route path="/" component={Home} />
+        
+        {/* Protected routes requiring authentication */}
+        <ProtectedRoute path="/dashboard" component={Home} />
         <ProtectedRoute path="/languages" component={LanguageSelection} />
         {/* Legacy routes - keep for compatibility but will redirect */}
         <ProtectedRoute path="/language/:code" component={LessonView} />
         <ProtectedRoute path="/lesson/:id" component={LessonView} />
         {/* New standard route format */}
         <ProtectedRoute path="/:language/lesson/:lessonNumber" component={LessonView} />
+        
+        {/* Authentication route */}
         <Route path="/auth" component={AuthPage} />
+        
+        {/* 404 page */}
         <Route component={NotFound} />
       </Switch>
     </Layout>
