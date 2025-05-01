@@ -123,12 +123,12 @@ export default function AuthPage() {
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#111111]' : 'bg-[#f9f9f9]'}`}>
       <div className="container mx-auto py-10">
-        <div className="min-h-screen grid md:grid-cols-2 gap-0 max-w-6xl mx-auto">
+        <div className="min-h-screen grid md:grid-cols-2 gap-0 max-w-6xl mx-auto overflow-hidden rounded-md">
           {/* Auth Form */}
           <div className={`flex flex-col justify-center items-center p-4 md:p-8 ${theme === 'dark' ? 'bg-[#111111]' : 'bg-[#f9f9f9]'}`}>
             <div className="w-full max-w-md">
               {/* Top tabs */}
-              <div className="flex w-full mb-6 rounded-md overflow-hidden border border-gray-200">
+              <div className={`flex w-full mb-6 rounded-md overflow-hidden ${theme === 'dark' ? '' : 'border border-gray-200'}`}>
                 <button 
                   onClick={() => setActiveTab("login")}
                   className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${
