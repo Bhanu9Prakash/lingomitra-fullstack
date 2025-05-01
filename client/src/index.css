@@ -2339,3 +2339,120 @@ footer {
   margin-left: 10px;
   margin-right: 0;
 }
+
+/* User Authentication Styles */
+.user-menu-container {
+  position: relative;
+  margin-right: 10px;
+}
+
+.user-menu-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.user-menu-button:hover {
+  background-color: var(--primary-light);
+  color: white;
+}
+
+.user-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--primary-color);
+}
+
+.user-menu-button:hover .user-icon {
+  color: white;
+}
+
+.username {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  width: 200px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.user-dropdown-header {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-light);
+}
+
+.greeting {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.user-dropdown-content {
+  padding: 12px;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  width: 100%;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.logout-button:hover {
+  background-color: #c82333;
+}
+
+.click-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+}
+
+.auth-link {
+  margin-right: 10px;
+}
+
+.login-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.login-button:hover {
+  background-color: var(--primary-dark);
+}
