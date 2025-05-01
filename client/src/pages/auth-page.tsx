@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
@@ -28,9 +28,12 @@ import MascotLogo from "@/components/MascotLogo";
 import { useToast } from "@/hooks/use-toast";
 
 // Extend the user schema with client-side validation
-const loginSchema = insertUserSchema;
+const loginSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+});
 
-const registerSchema = insertUserSchema.extend({
+const registerSchema = loginSchema.extend({
   confirmPassword: z.string().min(1, "Confirm password is required"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
@@ -44,10 +47,11 @@ export default function AuthPage() {
   const [_, navigate] = useLocation();
 
   // Redirect if already logged in
-  if (user) {
-    navigate("/");
-    return null;
-  }
+  React.useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   // Login form
   const loginForm = useForm<z.infer<typeof loginSchema>>({

@@ -50,5 +50,9 @@ function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (i
 export function Toaster() {
   const { toasts, dismiss } = useToast();
   
-  return <ToastContainer toasts={toasts} dismiss={dismiss} />;
+  // Cast the toasts to the expected type
+  return <ToastContainer 
+    toasts={toasts as unknown as ToastProps[]} 
+    dismiss={dismiss} 
+  />;
 }

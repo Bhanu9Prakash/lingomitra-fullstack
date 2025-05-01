@@ -10,6 +10,7 @@ import LessonView from "@/pages/LessonView";
 import AuthPage from "@/pages/auth-page";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
+// Import the AuthProvider from the hooks directory
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 
