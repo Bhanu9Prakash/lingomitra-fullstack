@@ -59,23 +59,23 @@ export default function InstallPrompt() {
         position: 'fixed',
         bottom: '70px', // Above the network status if showing
         right: '20px',
-        background: theme === 'dark' ? '#333' : '#fff',
-        color: theme === 'dark' ? '#fff' : '#333',
+        background: theme === 'dark' ? 'var(--bg-light)' : 'var(--bg-color)',
+        color: theme === 'dark' ? 'var(--text-color)' : 'var(--text-color)',
         padding: '15px',
         borderRadius: '8px',
         boxShadow: theme === 'dark' 
-          ? '0 2px 10px rgba(0,0,0,0.5)' 
-          : '0 2px 10px rgba(0,0,0,0.2)',
+          ? 'var(--shadow)' 
+          : 'var(--shadow)',
         zIndex: 9998,
         display: 'flex',
         flexDirection: 'column',
         gap: '10px',
         maxWidth: '300px',
-        border: theme === 'dark' ? '1px solid #444' : '1px solid #ddd',
+        border: theme === 'dark' ? '1px solid var(--border-color)' : '1px solid var(--border-color)',
       }}
     >
-      <div style={{ fontWeight: 'bold' }}>Install LingoMitra</div>
-      <p style={{ margin: '0', fontSize: '14px' }}>
+      <div style={{ fontWeight: 'bold', color: 'var(--text-color)' }}>Install LingoMitra</div>
+      <p style={{ margin: '0', fontSize: '14px', color: 'var(--text-light)' }}>
         Add LingoMitra to your home screen for quick access to your language lessons, even offline!
       </p>
       <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
@@ -83,11 +83,11 @@ export default function InstallPrompt() {
           onClick={() => setShowPrompt(false)}
           style={{
             background: 'transparent',
-            border: theme === 'dark' ? '1px solid #555' : '1px solid #ccc',
+            border: '1px solid var(--border-color)',
             borderRadius: '4px',
             padding: '8px 12px',
             cursor: 'pointer',
-            color: theme === 'dark' ? '#fff' : '#333',
+            color: 'var(--text-color)',
           }}
         >
           Not Now
@@ -95,7 +95,7 @@ export default function InstallPrompt() {
         <button 
           onClick={handleInstallClick}
           style={{
-            background: '#ff6600',
+            background: 'var(--primary-color)',
             color: 'white',
             border: 'none',
             borderRadius: '4px',

@@ -62,15 +62,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* PWA Install Prompt */}
-        <div className="absolute bottom-8 right-8 max-w-xs bg-card rounded-xl shadow-lg p-4 border border-[var(--border-color)]">
-          <h3 className="font-semibold mb-1">Install LingoMitra</h3>
-          <p className="text-sm text-[var(--text-light)] mb-3">Add LingoMitra to your home screen for quick access to your language lessons, even offline!</p>
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" size="sm" className="text-[var(--text-color)]">Not Now</Button>
-            <Button size="sm" className="bg-[var(--primary-color)] hover:bg-[var(--primary-dark)] text-white">Install</Button>
-          </div>
-        </div>
+
       </div>
     </section>
   );
