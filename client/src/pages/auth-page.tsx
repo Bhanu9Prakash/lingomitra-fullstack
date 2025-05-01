@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useNavigate } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertUserSchema, InsertUser } from "@shared/schema";
 import { z } from "zod";
-import { useLocation } from "wouter";
+import { insertUserSchema } from "@shared/schema";
 import {
   Form,
   FormControl,
@@ -14,44 +14,53 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MascotLogo from "@/components/MascotLogo";
+import { useToast } from "@/hooks/use-toast";
 
-// Extended schema for form validation
-const userFormSchema = insertUserSchema.extend({
-  password: z.string().min(6, {
-    message: "Password must be at least 6 characters.",
-  }),
-  confirmPassword: z.string().optional(),
-}).refine((data) => {
-  // Only validate confirmPassword when we're registering
-  if (data.confirmPassword !== undefined) {
-    return data.password === data.confirmPassword;
-  }
-  return true;
-}, {
+// Extend the user schema with client-side validation
+const loginSchema = insertUserSchema;
+
+const registerSchema = insertUserSchema.extend({
+  confirmPassword: z.string().min(1, "Confirm password is required"),
+}).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
 });
 
-type UserFormValues = z.infer<typeof userFormSchema>;
-
 export default function AuthPage() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [activeTab, setActiveTab] = useState<string>("login");
   const { user, loginMutation, registerMutation } = useAuth();
-  const [, navigate] = useLocation();
+  const { toast } = useToast();
+  const [_, navigate] = useNavigate();
 
-  // Redirect if user is already logged in
+  // Redirect if already logged in
   if (user) {
     navigate("/");
     return null;
   }
 
-  const form = useForm<UserFormValues>({
-    resolver: zodResolver(
-      isLogin 
-        ? userFormSchema 
-        : userFormSchema
-    ),
+  // Login form
+  const loginForm = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  // Register form
+  const registerForm = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       password: "",
@@ -59,151 +68,242 @@ export default function AuthPage() {
     },
   });
 
-  const onSubmit = (data: UserFormValues) => {
-    if (isLogin) {
-      loginMutation.mutate({
-        username: data.username,
-        password: data.password,
+  // Submit handlers
+  const onLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
+    try {
+      await loginMutation.mutateAsync(values);
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully logged in.",
+        variant: "success",
       });
-    } else {
-      // Remove confirmPassword before submitting
-      const { confirmPassword, ...userData } = data;
-      registerMutation.mutate(userData as InsertUser);
+      navigate("/");
+    } catch (error) {
+      // Error handling is done in the mutation
     }
   };
 
-  const toggleAuthMode = () => {
-    setIsLogin(!isLogin);
-    form.reset();
+  const onRegisterSubmit = async (values: z.infer<typeof registerSchema>) => {
+    try {
+      const { confirmPassword, ...userData } = values;
+      await registerMutation.mutateAsync(userData);
+      toast({
+        title: "Registration successful!",
+        description: "Your account has been created.",
+        variant: "success",
+      });
+      navigate("/");
+    } catch (error) {
+      // Error handling is done in the mutation
+    }
   };
 
-  const isSubmitting = loginMutation.isPending || registerMutation.isPending;
-
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <div className="auth-form-section">
-          <div className="auth-header">
-            <h1>{isLogin ? "Welcome Back" : "Create Account"}</h1>
-            <p>
-              {isLogin
-                ? "Sign in to continue your language learning journey"
-                : "Join LingoMitra to start your language learning journey"}
-            </p>
+    <div className="min-h-screen grid md:grid-cols-2 gap-0">
+      {/* Auth Form */}
+      <div className="flex flex-col justify-center items-center p-4 md:p-8">
+        <div className="w-full max-w-md space-y-6">
+          <div className="flex justify-center mb-8">
+            <MascotLogo className="h-16 w-16" />
           </div>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="auth-form">
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter your username"
-                        {...field}
-                        disabled={isSubmitting}
+          
+          <Tabs
+            defaultValue={activeTab}
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            <TabsList className="grid grid-cols-2 w-full mb-6">
+              <TabsTrigger value="login">Login</TabsTrigger>
+              <TabsTrigger value="register">Register</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="login">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Welcome Back</CardTitle>
+                  <CardDescription>
+                    Login to your LingoMitra account
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Form {...loginForm}>
+                    <form
+                      onSubmit={loginForm.handleSubmit(onLoginSubmit)}
+                      className="space-y-4"
+                    >
+                      <FormField
+                        control={loginForm.control}
+                        name="username"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Username</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Enter your username"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your password"
-                        {...field}
-                        disabled={isSubmitting}
+                      
+                      <FormField
+                        control={loginForm.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="password"
+                                placeholder="Enter your password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {!isLogin && (
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Confirm your password"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              )}
-
-              <button
-                type="submit"
-                className="primary-btn auth-submit"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <span className="loading-spinner"></span>
-                ) : isLogin ? (
-                  "Sign In"
-                ) : (
-                  "Sign Up"
-                )}
-              </button>
-            </form>
-          </Form>
-
-          <div className="auth-toggle">
-            <p>
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
-              <button
-                onClick={toggleAuthMode}
-                className="toggle-link"
-                disabled={isSubmitting}
-              >
-                {isLogin ? "Sign Up" : "Sign In"}
-              </button>
-            </p>
-          </div>
+                      
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={loginMutation.isPending}
+                      >
+                        {loginMutation.isPending ? "Logging in..." : "Login"}
+                      </Button>
+                    </form>
+                  </Form>
+                </CardContent>
+                <CardFooter className="flex justify-center">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setActiveTab("register")}
+                  >
+                    Don't have an account? Register
+                  </Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="register">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Create Account</CardTitle>
+                  <CardDescription>
+                    Register for a new LingoMitra account
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Form {...registerForm}>
+                    <form
+                      onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
+                      className="space-y-4"
+                    >
+                      <FormField
+                        control={registerForm.control}
+                        name="username"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Username</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Choose a username"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={registerForm.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="password"
+                                placeholder="Create a password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={registerForm.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Confirm Password</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="password"
+                                placeholder="Confirm your password"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={registerMutation.isPending}
+                      >
+                        {registerMutation.isPending ? "Registering..." : "Register"}
+                      </Button>
+                    </form>
+                  </Form>
+                </CardContent>
+                <CardFooter className="flex justify-center">
+                  <Button
+                    variant="ghost"
+                    onClick={() => setActiveTab("login")}
+                  >
+                    Already have an account? Login
+                  </Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
-
-        <div className="auth-hero-section">
-          <div className="auth-hero-content">
-            <MascotLogo className="auth-mascot" />
-            <h2>LingoMitra</h2>
-            <p>Your AI language learning companion</p>
-            <div className="auth-features">
-              <div className="feature">
-                <i className="fas fa-robot"></i>
-                <span>AI-powered conversations</span>
+      </div>
+      
+      {/* Hero Section */}
+      <div className="hidden md:flex flex-col justify-center items-center p-8 bg-gradient-to-r from-primary-600 to-primary-800 text-white">
+        <div className="max-w-md space-y-6">
+          <h1 className="text-4xl font-bold">LingoMitra</h1>
+          <p className="text-xl">
+            Your personal language learning companion with AI assistance.
+          </p>
+          <div className="space-y-4">
+            <div className="flex items-start space-x-3">
+              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary-700 flex items-center justify-center">
+                ✓
               </div>
-              <div className="feature">
-                <i className="fas fa-book"></i>
-                <span>Structured lessons</span>
+              <p>Personalized AI language tutor available 24/7</p>
+            </div>
+            <div className="flex items-start space-x-3">
+              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary-700 flex items-center justify-center">
+                ✓
               </div>
-              <div className="feature">
-                <i className="fas fa-globe"></i>
-                <span>Multiple languages</span>
+              <p>Interactive lessons in multiple languages</p>
+            </div>
+            <div className="flex items-start space-x-3">
+              <div className="h-6 w-6 mt-0.5 rounded-full bg-white text-primary-700 flex items-center justify-center">
+                ✓
               </div>
-              <div className="feature">
-                <i className="fas fa-mobile-alt"></i>
-                <span>Learn anywhere</span>
-              </div>
+              <p>Track your progress and master new languages faster</p>
             </div>
           </div>
         </div>
