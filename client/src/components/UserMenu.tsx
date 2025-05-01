@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate, Link } from "wouter";
+import { useLocation, Link } from "wouter";
 import { User, LogOut, Settings } from "lucide-react";
 
 export default function UserMenu() {

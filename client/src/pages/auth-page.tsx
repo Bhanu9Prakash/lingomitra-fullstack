@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,7 +41,7 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<string>("login");
   const { user, loginMutation, registerMutation } = useAuth();
   const { toast } = useToast();
-  const [_, navigate] = useNavigate();
+  const [_, navigate] = useLocation();
 
   // Redirect if already logged in
   if (user) {

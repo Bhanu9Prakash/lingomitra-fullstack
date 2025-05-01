@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect, createContext, useContext, type ReactNode } from 'react';
 
 export type ToastVariant = 'default' | 'destructive' | 'success';
 
@@ -17,41 +17,45 @@ type ToastState = {
   dismissAll: () => void;
 };
 
-const DEFAULT_TOAST_DURATION = 5000; // 5 seconds
+const ToastContext = createContext<ToastState | undefined>(undefined);
 
-export function useToast(): ToastState {
+export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastProps[]>([]);
 
   const toast = (props: ToastProps) => {
-    const id = props.id || `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    const duration = props.duration || DEFAULT_TOAST_DURATION;
+    const id = props.id || Math.random().toString(36).substr(2, 9);
+    const newToast = { ...props, id, duration: props.duration || 5000 };
     
-    setToasts((prev) => [...prev, { ...props, id, duration }]);
-    
-    // Auto dismiss after duration
-    if (duration > 0) {
+    setToasts((prevToasts) => [...prevToasts, newToast]);
+
+    if (newToast.duration !== Infinity) {
       setTimeout(() => {
         dismiss(id);
-      }, duration);
+      }, newToast.duration);
     }
   };
 
   const dismiss = (id: string) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
   };
 
   const dismissAll = () => {
     setToasts([]);
   };
 
-  return {
-    toasts,
-    toast,
-    dismiss,
-    dismissAll
-  };
+  return (
+    <ToastContext.Provider value={{ toasts, toast, dismiss, dismissAll }}>
+      {children}
+    </ToastContext.Provider>
+  );
 }
 
-// No longer using the ToastContainer here, moved to toaster.tsx
-
-// Context provider for global toast usage will be added later if needed
+export function useToast(): ToastState {
+  const context = useContext(ToastContext);
+  
+  if (!context) {
+    throw new Error('useToast must be used within a ToastProvider');
+  }
+  
+  return context;
+}
