@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useForm } from "react-hook-form";
@@ -41,13 +41,29 @@ const registerSchema = loginSchema.extend({
 });
 
 export default function AuthPage() {
-  const [activeTab, setActiveTab] = useState<string>("login");
+  // Check for tab parameter in URL
+  const getInitialTab = () => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tabParam = urlParams.get('tab');
+      return tabParam === 'register' ? 'register' : 'login';
+    }
+    return 'login';
+  };
+
+  const [activeTab, setActiveTab] = useState<string>(getInitialTab());
   const { user, loginMutation, registerMutation } = useAuth();
   const { toast } = useToast();
   const [_, navigate] = useLocation();
 
+  // Set the active tab based on URL parameter
+  useEffect(() => {
+    const tabFromUrl = getInitialTab();
+    setActiveTab(tabFromUrl);
+  }, []);
+
   // Redirect if already logged in
-  React.useEffect(() => {
+  useEffect(() => {
     if (user) {
       navigate("/");
     }

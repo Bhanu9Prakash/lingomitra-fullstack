@@ -6,6 +6,16 @@ export default function Hero() {
   const [_, navigate] = useLocation();
   const { user } = useAuth();
 
+  // Direct new users to the registration page
+  const handleGetStarted = () => {
+    if (user) {
+      navigate("/languages");
+    } else {
+      // Navigate to auth page with register tab active
+      navigate("/auth?tab=register");
+    }
+  };
+
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted">
       <div className="container px-4 py-16 md:py-24 lg:py-32 flex flex-col lg:flex-row gap-10 lg:gap-20 items-center">
@@ -23,9 +33,9 @@ export default function Hero() {
             <Button 
               size="lg"
               className="rounded-full font-medium"
-              onClick={() => user ? navigate("/languages") : navigate("/auth")}
+              onClick={handleGetStarted}
             >
-              {user ? "Start Learning" : "Get Started"}
+              {user ? "Start Learning" : "Get Started For Free"}
             </Button>
             <Button 
               variant="outline" 
