@@ -3,7 +3,8 @@ export function registerServiceWorker() {
   // Skip registration if not supported
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
+      // Add cache-busting query parameter to ensure we get the latest service worker
+      navigator.serviceWorker.register(`/service-worker.js?v=${Date.now()}`)
         .then(registration => {
           console.log('ServiceWorker registration successful with scope: ', registration.scope);
           

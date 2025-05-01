@@ -1,5 +1,5 @@
 // Service Worker for LingoMitra PWA
-const CACHE_NAME = 'lingomitra-cache-v1';
+const CACHE_NAME = 'lingomitra-cache-v2';  // Increment cache version to force refresh
 
 // Assets to cache on install
 const PRECACHE_ASSETS = [
@@ -79,10 +79,48 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // For non-API requests, try cache first, then network
+  // For non-API requests, network-first for HTML files and CSS/JS bundles, cache-first for other assets
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
+      // For HTML files and CSS/JS bundles, always try network first to get fresh content
+      if (event.request.mode === 'navigate' || 
+          event.request.url.includes('.js') || 
+          event.request.url.includes('.css')) {
+        return fetch(event.request)
+          .then(response => {
+            // Cache the fresh response
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseClone);
+            });
+            return response;
+          })
+          .catch(() => {
+            // If network fails, use cache as fallback
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            // If no cache for navigation, show offline page
+            if (event.request.mode === 'navigate') {
+              return caches.match('/offline.html');
+            }
+            return new Response('Network error happened', {
+              status: 408,
+              headers: { 'Content-Type': 'text/plain' }
+            });
+          });
+      }
+      
+      // For other assets, try cache first
       if (cachedResponse) {
+        // But still update the cache in the background (stale-while-revalidate)
+        fetch(event.request).then(response => {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+        }).catch(() => {});
+        
         return cachedResponse;
       }
       
