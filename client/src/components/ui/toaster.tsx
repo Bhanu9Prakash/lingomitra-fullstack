@@ -1,6 +1,15 @@
-import { useToast, type ToastProps } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { X } from "lucide-react";
 import { useEffect } from "react";
+
+// Define the ToastProps type locally
+type ToastProps = {
+  id?: string;
+  title: string;
+  description?: string;
+  variant?: 'default' | 'destructive';
+  duration?: number;
+};
 
 function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (id: string) => void }) {
   return (
@@ -12,7 +21,7 @@ function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (i
             pointer-events-auto flex w-full max-w-md overflow-hidden rounded-lg shadow-lg ring-1 
             ring-black ring-opacity-5 transition-all duration-300 ease-in-out transform translate-x-0
             ${toast.variant === 'destructive' ? 'bg-destructive text-destructive-foreground' : 
-              toast.variant === 'success' ? 'bg-green-500 text-white' : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'}
+              'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'}
           `}
         >
           <div className="flex-1 p-4">
