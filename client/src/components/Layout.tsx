@@ -63,14 +63,16 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           
           <div className="header-controls">
-            {/* Shows flag + name dropdown in the header */}
-            <LanguageDropdown
-              selectedLanguage={selectedLanguage}
-              languages={languages}
-            />
+            {/* Shows flag + name dropdown in the header - hide on homepage */}
+            {!isHomePage && (
+              <LanguageDropdown
+                selectedLanguage={selectedLanguage}
+                languages={languages}
+              />
+            )}
             
-            {/* User menu dropdown */}
-            <UserMenu />
+            {/* User menu dropdown - hide on homepage */}
+            {!isHomePage && <UserMenu />}
             
             <div className="theme-container">
               <button 
