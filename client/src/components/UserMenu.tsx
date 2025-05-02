@@ -66,9 +66,9 @@ export default function UserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         className="w-56 border-primary/20 bg-background shadow-lg rounded-md overflow-hidden" 
-        align="end" 
-        forceMount 
-        style={{ position: 'fixed', zIndex: 9999 }}
+        align="end"
+        alignOffset={0}
+        sideOffset={8}
       >
         <DropdownMenuLabel className="font-normal bg-primary/5 rounded-t-md border-b border-border/30">
           <div className="flex flex-col space-y-1">
