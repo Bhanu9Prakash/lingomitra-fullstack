@@ -69,6 +69,8 @@ export default function UserMenu() {
         align="end"
         alignOffset={0}
         sideOffset={8}
+        avoidCollisions={true}
+        collisionPadding={16}
       >
         <DropdownMenuLabel className="font-normal bg-primary/5 rounded-t-md border-b border-border/30">
           <div className="flex flex-col space-y-1">
