@@ -65,7 +65,7 @@ export default function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
-        className="w-56 border-primary/20 bg-background shadow-lg rounded-md overflow-hidden dropdown-menu-avatar" 
+        className="w-56 border-primary/20 bg-background shadow-lg rounded-md overflow-hidden right-4" 
         align="end"
         sideOffset={5}
         avoidCollisions={false}
