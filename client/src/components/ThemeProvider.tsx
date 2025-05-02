@@ -10,22 +10,22 @@ type ThemeContextType = {
 
 // Create a context with a default value to avoid undefined checks
 const ThemeContext = createContext<ThemeContextType>({
-  theme: "light",
+  theme: "dark",
   toggleTheme: () => {}
 });
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  // Safe initial state that doesn't rely on browser API during rendering
-  const [theme, setTheme] = useState<Theme>("light");
+  // Set dark as the initial state
+  const [theme, setTheme] = useState<Theme>("dark");
   
   // Use useEffect to handle browser APIs safely after mounting
   useEffect(() => {
-    // Check for saved theme from localStorage
+    // Check for saved theme from localStorage only
     const savedTheme = localStorage.getItem("theme") as Theme | null;
     if (savedTheme && (savedTheme === "dark" || savedTheme === "light")) {
       setTheme(savedTheme);
-    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      // Check for system preference
+    } else {
+      // Always default to dark if no saved preference
       setTheme("dark");
     }
   }, []);
