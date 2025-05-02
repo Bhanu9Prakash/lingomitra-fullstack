@@ -65,38 +65,36 @@ export default function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
-        className="w-64 border-primary/20 bg-background shadow-lg rounded-md overflow-hidden right-4" 
+        className="w-56 border-primary/20 bg-background shadow-lg rounded-md overflow-hidden right-4" 
         align="end"
-        sideOffset={10}
+        sideOffset={5}
         avoidCollisions={false}
       >
-        <DropdownMenuLabel className="font-normal bg-primary/5 rounded-t-md border-b border-border/30 px-4 py-3">
-          <div className="flex flex-col space-y-1.5 items-center text-center">
+        <DropdownMenuLabel className="font-normal bg-primary/5 rounded-t-md border-b border-border/30">
+          <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.username}</p>
             <p className="text-xs leading-none text-muted-foreground">
               Logged in
             </p>
           </div>
         </DropdownMenuLabel>
-        <div className="p-2">
-          <DropdownMenuItem className="cursor-pointer rounded-md my-1 py-2.5 px-3 focus:bg-accent/80" asChild>
+        <div className="p-1">
+          <DropdownMenuItem className="cursor-pointer rounded-md my-0.5 focus:bg-accent/80" asChild>
             <Link href="/settings">
-              <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
+              <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
               <span>Settings</span>
             </Link>
           </DropdownMenuItem>
           
-          <DropdownMenuSeparator className="my-2 opacity-50" />
-          
           <DropdownMenuItem 
-            className="cursor-pointer flex justify-between items-center rounded-md my-1 py-2.5 px-3 focus:bg-accent/80" 
+            className="cursor-pointer flex justify-between items-center rounded-md my-0.5 focus:bg-accent/80" 
             onClick={(e) => e.preventDefault()}
           >
             <div className="flex items-center">
               {/* Show the icon for what will happen when clicked, not the current state */}
               {theme === 'dark' 
-                ? <Sun className="mr-3 h-4 w-4 text-yellow-500" /> 
-                : <Moon className="mr-3 h-4 w-4 text-blue-300" />
+                ? <Sun className="mr-2 h-4 w-4 text-yellow-500" /> 
+                : <Moon className="mr-2 h-4 w-4 text-blue-300" />
               }
               <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
             </div>
@@ -108,15 +106,15 @@ export default function UserMenu() {
           </DropdownMenuItem>
         </div>
         
-        <DropdownMenuSeparator className="my-2 opacity-50" />
+        <DropdownMenuSeparator className="my-1" />
         
-        <div className="p-2">
+        <div className="p-1">
           <DropdownMenuItem 
-            className="cursor-pointer text-red-500 focus:bg-red-500/10 hover:bg-red-500/10 rounded-md py-2.5 px-3" 
+            className="cursor-pointer text-red-500 focus:bg-red-500/10 hover:bg-red-500/10 rounded-md" 
             onClick={handleLogout}
             disabled={logoutMutation.isPending}
           >
-            <LogOut className="mr-3 h-4 w-4" />
+            <LogOut className="mr-2 h-4 w-4" />
             <span>{logoutMutation.isPending ? "Logging out..." : "Logout"}</span>
           </DropdownMenuItem>
         </div>
