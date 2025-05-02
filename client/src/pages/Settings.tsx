@@ -72,10 +72,10 @@ function EnrolledLanguageCard({
   }, [language.code, resetMutation.isSuccess, calculateProgress]);
   
   return (
-    <div className="border rounded-lg p-4 bg-zinc-800/30">
-      <div className="flex justify-between items-center mb-4">
+    <div className="rounded-lg p-5 bg-zinc-800/20">
+      <div className="flex justify-between items-center mb-5">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-6 overflow-hidden rounded shadow">
+          <div className="w-8 h-6 overflow-hidden rounded">
             <img
               src={`/flags/${language.flagCode}.svg`}
               alt={`${language.name} Flag`}
@@ -83,35 +83,39 @@ function EnrolledLanguageCard({
             />
           </div>
           <div>
-            <h3 className="font-medium">{language.name}</h3>
-            <p className="text-sm text-muted-foreground">{language.nativeName || language.code}</p>
+            <h3 className="font-medium text-base">{language.name}</h3>
           </div>
         </div>
         <Badge variant="outline" className="bg-zinc-800 text-white border-none font-medium uppercase text-xs px-2 py-1">{language.code}</Badge>
       </div>
       
-      <Separator className="my-4" />
+      <div className="mt-6 mb-3">
+        <p className="text-sm font-medium mb-2">Progress</p>
+        {isLoading ? (
+          <p className="text-sm text-muted-foreground flex items-center gap-1">
+            <Loader2 className="h-3 w-3 animate-spin" /> Loading...
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground mb-3">
+            {progressStats.completed} of {progressStats.total} lessons completed ({progressStats.percent}%)
+          </p>
+        )}
       
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <p className="text-sm font-medium">Progress</p>
-          {isLoading ? (
-            <p className="text-sm text-muted-foreground flex items-center gap-1">
-              <Loader2 className="h-3 w-3 animate-spin" /> Loading...
-            </p>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              {progressStats.completed} of {progressStats.total} lessons completed ({progressStats.percent}%)
-            </p>
-          )}
+        <div className="w-full bg-secondary/20 rounded-full h-2 mb-5">
+          <div 
+            className="bg-blue-500 h-2 rounded-full transition-all duration-500" 
+            style={{ width: `${progressStats.percent}%` }}
+          ></div>
         </div>
+      </div>
         
+      <div className="flex justify-end">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button 
               variant="ghost" 
               size="sm"
-              className="text-xs font-medium px-3 py-1 h-auto"
+              className="text-xs font-medium px-3 py-1 h-auto text-muted-foreground hover:text-white"
               disabled={resetMutation.isPending}
             >
               {resetMutation.isPending && resetMutation.variables === language.code ? (
@@ -144,13 +148,6 @@ function EnrolledLanguageCard({
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      </div>
-      
-      <div className="w-full bg-secondary/30 rounded-full h-2">
-        <div 
-          className="bg-blue-500 h-2 rounded-full transition-all duration-500" 
-          style={{ width: `${progressStats.percent}%` }}
-        ></div>
       </div>
     </div>
   );
@@ -292,60 +289,51 @@ export default function Settings() {
   
   return (
     <div className="container max-w-4xl py-10">
-      <h1 className="text-3xl font-bold mb-6">Account Settings</h1>
+      <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
       
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Profile Information</CardTitle>
-          <CardDescription>Your account details</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm font-medium">Username</p>
-                <p className="text-sm text-muted-foreground">{user.username}</p>
-              </div>
-              <div>
-                <p className="text-sm font-medium">Email</p>
-                <p className="text-sm text-muted-foreground">{user.email}</p>
-              </div>
-            </div>
+      <div className="mb-10">
+        <h2 className="text-2xl font-bold mb-2">Profile Information</h2>
+        <p className="text-muted-foreground mb-6">Your account details</p>
+        
+        <div className="grid grid-cols-2 gap-x-8 gap-y-3">
+          <div>
+            <p className="text-sm font-medium">Username</p>
+            <p className="text-muted-foreground">{user.username}</p>
           </div>
-        </CardContent>
-      </Card>
+          <div>
+            <p className="text-sm font-medium">Email</p>
+            <p className="text-muted-foreground">{user.email}</p>
+          </div>
+        </div>
+      </div>
       
-      <Card>
-        <CardHeader>
-          <CardTitle>Language Courses</CardTitle>
-          <CardDescription>Your enrolled language courses and progress</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {enrolledLanguages.length === 0 ? (
-            <div className="text-center py-6">
-              <p className="text-muted-foreground">You haven't started any language courses yet.</p>
-              <p className="text-sm mt-2">Enroll in a course from the home page to get started.</p>
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {enrolledLanguages.map((language) => (
-                <EnrolledLanguageCard 
-                  key={language.id} 
-                  language={language} 
-                  onResetProgress={handleResetProgress}
-                  resetMutation={resetProgressMutation}
-                  calculateProgress={calculateProgress}
-                />
-              ))}
-            </div>
-          )}
-        </CardContent>
-        <CardFooter className="flex justify-center border-t p-4">
-          <p className="text-sm text-muted-foreground">
-            Your progress is automatically saved as you complete lessons
-          </p>
-        </CardFooter>
-      </Card>
+      <div className="border-t border-zinc-800 pt-10">
+        <h2 className="text-2xl font-bold mb-2">Language Courses</h2>
+        <p className="text-muted-foreground mb-6">Your enrolled language courses and progress</p>
+        
+        {enrolledLanguages.length === 0 ? (
+          <div className="text-center py-6">
+            <p className="text-muted-foreground">You haven't started any language courses yet.</p>
+            <p className="text-sm mt-2">Enroll in a course from the home page to get started.</p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {enrolledLanguages.map((language) => (
+              <EnrolledLanguageCard 
+                key={language.id} 
+                language={language} 
+                onResetProgress={handleResetProgress}
+                resetMutation={resetProgressMutation}
+                calculateProgress={calculateProgress}
+              />
+            ))}
+          </div>
+        )}
+        
+        <p className="text-sm text-muted-foreground text-center mt-8">
+          Your progress is automatically saved as you complete lessons
+        </p>
+      </div>
     </div>
   );
 }
