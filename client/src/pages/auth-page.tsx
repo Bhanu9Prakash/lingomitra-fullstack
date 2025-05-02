@@ -30,7 +30,7 @@ import { useTheme } from "@/components/ThemeProvider";
 
 // Extend the user schema with client-side validation
 const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
+  username: z.string().min(1, "Username or email is required"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -183,10 +183,10 @@ export default function AuthPage() {
                         name="username"
                         render={({ field }) => (
                           <FormItem className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>
-                            <FormLabel className="mb-1 font-medium">Username</FormLabel>
+                            <FormLabel className="mb-1 font-medium">Username or Email</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter your username"
+                                placeholder="Enter your username or email"
                                 {...field}
                                 className={`px-3 py-2 rounded-md w-full text-sm auth-input ${
                                   theme === 'dark' 
