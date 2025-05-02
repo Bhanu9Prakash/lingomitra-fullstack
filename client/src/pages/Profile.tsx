@@ -322,7 +322,7 @@ export default function Profile() {
                     <Card className="border-0 shadow-none">
                       <CardContent className="p-4">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                          <div className="bg-accent/30 p-4 rounded-lg flex items-center gap-3">
+                          <div className="bg-accent/30 dark:bg-accent/30 light:bg-gray-100 p-4 rounded-lg flex items-center gap-3 shadow-sm">
                             <Award className="h-8 w-8 text-primary" />
                             <div>
                               <p className="text-sm text-muted-foreground">Completed Lessons</p>
@@ -330,7 +330,7 @@ export default function Profile() {
                             </div>
                           </div>
                           
-                          <div className="bg-accent/30 p-4 rounded-lg flex items-center gap-3">
+                          <div className="bg-accent/30 dark:bg-accent/30 light:bg-gray-100 p-4 rounded-lg flex items-center gap-3 shadow-sm">
                             <Clock className="h-8 w-8 text-primary" />
                             <div>
                               <p className="text-sm text-muted-foreground">Total Time Spent</p>
@@ -342,7 +342,7 @@ export default function Profile() {
                             </div>
                           </div>
                           
-                          <div className="bg-accent/30 p-4 rounded-lg flex items-center gap-3">
+                          <div className="bg-accent/30 dark:bg-accent/30 light:bg-gray-100 p-4 rounded-lg flex items-center gap-3 shadow-sm">
                             <BookOpen className="h-8 w-8 text-primary" />
                             <div>
                               <p className="text-sm text-muted-foreground">Last Activity</p>
