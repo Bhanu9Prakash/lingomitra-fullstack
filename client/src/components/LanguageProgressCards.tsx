@@ -110,8 +110,8 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                             <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
                               <FlagIcon code={language.flagCode} size={40} className="scale-125" />
                             </div>
-                            <p className="text-sm font-medium mt-1">{language.name}</p>
-                            <p className="text-lg font-bold text-primary">{Math.round(percentComplete)}%</p>
+                            <p className="text-xs font-medium mt-1">{language.name}</p>
+                            <p className="text-sm font-bold text-primary">{Math.round(percentComplete)}%</p>
                           </div>
                         </div>
                       );
@@ -119,7 +119,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                   </div>
                   
                   {/* Mascot in the middle */}
-                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32">
+                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40">
                     <img src="/progress.svg" alt="Fox mascot" className="w-full h-full object-contain" />
                   </div>
                   
