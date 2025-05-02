@@ -50,6 +50,10 @@ export default function Profile() {
     return useQuery<UserProgress[]>({
       queryKey: ['/api/progress/language', language.code],
       enabled: !!user && languages.length > 0,
+      // Add better error handling and retry logic
+      retry: 2,
+      staleTime: 60000, // 1 minute
+      refetchOnWindowFocus: true
     });
   });
 
@@ -58,6 +62,9 @@ export default function Profile() {
     return useQuery<Lesson[]>({
       queryKey: ['/api/languages', language.code, 'lessons'],
       enabled: !!user && languages.length > 0,
+      // Add better error handling and retry logic
+      retry: 2,
+      staleTime: 60000 // 1 minute
     });
   });
 
@@ -105,6 +112,20 @@ export default function Profile() {
 
   const chartData = prepareChartData();
   const activeLanguages = getActiveLanguages();
+  
+  // Debug information
+  console.log("Profile page data:", { 
+    user,
+    languages: languages.map(l => l.code), 
+    progressData: progressQueries.map((q, i) => ({ 
+      language: languages[i]?.code,
+      data: q.data,
+      isLoading: q.isLoading,
+      isError: q.isError,
+      error: q.error
+    })),
+    activeLanguages: activeLanguages.map(l => l.code)
+  });
 
   // Custom BarChart tooltip
   interface TooltipProps {
