@@ -74,8 +74,8 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                       const angleStep = (2 * Math.PI) / languages.length;
                       const angle = index * angleStep;
                       
-                      // Radius percentage from center
-                      const radiusPct = 42;
+                      // Radius percentage from center (smaller for more compact layout)
+                      const radiusPct = 38;
                       
                       // Calculate position - x and y coordinates
                       // For single language, center it instead of positioning around the circle
@@ -88,7 +88,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                         : 50 + radiusPct * Math.sin(angle - Math.PI/2);
                       
                       // Size of the progress circle - larger for single language
-                      const size = isSolo ? 80 : 22;
+                      const size = isSolo ? 70 : 20;
                       
                       return (
                         <div 
@@ -130,16 +130,16 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                           
                           {/* Flag in the middle */}
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <div className={`${isSolo ? 'w-16 h-16' : 'w-10 h-10'} rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md`}>
+                            <div className={`${isSolo ? 'w-14 h-14' : 'w-8 h-8'} rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md`}>
                               <FlagIcon 
                                 code={language.flagCode} 
-                                size={isSolo ? 64 : 40} 
+                                size={isSolo ? 56 : 32} 
                                 className="scale-125" 
                               />
                             </div>
                             <div className="mt-1 text-center">
-                              <p className={`${isSolo ? 'text-sm' : 'text-xs'} font-medium text-center`}>{language.name}</p>
-                              <p className={`${isSolo ? 'text-lg' : 'text-xs sm:text-sm'} font-bold text-primary`}>
+                              <p className={`${isSolo ? 'text-xs' : 'text-[10px]'} font-medium text-center leading-tight`}>{language.name}</p>
+                              <p className={`${isSolo ? 'text-sm' : 'text-[10px]'} font-bold text-primary leading-tight`}>
                                 {Math.round(percentComplete)}%
                               </p>
                             </div>
