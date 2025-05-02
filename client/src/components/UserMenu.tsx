@@ -65,12 +65,12 @@ export default function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
-        className="w-56 border-primary/20 bg-background shadow-lg" 
+        className="w-56 border-primary/20 bg-background shadow-lg rounded-md overflow-hidden" 
         align="end" 
         forceMount 
         style={{ position: 'fixed', zIndex: 9999 }}
       >
-        <DropdownMenuLabel className="font-normal bg-muted/40 rounded-t-md">
+        <DropdownMenuLabel className="font-normal bg-primary/5 rounded-t-md border-b border-border/30">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.username}</p>
             <p className="text-xs leading-none text-muted-foreground">
@@ -78,34 +78,43 @@ export default function UserMenu() {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Settings</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer flex justify-between items-center" onClick={(e) => e.preventDefault()}>
-          <div className="flex items-center">
-            {theme === 'dark' 
-              ? <Moon className="mr-2 h-4 w-4 text-blue-300" /> 
-              : <Sun className="mr-2 h-4 w-4 text-yellow-500" />
-            }
-            <span>Dark Mode</span>
-          </div>
-          <Switch
-            checked={theme === 'dark'}
-            onCheckedChange={toggleTheme}
-            aria-label="Toggle dark mode"
-          />
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem 
-          className="cursor-pointer text-red-500 focus:text-red-500" 
-          onClick={handleLogout}
-          disabled={logoutMutation.isPending}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>{logoutMutation.isPending ? "Logging out..." : "Logout"}</span>
-        </DropdownMenuItem>
+        <div className="p-1">
+          <DropdownMenuItem className="cursor-pointer rounded-md my-0.5 focus:bg-accent/80">
+            <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
+            <span>Settings</span>
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem 
+            className="cursor-pointer flex justify-between items-center rounded-md my-0.5 focus:bg-accent/80" 
+            onClick={(e) => e.preventDefault()}
+          >
+            <div className="flex items-center">
+              {theme === 'dark' 
+                ? <Moon className="mr-2 h-4 w-4 text-blue-300" /> 
+                : <Sun className="mr-2 h-4 w-4 text-yellow-500" />
+              }
+              <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+            </div>
+            <Switch
+              checked={theme === 'dark'}
+              onCheckedChange={toggleTheme}
+              aria-label="Toggle dark mode"
+            />
+          </DropdownMenuItem>
+        </div>
+        
+        <DropdownMenuSeparator className="my-1" />
+        
+        <div className="p-1">
+          <DropdownMenuItem 
+            className="cursor-pointer text-red-500 focus:bg-red-500/10 hover:bg-red-500/10 rounded-md" 
+            onClick={handleLogout}
+            disabled={logoutMutation.isPending}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>{logoutMutation.isPending ? "Logging out..." : "Logout"}</span>
+          </DropdownMenuItem>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
