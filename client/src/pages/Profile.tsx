@@ -21,7 +21,7 @@ import { Loader2, Award, Check, Clock, BookOpen, AlertTriangle } from 'lucide-re
 import FlagIcon from '../components/FlagIcon';
 import { formatDistanceToNow } from 'date-fns';
 import { Language, UserProgress, Lesson } from '@shared/schema';
-import { calculateTotalProgressForLanguage } from '@/lib/progress';
+import { calculateTotalProgressForLanguage, formatTimeSpent } from '@/lib/progress';
 
 /**
  * Profile page that displays user progress across all languages
@@ -74,31 +74,65 @@ export default function Profile() {
 
   // Prepare data for the overview chart
   const prepareChartData = () => {
+    if (!languages || !progressQueries || !lessonQueries) return [];
+    
     if (progressQueries.some(query => query.isLoading) || lessonQueries.some(query => query.isLoading)) {
       return [];
     }
-
-    return languages.map((language, index) => {
-      const progressData = progressQueries[index].data || [];
-      const lessons = lessonQueries[index].data || [];
+    
+    const result = [];
+    
+    for (let i = 0; i < languages.length; i++) {
+      const language = languages[i];
+      const progressQuery = progressQueries[i];
+      const lessonQuery = lessonQueries[i];
+      
+      if (!progressQuery?.data || !lessonQuery?.data || 
+          !Array.isArray(progressQuery.data) || !Array.isArray(lessonQuery.data)) {
+        continue;
+      }
+      
+      const progressData = progressQuery.data;
+      const lessons = lessonQuery.data;
+      
+      // Skip if no progress
+      if (progressData.length === 0) continue;
       
       // Calculate percentage completed
       const percentComplete = calculateTotalProgressForLanguage(progressData, lessons);
       
-      return {
-        name: language.name,
-        code: language.code,
-        progress: percentComplete,
-      };
-    }).filter((item: {progress: number}) => item.progress > 0); // Only show languages with some progress
+      // Only add if there's some progress
+      if (percentComplete > 0) {
+        result.push({
+          name: language.name,
+          code: language.code,
+          progress: percentComplete,
+        });
+      }
+    }
+    
+    return result;
   };
 
   // Get languages with progress data
   const getActiveLanguages = () => {
-    return languages.filter((language, index) => {
-      const progressData = progressQueries[index].data;
-      return progressData && progressData.length > 0;
-    });
+    if (!languages || !progressQueries) return [];
+    
+    const result = [];
+    
+    for (let i = 0; i < languages.length; i++) {
+      const language = languages[i];
+      const progressQuery = progressQueries[i];
+      
+      if (progressQuery && 
+          progressQuery.data && 
+          Array.isArray(progressQuery.data) && 
+          progressQuery.data.length > 0) {
+        result.push(language);
+      }
+    }
+    
+    return result;
   };
 
   if (isLoading) {
@@ -232,9 +266,11 @@ export default function Profile() {
             onValueChange={(value) => setExpandedLanguage(value)}
             className="mb-8"
           >
-            {activeLanguages.map((language: Language, index: number) => {
-              const progressData = progressQueries[index].data || [];
-              const lessons = lessonQueries[index].data || [];
+            {activeLanguages.map((language: Language) => {
+              // Find the correct language index in the original arrays
+              const languageIndex = languages.findIndex(lang => lang.code === language.code);
+              const progressData = languageIndex >= 0 ? (progressQueries[languageIndex]?.data || []) : [];
+              const lessons = languageIndex >= 0 ? (lessonQueries[languageIndex]?.data || []) : [];
               
               // Skip if no progress
               if (progressData.length === 0) return null;
