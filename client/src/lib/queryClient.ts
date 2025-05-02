@@ -1,4 +1,4 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryFunction, QueryKey } from "@tanstack/react-query";
 import { apiRequest } from "./utils";
 
 export { apiRequest };
@@ -21,11 +21,17 @@ export const queryClient = new QueryClient({
 
 /**
  * Default fetcher function for React Query
+ * We don't set this as the default queryFn due to TypeScript compatibility issues,
+ * but we can use it directly in useQuery calls
  */
 export const getQueryFn =
   (options: FetcherOptions = {}) =>
-  async ({ queryKey }: { queryKey: string[] }) => {
+  async ({ queryKey }: { queryKey: QueryKey }) => {
     const [url] = queryKey;
+    if (typeof url !== 'string') {
+      throw new Error('URL must be a string');
+    }
+    
     try {
       const response = await fetch(url, {
         credentials: "include", // Important for cookies/sessions
