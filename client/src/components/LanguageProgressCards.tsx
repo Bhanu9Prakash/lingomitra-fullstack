@@ -37,11 +37,12 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
   const getLanguageLevel = () => {
     const progress = calculateOverallProgress();
     
-    if (progress < 20) return 'Starting your journey!';
-    if (progress < 40) return 'Building foundations!';
-    if (progress < 60) return 'Halfway to B1!';
-    if (progress < 80) return 'Getting advanced!';
-    return 'Nearly fluent!';
+    if (progress < 10) return 'Starting your journey!';
+    if (progress < 25) return 'Building foundations!';
+    if (progress < 50) return 'Making good progress!';
+    if (progress < 75) return 'Becoming multilingual!';
+    if (progress < 90) return 'Nearly fluent!';
+    return 'Multilingual Master!';
   };
   
   return (
@@ -55,28 +56,45 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
             <CardContent>
               <div className="grid gap-8">
                 <div className="relative">
-                  {/* Circular progress indicators */}
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 justify-items-center">
-                    {activeLangs.slice(0, 5).map((language, index) => {
+                  {/* Circular progress indicators using relative positioning for better layout */}
+                  <div className="relative h-64 sm:h-72 md:h-80 w-full max-w-xs sm:max-w-sm md:max-w-lg mx-auto">
+                    {/* Mascot in the center */}
+                    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 z-10">
+                      <img src="/progress.svg" alt="Fox mascot" className="w-full h-full object-contain drop-shadow-md" />
+                    </div>
+                    
+                    {activeLangs.slice(0, 6).map((language, index) => {
                       const progress = progressData[language.code] || [];
                       const lessons = lessonData[language.code] || [];
                       const percentComplete = calculateTotalProgressForLanguage(progress, lessons);
                       
-                      // Position the circles in a way that leaves room in the middle
-                      const gridPositions = [
-                        'col-start-1 row-start-1', // top left
-                        'col-start-2 row-start-1', // top right
-                        'col-start-1 row-start-2', // bottom left
-                        'col-start-2 row-start-2', // bottom right
-                        'col-start-2 row-start-3', // extra below
-                      ];
+                      // Calculate position based on circular placement around the center mascot
+                      // For 6 or fewer languages, position them evenly in a circle
+                      const languages = activeLangs.slice(0, 6);
+                      const angleStep = (2 * Math.PI) / languages.length;
+                      const angle = index * angleStep;
                       
-                      const position = gridPositions[index] || '';
+                      // Calculate position along a circle around the center
+                      // Radius ratio - distance from center as percentage of container
+                      const radiusRatio = 0.38; // 38% of container width
+                      
+                      // Calculate position - x and y coordinates
+                      const left = 50 + 42 * Math.cos(angle - Math.PI/2);
+                      const top = 50 + 42 * Math.sin(angle - Math.PI/2);
+                      
+                      // Size of the progress circle (responsive using CSS classes instead of window object)
+                      const size = 22; // Base size - will be adjusted with CSS for mobile
                       
                       return (
                         <div 
                           key={language.code} 
-                          className={`${position} relative w-24 h-24`}
+                          className="absolute transform -translate-x-1/2 -translate-y-1/2"
+                          style={{ 
+                            left: `${left}%`, 
+                            top: `${top}%`,
+                            width: `${size}%`,
+                            height: `${size}%`,
+                          }}
                         >
                           {/* Background circle */}
                           <div className="absolute inset-0 rounded-full bg-gray-800 dark:bg-gray-800 light:bg-gray-200 opacity-60"></div>
@@ -110,23 +128,24 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                             <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
                               <FlagIcon code={language.flagCode} size={40} className="scale-125" />
                             </div>
-                            <p className="text-xs font-medium mt-1">{language.name}</p>
-                            <p className="text-sm font-bold text-primary">{Math.round(percentComplete)}%</p>
+                            <div className="mt-1 text-center">
+                              <p className="text-xs font-medium truncate max-w-[90%] mx-auto">{language.name}</p>
+                              <p className="text-xs sm:text-sm font-bold text-primary">{Math.round(percentComplete)}%</p>
+                            </div>
                           </div>
                         </div>
                       );
                     })}
                   </div>
                   
-                  {/* Mascot in the middle */}
-                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40">
-                    <img src="/progress.svg" alt="Fox mascot" className="w-full h-full object-contain" />
-                  </div>
-                  
                   {/* Overall progress message */}
-                  <div className="mt-6 text-center">
-                    <div className="inline-block bg-gray-800 dark:bg-gray-800 light:bg-gray-100 px-6 py-2 rounded-full shadow-md border dark:border-gray-700 light:border-gray-300">
-                      <p className="text-lg font-medium">{getLanguageLevel()}</p>
+                  <div className="mt-8 pt-8 text-center">
+                    <div className="inline-block bg-gray-800 dark:bg-gray-800 light:bg-gray-100 px-6 py-3 rounded-full shadow-md border dark:border-gray-700 light:border-gray-300">
+                      <p className="text-lg font-medium">
+                        {calculateOverallProgress() === 0 
+                          ? "Starting your journey!" 
+                          : getLanguageLevel()}
+                      </p>
                     </div>
                   </div>
                 </div>
