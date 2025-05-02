@@ -9,6 +9,7 @@ import { z } from "zod";
 import { insertLanguageSchema, insertLessonSchema } from "@shared/schema";
 import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
+import progressRouter from "./routes/progress";
 import { setupAuth } from "./auth";
 
 // Sample data
@@ -862,6 +863,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register chat API router
   app.use("/api/chat", chatRouter);
+  app.use("/api/progress", progressRouter);
 
   const httpServer = createServer(app);
 
