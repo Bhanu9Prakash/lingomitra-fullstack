@@ -1,7 +1,7 @@
 import { Lesson } from "@shared/schema";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { isLessonCompleted } from "@/lib/progress";
+import { isLessonCompleted, getCompletedLessons } from "@/lib/progress";
 
 interface LessonSelectorProps {
   lessons: Lesson[];
@@ -22,6 +22,8 @@ export default function LessonSelector({
   
   // State to force refresh when opened to show updated completion status
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  // Track completion status
+  const [completedLessons, setCompletedLessons] = useState<string[]>([]);
 
   // Helper to extract lesson number for display
   const getLessonNumber = (lessonId: string) => {

@@ -3,7 +3,7 @@ import { Lesson } from "@shared/schema";
 import { marked } from "marked";
 import { markedConfig } from "@/lib/marked-config";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { markLessonAsCompleted } from "@/lib/progress";
+import { markLessonAsCompleted, updateLessonProgress } from "@/lib/progress";
 
 interface LessonContentProps {
   lesson: Lesson;
@@ -94,8 +94,18 @@ export default function LessonContent({
       
       // Mark the current lesson as completed when it's viewed
       if (lesson?.lessonId) {
-        // Mark the lesson as completed in localStorage
-        markLessonAsCompleted(lesson.lessonId);
+        // Track time spent in seconds
+        const timeSpent = 10; // Default initial time spent value
+        
+        // Mark the lesson as completed and track progress
+        markLessonAsCompleted(lesson.lessonId).catch(error => {
+          console.error("Failed to mark lesson as completed:", error);
+        });
+        
+        // Also update progress percentage
+        updateLessonProgress(lesson.lessonId, 100, timeSpent).catch(error => {
+          console.error("Failed to update lesson progress:", error);
+        });
       }
     }
   }, [lesson]);

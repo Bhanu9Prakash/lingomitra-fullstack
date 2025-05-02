@@ -1,14 +1,159 @@
 /**
- * Utility functions for tracking lesson progress using localStorage
+ * Utility functions for tracking lesson progress using the server-side API
  */
+import { UserProgress } from '@shared/schema';
+import { apiRequest } from './queryClient';
+import { queryClient } from './queryClient';
 
-// Storage key for completed lessons
+// Fallback to localStorage if user is not logged in
 const COMPLETED_LESSONS_KEY = 'lingomitra_completed_lessons';
 
 /**
- * Get all completed lesson IDs from localStorage
+ * Get all completed lesson IDs 
+ * - From API if user is logged in
+ * - From localStorage if not logged in
  */
-export function getCompletedLessons(): string[] {
+export async function getCompletedLessons(languageCode?: string): Promise<string[]> {
+  try {
+    // Try to get user info to check if logged in
+    const userResponse = await fetch('/api/user');
+    
+    if (userResponse.ok) {
+      // User is logged in, get from API
+      const endpoint = languageCode 
+        ? `/api/progress/language/${languageCode}`
+        : null;
+        
+      if (endpoint) {
+        const response = await fetch(endpoint);
+        if (response.ok) {
+          const progressData: UserProgress[] = await response.json();
+          return progressData
+            .filter(progress => progress.completed)
+            .map(progress => progress.lessonId);
+        }
+      }
+    } else {
+      // User not logged in, get from localStorage
+      const stored = localStorage.getItem(COMPLETED_LESSONS_KEY);
+      if (stored) {
+        const allLessons = JSON.parse(stored) as string[];
+        return languageCode 
+          ? allLessons.filter(id => id.startsWith(`${languageCode}-`))
+          : allLessons;
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load completed lessons:', error);
+  }
+  return [];
+}
+
+/**
+ * Check if a specific lesson is completed
+ */
+export async function isLessonCompleted(lessonId: string): Promise<boolean> {
+  try {
+    // Try to get user info to check if logged in
+    const userResponse = await fetch('/api/user');
+    
+    if (userResponse.ok) {
+      // User is logged in, get from API
+      const response = await fetch(`/api/progress/lesson/${lessonId}`);
+      
+      if (response.ok) {
+        const progressData: UserProgress = await response.json();
+        return progressData.completed;
+      } else if (response.status === 404) {
+        // Progress not found - not completed
+        return false;
+      }
+    } else {
+      // User not logged in, get from localStorage
+      const completedLessons = await getLocalCompletedLessons();
+      return completedLessons.includes(lessonId);
+    }
+  } catch (error) {
+    console.error('Failed to check if lesson is completed:', error);
+  }
+  
+  return false;
+}
+
+/**
+ * Mark a lesson as completed
+ */
+export async function markLessonAsCompleted(lessonId: string): Promise<void> {
+  try {
+    // Try to get user info to check if logged in
+    const userResponse = await fetch('/api/user');
+    
+    if (userResponse.ok) {
+      // User is logged in, use API
+      const response = await fetch(`/api/progress/lesson/${lessonId}/complete`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        // Invalidate queries for this lesson and language
+        const langCode = lessonId.split('-')[0];
+        queryClient.invalidateQueries({ queryKey: [`/api/progress/lesson/${lessonId}`] });
+        queryClient.invalidateQueries({ queryKey: [`/api/progress/language/${langCode}`] });
+      } else {
+        console.error('Failed to mark lesson as complete', await response.text());
+      }
+    } else {
+      // User not logged in, use localStorage
+      const completedLessons = await getLocalCompletedLessons();
+      if (!completedLessons.includes(lessonId)) {
+        completedLessons.push(lessonId);
+        localStorage.setItem(COMPLETED_LESSONS_KEY, JSON.stringify(completedLessons));
+      }
+    }
+  } catch (error) {
+    console.error('Failed to mark lesson as completed:', error);
+  }
+}
+
+/**
+ * Update lesson progress (time spent, progress percentage, etc.)
+ */
+export async function updateLessonProgress(
+  lessonId: string, 
+  progress: number, 
+  timeSpent: number
+): Promise<void> {
+  try {
+    // Try to get user info to check if logged in
+    const userResponse = await fetch('/api/user');
+    
+    if (userResponse.ok) {
+      // User is logged in, use API
+      const response = await fetch(`/api/progress/lesson/${lessonId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ progress, timeSpent })
+      });
+      
+      if (!response.ok) {
+        console.error('Failed to update lesson progress', await response.text());
+      }
+    }
+    // If user not logged in, we don't track detailed progress
+  } catch (error) {
+    console.error('Failed to update lesson progress:', error);
+  }
+}
+
+/**
+ * Get local completed lessons (for fallback when not logged in)
+ */
+function getLocalCompletedLessons(): string[] {
   try {
     const stored = localStorage.getItem(COMPLETED_LESSONS_KEY);
     if (stored) {
@@ -21,36 +166,19 @@ export function getCompletedLessons(): string[] {
 }
 
 /**
- * Check if a specific lesson is completed
- */
-export function isLessonCompleted(lessonId: string): boolean {
-  const completedLessons = getCompletedLessons();
-  return completedLessons.includes(lessonId);
-}
-
-/**
- * Mark a lesson as completed
- */
-export function markLessonAsCompleted(lessonId: string): void {
-  try {
-    const completedLessons = getCompletedLessons();
-    if (!completedLessons.includes(lessonId)) {
-      completedLessons.push(lessonId);
-      localStorage.setItem(COMPLETED_LESSONS_KEY, JSON.stringify(completedLessons));
-    }
-  } catch (error) {
-    console.error('Failed to save lesson progress:', error);
-  }
-}
-
-/**
  * Remove a lesson from completed list
  */
-export function markLessonAsIncomplete(lessonId: string): void {
+export async function markLessonAsIncomplete(lessonId: string): Promise<void> {
   try {
-    let completedLessons = getCompletedLessons();
-    completedLessons = completedLessons.filter(id => id !== lessonId);
-    localStorage.setItem(COMPLETED_LESSONS_KEY, JSON.stringify(completedLessons));
+    // Only for localStorage fallback - API doesn't support this
+    const userResponse = await fetch('/api/user');
+    
+    if (!userResponse.ok) {
+      // User not logged in, use localStorage
+      let completedLessons = getLocalCompletedLessons();
+      completedLessons = completedLessons.filter(id => id !== lessonId);
+      localStorage.setItem(COMPLETED_LESSONS_KEY, JSON.stringify(completedLessons));
+    }
   } catch (error) {
     console.error('Failed to update lesson progress:', error);
   }
@@ -58,6 +186,7 @@ export function markLessonAsIncomplete(lessonId: string): void {
 
 /**
  * Reset all progress data (clears all completed lessons)
+ * Only for localStorage - API doesn't support this
  */
 export function resetProgress(): void {
   try {
@@ -70,13 +199,14 @@ export function resetProgress(): void {
 /**
  * Get the percentage of completed lessons for a specific language
  */
-export function getLanguageProgress(languageCode: string, totalLessons: number): number {
+export async function getLanguageProgress(languageCode: string, totalLessons: number): Promise<number> {
   if (totalLessons === 0) return 0;
   
-  const completedLessons = getCompletedLessons();
-  const completedForLanguage = completedLessons.filter(
-    lessonId => lessonId.startsWith(`${languageCode}-lesson`)
-  );
-  
-  return Math.round((completedForLanguage.length / totalLessons) * 100);
+  try {
+    const completedLessons = await getCompletedLessons(languageCode);
+    return Math.round((completedLessons.length / totalLessons) * 100);
+  } catch (error) {
+    console.error('Failed to calculate language progress:', error);
+    return 0;
+  }
 }
