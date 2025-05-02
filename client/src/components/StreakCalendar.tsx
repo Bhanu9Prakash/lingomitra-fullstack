@@ -180,28 +180,28 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
   
   return (
     <>
-      <Card className="mb-8 shadow-lg border-0 bg-gray-900 dark:bg-gray-900 light:bg-white">
+      <Card className="mb-8 shadow-lg border dark:border-gray-800 light:border-gray-300 bg-gray-900 dark:bg-gray-900 light:bg-white">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xl font-bold">Learning Streak</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col md:flex-row justify-center gap-4 mb-6">
-            <div className="flex items-center gap-3 bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg p-3 shadow-md flex-1">
+            <div className="flex items-center gap-3 bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg p-3 shadow-md border dark:border-gray-700 light:border-gray-300 flex-1">
               <div className="bg-orange-600/20 p-2 rounded-full">
                 <Flame className="h-5 w-5 text-orange-500" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Current Streak</p>
+                <p className="text-xs text-muted-foreground dark:text-gray-400 light:text-gray-600">Current Streak</p>
                 <p className="text-xl font-bold">{currentStreak} {currentStreak === 1 ? 'Day' : 'Days'}</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-3 bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg p-3 shadow-md flex-1">
-              <div className="bg-primary-foreground/70 p-2 rounded-full">
+            <div className="flex items-center gap-3 bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg p-3 shadow-md border dark:border-gray-700 light:border-gray-300 flex-1">
+              <div className="bg-primary/20 dark:bg-primary-foreground/70 light:bg-primary/20 p-2 rounded-full">
                 <Calendar className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground">Longest Streak</p>
+                <p className="text-xs text-muted-foreground dark:text-gray-400 light:text-gray-600">Longest Streak</p>
                 <p className="text-xl font-bold">{longestStreak} {longestStreak === 1 ? 'Day' : 'Days'}</p>
               </div>
             </div>
@@ -212,12 +212,12 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
               <h3 className="text-lg font-semibold mb-2">Reward Milestones</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto">
-                <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg p-3 shadow-md flex items-center justify-between">
+                <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-200 rounded-lg p-3 shadow-md border dark:border-gray-700 light:border-gray-300 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="bg-orange-600/20 p-1.5 rounded-full">
                       <Flame className="h-4 w-4 text-orange-500" />
                     </div>
-                    <span className="font-medium text-sm">3-Day Streak</span>
+                    <span className="font-medium text-sm dark:text-white light:text-gray-800">3-Day Streak</span>
                   </div>
                   
                   <div className="flex items-center gap-2">
@@ -228,12 +228,12 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
                   </div>
                 </div>
                 
-                <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg p-3 shadow-md flex items-center justify-between">
+                <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-200 rounded-lg p-3 shadow-md border dark:border-gray-700 light:border-gray-300 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="bg-orange-600/20 p-1.5 rounded-full">
                       <Flame className="h-4 w-4 text-orange-500" />
                     </div>
-                    <span className="font-medium text-sm">7-Day Streak</span>
+                    <span className="font-medium text-sm dark:text-white light:text-gray-800">7-Day Streak</span>
                   </div>
                   
                   <div className="flex items-center gap-2">
@@ -320,26 +320,26 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
             <h3 className="text-lg font-semibold mb-2">Reminders & Notifications</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-w-2xl mx-auto">
-              <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg shadow-md p-3 flex items-center justify-between">
+              <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-200 rounded-lg shadow-md border dark:border-gray-700 light:border-gray-300 p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary" />
-                  <span className="text-sm">Daily Reminder at 10:00 AM</span>
+                  <span className="text-sm dark:text-white light:text-gray-800">Daily Reminder at 10:00 AM</span>
                 </div>
                 <Switch />
               </div>
               
-              <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg shadow-md p-3 flex items-center justify-between">
+              <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-200 rounded-lg shadow-md border dark:border-gray-700 light:border-gray-300 p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-4 w-4 text-primary" />
-                  <span className="text-sm">Email reminder</span>
+                  <span className="text-sm dark:text-white light:text-gray-800">Email reminder</span>
                 </div>
                 <Switch />
               </div>
               
-              <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg shadow-md p-3 flex items-center justify-between">
+              <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-200 rounded-lg shadow-md border dark:border-gray-700 light:border-gray-300 p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Download className="h-4 w-4 text-primary" />
-                  <span className="text-sm">Mobile push</span>
+                  <span className="text-sm dark:text-white light:text-gray-800">Mobile push</span>
                 </div>
                 <Switch />
               </div>
