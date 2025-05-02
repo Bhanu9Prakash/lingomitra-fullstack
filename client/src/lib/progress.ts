@@ -51,7 +51,7 @@ export function formatTimeSpent(minutes: number): string {
  */
 export async function markLessonAsCompleted(lessonId: string): Promise<void> {
   try {
-    const response = await fetch(`/api/progress/${lessonId}/complete`, {
+    const response = await fetch(`/api/progress/lesson/${lessonId}/complete`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -76,8 +76,8 @@ export async function updateLessonProgress(lessonId: string, data: {
   completed?: boolean;
 }): Promise<void> {
   try {
-    const response = await fetch(`/api/progress/${lessonId}`, {
-      method: 'PATCH',
+    const response = await fetch(`/api/progress/lesson/${lessonId}`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },

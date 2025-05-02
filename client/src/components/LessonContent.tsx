@@ -103,7 +103,10 @@ export default function LessonContent({
         });
         
         // Also update progress percentage
-        updateLessonProgress(lesson.lessonId, 100, timeSpent).catch(error => {
+        updateLessonProgress(lesson.lessonId, {
+          score: 100,
+          timeSpent: timeSpent
+        }).catch(error => {
           console.error("Failed to update lesson progress:", error);
         });
       }
