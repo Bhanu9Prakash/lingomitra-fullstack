@@ -74,6 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Login failed",
         description: errorMessage,
         variant: "destructive",
+        duration: 4000, // Show error messages for 4 seconds
       });
     },
   });
@@ -106,6 +107,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Registration failed",
         description: errorMessage,
         variant: "destructive",
+        duration: 4000, // Show error messages for 4 seconds
       });
     },
   });
@@ -125,6 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Logout failed",
         description: error.message,
         variant: "destructive",
+        duration: 4000, // Show error messages for 4 seconds
       });
     },
   });

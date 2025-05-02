@@ -115,6 +115,7 @@ export default function AuthPage() {
         title: "Login Error",
         description: "Incorrect username/email or password. Please try again.",
         variant: "destructive",
+        duration: 4000, // 4 seconds is typically enough time to read the message
       });
     }
   };

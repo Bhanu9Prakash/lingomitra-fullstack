@@ -8,7 +8,7 @@ export type ToastProps = {
   title: string;
   description?: string;
   variant?: ToastVariant;
-  duration?: number;
+  duration?: number; // in milliseconds, default is 5000 (5 seconds)
 };
 
 type ToastState = {
@@ -25,14 +25,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const toast = React.useCallback((props: ToastProps) => {
     const id = props.id || Math.random().toString(36).substring(2, 9);
-    const newToast = { ...props, id, duration: props.duration || 5000 };
+    // Default duration is 5 seconds (5000ms) unless specified
+    const duration = props.duration ?? 5000;
+    const newToast = { ...props, id, duration };
     
     setToasts((prevToasts) => [...prevToasts, newToast]);
 
-    if (newToast.duration !== Infinity) {
+    // Auto-dismiss after duration (unless it's set to Infinity)
+    if (duration !== Infinity) {
       setTimeout(() => {
         dismiss(id);
-      }, newToast.duration);
+      }, duration);
     }
   }, []);
 

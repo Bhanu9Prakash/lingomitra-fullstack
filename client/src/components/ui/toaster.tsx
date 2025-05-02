@@ -12,6 +12,11 @@ type ToastProps = {
 };
 
 function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (id: string) => void }) {
+  // Handle click of the X button on a toast
+  const handleDismiss = (id: string) => {
+    dismiss(id);
+  };
+
   return (
     <div className="fixed top-0 right-0 z-[99999] flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-none sm:max-w-[100%] max-w-full w-full sm:w-auto" style={{ zIndex: 99999 }}>
       {toasts.map((toast) => (
@@ -35,8 +40,9 @@ function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (i
                 )}
               </div>
               <button
-                onClick={() => dismiss(toast.id || '')}
+                onClick={() => handleDismiss(toast.id || '')}
                 className="ml-4 inline-flex rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
+                aria-label="Close toast"
               >
                 <span className="sr-only">Close</span>
                 <X className="h-5 w-5" />
