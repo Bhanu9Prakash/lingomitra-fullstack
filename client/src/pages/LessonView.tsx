@@ -186,7 +186,7 @@ export default function LessonView() {
           </div>
         ) : isChatActive ? (
           /* AI Tutor Chat UI - renders in full screen */
-          <ChatUI lesson={currentLesson} />
+          <ChatUI ref={chatRef} lesson={currentLesson} />
         ) : (
           /* Regular Lesson Content */
           <LessonContent 

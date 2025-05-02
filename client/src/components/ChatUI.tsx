@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Lesson } from "@shared/schema";
@@ -20,7 +20,8 @@ interface ChatUIProps {
   lesson: Lesson;
 }
 
-export default function ChatUI({ lesson }: ChatUIProps) {
+// Forward ref to allow parent component to access resetChatHistory method
+const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [scratchPad, setScratchPad] = useState<ScratchPad>({
     knownVocabulary: [],
@@ -70,6 +71,11 @@ export default function ChatUI({ lesson }: ChatUIProps) {
       }
     }
   };
+  
+  // Expose resetChatHistory method to parent components
+  useImperativeHandle(ref, () => ({
+    resetChatHistory
+  }));
 
   /* ───────────────────────── INITIAL GREETING ───────────────────────── */
   useEffect(() => {
@@ -273,4 +279,6 @@ export default function ChatUI({ lesson }: ChatUIProps) {
       </form>
     </div>
   );
-}
+});
+
+export default ChatUI;
