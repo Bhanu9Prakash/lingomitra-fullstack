@@ -197,7 +197,7 @@ header {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Distinct shadow for main header */
   position: sticky;
   top: 0;
-  z-index: 900; /* Higher z-index but below dropdown menu */
+  z-index: 100; /* Lower to ensure dropdowns show over it */
   padding: 15px 0;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
@@ -488,7 +488,7 @@ header .container {
   border-radius: 0 0 var(--border-radius) var(--border-radius); /* Only round bottom corners */
   box-shadow: var(--shadow);
   padding: 10px 0;
-  z-index: 999; /* Increased z-index to ensure it appears above the lesson header */
+  z-index: 9999; /* Maximum z-index to ensure it appears above everything */
   display: none;
   opacity: 0;
   transform: translateY(-10px);
