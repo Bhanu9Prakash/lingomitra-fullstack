@@ -2780,3 +2780,18 @@ footer {
     padding: 30px;
   }
 }
+
+/* Fix for dropdown menu positioning - ensures menu is overlaid and doesn't affect layout */
+[data-radix-popper-content-wrapper] {
+  position: fixed !important;
+  z-index: 9999 !important;
+  width: auto !important;
+  max-width: calc(100vw - 24px) !important;
+  /* The following overrides prevent content shifting */
+  transform: none !important;
+  margin: 0 !important;
+  left: auto !important;
+  top: auto !important;
+  /* Prevent scroll issues */
+  overflow: visible !important;
+}
