@@ -49,9 +49,9 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
     <div className="space-y-6">
       {activeLangs.length > 0 ? (
         <>
-          <Card className="border dark:border-gray-800 light:border-gray-300 shadow-lg bg-gray-900 dark:bg-gray-900 light:bg-white">
-            <CardHeader className="border-b dark:border-gray-800 light:border-gray-200">
-              <CardTitle className="text-2xl font-bold">Learning Progress</CardTitle>
+          <Card className="border border-gray-300 dark:border-gray-800 shadow-lg bg-white dark:bg-gray-900 text-gray-800 dark:text-white">
+            <CardHeader className="border-b border-gray-200 dark:border-gray-800">
+              <CardTitle className="text-2xl font-bold text-gray-800 dark:text-white">Learning Progress</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid gap-8">
@@ -102,7 +102,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                           }}
                         >
                           {/* Background circle */}
-                          <div className="absolute inset-0 rounded-full bg-gray-800 dark:bg-gray-800 light:bg-gray-200 opacity-90 dark:opacity-90 light:opacity-60 shadow-inner"></div>
+                          <div className="absolute inset-0 rounded-full bg-gray-200 dark:bg-gray-800 opacity-60 dark:opacity-90 shadow-inner"></div>
                           
                           {/* Progress circle - SVG approach */}
                           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -113,7 +113,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                               fill="none" 
                               strokeWidth="10"
                               stroke="currentColor" 
-                              className="text-gray-500 dark:text-gray-600 light:text-gray-400 opacity-40"
+                              className="text-gray-300 dark:text-gray-600 opacity-40"
                             />
                             <circle 
                               cx="50" 
@@ -124,13 +124,13 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                               stroke="currentColor" 
                               strokeDasharray={`${2 * Math.PI * 40}`}
                               strokeDashoffset={`${2 * Math.PI * 40 * (1 - percentComplete / 100)}`}
-                              className="text-primary dark:text-primary light:text-primary transition-all duration-1000 ease-in-out"
+                              className="text-primary transition-all duration-1000 ease-in-out"
                             />
                           </svg>
                           
                           {/* Flag in the middle */}
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <div className={`${isSolo ? 'w-14 h-14' : 'w-8 h-8'} rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-200 shadow-md border dark:border-gray-700 light:border-gray-300`}>
+                            <div className={`${isSolo ? 'w-14 h-14' : 'w-8 h-8'} rounded-full overflow-hidden flex items-center justify-center bg-gray-200 dark:bg-gray-800 shadow-md border border-gray-300 dark:border-gray-700`}>
                               <FlagIcon 
                                 code={language.flagCode} 
                                 size={isSolo ? 48 : 24} 
@@ -138,7 +138,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                               />
                             </div>
                             <div className="mt-1 text-center">
-                              <p className={`${isSolo ? 'text-xs' : 'text-[10px]'} font-medium text-center leading-tight`}>{language.name}</p>
+                              <p className={`${isSolo ? 'text-xs' : 'text-[10px]'} font-medium text-center leading-tight text-gray-800 dark:text-white`}>{language.name}</p>
                               <p className={`${isSolo ? 'text-sm' : 'text-[10px]'} font-bold text-primary leading-tight`}>
                                 {Math.round(percentComplete)}%
                               </p>
@@ -151,8 +151,8 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                   
                   {/* Overall progress message */}
                   <div className="mt-8 pt-8 text-center">
-                    <div className="inline-block bg-gray-800 dark:bg-gray-800 light:bg-gray-200 px-6 py-3 rounded-full shadow-md border dark:border-gray-700 light:border-gray-400">
-                      <p className="text-lg font-medium">
+                    <div className="inline-block bg-gray-200 dark:bg-gray-800 px-6 py-3 rounded-full shadow-md border border-gray-300 dark:border-gray-700">
+                      <p className="text-lg font-medium text-gray-800 dark:text-white">
                         {calculateOverallProgress() === 0 
                           ? "Starting your journey!" 
                           : getLanguageLevel()}
@@ -172,19 +172,19 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                     
                     return (
                       <div key={language.code} className="flex items-center space-x-4">
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-200 shadow-md border dark:border-gray-700 light:border-gray-300">
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-200 dark:bg-gray-800 shadow-md border border-gray-300 dark:border-gray-700">
                           <FlagIcon code={language.flagCode} size={24} className="scale-100" />
                         </div>
                         <div className="flex-1">
                           <div className="flex justify-between mb-1">
-                            <span className="text-lg font-semibold">{language.name}</span>
-                            <span className="text-sm text-muted-foreground">
+                            <span className="text-lg font-semibold text-gray-800 dark:text-white">{language.name}</span>
+                            <span className="text-sm text-gray-600 dark:text-gray-400">
                               {completedLessons}/{totalLessons} lessons completed
                             </span>
                           </div>
                           <Progress 
                             value={percentComplete} 
-                            className="h-4 bg-gray-800 dark:bg-gray-800 light:bg-gray-300 border dark:border-transparent light:border-gray-400"
+                            className="h-4 bg-gray-300 dark:bg-gray-800 border border-gray-400 dark:border-transparent"
                           />
                         </div>
                       </div>
@@ -196,14 +196,14 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
           </Card>
         </>
       ) : (
-        <Card className="border dark:border-gray-800 light:border-gray-300 shadow-lg bg-gray-900 dark:bg-gray-900 light:bg-white">
-          <CardHeader className="border-b dark:border-gray-800 light:border-gray-200">
-            <CardTitle className="text-2xl font-bold">Learning Progress</CardTitle>
+        <Card className="border border-gray-300 dark:border-gray-800 shadow-lg bg-white dark:bg-gray-900 text-gray-800 dark:text-white">
+          <CardHeader className="border-b border-gray-200 dark:border-gray-800">
+            <CardTitle className="text-2xl font-bold text-gray-800 dark:text-white">Learning Progress</CardTitle>
           </CardHeader>
           <CardContent className="text-center py-8">
             <img src="/progress.svg" alt="Fox mascot" className="w-32 h-32 mx-auto mb-4 opacity-60" />
-            <p className="text-muted-foreground">You haven't started learning any languages yet.</p>
-            <p className="text-muted-foreground">Complete lessons to see your progress here!</p>
+            <p className="text-gray-600 dark:text-gray-400">You haven't started learning any languages yet.</p>
+            <p className="text-gray-600 dark:text-gray-400">Complete lessons to see your progress here!</p>
           </CardContent>
         </Card>
       )}
