@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, primaryKey } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -41,12 +41,71 @@ export const insertLanguageSchema = createInsertSchema(languages).pick({
   isAvailable: true,
 });
 
+export const userProgress = pgTable("user_progress", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  lessonId: text("lesson_id").notNull().references(() => lessons.lessonId),
+  completed: boolean("completed").notNull().default(false),
+  completedAt: timestamp("completed_at"),
+  progress: integer("progress").notNull().default(0), // Progress as percentage (0-100)
+  score: integer("score"), // Optional score for assessments or quizzes
+  lastAccessedAt: timestamp("last_accessed_at").notNull().defaultNow(),
+  timeSpent: integer("time_spent").notNull().default(0), // Time spent in seconds
+  notes: text("notes"), // Optional notes or flashcards
+}, (table) => {
+  return {
+    userLessonIdx: primaryKey({ columns: [table.userId, table.lessonId] }),
+  };
+});
+
+// Relations
+export const usersRelations = {
+  progress: () => ({
+    relation: "1:n",
+    fields: [users.id],
+    references: [userProgress.userId],
+  }),
+};
+
+export const lessonsRelations = {
+  progress: () => ({
+    relation: "1:n",
+    fields: [lessons.lessonId],
+    references: [userProgress.lessonId],
+  }),
+};
+
+export const userProgressRelations = {
+  user: () => ({
+    relation: "n:1",
+    fields: [userProgress.userId],
+    references: [users.id],
+  }),
+  lesson: () => ({
+    relation: "n:1",
+    fields: [userProgress.lessonId],
+    references: [lessons.lessonId],
+  }),
+};
+
 export const insertLessonSchema = createInsertSchema(lessons).pick({
   lessonId: true,
   languageCode: true,
   title: true,
   content: true,
   orderIndex: true,
+});
+
+export const insertUserProgressSchema = createInsertSchema(userProgress).pick({
+  userId: true,
+  lessonId: true,
+  completed: true,
+  completedAt: true,
+  progress: true,
+  score: true,
+  lastAccessedAt: true,
+  timeSpent: true,
+  notes: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -57,3 +116,6 @@ export type Language = typeof languages.$inferSelect;
 
 export type InsertLesson = z.infer<typeof insertLessonSchema>;
 export type Lesson = typeof lessons.$inferSelect;
+
+export type InsertUserProgress = z.infer<typeof insertUserProgressSchema>;
+export type UserProgress = typeof userProgress.$inferSelect;

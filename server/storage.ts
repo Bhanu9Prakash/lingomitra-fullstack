@@ -1,14 +1,15 @@
 import { 
   users, type User, type InsertUser,
   languages, type Language, type InsertLanguage,
-  lessons, type Lesson, type InsertLesson 
+  lessons, type Lesson, type InsertLesson,
+  userProgress, type UserProgress, type InsertUserProgress
 } from "@shared/schema";
 import session from "express-session";
 import { Pool } from "@neondatabase/serverless";
 import connectPg from "connect-pg-simple";
 import { createHash } from "crypto";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -31,6 +32,16 @@ export interface IStorage {
   getLessonsByLanguage(languageCode: string): Promise<Lesson[]>;
   createLesson(lesson: InsertLesson): Promise<Lesson>;
   
+  // User Progress methods
+  getUserProgress(userId: number, lessonId: string): Promise<UserProgress | undefined>;
+  getUserProgressByLanguage(userId: number, languageCode: string): Promise<UserProgress[]>;
+  updateUserProgress(
+    userId: number, 
+    lessonId: string, 
+    progressData: Partial<Omit<InsertUserProgress, 'userId' | 'lessonId'>>
+  ): Promise<UserProgress>;
+  markLessonComplete(userId: number, lessonId: string): Promise<UserProgress>;
+  
   // Session store
   sessionStore: session.Store;
 }
@@ -39,9 +50,11 @@ export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private languages: Map<number, Language>;
   private lessons: Map<number, Lesson>;
+  private progressRecords: Map<string, UserProgress>;
   private userCurrentId: number;
   private languageCurrentId: number;
   private lessonCurrentId: number;
+  private progressCurrentId: number;
   public sessionStore: session.Store;
 
   constructor() {
@@ -235,6 +248,85 @@ export class DatabaseStorage implements IStorage {
       .values(insertLesson)
       .returning();
     return lesson;
+  }
+
+  // User Progress methods
+  async getUserProgress(userId: number, lessonId: string): Promise<UserProgress | undefined> {
+    const [progress] = await db
+      .select()
+      .from(userProgress)
+      .where(
+        and(
+          eq(userProgress.userId, userId),
+          eq(userProgress.lessonId, lessonId)
+        )
+      );
+    return progress;
+  }
+
+  async getUserProgressByLanguage(userId: number, languageCode: string): Promise<UserProgress[]> {
+    // Join userProgress with lessons to filter by languageCode
+    return db
+      .select({
+        progress: userProgress,
+        lesson: lessons
+      })
+      .from(userProgress)
+      .innerJoin(lessons, eq(userProgress.lessonId, lessons.lessonId))
+      .where(
+        and(
+          eq(userProgress.userId, userId),
+          eq(lessons.languageCode, languageCode)
+        )
+      )
+      .then(rows => rows.map(row => row.progress));
+  }
+
+  async updateUserProgress(
+    userId: number,
+    lessonId: string,
+    progressData: Partial<Omit<InsertUserProgress, 'userId' | 'lessonId'>>
+  ): Promise<UserProgress> {
+    // First check if a record already exists
+    const existingProgress = await this.getUserProgress(userId, lessonId);
+
+    if (existingProgress) {
+      // Update existing record
+      const [updatedProgress] = await db
+        .update(userProgress)
+        .set({
+          ...progressData,
+          lastAccessedAt: progressData.lastAccessedAt || new Date()
+        })
+        .where(
+          and(
+            eq(userProgress.userId, userId),
+            eq(userProgress.lessonId, lessonId)
+          )
+        )
+        .returning();
+      return updatedProgress;
+    } else {
+      // Create new record
+      const [newProgress] = await db
+        .insert(userProgress)
+        .values({
+          userId,
+          lessonId,
+          ...progressData,
+          lastAccessedAt: progressData.lastAccessedAt || new Date()
+        })
+        .returning();
+      return newProgress;
+    }
+  }
+
+  async markLessonComplete(userId: number, lessonId: string): Promise<UserProgress> {
+    return this.updateUserProgress(userId, lessonId, {
+      completed: true,
+      completedAt: new Date(),
+      progress: 100
+    });
   }
 }
 
