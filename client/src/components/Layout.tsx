@@ -72,22 +72,8 @@ export default function Layout({ children }: LayoutProps) {
               />
             )}
             
-            {/* User menu dropdown - hide on homepage and auth pages */}
+            {/* User menu dropdown with theme toggle - hide on homepage and auth pages */}
             {!isHomePage && !isAuthPage && <UserMenu />}
-            
-            <div className="theme-container">
-              <button 
-                onClick={toggleTheme}
-                className="theme-toggle"
-                aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-              >
-                {theme === 'dark' ? (
-                  <i className="fas fa-sun"></i>
-                ) : (
-                  <i className="fas fa-moon"></i>
-                )}
-              </button>
-            </div>
           </div>
         </div>
       </header>

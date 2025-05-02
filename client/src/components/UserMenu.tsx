@@ -11,12 +11,14 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useSimpleToast } from "@/hooks/use-simple-toast";
 import { useLocation, Link } from "wouter";
-import { User, LogOut, Settings } from "lucide-react";
+import { User, LogOut, Settings, SunMoon } from "lucide-react";
+import { useTheme } from "./ThemeProvider";
 
 export default function UserMenu() {
   const { user, logoutMutation } = useAuth();
   const { toast } = useSimpleToast();
   const [_, navigate] = useLocation();
+  const { theme, toggleTheme } = useTheme();
 
   const handleLogout = async () => {
     try {
@@ -56,13 +58,18 @@ export default function UserMenu() {
           variant="ghost" 
           className="relative h-8 w-8 rounded-full hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary active:scale-95"
         >
-          <Avatar className="h-8 w-8 ring-2 ring-primary/70 border border-background shadow-sm transition-transform duration-200 hover:scale-110">
+          <Avatar className="h-8 w-8 ring-2 ring-primary/70 transition-transform duration-200 hover:scale-110">
             <AvatarFallback className="bg-primary text-white font-semibold text-xs">{getInitials(user.username)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount style={{ position: 'fixed', zIndex: 9999 }}>
-        <DropdownMenuLabel className="font-normal">
+      <DropdownMenuContent 
+        className="w-56 border-primary/20 bg-background shadow-lg" 
+        align="end" 
+        forceMount 
+        style={{ position: 'fixed', zIndex: 9999 }}
+      >
+        <DropdownMenuLabel className="font-normal bg-muted/40 rounded-t-md">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.username}</p>
             <p className="text-xs leading-none text-muted-foreground">
@@ -74,6 +81,13 @@ export default function UserMenu() {
         <DropdownMenuItem className="cursor-pointer">
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          className="cursor-pointer" 
+          onClick={toggleTheme}
+        >
+          <SunMoon className="mr-2 h-4 w-4" />
+          <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem 
