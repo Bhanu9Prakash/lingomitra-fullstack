@@ -9,9 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Switch } from "@/components/ui/switch";
 import { useSimpleToast } from "@/hooks/use-simple-toast";
 import { useLocation, Link } from "wouter";
-import { User, LogOut, Settings, SunMoon } from "lucide-react";
+import { User, LogOut, Settings, Sun, Moon } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
 export default function UserMenu() {
@@ -58,7 +59,7 @@ export default function UserMenu() {
           variant="ghost" 
           className="relative h-8 w-8 rounded-full hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary active:scale-95"
         >
-          <Avatar className="h-8 w-8 ring-2 ring-primary/70 transition-transform duration-200 hover:scale-110">
+          <Avatar className="h-8 w-8 ring-1 ring-primary/40 transition-transform duration-200 hover:scale-110">
             <AvatarFallback className="bg-primary text-white font-semibold text-xs">{getInitials(user.username)}</AvatarFallback>
           </Avatar>
         </Button>
@@ -82,12 +83,19 @@ export default function UserMenu() {
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>
         </DropdownMenuItem>
-        <DropdownMenuItem 
-          className="cursor-pointer" 
-          onClick={toggleTheme}
-        >
-          <SunMoon className="mr-2 h-4 w-4" />
-          <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
+        <DropdownMenuItem className="cursor-pointer flex justify-between items-center" onClick={(e) => e.preventDefault()}>
+          <div className="flex items-center">
+            {theme === 'dark' 
+              ? <Moon className="mr-2 h-4 w-4 text-blue-300" /> 
+              : <Sun className="mr-2 h-4 w-4 text-yellow-500" />
+            }
+            <span>Dark Mode</span>
+          </div>
+          <Switch
+            checked={theme === 'dark'}
+            onCheckedChange={toggleTheme}
+            aria-label="Toggle dark mode"
+          />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem 
