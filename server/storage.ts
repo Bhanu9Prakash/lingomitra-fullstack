@@ -2,7 +2,8 @@ import {
   users, type User, type InsertUser,
   languages, type Language, type InsertLanguage,
   lessons, type Lesson, type InsertLesson,
-  userProgress, type UserProgress, type InsertUserProgress
+  userProgress, type UserProgress, type InsertUserProgress,
+  chatHistory, type ChatHistory, type InsertChatHistory
 } from "@shared/schema";
 import session from "express-session";
 import { Pool } from "@neondatabase/serverless";
@@ -43,6 +44,10 @@ export interface IStorage {
   markLessonComplete(userId: number, lessonId: string): Promise<UserProgress>;
   resetLanguageProgress(userId: number, languageCode: string): Promise<number>;
   
+  // Chat History methods
+  getChatHistory(userId: number, lessonId: string): Promise<ChatHistory | undefined>;
+  saveChatHistory(userId: number, lessonId: string, messages: any[]): Promise<ChatHistory>;
+  
   // Session store
   sessionStore: session.Store;
 }
@@ -52,10 +57,12 @@ export class MemStorage implements IStorage {
   private languages: Map<number, Language>;
   private lessons: Map<number, Lesson>;
   private progressRecords: Map<string, UserProgress>;
+  private chatHistories: Map<string, ChatHistory>;
   private userCurrentId: number;
   private languageCurrentId: number;
   private lessonCurrentId: number;
   private progressCurrentId: number;
+  private chatHistoryCurrentId: number;
   public sessionStore: session.Store;
 
   constructor() {
@@ -63,10 +70,12 @@ export class MemStorage implements IStorage {
     this.languages = new Map();
     this.lessons = new Map();
     this.progressRecords = new Map();
+    this.chatHistories = new Map();
     this.userCurrentId = 1;
     this.languageCurrentId = 1;
     this.lessonCurrentId = 1;
     this.progressCurrentId = 1;
+    this.chatHistoryCurrentId = 1;
     
     // Initialize the session store
     if (process.env.DATABASE_URL) {
@@ -248,6 +257,42 @@ export class MemStorage implements IStorage {
     }
     
     return deleteCount;
+  }
+  
+  // Chat History methods
+  async getChatHistory(userId: number, lessonId: string): Promise<ChatHistory | undefined> {
+    const key = `${userId}:${lessonId}`;
+    return this.chatHistories.get(key);
+  }
+  
+  async saveChatHistory(userId: number, lessonId: string, messages: any[]): Promise<ChatHistory> {
+    const key = `${userId}:${lessonId}`;
+    const existingHistory = this.chatHistories.get(key);
+    
+    if (existingHistory) {
+      // Update existing record
+      const updatedHistory: ChatHistory = {
+        ...existingHistory,
+        messages,
+        updatedAt: new Date()
+      };
+      this.chatHistories.set(key, updatedHistory);
+      return updatedHistory;
+    } else {
+      // Create new record
+      const id = this.chatHistoryCurrentId++;
+      const now = new Date();
+      const newHistory: ChatHistory = {
+        id,
+        userId,
+        lessonId,
+        messages,
+        createdAt: now,
+        updatedAt: now
+      };
+      this.chatHistories.set(key, newHistory);
+      return newHistory;
+    }
   }
 }
 

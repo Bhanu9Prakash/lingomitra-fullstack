@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, primaryKey, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -113,5 +113,39 @@ export type Language = typeof languages.$inferSelect;
 export type InsertLesson = z.infer<typeof insertLessonSchema>;
 export type Lesson = typeof lessons.$inferSelect;
 
+// Chat History Table
+export const chatHistory = pgTable("chat_history", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  lessonId: text("lesson_id").notNull().references(() => lessons.lessonId),
+  messages: jsonb("messages").notNull().default([]),  // Array of message objects
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const chatHistoryRelations = {
+  user: () => ({
+    relation: "n:1",
+    fields: [chatHistory.userId],
+    references: [users.id],
+  }),
+  lesson: () => ({
+    relation: "n:1",
+    fields: [chatHistory.lessonId],
+    references: [lessons.lessonId],
+  }),
+};
+
+export const insertChatHistorySchema = createInsertSchema(chatHistory).pick({
+  userId: true,
+  lessonId: true,
+  messages: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type InsertUserProgress = z.infer<typeof insertUserProgressSchema>;
 export type UserProgress = typeof userProgress.$inferSelect;
+
+export type InsertChatHistory = z.infer<typeof insertChatHistorySchema>;
+export type ChatHistory = typeof chatHistory.$inferSelect;
