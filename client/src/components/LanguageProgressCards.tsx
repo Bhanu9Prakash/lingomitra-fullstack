@@ -140,7 +140,9 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                     
                     return (
                       <div key={language.code} className="flex items-center space-x-4">
-                        <FlagIcon code={language.flagCode} size={32} />
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 shadow-md">
+                          <FlagIcon code={language.flagCode} size={24} />
+                        </div>
                         <div className="flex-1">
                           <div className="flex justify-between mb-1">
                             <span className="text-lg font-semibold">{language.name}</span>

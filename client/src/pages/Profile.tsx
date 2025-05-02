@@ -309,7 +309,9 @@ export default function Profile() {
                 <AccordionItem value={language.code} key={language.code}>
                   <AccordionTrigger className="px-4 py-2 hover:bg-accent/50 rounded-md">
                     <div className="flex items-center gap-3">
-                      <FlagIcon code={language.flagCode} size={24} />
+                      <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 shadow-md">
+                        <FlagIcon code={language.flagCode} size={24} />
+                      </div>
                       <span className="font-semibold">{language.name}</span>
                       <span className="text-sm text-muted-foreground">
                         ({completedLessons}/{totalLessons} lessons completed)
