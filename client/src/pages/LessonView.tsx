@@ -6,6 +6,7 @@ import LessonHeader from "@/components/LessonHeader";
 import LessonContent from "@/components/LessonContent";
 import LessonSelector from "@/components/LessonSelector";
 import ChatUI from "@/components/ChatUI";
+import { getQueryFn } from "@/lib/queryClient";
 
 export default function LessonView() {
   const [_, navigate] = useLocation();
@@ -45,11 +46,13 @@ export default function LessonView() {
   // Fetch all languages
   const { data: languages } = useQuery<Language[]>({
     queryKey: ["/api/languages"],
+    queryFn: getQueryFn(),
   });
   
   // Fetch language data if we have a language code
   const { data: language } = useQuery<Language>({
     queryKey: [`/api/languages/${languageCode}`],
+    queryFn: getQueryFn(),
     enabled: !!languageCode,
   });
   
@@ -60,6 +63,7 @@ export default function LessonView() {
     error: lessonsError
   } = useQuery<Lesson[]>({
     queryKey: [`/api/languages/${languageCode}/lessons`],
+    queryFn: getQueryFn(),
     enabled: !!languageCode,
   });
   
@@ -70,6 +74,7 @@ export default function LessonView() {
     error: specificLessonError
   } = useQuery<Lesson>({
     queryKey: [`/api/lessons/${specificLessonId}`],
+    queryFn: getQueryFn(),
     enabled: !!specificLessonId,
   });
   
