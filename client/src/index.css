@@ -2825,11 +2825,12 @@ footer {
 }
 
 /* Specific positioning for the user menu dropdown */
-.right-4[data-radix-popper-content-wrapper] {
+.dropdown-menu-avatar[data-radix-popper-content-wrapper] {
   position: absolute !important;
   top: 64px !important;
-  right: -12px !important; /* Adjusted further to the right to align with avatar */
+  right: 16px !important; /* Adjusted to align with the avatar */
   left: auto !important;
   transform: none !important;
   margin: 0 !important;
+  width: auto !important;
 }
