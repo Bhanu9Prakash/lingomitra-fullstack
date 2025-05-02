@@ -46,6 +46,7 @@ function App() {
       <ThemeProvider>
         <TooltipProvider>
           <AuthProvider>
+            {/* Toaster moved outside Router so it's not affected by Layout styling */}
             <Toaster />
             <Router />
           </AuthProvider>

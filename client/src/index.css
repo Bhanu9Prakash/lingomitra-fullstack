@@ -197,7 +197,7 @@ header {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Distinct shadow for main header */
   position: sticky;
   top: 0;
-  z-index: 100; /* Lower to ensure dropdowns show over it */
+  z-index: 50; /* Lower to ensure dropdowns and toasts show over it */
   padding: 15px 0;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   width: 100%;

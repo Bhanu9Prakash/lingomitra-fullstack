@@ -13,7 +13,7 @@ type ToastProps = {
 
 function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (id: string) => void }) {
   return (
-    <div className="fixed top-0 right-0 z-[9999] flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-none sm:max-w-[100%] max-w-full w-full sm:w-auto">
+    <div className="fixed top-0 right-0 z-[99999] flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-none sm:max-w-[100%] max-w-full w-full sm:w-auto" style={{ zIndex: 99999 }}>
       {toasts.map((toast) => (
         <div
           key={toast.id}

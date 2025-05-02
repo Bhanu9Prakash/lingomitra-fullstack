@@ -92,8 +92,12 @@ export default function AuthPage() {
     },
   });
 
+  // State for form-level error message
+  const [loginError, setLoginError] = useState<string | null>(null);
+
   // Submit handlers
   const onLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
+    setLoginError(null); // Clear previous errors
     try {
       await loginMutation.mutateAsync(values);
       toast({
@@ -103,7 +107,15 @@ export default function AuthPage() {
       });
       navigate("/");
     } catch (error) {
-      // Error handling is done in the mutation
+      // Set an inline error message in addition to the toast
+      setLoginError("Incorrect username/email or password. Please try again.");
+      
+      // Extra toast for visibility - especially on mobile
+      toast({
+        title: "Login Error",
+        description: "Incorrect username/email or password. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -222,6 +234,13 @@ export default function AuthPage() {
                           </FormItem>
                         )}
                       />
+                      
+                      {/* Inline error message */}
+                      {loginError && (
+                        <div className="p-3 mb-3 rounded-md text-white bg-red-600 dark:bg-red-700 text-sm">
+                          <p>{loginError}</p>
+                        </div>
+                      )}
                       
                       <Button
                         type="submit"
