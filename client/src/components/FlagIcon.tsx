@@ -66,7 +66,7 @@ export default function FlagIcon({ code, size = 24, className = '' }: FlagIconPr
       <img 
         src={`/flags/${flagCode}.svg`} 
         alt={`${flagCode} flag`} 
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        style={{ width: '120%', height: '120%', objectFit: 'cover', objectPosition: 'center' }}
         onError={(e) => {
           // Fallback to emoji if SVG doesn't exist
           const target = e.target as HTMLImageElement;

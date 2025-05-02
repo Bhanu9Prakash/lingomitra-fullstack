@@ -48,7 +48,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
     <div className="space-y-6">
       {activeLangs.length > 0 ? (
         <>
-          <Card className="border-0 shadow-lg bg-gray-900">
+          <Card className="border-0 shadow-lg bg-gray-900 dark:bg-gray-900 light:bg-white">
             <CardHeader>
               <CardTitle className="text-2xl font-bold">Learning Progress</CardTitle>
             </CardHeader>
@@ -79,7 +79,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                           className={`${position} relative w-24 h-24`}
                         >
                           {/* Background circle */}
-                          <div className="absolute inset-0 rounded-full bg-gray-800 opacity-60"></div>
+                          <div className="absolute inset-0 rounded-full bg-gray-800 dark:bg-gray-800 light:bg-gray-200 opacity-60"></div>
                           
                           {/* Progress circle - SVG approach */}
                           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -90,7 +90,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                               fill="none" 
                               strokeWidth="10"
                               stroke="currentColor" 
-                              className="text-gray-800 opacity-60"
+                              className="text-gray-800 dark:text-gray-800 light:text-gray-300 opacity-60"
                             />
                             <circle 
                               cx="50" 
@@ -107,8 +107,8 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                           
                           {/* Flag in the middle */}
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 shadow-md">
-                              <FlagIcon code={language.flagCode} size={24} />
+                            <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 shadow-md">
+                              <FlagIcon code={language.flagCode} size={32} className="scale-125" />
                             </div>
                             <p className="text-sm font-medium mt-1">{language.name}</p>
                             <p className="text-lg font-bold text-primary">{Math.round(percentComplete)}%</p>
@@ -125,7 +125,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                   
                   {/* Overall progress message */}
                   <div className="mt-6 text-center">
-                    <div className="inline-block bg-gray-800 px-6 py-2 rounded-full shadow-md border border-gray-700">
+                    <div className="inline-block bg-gray-800 dark:bg-gray-800 light:bg-gray-100 px-6 py-2 rounded-full shadow-md border dark:border-gray-700 light:border-gray-300">
                       <p className="text-lg font-medium">{getLanguageLevel()}</p>
                     </div>
                   </div>
@@ -142,8 +142,8 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                     
                     return (
                       <div key={language.code} className="flex items-center space-x-4">
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 shadow-md">
-                          <FlagIcon code={language.flagCode} size={24} />
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
+                          <FlagIcon code={language.flagCode} size={32} className="scale-125" />
                         </div>
                         <div className="flex-1">
                           <div className="flex justify-between mb-1">
@@ -166,7 +166,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
           </Card>
         </>
       ) : (
-        <Card className="border-0 shadow-lg bg-gray-900">
+        <Card className="border-0 shadow-lg bg-gray-900 dark:bg-gray-900 light:bg-white">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">Learning Progress</CardTitle>
           </CardHeader>
