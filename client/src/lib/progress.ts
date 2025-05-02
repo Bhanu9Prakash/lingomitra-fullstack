@@ -105,7 +105,31 @@ export function isLessonCompleted(progressRecords: UserProgress[], lessonId: str
  * Get an array of completed lesson IDs
  */
 export function getCompletedLessons(progressRecords: UserProgress[]): string[] {
+  if (!progressRecords || !Array.isArray(progressRecords)) {
+    console.warn('getCompletedLessons was called with invalid data:', progressRecords);
+    return [];
+  }
+  
   return progressRecords
     .filter(record => record.completed)
     .map(record => record.lessonId);
+}
+
+/**
+ * Fetch completed lessons by language code
+ */
+export async function fetchCompletedLessonsByLanguage(languageCode: string): Promise<string[]> {
+  try {
+    const response = await fetch(`/api/progress/language/${languageCode}`);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch progress for ${languageCode}`);
+    }
+    
+    const progressRecords: UserProgress[] = await response.json();
+    return getCompletedLessons(progressRecords);
+  } catch (error) {
+    console.error(`Error fetching completed lessons for ${languageCode}:`, error);
+    return [];
+  }
 }

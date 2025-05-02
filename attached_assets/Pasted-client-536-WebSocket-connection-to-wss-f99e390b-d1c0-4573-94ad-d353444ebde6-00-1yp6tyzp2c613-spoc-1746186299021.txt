@@ -1,0 +1,52 @@
+client:536 WebSocket connection to 'wss://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.dev/?token=nmmTiqmkVBll' failed: 
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=nmmTiqmkVBll' is invalid.
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)
+
+chunk-RPCDYKBN.js?v=1a43c995:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+use-auth.tsx:29 Toast hook loaded successfully
+theme-color.ts:36 Theme updated to light mode (#ffffff)
+theme-color.ts:36 Theme updated to dark mode (#1a1a1a)
+use-auth.tsx:29 Toast hook loaded successfully
+Profile.tsx:167 Profile page data: 
+Object
+service-worker.js?v=1746186235642:19 [Service Worker] Installing Service Worker
+pwa-config.ts:9 ServiceWorker registration successful with scope:  https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.dev/
+service-worker.js?v=1746186235642:24 [Service Worker] Pre-caching app shell
+/profile:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+service-worker.js?v=1746186235642:28 [Service Worker] Skip waiting on install
+service-worker.js?v=1746186235642:36 [Service Worker] Activating Service Worker
+service-worker.js?v=1746186235642:49 [Service Worker] Claiming clients
+service-worker.js?v=1746186235642:70 Uncaught (in promise) TypeError: Failed to execute 'put' on 'Cache': Request method 'POST' is unsupported
+    at service-worker.js?v=1746186235642:70:19
+chunk-RPCDYKBN.js?v=1a43c995:16670 Uncaught TypeError: progressRecords.filter is not a function
+    at getCompletedLessons (progress.ts:109:6)
+    at LessonSelector.tsx:63:9
+chunk-RPCDYKBN.js?v=1a43c995:14032 The above error occurred in the <LessonSelector> component:
+
+    at LessonSelector (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.dev/src/components/LessonSelector.tsx:22:3)
+    at div
+    at LessonView (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.dev/src/pages/LessonView.tsx:28:25)
+    at Route (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1a43c995:323:16)
+    at ProtectedRoute (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.dev/src/lib/protected-route.tsx:22:3)
+    at Switch (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=1a43c995:379:17)
+    at main
+    at div
+    at div
+    at Layout (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.dev/src/components/Layout.tsx:29:34)
+    at Router
+    at AuthProvider (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.dev/src/hooks/use-auth.tsx:26:32)
+    at ToastProvider (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.dev/src/components/ui/toast-context.tsx:20:33)
+    at Provider (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.…unner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=1a43c995:38:15)
+    at TooltipProvider (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.…rkspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=1a43c995:91:5)
+    at ThemeProvider (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.dev/src/components/ThemeProvider.tsx:25:33)
+    at QueryClientProvider (https://f99e390b-d1c0-4573-94ad-d353444ebde6-00-1yp6tyzp2c613.spock.replit.…rkspace/node_modules/.vite/deps/@tanstack_react-query.js?v=1a43c995:2805:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+chunk-RPCDYKBN.js?v=1a43c995:9129 Uncaught TypeError: progressRecords.filter is not a function
+    at getCompletedLessons (progress.ts:109:6)
+    at LessonSelector.tsx:63:9
+

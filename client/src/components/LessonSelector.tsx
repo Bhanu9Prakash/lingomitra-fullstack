@@ -1,7 +1,7 @@
 import { Lesson } from "@shared/schema";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { isLessonCompleted, getCompletedLessons } from "@/lib/progress";
+import { isLessonCompleted, fetchCompletedLessonsByLanguage } from "@/lib/progress";
 
 interface LessonSelectorProps {
   lessons: Lesson[];
@@ -60,7 +60,7 @@ export default function LessonSelector({
       // Fetch the current completed lessons
       if (languageCode) {
         setIsLoadingProgress(true);
-        getCompletedLessons(languageCode)
+        fetchCompletedLessonsByLanguage(languageCode)
           .then(lessons => {
             setCompletedLessons(lessons);
             setIsLoadingProgress(false);
