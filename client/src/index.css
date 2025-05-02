@@ -2828,9 +2828,8 @@ footer {
 .right-4[data-radix-popper-content-wrapper] {
   position: absolute !important;
   top: 64px !important;
-  right: 16px !important; /* Aligned with the right edge of the avatar */
+  right: -12px !important; /* Adjusted further to the right to align with avatar */
   left: auto !important;
   transform: none !important;
   margin: 0 !important;
-  width: 224px !important; /* Fixed width of 56 * 4 = 224px */
 }
