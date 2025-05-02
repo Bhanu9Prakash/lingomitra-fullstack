@@ -72,16 +72,22 @@ function EnrolledLanguageCard({
   }, [language.code, resetMutation.isSuccess, calculateProgress]);
   
   return (
-    <div className="border rounded-lg p-4">
+    <div className="border rounded-lg p-4 bg-zinc-800/30">
       <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl">{language.flagCode}</span>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-6 overflow-hidden rounded shadow">
+            <img
+              src={`/flags/${language.flagCode}.svg`}
+              alt={`${language.name} Flag`}
+              className="w-full h-full object-cover"
+            />
+          </div>
           <div>
             <h3 className="font-medium">{language.name}</h3>
-            <p className="text-sm text-muted-foreground">{language.nativeName}</p>
+            <p className="text-sm text-muted-foreground">{language.nativeName || language.code}</p>
           </div>
         </div>
-        <Badge variant="outline">{language.code.toUpperCase()}</Badge>
+        <Badge variant="outline" className="bg-zinc-800 text-white border-none font-medium uppercase text-xs px-2 py-1">{language.code}</Badge>
       </div>
       
       <Separator className="my-4" />
@@ -103,18 +109,19 @@ function EnrolledLanguageCard({
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button 
-              variant="outline" 
+              variant="ghost" 
               size="sm"
+              className="text-xs font-medium px-3 py-1 h-auto"
               disabled={resetMutation.isPending}
             >
               {resetMutation.isPending && resetMutation.variables === language.code ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-3 w-3 animate-spin" />
                   Resetting...
                 </>
               ) : (
                 <>
-                  <RefreshCw className="mr-2 h-4 w-4" />
+                  <RefreshCw className="mr-2 h-3 w-3" />
                   Reset Progress
                 </>
               )}
@@ -139,9 +146,9 @@ function EnrolledLanguageCard({
         </AlertDialog>
       </div>
       
-      <div className="w-full bg-secondary rounded-full h-2.5">
+      <div className="w-full bg-secondary/30 rounded-full h-2">
         <div 
-          className="bg-primary h-2.5 rounded-full transition-all duration-500" 
+          className="bg-blue-500 h-2 rounded-full transition-all duration-500" 
           style={{ width: `${progressStats.percent}%` }}
         ></div>
       </div>
