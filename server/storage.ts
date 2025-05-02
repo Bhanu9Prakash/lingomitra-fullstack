@@ -202,13 +202,13 @@ export class MemStorage implements IStorage {
         id,
         userId,
         lessonId,
-        completed: progressData.completed || false,
-        completedAt: progressData.completedAt,
-        progress: progressData.progress || 0,
-        score: progressData.score,
+        completed: progressData.completed ?? false,
+        completedAt: progressData.completedAt || null,
+        progress: progressData.progress ?? 0,
+        score: progressData.score || null,
         lastAccessedAt: progressData.lastAccessedAt || new Date(),
-        timeSpent: progressData.timeSpent || 0,
-        notes: progressData.notes
+        timeSpent: progressData.timeSpent ?? 0,
+        notes: progressData.notes || null
       };
       this.progressRecords.set(key, newProgress);
       return newProgress;
@@ -358,12 +358,19 @@ export class DatabaseStorage implements IStorage {
 
     if (existingProgress) {
       // Update existing record
+      const updateValues: Partial<UserProgress> = {};
+      
+      if (progressData.completed !== undefined) updateValues.completed = progressData.completed;
+      if (progressData.completedAt !== undefined) updateValues.completedAt = progressData.completedAt;
+      if (progressData.progress !== undefined) updateValues.progress = progressData.progress;
+      if (progressData.score !== undefined) updateValues.score = progressData.score;
+      if (progressData.timeSpent !== undefined) updateValues.timeSpent = progressData.timeSpent;
+      if (progressData.notes !== undefined) updateValues.notes = progressData.notes;
+      updateValues.lastAccessedAt = progressData.lastAccessedAt || new Date();
+      
       const [updatedProgress] = await db
         .update(userProgress)
-        .set({
-          ...progressData,
-          lastAccessedAt: progressData.lastAccessedAt || new Date()
-        })
+        .set(updateValues)
         .where(
           and(
             eq(userProgress.userId, userId),
@@ -379,8 +386,13 @@ export class DatabaseStorage implements IStorage {
         .values({
           userId,
           lessonId,
-          ...progressData,
-          lastAccessedAt: progressData.lastAccessedAt || new Date()
+          completed: progressData.completed ?? false,
+          completedAt: progressData.completedAt || null,
+          progress: progressData.progress ?? 0,
+          score: progressData.score || null,
+          lastAccessedAt: progressData.lastAccessedAt || new Date(),
+          timeSpent: progressData.timeSpent ?? 0,
+          notes: progressData.notes || null
         })
         .returning();
       return newProgress;

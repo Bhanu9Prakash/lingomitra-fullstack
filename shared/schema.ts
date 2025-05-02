@@ -52,10 +52,6 @@ export const userProgress = pgTable("user_progress", {
   lastAccessedAt: timestamp("last_accessed_at").notNull().defaultNow(),
   timeSpent: integer("time_spent").notNull().default(0), // Time spent in seconds
   notes: text("notes"), // Optional notes or flashcards
-}, (table) => {
-  return {
-    userLessonIdx: primaryKey({ columns: [table.userId, table.lessonId] }),
-  };
 });
 
 // Relations
