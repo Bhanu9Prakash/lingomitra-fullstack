@@ -79,9 +79,11 @@ export default function UserMenu() {
           </div>
         </DropdownMenuLabel>
         <div className="p-1">
-          <DropdownMenuItem className="cursor-pointer rounded-md my-0.5 focus:bg-accent/80">
-            <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
-            <span>Settings</span>
+          <DropdownMenuItem className="cursor-pointer rounded-md my-0.5 focus:bg-accent/80" asChild>
+            <Link href="/settings">
+              <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
+              <span>Settings</span>
+            </Link>
           </DropdownMenuItem>
           
           <DropdownMenuItem 

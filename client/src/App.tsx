@@ -9,6 +9,7 @@ import Home from "@/pages/Home";
 import LanguageSelection from "@/pages/LanguageSelection";
 import LessonView from "@/pages/LessonView";
 import AuthPage from "@/pages/auth-page";
+import Settings from "@/pages/Settings";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
 // Import the AuthProvider from the hooks directory
@@ -30,6 +31,9 @@ function Router() {
         <ProtectedRoute path="/lesson/:id" component={LessonView} />
         {/* New standard route format */}
         <ProtectedRoute path="/:language/lesson/:lessonNumber" component={LessonView} />
+        
+        {/* Settings page */}
+        <ProtectedRoute path="/settings" component={Settings} />
         
         {/* Authentication route */}
         <Route path="/auth" component={AuthPage} />
