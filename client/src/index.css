@@ -2827,9 +2827,11 @@ footer {
 /* Specific positioning for the user menu dropdown */
 .right-4[data-radix-popper-content-wrapper] {
   position: absolute !important;
-  top: 64px !important;
-  right: -12px !important; /* Adjusted further to the right to align with avatar */
+  top: 68px !important; /* Increased top spacing */
+  right: -16px !important; /* Fine-tuned to align with the avatar */
   left: auto !important;
   transform: none !important;
   margin: 0 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important; /* Enhanced shadow for premium feel */
+  border-radius: 10px !important; /* Slightly more rounded corners */
 }
