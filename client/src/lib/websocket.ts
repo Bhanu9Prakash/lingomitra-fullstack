@@ -63,7 +63,12 @@ export function initWebSocket(): WebSocket | null {
   try {
     // Determine the correct WebSocket protocol based on current window protocol
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    
+    // Use current window host, which already includes port if it exists
+    const host = window.location.host || window.location.hostname;
+    
+    // Construct WebSocket URL with fallback to prevent undefined port
+    const wsUrl = `${protocol}//${host}/ws`;
     console.log(`Connecting to WebSocket at ${wsUrl}`);
 
     // Update status
