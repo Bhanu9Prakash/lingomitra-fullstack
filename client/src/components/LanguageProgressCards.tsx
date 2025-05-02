@@ -79,11 +79,12 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                       const radiusRatio = 0.38; // 38% of container width
                       
                       // Calculate position - x and y coordinates
-                      const left = 50 + 42 * Math.cos(angle - Math.PI/2);
-                      const top = 50 + 42 * Math.sin(angle - Math.PI/2);
+                      // Adjust for better spacing from center
+                      const left = 50 + 38 * Math.cos(angle - Math.PI/2);
+                      const top = 50 + 38 * Math.sin(angle - Math.PI/2);
                       
-                      // Size of the progress circle (responsive using CSS classes instead of window object)
-                      const size = 22; // Base size - will be adjusted with CSS for mobile
+                      // Size of the progress circle - smaller for better fit
+                      const size = 20; // Base size - will be adjusted with CSS media queries
                       
                       return (
                         <div 
@@ -96,41 +97,47 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                             height: `${size}%`,
                           }}
                         >
-                          {/* Background circle */}
-                          <div className="absolute inset-0 rounded-full bg-gray-800 dark:bg-gray-800 light:bg-gray-200 opacity-60"></div>
+                          {/* Outer container with shadow */}
+                          <div className="absolute inset-0 rounded-full shadow-lg overflow-hidden">
+                            {/* Background circle with gradient */}
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-b from-gray-700 to-gray-900 dark:from-gray-700 dark:to-gray-900 light:from-gray-100 light:to-gray-300 opacity-80"></div>
+                            
+                            {/* Progress circle - SVG approach */}
+                            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                              <circle 
+                                cx="50" 
+                                cy="50" 
+                                r="45" 
+                                fill="none" 
+                                strokeWidth="10"
+                                stroke="currentColor" 
+                                className="text-gray-800 dark:text-gray-800 light:text-gray-300 opacity-60"
+                              />
+                              <circle 
+                                cx="50" 
+                                cy="50" 
+                                r="45" 
+                                fill="none" 
+                                strokeWidth="10"
+                                stroke="currentColor" 
+                                strokeDasharray={`${2 * Math.PI * 45}`}
+                                strokeDashoffset={`${2 * Math.PI * 45 * (1 - percentComplete / 100)}`}
+                                className="text-primary transition-all duration-1000 ease-in-out"
+                              />
+                            </svg>
+                          </div>
                           
-                          {/* Progress circle - SVG approach */}
-                          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                            <circle 
-                              cx="50" 
-                              cy="50" 
-                              r="40" 
-                              fill="none" 
-                              strokeWidth="10"
-                              stroke="currentColor" 
-                              className="text-gray-800 dark:text-gray-800 light:text-gray-300 opacity-60"
-                            />
-                            <circle 
-                              cx="50" 
-                              cy="50" 
-                              r="40" 
-                              fill="none" 
-                              strokeWidth="10"
-                              stroke="currentColor" 
-                              strokeDasharray={`${2 * Math.PI * 40}`}
-                              strokeDashoffset={`${2 * Math.PI * 40 * (1 - percentComplete / 100)}`}
-                              className="text-primary transition-all duration-1000 ease-in-out"
-                            />
-                          </svg>
-                          
-                          {/* Flag in the middle */}
-                          <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
-                              <FlagIcon code={language.flagCode} size={40} className="scale-125" />
+                          {/* Content in the middle */}
+                          <div className="absolute inset-0 flex flex-col items-center justify-center z-10 p-2">
+                            {/* Flag in circle with elegant border */}
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md border-2 border-gray-600/30 dark:border-gray-600/30 light:border-gray-300/50">
+                              <FlagIcon code={language.flagCode} size={36} className="scale-125" />
                             </div>
-                            <div className="mt-1 text-center">
-                              <p className="text-xs font-medium truncate max-w-[90%] mx-auto">{language.name}</p>
-                              <p className="text-xs sm:text-sm font-bold text-primary">{Math.round(percentComplete)}%</p>
+                            
+                            {/* Language name and progress percentage - compact text with better spacing */}
+                            <div className="mt-1 text-center w-full px-0.5">
+                              <p className="text-2xs sm:text-xs font-medium truncate max-w-[98%] mx-auto text-white dark:text-white light:text-gray-800">{language.name}</p>
+                              <p className="text-2xs sm:text-xs font-bold text-primary bg-gray-800/40 dark:bg-gray-800/40 light:bg-gray-200/40 rounded-full px-2 mx-auto inline-block mt-0.5">{Math.round(percentComplete)}%</p>
                             </div>
                           </div>
                         </div>

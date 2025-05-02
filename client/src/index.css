@@ -2838,4 +2838,9 @@ footer {
   left: auto !important;
   transform: none !important;
   margin: 0 !important;
+}@layer utilities {
+  .text-2xs {
+    font-size: 0.65rem;
+    line-height: 1rem;
+  }
 }
