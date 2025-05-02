@@ -180,69 +180,65 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
   
   return (
     <>
-      <Card className="mb-8">
+      <Card className="mb-8 shadow-lg border-0 bg-gray-900">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xl font-bold">Learning Streak</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-orange-600/20 p-3 rounded-full">
-                <Flame className="h-6 w-6 text-orange-500" />
+          <div className="flex flex-col md:flex-row justify-center gap-4 mb-6">
+            <div className="flex items-center gap-3 bg-gray-800/50 rounded-lg p-3 shadow-md flex-1">
+              <div className="bg-orange-600/20 p-2 rounded-full">
+                <Flame className="h-5 w-5 text-orange-500" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Current Streak</p>
-                <p className="text-2xl font-bold">{currentStreak} {currentStreak === 1 ? 'Day' : 'Days'}</p>
+                <p className="text-xs text-muted-foreground">Current Streak</p>
+                <p className="text-xl font-bold">{currentStreak} {currentStreak === 1 ? 'Day' : 'Days'}</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
-              <div className="bg-primary-foreground p-3 rounded-full">
-                <Calendar className="h-6 w-6 text-primary" />
+            <div className="flex items-center gap-3 bg-gray-800/50 rounded-lg p-3 shadow-md flex-1">
+              <div className="bg-primary-foreground/70 p-2 rounded-full">
+                <Calendar className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Longest Streak</p>
-                <p className="text-2xl font-bold">{longestStreak} {longestStreak === 1 ? 'Day' : 'Days'}</p>
+                <p className="text-xs text-muted-foreground">Longest Streak</p>
+                <p className="text-xl font-bold">{longestStreak} {longestStreak === 1 ? 'Day' : 'Days'}</p>
               </div>
             </div>
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-4">
             <div>
               <h3 className="text-lg font-semibold mb-2">Reward Milestones</h3>
               
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto">
+                <div className="bg-gray-800/50 rounded-lg p-3 shadow-md flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="bg-orange-600/20 p-1.5 rounded-full">
                       <Flame className="h-4 w-4 text-orange-500" />
                     </div>
-                    <span className="font-medium">3-Day Streak</span>
+                    <span className="font-medium text-sm">3-Day Streak</span>
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className={`h-5 w-5 ${currentStreak >= 3 ? 'text-green-500' : 'text-gray-400'}`} />
-                    <span className="text-sm">
-                      {currentStreak >= 3 ? 'Downloadable badge' : 'Complete 3 days in a row'}
-                    </span>
-                    <Badge className={`${currentStreak >= 3 ? 'bg-green-600' : 'bg-slate-700'}`}>
+                    <CheckCircle2 className={`h-4 w-4 ${currentStreak >= 3 ? 'text-green-500' : 'text-gray-400'}`} />
+                    <Badge className={`${currentStreak >= 3 ? 'bg-green-600' : 'bg-slate-700'} text-xs`}>
                       {currentStreak >= 3 ? 'Earned' : 'In progress'}
                     </Badge>
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between">
+                <div className="bg-gray-800/50 rounded-lg p-3 shadow-md flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="bg-orange-600/20 p-1.5 rounded-full">
                       <Flame className="h-4 w-4 text-orange-500" />
                     </div>
-                    <span className="font-medium">7-Day Streak</span>
+                    <span className="font-medium text-sm">7-Day Streak</span>
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Lock className={`h-5 w-5 ${currentStreak >= 7 ? 'text-green-500' : 'text-gray-400'}`} />
-                    <span className="text-sm">Streak achievement</span>
-                    <Badge className={`${currentStreak >= 7 ? 'bg-green-600' : 'bg-slate-700'}`}>
+                    <Lock className={`h-4 w-4 ${currentStreak >= 7 ? 'text-green-500' : 'text-gray-400'}`} />
+                    <Badge className={`${currentStreak >= 7 ? 'bg-green-600' : 'bg-slate-700'} text-xs`}>
                       {currentStreak >= 7 ? 'Unlocked' : 'Locked'}
                     </Badge>
                   </div>
@@ -258,7 +254,7 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
                 </div>
               </div>
               
-              <div className="grid grid-cols-7 gap-1 text-center text-xs mb-2">
+              <div className="grid grid-cols-7 gap-1 text-center text-xs mb-2 max-w-xl mx-auto">
                 <div>S</div>
                 <div>M</div>
                 <div>T</div>
@@ -269,80 +265,81 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
               </div>
               
               <TooltipProvider>
-                {weeks.map((week, weekIndex) => (
-                  <div key={weekIndex} className="grid grid-cols-7 gap-1 mb-1">
-                    {week.map((day, dayIndex) => (
-                      <Tooltip key={dayIndex}>
-                        <TooltipTrigger asChild>
-                          <div 
-                            className={`
-                              aspect-square rounded-full flex items-center justify-center cursor-pointer
-                              ${day.isToday 
-                                ? 'ring-2 ring-orange-500' 
-                                : day.hasActivity 
-                                  ? 'bg-green-600 text-white hover:bg-green-700'
-                                  : 'bg-gray-800 hover:bg-gray-700'
-                              }
-                              ${day.hasActivity && day.isToday ? 'bg-orange-500 text-white' : ''}
-                            `}
-                          >
-                            {format(day.date, 'd')}
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <div className="p-1">
-                            <p className="font-medium">{format(day.date, 'EEEE, MMMM d')}</p>
-                            {day.hasActivity ? (
-                              <>
-                                <p className="text-green-400">Lesson completed:</p>
-                                <ul className="text-xs mt-1">
-                                  {day.activities.map((activity, i) => (
-                                    <li key={i}>
-                                      {activity.languageName}: {activity.lessonTitle}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </>
-                            ) : (
-                              <p className="text-gray-400">No lessons completed</p>
-                            )}
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    ))}
-                  </div>
-                ))}
+                <div className="max-w-xl mx-auto">
+                  {weeks.map((week, weekIndex) => (
+                    <div key={weekIndex} className="grid grid-cols-7 gap-1 mb-1">
+                      {week.map((day, dayIndex) => (
+                        <Tooltip key={dayIndex}>
+                          <TooltipTrigger asChild>
+                            <div 
+                              className={`
+                                h-8 w-8 sm:h-9 sm:w-9 md:h-7 md:w-7 lg:h-6 lg:w-6 text-xs rounded-full 
+                                flex items-center justify-center cursor-pointer 
+                                transition-colors duration-200 shadow-sm
+                                ${day.isToday 
+                                  ? 'ring-2 ring-orange-500' 
+                                  : day.hasActivity 
+                                    ? 'bg-green-600 text-white hover:bg-green-700'
+                                    : 'bg-gray-800/80 hover:bg-gray-700/90'
+                                }
+                                ${day.hasActivity && day.isToday ? 'bg-orange-500 text-white' : ''}
+                              `}
+                            >
+                              {format(day.date, 'd')}
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <div className="p-1">
+                              <p className="font-medium">{format(day.date, 'EEEE, MMMM d')}</p>
+                              {day.hasActivity ? (
+                                <>
+                                  <p className="text-green-400">Lesson completed:</p>
+                                  <ul className="text-xs mt-1">
+                                    {day.activities.map((activity, i) => (
+                                      <li key={i}>
+                                        {activity.languageName}: {activity.lessonTitle}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </>
+                              ) : (
+                                <p className="text-gray-400">No lessons completed</p>
+                              )}
+                            </div>
+                          </TooltipContent>
+                        </Tooltip>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </TooltipProvider>
             </div>
           </div>
           
-          <div className="mt-6 pt-4 border-t">
+          <div className="mt-6 pt-4 border-t border-gray-800">
             <h3 className="text-lg font-semibold mb-2">Reminders & Notifications</h3>
             
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-w-2xl mx-auto">
+              <div className="bg-gray-800/50 rounded-lg shadow-md p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5" />
-                  <span>Daily Reminder at:</span>
-                  <span className="bg-gray-800 px-2 py-1 rounded text-sm">
-                    10:00 AM
-                  </span>
+                  <Calendar className="h-4 w-4 text-primary" />
+                  <span className="text-sm">Daily Reminder at 10:00 AM</span>
                 </div>
                 <Switch />
               </div>
               
-              <div className="flex items-center justify-between">
+              <div className="bg-gray-800/50 rounded-lg shadow-md p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5" />
-                  <span>Email reminder</span>
+                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                  <span className="text-sm">Email reminder</span>
                 </div>
                 <Switch />
               </div>
               
-              <div className="flex items-center justify-between">
+              <div className="bg-gray-800/50 rounded-lg shadow-md p-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Download className="h-5 w-5" />
-                  <span>Mobile push</span>
+                  <Download className="h-4 w-4 text-primary" />
+                  <span className="text-sm">Mobile push</span>
                 </div>
                 <Switch />
               </div>
