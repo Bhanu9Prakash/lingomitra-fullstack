@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueries } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { useAuth } from '../hooks/use-auth';
 import { useSimpleToast } from '../hooks/use-simple-toast';
@@ -43,29 +43,45 @@ export default function Profile() {
   const { data: languages = [], isLoading: languagesLoading } = useQuery<Language[]>({
     queryKey: ['/api/languages'],
     enabled: !!user,
+    queryFn: () => 
+      fetch('/api/languages')
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to fetch languages');
+          return res.json() as Promise<Language[]>;
+        })
   });
 
-  // For each language, fetch progress
-  const progressQueries = languages.map((language: Language) => {
-    return useQuery<UserProgress[]>({
-      queryKey: ['/api/progress/language', language.code],
-      enabled: !!user && languages.length > 0,
-      // Add better error handling and retry logic
+  // For each language, fetch progress using useQueries
+  const progressQueries = useQueries({
+    queries: languages.map((language: Language) => ({
+      queryKey: ['progress', language.code],
+      enabled: !!user,
       retry: 2,
       staleTime: 60000, // 1 minute
-      refetchOnWindowFocus: true
-    });
+      refetchOnWindowFocus: true,
+      queryFn: () => 
+        fetch(`/api/progress/language/${language.code}`)
+          .then(res => {
+            if (!res.ok) throw new Error(`Failed to fetch progress for ${language.name}`);
+            return res.json() as Promise<UserProgress[]>;
+          })
+    }))
   });
 
-  // For each language with progress, fetch lessons to calculate completion percentage
-  const lessonQueries = languages.map((language: Language) => {
-    return useQuery<Lesson[]>({
-      queryKey: ['/api/languages', language.code, 'lessons'],
-      enabled: !!user && languages.length > 0,
-      // Add better error handling and retry logic
+  // For each language, fetch lessons using useQueries
+  const lessonQueries = useQueries({
+    queries: languages.map((language: Language) => ({
+      queryKey: ['lessons', language.code],
+      enabled: !!user,
       retry: 2,
-      staleTime: 60000 // 1 minute
-    });
+      staleTime: 60000, // 1 minute
+      queryFn: () => 
+        fetch(`/api/languages/${language.code}/lessons`)
+          .then(res => {
+            if (!res.ok) throw new Error(`Failed to fetch lessons for ${language.name}`);
+            return res.json() as Promise<Lesson[]>;
+          })
+    }))
   });
 
   const isLoading = authLoading || languagesLoading || 

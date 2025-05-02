@@ -1,0 +1,87 @@
+**Analyzing profile.tsx issue**
+
+The user is comparing two components: `Settings.tsx` and `Profile.tsx`. Both track progress, but `Settings.tsx` works fine, while `Profile.tsx` has issues. In `Profile.tsx`, the API endpoint for lessons is incorrectly defined with the wrong queryKey: `['/api/languages', language.code, 'lessons']`. This doesn't match the actual endpoint (`/api/languages/${languageCode}/lessons`). Also, `useQuery` is missing the fetch function (queryFn), which defaults to 'fetcher,' possibly failing to fetch the needed data.
+
+**Clarifying the useQuery issue**
+
+In `Profile.tsx`, the issue seems to be that `useQuery` is being used without a `queryFn` defined, while `Settings.tsx` manually fetches the data inside a `useEffect`. React-Query requires a `queryFn` to fetch data, and since it's undefined in `Profile.tsx`, no data is fetched. While there might be a global fetcher configured, traditionally, the `queryFn` needs to be specified directly in `useQuery` for it to work as expected.
+
+**Identifying the profile.tsx issue**
+
+The issue in `Profile.tsx` seems to be that no `queryFn` is specified in `useQuery`. This causes data fetching to fail because React-Query doesn't know how to retrieve the data. Additionally, `queryKeys` are mismatched between the profile and settings pages. In `Settings.tsx`, data is manually fetched with `useEffect`, while in `Profile.tsx`, the `queryKeys` do not match the endpoint URLs, and there’s no custom `queryFn`. Specifying a `queryFn` would resolve these issues.
+
+
+Thought for 19 seconds
+
+
+Your **Settings** page works because it never breaks the Rules of Hooks: you fetch all of your “per‐language” progress and lesson data *manually* inside effects (and you explicitly call `fetch()`), then stash the results in state. React’s hooks are all at the top‐level, in a fixed order, so everything just flows.
+
+Your **Profile** page, on the other hand, is trying to spin up one `useQuery` *per* language by doing:
+
+```ts
+const progressQueries = languages.map(lang =>
+  useQuery<UserProgress[]>({
+    queryKey: ['/api/progress/language', lang.code],
+    enabled: !!user && languages.length > 0,
+    /* …no queryFn… */
+  })
+)
+```
+
+and likewise for `lessonQueries`. That runs into two fatal problems:
+
+1. **Violates the Rules of Hooks.**
+   Hooks must be called unconditionally and in the same order on every render. Here, on the very first render `languages = []` ⇒ you call zero `useQuery` hooks; on the next render `languages = ['en','de',…]` ⇒ you suddenly call two or three of them. React will throw
+
+   ```
+   Error: Rendered more hooks than during the previous render.
+   ```
+
+   and none of your queries ever actually run.
+
+2. **No `queryFn` specified.**
+   Even if you could call them safely, you never tell React Query *how* to fetch that key. In Settings you do:
+
+   ```ts
+   await fetch(`/api/progress/language/${code}`)
+   ```
+
+   but in Profile your `useQuery({ queryKey: [...], /* no queryFn */ })` has no default fetcher, so it won’t hit your API.
+
+---
+
+### How to fix
+
+Use React Query’s `useQueries` (which is hook‐safe for dynamic lists) and give each entry a `queryFn`:
+
+```ts
+import { useQueries } from '@tanstack/react-query'
+
+const progressQueries = useQueries({
+  queries: languages.map(language => ({
+    queryKey: ['progress', language.code],
+    enabled: !!user,
+    queryFn: () =>
+      fetch(`/api/progress/language/${language.code}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Fetch failed')
+          return res.json() as Promise<UserProgress[]>
+        })
+  }))
+})
+
+const lessonQueries = useQueries({
+  queries: languages.map(language => ({
+    queryKey: ['lessons', language.code],
+    enabled: !!user,
+    queryFn: () =>
+      fetch(`/api/languages/${language.code}/lessons`)
+        .then(res => {
+          if (!res.ok) throw new Error('Fetch failed')
+          return res.json() as Promise<Lesson[]>
+        })
+  }))
+})
+```
+
+Then you can safely map over those `progressQueries` / `lessonQueries` (they’ll each have `.data`, `.isLoading`, etc.), build your chart data, and React won’t complain.
