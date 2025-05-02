@@ -13,7 +13,7 @@ export type ToastProps = {
 
 type ToastState = {
   toasts: ToastProps[];
-  toast: (props: ToastProps) => void;
+  toast: (props: ToastProps) => string;
   dismiss: (id: string) => void;
   dismissAll: () => void;
 };
@@ -23,7 +23,8 @@ const ToastContext = createContext<ToastState | undefined>(undefined);
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastProps[]>([]);
   // Store timeouts so we can clear them if a toast is manually dismissed
-  const timeoutsRef = useRef<Record<string, NodeJS.Timeout>>({});
+  // In browser environments, setTimeout returns a number
+  const timeoutsRef = useRef<Record<string, number>>({});
   
   // Cleanup timeouts when component unmounts
   useEffect(() => {
@@ -34,6 +35,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   // Function to dismiss a toast
   const dismiss = React.useCallback((id: string) => {
+    console.log('Dismissing toast:', id);
+    
     // Clear any existing timeout for this toast
     if (timeoutsRef.current[id]) {
       clearTimeout(timeoutsRef.current[id]);
@@ -51,13 +54,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     const duration = props.duration ?? 5000;
     const newToast = { ...props, id, duration };
     
+    console.log('Creating toast:', id, 'with duration:', duration);
+    
     // Add the toast to state
     setToasts((prevToasts) => [...prevToasts, newToast]);
 
     // Set up auto-dismiss after duration (unless it's set to Infinity)
     if (duration !== Infinity) {
       // Store the timeout so we can clear it if needed
-      timeoutsRef.current[id] = setTimeout(() => {
+      // Use window.setTimeout to ensure we get the correct return type for browser
+      timeoutsRef.current[id] = window.setTimeout(() => {
+        console.log('Auto-dismissing toast:', id);
         dismiss(id);
       }, duration);
     }

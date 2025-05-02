@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MascotLogo from "@/components/MascotLogo";
-import { useToast } from "@/hooks/use-toast";
+import { useSimpleToast } from "@/hooks/use-simple-toast";
 import { useTheme } from "@/components/ThemeProvider";
 
 // Extend the user schema with client-side validation
@@ -55,7 +55,7 @@ export default function AuthPage() {
 
   const [activeTab, setActiveTab] = useState<string>(getInitialTab());
   const { user, loginMutation, registerMutation } = useAuth();
-  const { toast } = useToast();
+  const { toast, success, error } = useSimpleToast();
   const { theme } = useTheme();
   const [_, navigate] = useLocation();
 
@@ -100,23 +100,14 @@ export default function AuthPage() {
     setLoginError(null); // Clear previous errors
     try {
       await loginMutation.mutateAsync(values);
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-        variant: "default",
-      });
+      success("Welcome back!", "You have successfully logged in.");
       navigate("/");
     } catch (error) {
       // Set an inline error message in addition to the toast
       setLoginError("Incorrect username/email or password. Please try again.");
       
       // Extra toast for visibility - especially on mobile
-      toast({
-        title: "Login Error",
-        description: "Incorrect username/email or password. Please try again.",
-        variant: "destructive",
-        duration: 4000, // 4 seconds is typically enough time to read the message
-      });
+      error("Login Error", "Incorrect username/email or password. Please try again.");
     }
   };
 
@@ -124,15 +115,10 @@ export default function AuthPage() {
     try {
       const { confirmPassword, ...userData } = values;
       await registerMutation.mutateAsync(userData);
-      toast({
-        title: "Registration successful!",
-        description: "Your account has been created.",
-        variant: "default",
-        duration: 3000, // 3 seconds for success messages
-      });
+      success("Registration successful!", "Your account has been created.");
       navigate("/");
     } catch (error) {
-      // Error handling is done in the mutation
+      // Error handling is done in the mutation through auth hook
     }
   };
 

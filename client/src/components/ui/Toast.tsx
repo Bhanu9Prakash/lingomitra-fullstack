@@ -1,36 +1,23 @@
-import { useToast } from "@/hooks/use-toast";
-import { X } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import { X } from 'lucide-react';
+import { Toast, useToast } from './ToastContext';
 
-// Define the local toast types to match with what the hook returns
-type ToastVariant = 'default' | 'destructive';
+interface ToastContainerProps {
+  toasts: Toast[];
+  onRemove: (id: string) => void;
+}
 
-type ToastProps = {
-  id?: string;
-  title: string;
-  description?: string;
-  variant?: ToastVariant;
-  duration?: number;
-};
-
-function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (id: string) => void }) {
-  // Get the current theme
+const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, onRemove }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   
-  // Check for dark mode on component mount and when it changes
+  // Detect and track theme changes
   useEffect(() => {
-    // Initially set the theme based on the class
     const isDark = document.documentElement.classList.contains('dark');
     setTheme(isDark ? 'dark' : 'light');
     
-    // Update the theme when it changes
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class') {
-          const isDarkUpdated = document.documentElement.classList.contains('dark');
-          setTheme(isDarkUpdated ? 'dark' : 'light'); 
-        }
-      });
+    const observer = new MutationObserver(() => {
+      const isDarkUpdated = document.documentElement.classList.contains('dark');
+      setTheme(isDarkUpdated ? 'dark' : 'light');
     });
     
     observer.observe(document.documentElement, { attributes: true });
@@ -38,27 +25,21 @@ function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (i
     return () => observer.disconnect();
   }, []);
 
-  // Handle the toast dismiss action
-  const handleDismiss = (id: string) => {
-    // Call the dismiss function to remove the toast
-    dismiss(id);
-  };
-
   return (
-    <div className="fixed top-0 right-0 z-[99999] flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-auto sm:max-w-[100%] max-w-full w-full sm:w-auto">
+    <div className="fixed top-0 right-0 z-[99999] flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-auto w-full sm:w-auto">
       {toasts.map((toast) => (
         <div
           key={toast.id}
           className={`
             pointer-events-auto flex w-full max-w-md overflow-hidden rounded-lg shadow-lg 
-            transition-all duration-300 ease-in-out transform translate-x-0
+            transition-all duration-300 ease-in-out
             ${toast.variant === 'destructive' 
               ? 'bg-red-600 text-white dark:bg-red-700 border border-red-700 dark:border-red-800' 
               : theme === 'dark'
                 ? 'bg-gray-800 text-gray-100 border border-gray-700'
                 : 'bg-white text-gray-900 border border-gray-200'
             }
-            animate-in slide-in-from-top-full sm:slide-in-from-top-full
+            animate-in slide-in-from-top-full
           `}
         >
           <div className={`w-1.5 ${toast.variant === 'destructive' ? 'bg-red-800' : 'bg-[#ff6600]'}`}></div>
@@ -71,7 +52,7 @@ function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (i
                 )}
               </div>
               <button
-                onClick={() => handleDismiss(toast.id || '')}
+                onClick={() => onRemove(toast.id)}
                 className={`
                   ml-4 inline-flex rounded-md focus:outline-none focus:ring-2
                   ${toast.variant === 'destructive'
@@ -92,14 +73,10 @@ function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (i
       ))}
     </div>
   );
-}
+};
 
-export function Toaster() {
-  const { toasts, dismiss } = useToast();
+export const Toaster: React.FC = () => {
+  const { toasts, removeToast } = useToast();
   
-  // Cast the toasts to match our local type definition
-  return <ToastContainer 
-    toasts={toasts as unknown as ToastProps[]} 
-    dismiss={dismiss} 
-  />;
-}
+  return <ToastContainer toasts={toasts} onRemove={removeToast} />;
+};
