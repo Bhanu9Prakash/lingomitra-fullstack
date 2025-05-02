@@ -103,7 +103,7 @@ function EnrolledLanguageCard({
       
         <div className="w-full bg-secondary/20 rounded-full h-2 mb-5">
           <div 
-            className="bg-blue-500 h-2 rounded-full transition-all duration-500" 
+            className="bg-orange-500 h-2 rounded-full transition-all duration-500" 
             style={{ width: `${progressStats.percent}%` }}
           ></div>
         </div>
@@ -115,7 +115,7 @@ function EnrolledLanguageCard({
             <Button 
               variant="ghost" 
               size="sm"
-              className="text-xs font-medium px-3 py-1 h-auto text-muted-foreground hover:text-white"
+              className="text-xs font-medium px-3 py-1 h-auto text-muted-foreground hover:text-orange-500"
               disabled={resetMutation.isPending}
             >
               {resetMutation.isPending && resetMutation.variables === language.code ? (
@@ -142,6 +142,7 @@ function EnrolledLanguageCard({
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => onResetProgress(language.code)}
+                className="bg-orange-600 hover:bg-orange-700"
               >
                 Reset Progress
               </AlertDialogAction>
