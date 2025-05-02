@@ -111,6 +111,15 @@ router.post("/lesson/:lessonId/complete", async (req: Request, res: Response) =>
     const { lessonId } = req.params;
     const userId = req.user!.id;
     
+    // First check if the lesson is already completed
+    const existingProgress = await storage.getUserProgress(userId, lessonId);
+    
+    // If already completed, just return the existing record
+    if (existingProgress && existingProgress.completed) {
+      return res.json(existingProgress);
+    }
+    
+    // Otherwise, mark as complete
     const progress = await storage.markLessonComplete(userId, lessonId);
     
     res.json(progress);
