@@ -197,7 +197,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="container mx-auto py-12 max-w-5xl mt-6">
+    <div className="container mx-auto py-12 max-w-5xl page-container">
       <h1 className="text-3xl font-bold mb-8 text-center md:text-left">Your Language Learning Profile</h1>
       
       {activeLanguages.length === 0 ? (

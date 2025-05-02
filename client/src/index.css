@@ -203,6 +203,12 @@ header {
   width: 100%;
 }
 
+/* Page container with proper spacing for fixed header */
+.page-container {
+  padding-top: 2rem;  /* Add padding to prevent content from being hidden behind the header */
+  min-height: calc(100vh - 64px); /* Account for header height */
+}
+
 header .container {
   display: flex;
   justify-content: space-between;

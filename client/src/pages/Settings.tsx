@@ -289,7 +289,7 @@ export default function Settings() {
   }
   
   return (
-    <div className="container max-w-4xl py-10">
+    <div className="container max-w-4xl py-10 page-container">
       <h1 className="text-3xl font-bold mb-8">Account Settings</h1>
       
       <div className="mb-10">
