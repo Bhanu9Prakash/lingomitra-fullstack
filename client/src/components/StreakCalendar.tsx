@@ -180,65 +180,65 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
   
   return (
     <>
-      <Card className="mb-8 shadow-lg border dark:border-gray-800 light:border-gray-300 bg-gray-900 dark:bg-gray-900 light:bg-white">
+      <Card className="mb-8 shadow-lg border border-gray-300 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-800 dark:text-white">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-xl font-bold">Learning Streak</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col md:flex-row justify-center gap-4 mb-6">
-            <div className="flex items-center gap-3 bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg p-3 shadow-md border dark:border-gray-700 light:border-gray-300 flex-1">
+            <div className="flex items-center gap-3 bg-gray-100 dark:bg-gray-800/50 rounded-lg p-3 shadow-md border border-gray-300 dark:border-gray-700 flex-1">
               <div className="bg-orange-600/20 p-2 rounded-full">
                 <Flame className="h-5 w-5 text-orange-500" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground dark:text-gray-400 light:text-gray-600">Current Streak</p>
-                <p className="text-xl font-bold">{currentStreak} {currentStreak === 1 ? 'Day' : 'Days'}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Current Streak</p>
+                <p className="text-xl font-bold text-gray-800 dark:text-white">{currentStreak} {currentStreak === 1 ? 'Day' : 'Days'}</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-3 bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-100 rounded-lg p-3 shadow-md border dark:border-gray-700 light:border-gray-300 flex-1">
-              <div className="bg-primary/20 dark:bg-primary-foreground/70 light:bg-primary/20 p-2 rounded-full">
+            <div className="flex items-center gap-3 bg-gray-100 dark:bg-gray-800/50 rounded-lg p-3 shadow-md border border-gray-300 dark:border-gray-700 flex-1">
+              <div className="bg-primary/20 p-2 rounded-full">
                 <Calendar className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-xs text-muted-foreground dark:text-gray-400 light:text-gray-600">Longest Streak</p>
-                <p className="text-xl font-bold">{longestStreak} {longestStreak === 1 ? 'Day' : 'Days'}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Longest Streak</p>
+                <p className="text-xl font-bold text-gray-800 dark:text-white">{longestStreak} {longestStreak === 1 ? 'Day' : 'Days'}</p>
               </div>
             </div>
           </div>
           
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-semibold mb-2">Reward Milestones</h3>
+              <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Reward Milestones</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-2xl mx-auto">
-                <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-200 rounded-lg p-3 shadow-md border dark:border-gray-700 light:border-gray-300 flex items-center justify-between">
+                <div className="bg-gray-200 dark:bg-gray-800/50 rounded-lg p-3 shadow-md border border-gray-300 dark:border-gray-700 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="bg-orange-600/20 p-1.5 rounded-full">
                       <Flame className="h-4 w-4 text-orange-500" />
                     </div>
-                    <span className="font-medium text-sm dark:text-white light:text-gray-800">3-Day Streak</span>
+                    <span className="font-medium text-sm text-gray-800 dark:text-white">3-Day Streak</span>
                   </div>
                   
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className={`h-4 w-4 ${currentStreak >= 3 ? 'text-green-500' : 'text-gray-400'}`} />
-                    <Badge className={`${currentStreak >= 3 ? 'bg-green-600 text-white' : 'bg-slate-700 dark:bg-slate-700 light:bg-slate-300 text-white dark:text-white light:text-gray-800'} text-xs`}>
+                    <Badge className={`${currentStreak >= 3 ? 'bg-green-600 text-white' : 'bg-slate-300 dark:bg-slate-700 text-gray-800 dark:text-white'} text-xs`}>
                       {currentStreak >= 3 ? 'Earned' : 'In progress'}
                     </Badge>
                   </div>
                 </div>
                 
-                <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-200 rounded-lg p-3 shadow-md border dark:border-gray-700 light:border-gray-300 flex items-center justify-between">
+                <div className="bg-gray-200 dark:bg-gray-800/50 rounded-lg p-3 shadow-md border border-gray-300 dark:border-gray-700 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="bg-orange-600/20 p-1.5 rounded-full">
                       <Flame className="h-4 w-4 text-orange-500" />
                     </div>
-                    <span className="font-medium text-sm dark:text-white light:text-gray-800">7-Day Streak</span>
+                    <span className="font-medium text-sm text-gray-800 dark:text-white">7-Day Streak</span>
                   </div>
                   
                   <div className="flex items-center gap-2">
                     <Lock className={`h-4 w-4 ${currentStreak >= 7 ? 'text-green-500' : 'text-gray-400'}`} />
-                    <Badge className={`${currentStreak >= 7 ? 'bg-green-600 text-white' : 'bg-slate-700 dark:bg-slate-700 light:bg-slate-300 text-white dark:text-white light:text-gray-800'} text-xs`}>
+                    <Badge className={`${currentStreak >= 7 ? 'bg-green-600 text-white' : 'bg-slate-300 dark:bg-slate-700 text-gray-800 dark:text-white'} text-xs`}>
                       {currentStreak >= 7 ? 'Unlocked' : 'Locked'}
                     </Badge>
                   </div>
@@ -248,20 +248,20 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
             
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Activity Calendar</h3>
-                <div className="text-sm text-muted-foreground">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Activity Calendar</h3>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
                   {format(showMonth, 'MMMM yyyy')}
                 </div>
               </div>
               
               <div className="grid grid-cols-7 gap-1 text-center text-xs mb-2 max-w-xl mx-auto">
-                <div>S</div>
-                <div>M</div>
-                <div>T</div>
-                <div>W</div>
-                <div>T</div>
-                <div>F</div>
-                <div>S</div>
+                <div className="text-gray-700 dark:text-gray-200">S</div>
+                <div className="text-gray-700 dark:text-gray-200">M</div>
+                <div className="text-gray-700 dark:text-gray-200">T</div>
+                <div className="text-gray-700 dark:text-gray-200">W</div>
+                <div className="text-gray-700 dark:text-gray-200">T</div>
+                <div className="text-gray-700 dark:text-gray-200">F</div>
+                <div className="text-gray-700 dark:text-gray-200">S</div>
               </div>
               
               <TooltipProvider>
@@ -280,7 +280,7 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
                                   ? 'ring-2 ring-orange-500' 
                                   : day.hasActivity 
                                     ? 'bg-green-600 text-white hover:bg-green-700'
-                                    : 'bg-gray-800/80 dark:bg-gray-800/80 light:bg-gray-300 hover:bg-gray-700/90 dark:hover:bg-gray-700/90 light:hover:bg-gray-400 text-gray-800 dark:text-white light:text-gray-800 border dark:border-transparent light:border-gray-400'
+                                    : 'bg-gray-300 dark:bg-gray-800/80 hover:bg-gray-400 dark:hover:bg-gray-700/90 text-gray-800 dark:text-white border border-gray-400 dark:border-transparent'
                                 }
                                 ${day.hasActivity && day.isToday ? 'bg-orange-500 text-white' : ''}
                               `}
@@ -293,7 +293,7 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
                               <p className="font-medium">{format(day.date, 'EEEE, MMMM d')}</p>
                               {day.hasActivity ? (
                                 <>
-                                  <p className="text-green-400">Lesson completed:</p>
+                                  <p className="text-green-500 dark:text-green-400">Lesson completed:</p>
                                   <ul className="text-xs mt-1">
                                     {day.activities.map((activity, i) => (
                                       <li key={i}>
@@ -303,7 +303,7 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
                                   </ul>
                                 </>
                               ) : (
-                                <p className="text-gray-400">No lessons completed</p>
+                                <p className="text-gray-500 dark:text-gray-400">No lessons completed</p>
                               )}
                             </div>
                           </TooltipContent>
