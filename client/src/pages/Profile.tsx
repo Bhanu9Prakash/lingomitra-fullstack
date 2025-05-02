@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
-import { useAuth } from '@/hooks/use-auth';
-import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '../hooks/use-auth';
+import { useSimpleToast } from '../hooks/use-simple-toast';
 import { 
   Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle 
-} from '@/components/ui/card';
+} from '../components/ui/card';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+} from "../components/ui/accordion";
+import { Button } from '../components/ui/button';
+import { Progress } from '../components/ui/progress';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
 import { Loader2, Award, Check, Clock, BookOpen, AlertTriangle } from 'lucide-react';
-import FlagIcon from '@/components/FlagIcon';
+import FlagIcon from '../components/FlagIcon';
 import { formatDistanceToNow } from 'date-fns';
-import { Language, UserProgress } from '@shared/schema';
+import { Language, UserProgress, Lesson } from '@shared/schema';
 import { calculateTotalProgressForLanguage } from '@/lib/progress';
 
 /**
@@ -29,7 +29,7 @@ import { calculateTotalProgressForLanguage } from '@/lib/progress';
 export default function Profile() {
   const { user, isLoading: authLoading } = useAuth();
   const [, navigate] = useLocation();
-  const { toast } = useToast();
+  const toast = useSimpleToast();
   const [expandedLanguage, setExpandedLanguage] = useState<string | null>(null);
   
   // Redirect to login if not authenticated
@@ -40,26 +40,26 @@ export default function Profile() {
   }, [user, authLoading, navigate]);
 
   // Fetch all available languages
-  const { data: languages, isLoading: languagesLoading } = useQuery({
+  const { data: languages = [], isLoading: languagesLoading } = useQuery<Language[]>({
     queryKey: ['/api/languages'],
     enabled: !!user,
   });
 
   // For each language, fetch progress
-  const progressQueries = languages ? languages.map((language: Language) => {
-    return useQuery({
+  const progressQueries = languages.map((language: Language) => {
+    return useQuery<UserProgress[]>({
       queryKey: ['/api/progress/language', language.code],
-      enabled: !!user && !!languages,
+      enabled: !!user && languages.length > 0,
     });
-  }) : [];
+  });
 
   // For each language with progress, fetch lessons to calculate completion percentage
-  const lessonQueries = languages ? languages.map((language: Language) => {
-    return useQuery({
+  const lessonQueries = languages.map((language: Language) => {
+    return useQuery<Lesson[]>({
       queryKey: ['/api/languages', language.code, 'lessons'],
-      enabled: !!user && !!languages,
+      enabled: !!user && languages.length > 0,
     });
-  }) : [];
+  });
 
   const isLoading = authLoading || languagesLoading || 
     progressQueries.some(query => query.isLoading) ||
@@ -67,7 +67,7 @@ export default function Profile() {
 
   // Prepare data for the overview chart
   const prepareChartData = () => {
-    if (!languages || progressQueries.some(query => query.isLoading) || lessonQueries.some(query => query.isLoading)) {
+    if (progressQueries.some(query => query.isLoading) || lessonQueries.some(query => query.isLoading)) {
       return [];
     }
 
@@ -83,13 +83,11 @@ export default function Profile() {
         code: language.code,
         progress: percentComplete,
       };
-    }).filter(item => item.progress > 0); // Only show languages with some progress
+    }).filter((item: {progress: number}) => item.progress > 0); // Only show languages with some progress
   };
 
   // Get languages with progress data
   const getActiveLanguages = () => {
-    if (!languages) return [];
-    
     return languages.filter((language, index) => {
       const progressData = progressQueries[index].data;
       return progressData && progressData.length > 0;
@@ -109,7 +107,12 @@ export default function Profile() {
   const activeLanguages = getActiveLanguages();
 
   // Custom BarChart tooltip
-  const CustomTooltip = ({ active, payload }: any) => {
+  interface TooltipProps {
+    active?: boolean;
+    payload?: Array<{value: number; payload: {name: string}}>;
+  }
+  
+  const CustomTooltip = ({ active, payload }: TooltipProps) => {
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip bg-background shadow-md border p-2 rounded-md">
@@ -176,7 +179,7 @@ export default function Profile() {
                       />
                       <Tooltip content={<CustomTooltip />} />
                       <Bar dataKey="progress" fill="#ff6600" radius={[4, 4, 0, 0]}>
-                        {chartData.map((entry, index) => (
+                        {chartData.map((entry: {code: string}, index: number) => (
                           <Cell 
                             key={`cell-${index}`}
                             fill={expandedLanguage === entry.code ? '#cc5200' : '#ff6600'}
@@ -208,7 +211,7 @@ export default function Profile() {
             onValueChange={(value) => setExpandedLanguage(value)}
             className="mb-8"
           >
-            {activeLanguages.map((language, index) => {
+            {activeLanguages.map((language: Language, index: number) => {
               const progressData = progressQueries[index].data || [];
               const lessons = lessonQueries[index].data || [];
               
@@ -216,7 +219,7 @@ export default function Profile() {
               if (progressData.length === 0) return null;
               
               const totalLessons = lessons.length;
-              const completedLessons = progressData.filter(p => p.completed).length;
+              const completedLessons = progressData.filter((p: UserProgress) => p.completed).length;
               const percentComplete = calculateTotalProgressForLanguage(progressData, lessons);
               
               // Find the most recent activity
@@ -290,10 +293,10 @@ export default function Profile() {
                         <div className="space-y-2">
                           <h4 className="font-semibold">Lesson Breakdown</h4>
                           <div className="grid grid-cols-1 gap-2">
-                            {lessons.map(lesson => {
-                              const progress = progressData.find(p => p.lessonId === lesson.lessonId);
-                              const isCompleted = progress?.isCompleted || false;
-                              const timeSpent = progress?.timeSpentMinutes || 0;
+                            {lessons.map((lesson: Lesson) => {
+                              const progress = progressData.find((p: UserProgress) => p.lessonId === lesson.lessonId);
+                              const isCompleted = progress?.completed || false;
+                              const timeSpent = progress?.timeSpent || 0;
                               
                               return (
                                 <div 

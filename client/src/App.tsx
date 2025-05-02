@@ -10,6 +10,8 @@ import LanguageSelection from "@/pages/LanguageSelection";
 import LessonView from "@/pages/LessonView";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
+import Profile from "@/pages/Profile";
+import Healthcheck from "./pages/Healthcheck";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
 // Import the AuthProvider from the hooks directory
@@ -32,11 +34,15 @@ function Router() {
         {/* New standard route format */}
         <ProtectedRoute path="/:language/lesson/:lessonNumber" component={LessonView} />
         
-        {/* Settings page */}
+        {/* Profile and Settings pages */}
+        <ProtectedRoute path="/profile" component={Profile} />
         <ProtectedRoute path="/settings" component={Settings} />
         
         {/* Authentication route */}
         <Route path="/auth" component={AuthPage} />
+        
+        {/* Health check - public */}
+        <Route path="/health" component={Healthcheck} />
         
         {/* 404 page */}
         <Route component={NotFound} />

@@ -10,88 +10,69 @@ interface FlagIconProps {
  * Renders a flag icon based on country code
  * Uses country flag emoji or SVG
  */
-const FlagIcon: React.FC<FlagIconProps> = ({ code, size = 20, className = '' }) => {
+export default function FlagIcon({ code, size = 24, className = '' }: FlagIconProps) {
   // Map language codes to country codes for flags
-  const getCountryCode = (langCode: string): string => {
-    const mapping: Record<string, string> = {
-      'en': 'GB', // English -> Great Britain
-      'es': 'ES', // Spanish -> Spain
-      'fr': 'FR', // French -> France
-      'de': 'DE', // German -> Germany
-      'it': 'IT', // Italian -> Italy
-      'pt': 'PT', // Portuguese -> Portugal
-      'ru': 'RU', // Russian -> Russia
-      'zh': 'CN', // Chinese -> China
-      'ja': 'JP', // Japanese -> Japan
-      'ko': 'KR', // Korean -> South Korea
-      'ar': 'SA', // Arabic -> Saudi Arabia
-      'hi': 'IN', // Hindi -> India
-      'bn': 'BD', // Bengali -> Bangladesh
-      'pa': 'IN', // Punjabi -> India
-      'ta': 'IN', // Tamil -> India
-      'te': 'IN', // Telugu -> India
-      'mr': 'IN', // Marathi -> India
-      'gu': 'IN', // Gujarati -> India
-      'kn': 'IN', // Kannada -> India
-      'ml': 'IN', // Malayalam -> India
-      'or': 'IN', // Odia -> India
-      'vi': 'VN', // Vietnamese -> Vietnam
-      'th': 'TH', // Thai -> Thailand
-      'id': 'ID', // Indonesian -> Indonesia
-      'ms': 'MY', // Malay -> Malaysia
-      'nl': 'NL', // Dutch -> Netherlands
-      'pl': 'PL', // Polish -> Poland
-      'tr': 'TR', // Turkish -> Turkey
-      'uk': 'UA', // Ukrainian -> Ukraine
-      'cs': 'CZ', // Czech -> Czech Republic
-      'hu': 'HU', // Hungarian -> Hungary
-      'sv': 'SE', // Swedish -> Sweden
-      'el': 'GR', // Greek -> Greece
-      'ro': 'RO', // Romanian -> Romania
-      'he': 'IL', // Hebrew -> Israel
-      'da': 'DK', // Danish -> Denmark
-      'fi': 'FI', // Finnish -> Finland
-      'no': 'NO', // Norwegian -> Norway
-      'sk': 'SK', // Slovak -> Slovakia
-      'bg': 'BG', // Bulgarian -> Bulgaria
-      'hr': 'HR', // Croatian -> Croatia
-      'lt': 'LT', // Lithuanian -> Lithuania
-      'lv': 'LV', // Latvian -> Latvia
-      'et': 'EE', // Estonian -> Estonia
-      'sr': 'RS', // Serbian -> Serbia
-    };
-
-    return mapping[langCode.toLowerCase()] || langCode.toUpperCase();
+  const languageToCountryMap: Record<string, string> = {
+    'en': 'us', // English -> USA
+    'es': 'es', // Spanish -> Spain
+    'fr': 'fr', // French -> France
+    'de': 'de', // German -> Germany
+    'it': 'it', // Italian -> Italy
+    'pt': 'pt', // Portuguese -> Portugal
+    'ru': 'ru', // Russian -> Russia
+    'zh': 'cn', // Chinese -> China
+    'ja': 'jp', // Japanese -> Japan
+    'ko': 'kr', // Korean -> South Korea
+    'ar': 'sa', // Arabic -> Saudi Arabia
+    'hi': 'in', // Hindi -> India
+    'tr': 'tr', // Turkish -> Turkey
+    'nl': 'nl', // Dutch -> Netherlands
+    'pl': 'pl', // Polish -> Poland
+    'sv': 'se', // Swedish -> Sweden
+    'fi': 'fi', // Finnish -> Finland
+    'da': 'dk', // Danish -> Denmark
+    'no': 'no', // Norwegian -> Norway
+    'he': 'il', // Hebrew -> Israel
+    'id': 'id', // Indonesian -> Indonesia
+    'th': 'th', // Thai -> Thailand
+    'vi': 'vn', // Vietnamese -> Vietnam
+    'cs': 'cz', // Czech -> Czech Republic
+    'hu': 'hu', // Hungarian -> Hungary
+    'el': 'gr', // Greek -> Greece
+    'bn': 'bd', // Bengali -> Bangladesh
+    'kn': 'in', // Kannada -> India
   };
 
-  // Use passed code or map language code to country code
-  const flagCode = code.length === 2 ? getCountryCode(code) : code;
+  // Use provided code (which may be a country code) or map from language code
+  const countryCode = code.length === 2 ? (languageToCountryMap[code.toLowerCase()] || code.toLowerCase()) : code.toLowerCase();
+  
+  // Simple style for flag emoji display
+  const style = {
+    width: `${size}px`,
+    height: `${size}px`,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: `${size * 0.75}px`,
+    borderRadius: '50%',
+    overflow: 'hidden',
+    backgroundColor: '#f1f5f9'
+  };
 
-  // Render the flag
+  // Show emoji flag instead of SVG for simpler implementation
   return (
-    <span 
-      className={`flag-icon ${className}`} 
-      style={{ 
-        fontSize: `${size}px`,
-        width: `${size}px`,
-        height: `${size}px`,
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}
-    >
-      {flagCode.length === 2 
-        ? <img 
-            src={`https://flagcdn.com/w20/${flagCode.toLowerCase()}.png`} 
-            width={size} 
-            height={size}
-            alt={`${flagCode} flag`}
-            style={{ borderRadius: '2px' }}
-          />
-        : flagCode // Fallback to emoji or text
-      }
-    </span>
+    <div style={style} className={className} title={`Flag: ${countryCode.toUpperCase()}`}>
+      {getFlagEmoji(countryCode)}
+    </div>
   );
-};
+}
 
-export default FlagIcon;
+// Convert country code to flag emoji
+function getFlagEmoji(countryCode: string) {
+  const codePoints = countryCode
+    .toUpperCase()
+    .split('')
+    .map(char => 127397 + char.charCodeAt(0));
+  
+  return String.fromCodePoint(...codePoints);
+}

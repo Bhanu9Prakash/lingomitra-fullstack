@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { useSimpleToast } from "@/hooks/use-simple-toast";
 import { useLocation, Link } from "wouter";
-import { User, LogOut, Settings, Sun, Moon } from "lucide-react";
+import { User, LogOut, Settings, Sun, Moon, ChartBar } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
 export default function UserMenu() {
@@ -79,6 +79,13 @@ export default function UserMenu() {
           </div>
         </DropdownMenuLabel>
         <div className="p-1">
+          <DropdownMenuItem className="cursor-pointer rounded-md my-0.5 focus:bg-accent/80" asChild>
+            <Link href="/profile">
+              <ChartBar className="mr-2 h-4 w-4 text-muted-foreground" />
+              <span>My Progress</span>
+            </Link>
+          </DropdownMenuItem>
+
           <DropdownMenuItem className="cursor-pointer rounded-md my-0.5 focus:bg-accent/80" asChild>
             <Link href="/settings">
               <Settings className="mr-2 h-4 w-4 text-muted-foreground" />

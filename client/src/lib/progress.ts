@@ -45,3 +45,67 @@ export function formatTimeSpent(minutes: number): string {
   
   return `${hours}h ${remainingMinutes}m`;
 }
+
+/**
+ * Mark a lesson as completed in the database
+ */
+export async function markLessonAsCompleted(lessonId: string): Promise<void> {
+  try {
+    const response = await fetch(`/api/progress/${lessonId}/complete`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to mark lesson as completed');
+    }
+  } catch (error) {
+    console.error('Error marking lesson as completed:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update progress for a lesson
+ */
+export async function updateLessonProgress(lessonId: string, data: { 
+  timeSpent?: number;
+  score?: number;
+  completed?: boolean;
+}): Promise<void> {
+  try {
+    const response = await fetch(`/api/progress/${lessonId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update lesson progress');
+    }
+  } catch (error) {
+    console.error('Error updating lesson progress:', error);
+    throw error;
+  }
+}
+
+/**
+ * Check if a lesson is completed
+ */
+export function isLessonCompleted(progressRecords: UserProgress[], lessonId: string): boolean {
+  const record = progressRecords.find(p => p.lessonId === lessonId);
+  return record ? record.completed : false;
+}
+
+/**
+ * Get an array of completed lesson IDs
+ */
+export function getCompletedLessons(progressRecords: UserProgress[]): string[] {
+  return progressRecords
+    .filter(record => record.completed)
+    .map(record => record.lessonId);
+}
