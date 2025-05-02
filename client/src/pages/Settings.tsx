@@ -6,7 +6,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useSimpleToast } from '@/hooks/use-simple-toast';
-import { Loader2, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
+import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -46,6 +46,108 @@ type Progress = {
   timeSpent: number;
   notes: string | null;
 };
+
+// Separate component for each language card to properly handle the state
+function EnrolledLanguageCard({ 
+  language, 
+  onResetProgress, 
+  resetMutation, 
+  calculateProgress 
+}: { 
+  language: Language; 
+  onResetProgress: (code: string) => void; 
+  resetMutation: any;
+  calculateProgress: (code: string) => Promise<{ completed: number; total: number; percent: number; }>;
+}) {
+  const [progressStats, setProgressStats] = useState({ completed: 0, total: 0, percent: 0 });
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Fetch progress stats
+  useEffect(() => {
+    setIsLoading(true);
+    calculateProgress(language.code).then((stats) => {
+      setProgressStats(stats);
+      setIsLoading(false);
+    });
+  }, [language.code, resetMutation.isSuccess, calculateProgress]);
+  
+  return (
+    <div className="border rounded-lg p-4">
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">{language.flagCode}</span>
+          <div>
+            <h3 className="font-medium">{language.name}</h3>
+            <p className="text-sm text-muted-foreground">{language.nativeName}</p>
+          </div>
+        </div>
+        <Badge variant="outline">{language.code.toUpperCase()}</Badge>
+      </div>
+      
+      <Separator className="my-4" />
+      
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <p className="text-sm font-medium">Progress</p>
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground flex items-center gap-1">
+              <Loader2 className="h-3 w-3 animate-spin" /> Loading...
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              {progressStats.completed} of {progressStats.total} lessons completed ({progressStats.percent}%)
+            </p>
+          )}
+        </div>
+        
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button 
+              variant="outline" 
+              size="sm"
+              disabled={resetMutation.isPending}
+            >
+              {resetMutation.isPending && resetMutation.variables === language.code ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Resetting...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Reset Progress
+                </>
+              )}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will reset all your progress for {language.name}. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => onResetProgress(language.code)}
+              >
+                Reset Progress
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+      
+      <div className="w-full bg-secondary rounded-full h-2.5">
+        <div 
+          className="bg-primary h-2.5 rounded-full transition-all duration-500" 
+          style={{ width: `${progressStats.percent}%` }}
+        ></div>
+      </div>
+    </div>
+  );
+}
 
 export default function Settings() {
   const toast = useSimpleToast();
@@ -219,96 +321,15 @@ export default function Settings() {
             </div>
           ) : (
             <div className="space-y-6">
-              {enrolledLanguages.map((language) => {
-                const [progressStats, setProgressStats] = useState({ completed: 0, total: 0, percent: 0 });
-                const [isLoading, setIsLoading] = useState(true);
-                
-                // Fetch progress stats
-                useEffect(() => {
-                  setIsLoading(true);
-                  calculateProgress(language.code).then((stats) => {
-                    setProgressStats(stats);
-                    setIsLoading(false);
-                  });
-                }, [language.code, resetProgressMutation.isSuccess]);
-                
-                return (
-                  <div key={language.id} className="border rounded-lg p-4">
-                    <div className="flex justify-between items-center mb-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl">{language.flagCode}</span>
-                        <div>
-                          <h3 className="font-medium">{language.name}</h3>
-                          <p className="text-sm text-muted-foreground">{language.nativeName}</p>
-                        </div>
-                      </div>
-                      <Badge variant="outline">{language.code.toUpperCase()}</Badge>
-                    </div>
-                    
-                    <Separator className="my-4" />
-                    
-                    <div className="flex justify-between items-center mb-4">
-                      <div>
-                        <p className="text-sm font-medium">Progress</p>
-                        {isLoading ? (
-                          <p className="text-sm text-muted-foreground flex items-center gap-1">
-                            <Loader2 className="h-3 w-3 animate-spin" /> Loading...
-                          </p>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">
-                            {progressStats.completed} of {progressStats.total} lessons completed ({progressStats.percent}%)
-                          </p>
-                        )}
-                      </div>
-                      
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            disabled={resetProgressMutation.isPending}
-                          >
-                            {resetProgressMutation.isPending && resetProgressMutation.variables === language.code ? (
-                              <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Resetting...
-                              </>
-                            ) : (
-                              <>
-                                <RefreshCw className="mr-2 h-4 w-4" />
-                                Reset Progress
-                              </>
-                            )}
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              This will reset all your progress for {language.name}. This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleResetProgress(language.code)}
-                            >
-                              Reset Progress
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
-                    
-                    <div className="w-full bg-secondary rounded-full h-2.5">
-                      <div 
-                        className="bg-primary h-2.5 rounded-full transition-all duration-500" 
-                        style={{ width: `${progressStats.percent}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                );
-              })}
+              {enrolledLanguages.map((language) => (
+                <EnrolledLanguageCard 
+                  key={language.id} 
+                  language={language} 
+                  onResetProgress={handleResetProgress}
+                  resetMutation={resetProgressMutation}
+                  calculateProgress={calculateProgress}
+                />
+              ))}
             </div>
           )}
         </CardContent>
