@@ -76,7 +76,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                       return (
                         <div 
                           key={language.code} 
-                          className={`${position} relative w-24 h-24`}
+                          className={`${position} relative w-28 h-28`}
                         >
                           {/* Background circle */}
                           <div className="absolute inset-0 rounded-full bg-gray-800 dark:bg-gray-800 light:bg-gray-200 opacity-60"></div>
@@ -107,11 +107,13 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                           
                           {/* Flag in the middle */}
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
-                              <FlagIcon code={language.flagCode} size={40} className="scale-125" />
+                            <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
+                              <FlagIcon code={language.flagCode} size={48} className="scale-125" />
                             </div>
-                            <p className="text-xs font-medium mt-1">{language.name}</p>
-                            <p className="text-sm font-bold text-primary">{Math.round(percentComplete)}%</p>
+                            <div className="mt-10 flex flex-col items-center">
+                              <p className="text-[10px] font-medium">{language.name}</p>
+                              <p className="text-xs font-bold text-primary">{Math.round(percentComplete)}%</p>
+                            </div>
                           </div>
                         </div>
                       );
