@@ -48,6 +48,32 @@ export default function ChatUI({ lesson }: ChatUIProps) {
         }
         
         const data = await res.json();
+        
+        // Check if we have existing chat history from the server
+        if (data.hasExistingHistory && data.historyLength > 0) {
+          // Fetch full conversation history
+          try {
+            const historyRes = await fetch(`/api/chat/history/${lesson.lessonId}`, {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            });
+            
+            if (historyRes.ok) {
+              const historyData = await historyRes.json();
+              if (historyData.messages && Array.isArray(historyData.messages) && historyData.messages.length > 0) {
+                // Set the full conversation history
+                setMessages(historyData.messages);
+                if (data.scratchPad) setScratchPad(data.scratchPad);
+                return; // Exit early since we've loaded the history
+              }
+            }
+          } catch (historyErr) {
+            console.error("Error fetching chat history:", historyErr);
+            // Fall back to default initialization if history fetch fails
+          }
+        }
+        
+        // If we don't have history or history fetch failed, initialize with just the response
         setMessages([{ role: "assistant", content: data.response }]);
         if (data.scratchPad) setScratchPad(data.scratchPad);
       } catch (e) {

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { storage } from '../storage';
 import { generateGeminiResponse } from '../services/genai';
+import { isAuthenticated } from '../auth';
 
 const router = Router();
 
@@ -373,6 +374,49 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     
     return res.status(500).json({ 
       error: 'Failed to generate response. Please try again later.' 
+    });
+  }
+});
+
+/**
+ * GET /api/chat/history/:lessonId
+ * Retrieve chat history for a specific lesson
+ */
+router.get('/history/:lessonId', isAuthenticated, async (req: Request, res: Response) => {
+  try {
+    const { lessonId } = req.params;
+    const userId = req.user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({ 
+        error: 'Authentication required' 
+      });
+    }
+    
+    if (!lessonId) {
+      return res.status(400).json({ 
+        error: 'Missing required parameter: lessonId' 
+      });
+    }
+    
+    // Get the chat history from storage
+    const chatHistory = await storage.getChatHistory(userId, lessonId);
+    
+    if (!chatHistory || !chatHistory.messages || !Array.isArray(chatHistory.messages) || chatHistory.messages.length === 0) {
+      return res.status(404).json({ 
+        error: 'No chat history found for this lesson' 
+      });
+    }
+    
+    return res.json({ 
+      messages: chatHistory.messages
+    });
+    
+  } catch (error) {
+    console.error('Error retrieving chat history:', error);
+    
+    return res.status(500).json({ 
+      error: 'Failed to retrieve chat history. Please try again later.' 
     });
   }
 });
