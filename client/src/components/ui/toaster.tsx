@@ -13,17 +13,19 @@ type ToastProps = {
 
 function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (id: string) => void }) {
   return (
-    <div className="fixed top-0 right-0 z-50 flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-none">
+    <div className="fixed top-0 right-0 z-[9999] flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-none sm:max-w-[100%] max-w-full w-full sm:w-auto">
       {toasts.map((toast) => (
         <div
           key={toast.id}
           className={`
             pointer-events-auto flex w-full max-w-md overflow-hidden rounded-lg shadow-lg ring-1 
             ring-black ring-opacity-5 transition-all duration-300 ease-in-out transform translate-x-0
-            ${toast.variant === 'destructive' ? 'bg-destructive text-destructive-foreground' : 
+            ${toast.variant === 'destructive' ? 'bg-red-600 text-white dark:bg-red-700' : 
               'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'}
+            animate-in slide-in-from-top-full sm:slide-in-from-top-full
           `}
         >
+          <div className={`w-1.5 ${toast.variant === 'destructive' ? 'bg-red-800' : 'bg-[#ff6600]'}`}></div>
           <div className="flex-1 p-4">
             <div className="flex items-start">
               <div className="flex-1">
