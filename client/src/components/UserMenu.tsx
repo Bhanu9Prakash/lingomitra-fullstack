@@ -65,11 +65,10 @@ export default function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
-        className="w-56 border-primary/20 bg-background shadow-lg rounded-md overflow-hidden" 
+        className="w-56 border-primary/20 bg-background shadow-lg rounded-md overflow-hidden right-4" 
         align="end"
         sideOffset={5}
-        avoidCollisions={true}
-        collisionPadding={16}
+        avoidCollisions={false}
       >
         <DropdownMenuLabel className="font-normal bg-primary/5 rounded-t-md border-b border-border/30">
           <div className="flex flex-col space-y-1">
