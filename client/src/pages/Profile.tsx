@@ -310,7 +310,7 @@ export default function Profile() {
                   <AccordionTrigger className="px-4 py-2 hover:bg-accent/50 rounded-md">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
-                        <FlagIcon code={language.flagCode} size={32} className="scale-125" />
+                        <FlagIcon code={language.flagCode} size={24} className="scale-100" />
                       </div>
                       <span className="font-semibold">{language.name}</span>
                       <span className="text-sm text-muted-foreground">
