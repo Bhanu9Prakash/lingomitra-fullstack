@@ -2270,6 +2270,33 @@ footer {
   transform: translateY(-50%);
 }
 
+/* Chat buttons in header */
+.chat-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Chat reset button */
+.chat-reset-btn {
+  background-color: var(--bg-light);
+  color: var(--text-color);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.chat-reset-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--primary-color);
+}
+
 /* Chat toggle button in header */
 .chat-toggle {
   background-color: var(--bg-light);

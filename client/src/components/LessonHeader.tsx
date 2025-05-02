@@ -8,13 +8,15 @@ interface LessonHeaderProps {
   onOpenLessonSelector: () => void;
   onToggleChat: () => void;
   isChatActive: boolean;
+  onResetChat?: () => void;
 }
 
 export default function LessonHeader({ 
   currentLesson, 
   onOpenLessonSelector,
   onToggleChat,
-  isChatActive
+  isChatActive,
+  onResetChat
 }: LessonHeaderProps) {
   const isMobile = useIsMobile();
   
@@ -48,15 +50,30 @@ export default function LessonHeader({
               )}
             </div>
             
-            {/* Chat toggle button (right) */}
-            <button 
-              className={`chat-toggle ${isChatActive ? 'active' : ''}`}
-              onClick={onToggleChat}
-              aria-label={isChatActive ? "Close tutor chat" : "Open tutor chat"}
-              title={isChatActive ? "Close tutor chat" : "Open tutor chat"}
-            >
-              <i className={`fas ${isChatActive ? 'fa-times' : 'fa-comment'}`}></i>
-            </button>
+            {/* Chat buttons - reset and toggle */}
+            <div className="chat-buttons">
+              {/* Only show reset button when chat is active */}
+              {isChatActive && onResetChat && (
+                <button 
+                  className="chat-reset-btn"
+                  onClick={onResetChat}
+                  aria-label="Reset conversation"
+                  title="Reset conversation"
+                >
+                  <i className="fas fa-redo-alt"></i>
+                </button>
+              )}
+              
+              {/* Chat toggle button */}
+              <button 
+                className={`chat-toggle ${isChatActive ? 'active' : ''}`}
+                onClick={onToggleChat}
+                aria-label={isChatActive ? "Close tutor chat" : "Open tutor chat"}
+                title={isChatActive ? "Close tutor chat" : "Open tutor chat"}
+              >
+                <i className={`fas ${isChatActive ? 'fa-times' : 'fa-comment'}`}></i>
+              </button>
+            </div>
           </div>
         ) : (
           // Desktop layout
@@ -77,15 +94,30 @@ export default function LessonHeader({
               )}
             </div>
             
-            {/* Chat toggle button (right) */}
-            <button 
-              className={`chat-toggle ${isChatActive ? 'active' : ''}`}
-              onClick={onToggleChat}
-              aria-label={isChatActive ? "Close tutor chat" : "Open tutor chat"}
-              title={isChatActive ? "Close tutor chat" : "Open tutor chat"}
-            >
-              <i className={`fas ${isChatActive ? 'fa-times' : 'fa-comment'}`}></i>
-            </button>
+            {/* Chat buttons - reset and toggle */}
+            <div className="chat-buttons">
+              {/* Only show reset button when chat is active */}
+              {isChatActive && onResetChat && (
+                <button 
+                  className="chat-reset-btn"
+                  onClick={onResetChat}
+                  aria-label="Reset conversation"
+                  title="Reset conversation"
+                >
+                  <i className="fas fa-redo-alt"></i>
+                </button>
+              )}
+              
+              {/* Chat toggle button */}
+              <button 
+                className={`chat-toggle ${isChatActive ? 'active' : ''}`}
+                onClick={onToggleChat}
+                aria-label={isChatActive ? "Close tutor chat" : "Open tutor chat"}
+                title={isChatActive ? "Close tutor chat" : "Open tutor chat"}
+              >
+                <i className={`fas ${isChatActive ? 'fa-times' : 'fa-comment'}`}></i>
+              </button>
+            </div>
           </div>
         )}
       </div>

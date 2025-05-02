@@ -182,17 +182,7 @@ export default function ChatUI({ lesson }: ChatUIProps) {
   /* ───────────────────────── RENDER ───────────────────────── */
   return (
     <div className="chat-ui">
-      {/* Chat Header with Reset Button */}
-      <div className="chat-header">
-        <button 
-          className="chat-reset-btn" 
-          onClick={resetChatHistory} 
-          aria-label="Reset conversation" 
-          title="Reset conversation"
-        >
-          <i className="fas fa-redo-alt"></i>
-        </button>
-      </div>
+      {/* Chat header removed to save space */}
       
       <div className="chat-messages">
         {messages.map((m, i) => (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
 import { Lesson, Language } from "@shared/schema";
@@ -42,6 +42,9 @@ export default function LessonView() {
   // State for lesson modal and chat
   const [isLessonSelectorOpen, setLessonSelectorOpen] = useState(false);
   const [isChatActive, setIsChatActive] = useState(false);
+  
+  // Ref for chat component to access resetChatHistory method
+  const chatRef = useRef<any>(null);
   
   // Fetch all languages
   const { data: languages } = useQuery<Language[]>({
@@ -162,6 +165,12 @@ export default function LessonView() {
           onOpenLessonSelector={() => setLessonSelectorOpen(true)}
           onToggleChat={handleToggleChat}
           isChatActive={isChatActive}
+          onResetChat={() => {
+            // Get the chat component reference and call its reset function
+            if (chatRef.current && chatRef.current.resetChatHistory) {
+              chatRef.current.resetChatHistory();
+            }
+          }}
         />
       )}
       
