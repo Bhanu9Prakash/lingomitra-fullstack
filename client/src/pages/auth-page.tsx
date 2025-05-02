@@ -123,11 +123,11 @@ export default function AuthPage() {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#111111]' : 'bg-[#f9f9f9]'}`}>
-      <div className="container mx-auto py-10">
-        <div className="min-h-screen grid md:grid-cols-2 gap-0 max-w-6xl mx-auto overflow-hidden rounded-md">
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#111111]' : 'bg-[#f5f5f5]'}`}>
+      <div className="container mx-auto py-6 md:py-10">
+        <div className="min-h-screen grid md:grid-cols-2 gap-0 max-w-6xl mx-auto overflow-hidden rounded-lg shadow-xl">
           {/* Auth Form */}
-          <div className={`flex flex-col justify-center items-center p-4 md:p-8 ${theme === 'dark' ? 'bg-[#111111]' : 'bg-[#f9f9f9]'}`}>
+          <div className={`flex flex-col justify-center items-center p-5 md:p-10 ${theme === 'dark' ? 'bg-[#111111]' : 'bg-[#f9f9f9]'}`}>
             <div className="w-full max-w-md">
               {/* Top tabs */}
               <div className={`flex w-full mb-6 rounded-md overflow-hidden ${theme === 'dark' ? '' : 'border border-gray-200'}`}>
@@ -163,9 +163,9 @@ export default function AuthPage() {
               
               {/* Login Form */}
               {activeTab === 'login' && (
-                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a] border border-[#222222]' : 'bg-white border border-gray-200 shadow-sm'}`}>
-                  <div className="mb-6">
-                    <h2 className={`text-2xl font-bold mb-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                <div className={`p-7 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a] border border-[#222222]' : 'bg-white border border-gray-200 shadow-lg'}`}>
+                  <div className="mb-7">
+                    <h2 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                       Welcome Back
                     </h2>
                     <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -249,9 +249,9 @@ export default function AuthPage() {
               
               {/* Register Form */}
               {activeTab === 'register' && (
-                <div className={`p-6 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a] border border-[#222222]' : 'bg-white border border-gray-200 shadow-sm'}`}>
-                  <div className="mb-6">
-                    <h2 className={`text-2xl font-bold mb-1 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
+                <div className={`p-7 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a] border border-[#222222]' : 'bg-white border border-gray-200 shadow-lg'}`}>
+                  <div className="mb-7">
+                    <h2 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                       Create Account
                     </h2>
                     <p className={`text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -382,42 +382,42 @@ export default function AuthPage() {
           </div>
           
           {/* Hero Section */}
-          <div className={`hidden md:flex flex-col justify-center items-center p-12 ${theme === 'dark' ? 'text-[#f0f0f0]' : 'text-[#333333] bg-white'}`}>
-            <div className="max-w-md space-y-5 text-center">
+          <div className={`hidden md:flex flex-col justify-center items-center p-12 ${theme === 'dark' ? 'text-[#f0f0f0]' : 'text-[#333333] bg-white shadow-inner'}`}>
+            <div className="max-w-md space-y-6 text-center">
               <div className="mb-8">
-                <div className="flex flex-col items-center mb-2">
+                <div className="flex flex-col items-center mb-4">
                   <MascotLogo className="h-16 w-16 mb-4" />
                   <h1 className="text-4xl font-bold">
                     <span className="text-[#ff6600]">LingoMitra</span>
                   </h1>
                 </div>
               </div>
-              <p className={`text-xl ${theme === 'dark' ? 'text-white' : 'text-gray-700'}`}>
+              <p className={`text-xl font-medium leading-relaxed ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                 Your personal language learning companion with AI assistance.
               </p>
-              <div className="space-y-6 mt-8 text-left">
-                <div className="flex items-start space-x-3">
+              <div className="space-y-7 mt-10 text-left">
+                <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 mt-1">
-                    <div className={`h-4 w-4 rounded-full ${theme === 'dark' ? 'bg-gray-500' : 'bg-[#ff6600]'}`}></div>
+                    <div className={`h-5 w-5 rounded-full ${theme === 'dark' ? 'bg-gray-400' : 'bg-[#ff6600]'}`}></div>
                   </div>
-                  <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                    <strong>Personalized AI language tutor</strong> available 24/7
+                  <p className={`${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} text-base font-medium`}>
+                    <strong className="font-bold text-[#ff6600]">Personalized AI language tutor</strong> available 24/7
                   </p>
                 </div>
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 mt-1">
-                    <div className={`h-4 w-4 rounded-full ${theme === 'dark' ? 'bg-gray-500' : 'bg-[#ff6600]'}`}></div>
+                    <div className={`h-5 w-5 rounded-full ${theme === 'dark' ? 'bg-gray-400' : 'bg-[#ff6600]'}`}></div>
                   </div>
-                  <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                    <strong>Interactive lessons</strong> in multiple languages
+                  <p className={`${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} text-base font-medium`}>
+                    <strong className="font-bold text-[#ff6600]">Interactive lessons</strong> in multiple languages
                   </p>
                 </div>
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 mt-1">
-                    <div className={`h-4 w-4 rounded-full ${theme === 'dark' ? 'bg-gray-500' : 'bg-[#ff6600]'}`}></div>
+                    <div className={`h-5 w-5 rounded-full ${theme === 'dark' ? 'bg-gray-400' : 'bg-[#ff6600]'}`}></div>
                   </div>
-                  <p className={theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}>
-                    <strong>Track your progress</strong> and master new languages faster
+                  <p className={`${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} text-base font-medium`}>
+                    <strong className="font-bold text-[#ff6600]">Track your progress</strong> and master new languages faster
                   </p>
                 </div>
               </div>
