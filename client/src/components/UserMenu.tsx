@@ -58,7 +58,7 @@ export default function UserMenu() {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 z-[9999]" align="end" forceMount style={{ position: 'fixed' }}>
+      <DropdownMenuContent className="w-56" align="end" forceMount style={{ position: 'fixed', zIndex: 9999 }}>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.username}</p>
