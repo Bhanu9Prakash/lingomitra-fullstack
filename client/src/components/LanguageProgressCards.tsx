@@ -49,8 +49,8 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
     <div className="space-y-6">
       {activeLangs.length > 0 ? (
         <>
-          <Card className="border-0 shadow-lg bg-gray-900 dark:bg-gray-900 light:bg-white">
-            <CardHeader>
+          <Card className="border dark:border-gray-800 light:border-gray-300 shadow-lg bg-gray-900 dark:bg-gray-900 light:bg-white">
+            <CardHeader className="border-b dark:border-gray-800 light:border-gray-200">
               <CardTitle className="text-2xl font-bold">Learning Progress</CardTitle>
             </CardHeader>
             <CardContent>
@@ -196,8 +196,8 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
           </Card>
         </>
       ) : (
-        <Card className="border-0 shadow-lg bg-gray-900 dark:bg-gray-900 light:bg-white">
-          <CardHeader>
+        <Card className="border dark:border-gray-800 light:border-gray-300 shadow-lg bg-gray-900 dark:bg-gray-900 light:bg-white">
+          <CardHeader className="border-b dark:border-gray-800 light:border-gray-200">
             <CardTitle className="text-2xl font-bold">Learning Progress</CardTitle>
           </CardHeader>
           <CardContent className="text-center py-8">

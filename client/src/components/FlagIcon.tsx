@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface FlagIconProps {
   code: string;
@@ -74,7 +74,7 @@ export default function FlagIcon({ code, size = 24, className = '' }: FlagIconPr
           const parent = target.parentElement;
           if (parent) {
             parent.innerHTML = getFlagEmoji(flagCode);
-            parent.style.backgroundColor = '#f1f5f9';
+            parent.style.backgroundColor = document.documentElement.classList.contains('light') ? '#f1f5f9' : '#374151';
             parent.style.fontSize = `${size * 0.75}px`;
           }
         }}
