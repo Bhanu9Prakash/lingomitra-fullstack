@@ -22,6 +22,7 @@ import FlagIcon from '../components/FlagIcon';
 import { formatDistanceToNow } from 'date-fns';
 import { Language, UserProgress, Lesson } from '@shared/schema';
 import { calculateTotalProgressForLanguage, formatTimeSpent } from '@/lib/progress';
+import StreakCalendar from '../components/StreakCalendar';
 
 /**
  * Profile page that displays user progress across all languages
@@ -216,6 +217,34 @@ export default function Profile() {
         </Card>
       ) : (
         <>
+          {/* Learning Streak */}
+          {(() => {
+            // Create a map of all lesson data by language code
+            const lessonDataByLanguage: { [code: string]: any[] } = {};
+            const languageNamesMap: { [code: string]: string } = {};
+            
+            // Populate the maps
+            languages.forEach((language: Language, index: number) => {
+              if (lessonQueries[index]?.data) {
+                lessonDataByLanguage[language.code] = lessonQueries[index].data || [];
+              }
+              languageNamesMap[language.code] = language.name;
+            });
+            
+            // Collect all progress data
+            const allProgressData = progressQueries
+              .filter(query => query.data && Array.isArray(query.data))
+              .flatMap(query => query.data as UserProgress[]);
+            
+            return (
+              <StreakCalendar 
+                progressData={allProgressData} 
+                lessonData={lessonDataByLanguage}
+                languageNames={languageNamesMap}
+              />
+            );
+          })()}
+
           {/* Progress Overview Chart */}
           <Card className="mb-8">
             <CardHeader>
