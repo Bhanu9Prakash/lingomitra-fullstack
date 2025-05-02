@@ -24,6 +24,8 @@ export default function LessonSelector({
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   // Track completion status
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
+  // Loading state while fetching completion data
+  const [isLoadingProgress, setIsLoadingProgress] = useState(false);
 
   // Helper to extract lesson number for display
   const getLessonNumber = (lessonId: string) => {
@@ -45,19 +47,36 @@ export default function LessonSelector({
     };
   }, [isOpen, onClose]);
 
+  // Get the language code from lessons - defined here to use in useEffect
+  const languageCode = lessons.length > 0 ? lessons[0].languageCode : null;
+  
   // Prevent body scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
       // Force refresh when opened to get latest completion status
       setRefreshTrigger(prev => prev + 1);
+      
+      // Fetch the current completed lessons
+      if (languageCode) {
+        setIsLoadingProgress(true);
+        getCompletedLessons(languageCode)
+          .then(lessons => {
+            setCompletedLessons(lessons);
+            setIsLoadingProgress(false);
+          })
+          .catch(error => {
+            console.error("Failed to fetch completed lessons:", error);
+            setIsLoadingProgress(false);
+          });
+      }
     } else {
       document.body.style.overflow = "";
     }
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isOpen]);
+  }, [isOpen, languageCode]);
 
   if (!isOpen) return null;
 
@@ -72,9 +91,6 @@ export default function LessonSelector({
 
     return 0;
   });
-
-  // Get the language code from lessons
-  const languageCode = lessons.length > 0 ? lessons[0].languageCode : null;
 
   // Create language display data
   const currentLanguage = languageCode
@@ -168,9 +184,9 @@ export default function LessonSelector({
               ? `Lesson ${lessonNumber}: ${lesson.title}`
               : lesson.title;
 
-            // Check if the lesson is completed using the localStorage data
-            // Including refreshTrigger ensures this updates when modal is opened
-            const isCompleted = refreshTrigger > 0 && isLessonCompleted(lesson.lessonId);
+            // Check if the lesson is completed using the completed lessons from state
+            // This is populated from API or localStorage depending on login status
+            const isCompleted = completedLessons.includes(lesson.lessonId);
             
             return (
               <div
