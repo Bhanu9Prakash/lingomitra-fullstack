@@ -11,6 +11,7 @@ import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
 import progressRouter from "./routes/progress";
 import { setupAuth } from "./auth";
+import { WebSocketServer, WebSocket } from 'ws';
 
 // Sample data
 const languages = [
@@ -866,6 +867,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/progress", progressRouter);
 
   const httpServer = createServer(app);
+  
+  // Create WebSocket server on a distinct path so it doesn't conflict with Vite's HMR websocket
+  const wss = new WebSocketServer({ 
+    server: httpServer, 
+    path: '/ws' 
+  });
+  
+  wss.on('connection', (ws) => {
+    console.log('WebSocket client connected');
+    
+    // Send a welcome message
+    ws.send(JSON.stringify({
+      type: 'connection',
+      message: 'Connected to LingoMitra WebSocket server'
+    }));
+    
+    // Handle incoming messages
+    ws.on('message', (message) => {
+      console.log('Received message:', message.toString());
+      
+      try {
+        // Echo back the message
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({
+            type: 'echo',
+            message: message.toString()
+          }));
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+    });
+    
+    // Handle client disconnect
+    ws.on('close', () => {
+      console.log('WebSocket client disconnected');
+    });
+  });
+  
+  console.log('WebSocket server is running on path /ws');
 
   return httpServer;
 }
