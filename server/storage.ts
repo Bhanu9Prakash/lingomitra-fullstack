@@ -502,6 +502,56 @@ export class DatabaseStorage implements IStorage {
     
     return result.rowCount ?? 0;
   }
+  
+  // Chat History methods
+  async getChatHistory(userId: number, lessonId: string): Promise<ChatHistory | undefined> {
+    const [history] = await db
+      .select()
+      .from(chatHistory)
+      .where(
+        and(
+          eq(chatHistory.userId, userId),
+          eq(chatHistory.lessonId, lessonId)
+        )
+      );
+    return history;
+  }
+  
+  async saveChatHistory(userId: number, lessonId: string, messages: any[]): Promise<ChatHistory> {
+    // Check if a record already exists
+    const existingHistory = await this.getChatHistory(userId, lessonId);
+    
+    if (existingHistory) {
+      // Update existing record
+      const [updatedHistory] = await db
+        .update(chatHistory)
+        .set({
+          messages,
+          updatedAt: new Date()
+        })
+        .where(
+          and(
+            eq(chatHistory.userId, userId),
+            eq(chatHistory.lessonId, lessonId)
+          )
+        )
+        .returning();
+      return updatedHistory;
+    } else {
+      // Create new record
+      const [newHistory] = await db
+        .insert(chatHistory)
+        .values({
+          userId,
+          lessonId,
+          messages,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        })
+        .returning();
+      return newHistory;
+    }
+  }
 }
 
 // Use database storage if DATABASE_URL is available, otherwise use memory storage

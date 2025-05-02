@@ -69,6 +69,7 @@ const cleanResponse = (text: string): string => {
 router.post('/init', async (req: Request, res: Response) => {
   try {
     const { lessonId } = req.body;
+    const userId = req.user?.id; // Get the user ID from the authenticated session
     
     if (!lessonId) {
       return res.status(400).json({ 
@@ -85,7 +86,34 @@ router.post('/init', async (req: Request, res: Response) => {
       });
     }
     
-    // Generate an initial greeting using the Gemini API
+    // Check if we have existing chat history for this user and lesson
+    let existingHistory;
+    let messages: Message[] = [];
+    
+    if (userId) {
+      existingHistory = await storage.getChatHistory(userId, lessonId);
+      
+      if (existingHistory && existingHistory.messages && Array.isArray(existingHistory.messages) && existingHistory.messages.length > 0) {
+        // Use the existing chat history
+        messages = existingHistory.messages as Message[];
+        
+        // Return the last assistant message
+        const lastAssistantMessage = messages
+          .filter(m => m.role === 'assistant')
+          .pop();
+          
+        if (lastAssistantMessage) {
+          return res.json({ 
+            response: lastAssistantMessage.content,
+            scratchPad: getDefaultScratchPad(),
+            hasExistingHistory: true,
+            historyLength: messages.length
+          });
+        }
+      }
+    }
+    
+    // If no existing history is found or no valid assistant messages, generate a new one
     const initialPrompt = `As LingoMitra, introduce yourself and this lesson (${lesson.title}) to the student. Be very brief (50-100 words maximum), welcoming, and mention just 1 key thing they'll learn first. 
     
 IMPORTANT: 
@@ -114,9 +142,24 @@ IMPORTANT:
       .replace(/```\s*$/g, '') // Remove any triple backticks that might have been missed
       .trim();
     
+    // Save the initial greeting to the database if user is authenticated
+    if (userId) {
+      const assistantMessage: Message = { role: 'assistant', content: response };
+      
+      if (existingHistory) {
+        // Update existing history
+        messages.push(assistantMessage);
+        await storage.saveChatHistory(userId, lessonId, messages);
+      } else {
+        // Create new history
+        await storage.saveChatHistory(userId, lessonId, [assistantMessage]);
+      }
+    }
+    
     return res.json({ 
       response,
-      scratchPad
+      scratchPad,
+      hasExistingHistory: false
     });
     
   } catch (error) {
@@ -135,6 +178,7 @@ IMPORTANT:
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { lessonId, conversation, scratchPad } = req.body;
+    const userId = req.user?.id; // Get the user ID from the authenticated session
     
     if (!lessonId || !conversation || !Array.isArray(conversation) || conversation.length === 0) {
       return res.status(400).json({ 
@@ -286,6 +330,38 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
       .replace(/\b(json|markdown|javascript|typescript|js|ts)\b\s*$/i, '') // Remove language names at the end
       .replace(/```\s*$/g, '') // Remove any triple backticks that might have been missed
       .trim();
+    
+    // Save the conversation to the database if user is authenticated
+    if (userId) {
+      // Create a new message for the assistant's response
+      const assistantMessage: Message = { role: 'assistant', content: responseText };
+      
+      // Get any existing chat history
+      const existingHistory = await storage.getChatHistory(userId, lessonId);
+      
+      if (existingHistory && existingHistory.messages && Array.isArray(existingHistory.messages)) {
+        // Update existing history with the new messages
+        // Get existing messages
+        let messages = existingHistory.messages as Message[];
+        
+        // Add new messages that aren't already in the history
+        // First add the user's message if it's not the last one in the history
+        if (messages.length === 0 || 
+            messages[messages.length - 1].role !== 'user' || 
+            messages[messages.length - 1].content !== latestUserMessage.content) {
+          messages.push(latestUserMessage);
+        }
+        
+        // Then add the assistant's response
+        messages.push(assistantMessage);
+        
+        // Save the updated history
+        await storage.saveChatHistory(userId, lessonId, messages);
+      } else {
+        // Create new history with the conversation
+        await storage.saveChatHistory(userId, lessonId, conversation.concat(assistantMessage));
+      }
+    }
     
     return res.json({ 
       response: responseText,
