@@ -14,15 +14,13 @@ import {
 } from "../components/ui/accordion";
 import { Button } from '../components/ui/button';
 import { Progress } from '../components/ui/progress';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
-} from 'recharts';
 import { Loader2, Award, Check, Clock, BookOpen, AlertTriangle } from 'lucide-react';
 import FlagIcon from '../components/FlagIcon';
 import { formatDistanceToNow } from 'date-fns';
 import { Language, UserProgress, Lesson } from '@shared/schema';
 import { calculateTotalProgressForLanguage, formatTimeSpent } from '@/lib/progress';
 import StreakCalendar from '../components/StreakCalendar';
+import LanguageProgressCards from '../components/LanguageProgressCards';
 
 /**
  * Profile page that displays user progress across all languages
@@ -245,62 +243,33 @@ export default function Profile() {
             );
           })()}
 
-          {/* Progress Overview Chart */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>Learning Progress Overview</CardTitle>
-              <CardDescription>
-                Your progress across all languages
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {chartData.length > 0 ? (
-                <div className="h-[300px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={chartData}
-                      margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis 
-                        dataKey="name" 
-                        angle={-45} 
-                        textAnchor="end" 
-                        height={60} 
-                      />
-                      <YAxis 
-                        label={{ 
-                          value: 'Completion %', 
-                          angle: -90, 
-                          position: 'insideLeft',
-                          style: { textAnchor: 'middle' }
-                        }} 
-                        domain={[0, 100]}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="progress" fill="#ff6600" radius={[4, 4, 0, 0]}>
-                        {chartData.map((entry: {code: string}, index: number) => (
-                          <Cell 
-                            key={`cell-${index}`}
-                            fill={expandedLanguage === entry.code ? '#cc5200' : '#ff6600'}
-                            cursor="pointer"
-                            onClick={() => setExpandedLanguage(
-                              expandedLanguage === entry.code ? null : entry.code
-                            )}
-                          />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <AlertTriangle className="mx-auto h-12 w-12 mb-3 text-warning" />
-                  <p>No progress data available yet. Complete some lessons to see your progress here.</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {/* Language Progress Cards */}
+          {(() => {
+            // Create maps for passing data to the component
+            const progressByLanguage: { [code: string]: UserProgress[] } = {};
+            const lessonsByLanguage: { [code: string]: Lesson[] } = {};
+            
+            // Populate the maps
+            languages.forEach((language: Language, index: number) => {
+              if (progressQueries[index]?.data) {
+                progressByLanguage[language.code] = progressQueries[index].data || [];
+              }
+              
+              if (lessonQueries[index]?.data) {
+                lessonsByLanguage[language.code] = lessonQueries[index].data || [];
+              }
+            });
+            
+            return (
+              <div className="mb-8">
+                <LanguageProgressCards 
+                  languages={languages}
+                  progressData={progressByLanguage}
+                  lessonData={lessonsByLanguage}
+                />
+              </div>
+            );
+          })()}
 
           {/* Detailed Progress by Language */}
           <h2 className="text-2xl font-bold mb-4">Detailed Progress</h2>
