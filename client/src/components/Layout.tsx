@@ -58,37 +58,42 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className={`${theme === 'dark' ? 'dark-theme dark' : ''}`}>
-      <header>
-        <div className="container">
-          <div className="logo">
-            <MascotLogo className="mascot-logo" />
-            <h1>LingoMitra</h1>
-          </div>
-          
-          <div className="header-controls">
-            {/* Shows flag + name dropdown in the header - hide on homepage and auth pages */}
-            {!isHomePage && !isAuthPage && (
-              <LanguageDropdown
-                selectedLanguage={selectedLanguage}
-                languages={languages}
-              />
-            )}
+      <div id="app-wrapper" className="app-wrapper overflow-x-hidden w-full">
+        <header className="relative">
+          <div className="container">
+            <div className="logo">
+              <MascotLogo className="mascot-logo" />
+              <h1>LingoMitra</h1>
+            </div>
             
-            {/* User menu dropdown with theme toggle - hide on homepage and auth pages */}
-            {!isHomePage && !isAuthPage && <UserMenu />}
+            <div className="header-controls">
+              {/* Shows flag + name dropdown in the header - hide on homepage and auth pages */}
+              {!isHomePage && !isAuthPage && (
+                <LanguageDropdown
+                  selectedLanguage={selectedLanguage}
+                  languages={languages}
+                />
+              )}
+              
+              {/* User menu dropdown with theme toggle - hide on homepage and auth pages */}
+              {!isHomePage && !isAuthPage && <UserMenu />}
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+        
+        <main>
+          {children}
+        </main>
+        
+        {/* Only show footer on non-lesson pages */}
+        {!isLessonPage && <Footer />}
+        <ScrollToTop />
+        <NetworkStatus />
+        <InstallPrompt />
+      </div>
       
-      <main>
-        {children}
-      </main>
-      
-      {/* Only show footer on non-lesson pages */}
-      {!isLessonPage && <Footer />}
-      <ScrollToTop />
-      <NetworkStatus />
-      <InstallPrompt />
+      {/* Portal container for dropdowns - positioned outside the main layout flow */}
+      <div id="portal-container" className="portal-container"></div>
     </div>
   );
 }

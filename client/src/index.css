@@ -2781,12 +2781,32 @@ footer {
   }
 }
 
+/* App wrapper to prevent content shifting */
+.app-wrapper {
+  position: relative;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Portal container for dropdown menus */
+.portal-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 9999;
+}
+
 /* Fix for dropdown menu positioning - ensures menu is overlaid and doesn't affect layout */
 [data-radix-popper-content-wrapper] {
   position: fixed !important;
   z-index: 9999 !important;
   width: auto !important;
   max-width: calc(100vw - 24px) !important;
+  pointer-events: auto !important;
   /* The following overrides prevent content shifting */
   transform: none !important;
   margin: 0 !important;
