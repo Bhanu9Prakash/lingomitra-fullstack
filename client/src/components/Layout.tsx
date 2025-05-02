@@ -16,7 +16,7 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const [location] = useLocation();
   
   // Extract language code from URL path
@@ -55,7 +55,7 @@ export default function Layout({ children }: LayoutProps) {
   const isLessonPage = location.includes("/lesson/");
 
   return (
-    <div className={theme === 'dark' ? 'dark-theme' : ''}>
+    <div className={`${theme === 'dark' ? 'dark-theme dark' : ''}`}>
       <header>
         <div className="container">
           <div className="logo">

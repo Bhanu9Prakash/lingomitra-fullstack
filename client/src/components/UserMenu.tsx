@@ -89,9 +89,10 @@ export default function UserMenu() {
             onClick={(e) => e.preventDefault()}
           >
             <div className="flex items-center">
+              {/* Show the icon for what will happen when clicked, not the current state */}
               {theme === 'dark' 
-                ? <Moon className="mr-2 h-4 w-4 text-blue-300" /> 
-                : <Sun className="mr-2 h-4 w-4 text-yellow-500" />
+                ? <Sun className="mr-2 h-4 w-4 text-yellow-500" /> 
+                : <Moon className="mr-2 h-4 w-4 text-blue-300" />
               }
               <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
             </div>
