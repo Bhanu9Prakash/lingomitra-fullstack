@@ -9,7 +9,7 @@ import { Pool } from "@neondatabase/serverless";
 import connectPg from "connect-pg-simple";
 import { createHash } from "crypto";
 import { db } from "./db";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, inArray } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -41,6 +41,7 @@ export interface IStorage {
     progressData: Partial<Omit<InsertUserProgress, 'userId' | 'lessonId'>>
   ): Promise<UserProgress>;
   markLessonComplete(userId: number, lessonId: string): Promise<UserProgress>;
+  resetLanguageProgress(userId: number, languageCode: string): Promise<number>;
   
   // Session store
   sessionStore: session.Store;
@@ -221,6 +222,32 @@ export class MemStorage implements IStorage {
       completedAt: new Date(),
       progress: 100
     });
+  }
+  
+  /**
+   * Reset all progress for a user in a specific language
+   * @returns The number of records deleted
+   */
+  async resetLanguageProgress(userId: number, languageCode: string): Promise<number> {
+    // Get all lessons for the language
+    const languageLessons = await this.getLessonsByLanguage(languageCode);
+    const lessonIds = languageLessons.map(lesson => lesson.lessonId);
+    
+    if (!lessonIds.length) return 0;
+    
+    // Count how many records we're deleting
+    let deleteCount = 0;
+    
+    // Delete all progress records for these lessons and this user
+    for (const lessonId of lessonIds) {
+      const key = `${userId}:${lessonId}`;
+      if (this.progressRecords.has(key)) {
+        this.progressRecords.delete(key);
+        deleteCount++;
+      }
+    }
+    
+    return deleteCount;
   }
 }
 
@@ -405,6 +432,30 @@ export class DatabaseStorage implements IStorage {
       completedAt: new Date(),
       progress: 100
     });
+  }
+  
+  /**
+   * Reset all progress for a user in a specific language
+   * @returns The number of records deleted
+   */
+  async resetLanguageProgress(userId: number, languageCode: string): Promise<number> {
+    // First get all lessons for the language
+    const lessons = await this.getLessonsByLanguage(languageCode);
+    const lessonIds = lessons.map(lesson => lesson.lessonId);
+    
+    if (!lessonIds.length) return 0;
+    
+    // Now delete all progress records for these lessons and this user
+    const result = await db
+      .delete(userProgress)
+      .where(
+        and(
+          eq(userProgress.userId, userId),
+          inArray(userProgress.lessonId, lessonIds)
+        )
+      );
+    
+    return result.rowCount ?? 0;
   }
 }
 

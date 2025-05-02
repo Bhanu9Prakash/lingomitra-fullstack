@@ -120,4 +120,33 @@ router.post("/lesson/:lessonId/complete", async (req: Request, res: Response) =>
   }
 });
 
+/**
+ * DELETE /api/progress/language/:languageCode/reset
+ * Reset all progress for a language
+ */
+router.delete("/language/:languageCode/reset", async (req: Request, res: Response) => {
+  try {
+    const { languageCode } = req.params;
+    const userId = req.user!.id;
+    
+    // Get the lessons for this language
+    const languageLessons = await storage.getLessonsByLanguage(languageCode);
+    
+    if (!languageLessons.length) {
+      return res.status(404).json({ message: "No lessons found for this language" });
+    }
+    
+    // Delete all progress records for this user and language
+    const result = await storage.resetLanguageProgress(userId, languageCode);
+    
+    res.json({ 
+      message: `Progress reset for ${languageCode}`, 
+      count: result
+    });
+  } catch (error) {
+    console.error("Error resetting language progress:", error);
+    res.status(500).json({ message: "Failed to reset language progress" });
+  }
+});
+
 export default router;
