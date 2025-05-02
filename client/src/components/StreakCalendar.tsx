@@ -5,6 +5,7 @@ import { Flame, Calendar, Download, CheckCircle2, Lock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Switch } from '@/components/ui/switch';
+import FlagIcon from '../components/FlagIcon';
 
 interface UserProgress {
   lessonId: string;
@@ -275,17 +276,36 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
                               className={`
                                 h-8 w-8 sm:h-9 sm:w-9 md:h-7 md:w-7 lg:h-6 lg:w-6 text-xs rounded-full 
                                 flex items-center justify-center cursor-pointer 
-                                transition-colors duration-200 shadow-sm
+                                transition-colors duration-200 shadow-sm overflow-hidden
                                 ${day.isToday 
                                   ? 'ring-2 ring-orange-500' 
                                   : day.hasActivity 
-                                    ? 'bg-green-600 text-white hover:bg-green-700'
+                                    ? day.activities[0] 
+                                      ? 'bg-gray-800/50' 
+                                      : 'bg-green-600 text-white hover:bg-green-700'
                                     : 'bg-gray-800/80 hover:bg-gray-700/90'
                                 }
                                 ${day.hasActivity && day.isToday ? 'bg-orange-500 text-white' : ''}
+                                relative
                               `}
                             >
-                              {format(day.date, 'd')}
+                              {day.hasActivity && day.activities[0] ? (
+                                <div className="absolute inset-0 w-full h-full flex items-center justify-center">
+                                  <div className="absolute inset-0 bg-gray-800/20"></div>
+                                  {day.isToday && <div className="absolute inset-0 bg-orange-500/30"></div>}
+                                  <FlagIcon 
+                                    code={day.activities[0].languageCode} 
+                                    size={day.activities.length > 1 ? 16 : 20} 
+                                  />
+                                  {day.activities.length > 1 && (
+                                    <span className="absolute bottom-0 right-0 bg-green-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
+                                      +{day.activities.length - 1}
+                                    </span>
+                                  )}
+                                </div>
+                              ) : (
+                                <span>{format(day.date, 'd')}</span>
+                              )}
                             </div>
                           </TooltipTrigger>
                           <TooltipContent>
@@ -293,11 +313,12 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
                               <p className="font-medium">{format(day.date, 'EEEE, MMMM d')}</p>
                               {day.hasActivity ? (
                                 <>
-                                  <p className="text-green-400">Lesson completed:</p>
-                                  <ul className="text-xs mt-1">
+                                  <p className="text-green-400">Lessons completed:</p>
+                                  <ul className="text-xs mt-1 space-y-1">
                                     {day.activities.map((activity, i) => (
-                                      <li key={i}>
-                                        {activity.languageName}: {activity.lessonTitle}
+                                      <li key={i} className="flex items-center gap-1">
+                                        <FlagIcon code={activity.languageCode} size={12} />
+                                        <span>{activity.languageName}: {activity.lessonTitle}</span>
                                       </li>
                                     ))}
                                   </ul>
