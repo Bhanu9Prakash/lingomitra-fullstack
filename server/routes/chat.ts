@@ -379,6 +379,54 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
 });
 
 /**
+ * DELETE /api/chat/history/:lessonId/reset
+ * Reset chat history for a specific lesson
+ */
+router.delete('/history/:lessonId/reset', isAuthenticated, async (req: Request, res: Response) => {
+  try {
+    const { lessonId } = req.params;
+    const userId = req.user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({ 
+        error: 'Authentication required' 
+      });
+    }
+    
+    if (!lessonId) {
+      return res.status(400).json({ 
+        error: 'Missing required parameter: lessonId' 
+      });
+    }
+    
+    // Get existing chat history
+    const existingHistory = await storage.getChatHistory(userId, lessonId);
+    
+    if (!existingHistory) {
+      return res.status(200).json({ 
+        success: true,
+        message: 'No chat history to reset'
+      });
+    }
+    
+    // Reset the chat history by saving an empty array of messages
+    await storage.saveChatHistory(userId, lessonId, []);
+    
+    return res.status(200).json({ 
+      success: true,
+      message: 'Chat history reset successfully'
+    });
+    
+  } catch (error) {
+    console.error('Error resetting chat history:', error);
+    
+    return res.status(500).json({ 
+      error: 'Failed to reset chat history. Please try again later.' 
+    });
+  }
+});
+
+/**
  * GET /api/chat/history/:lessonId
  * Retrieve chat history for a specific lesson
  */

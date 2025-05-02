@@ -31,6 +31,45 @@ export default function ChatUI({ lesson }: ChatUIProps) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  
+  // Function to reset the chat history
+  const resetChatHistory = async () => {
+    if (confirm("Are you sure you want to reset this conversation? All messages will be deleted.")) {
+      try {
+        setIsLoading(true);
+        
+        // Delete chat history from server
+        const res = await fetch(`/api/chat/history/${lesson.lessonId}/reset`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+        
+        if (!res.ok) {
+          throw new Error(`Failed to reset chat history: ${res.status}`);
+        }
+        
+        // Re-initialize the chat
+        const initRes = await fetch("/api/chat/init", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lessonId: lesson.lessonId }),
+        });
+        
+        if (!initRes.ok) {
+          throw new Error(`API responded with status: ${initRes.status}`);
+        }
+        
+        const data = await initRes.json();
+        setMessages([{ role: "assistant", content: data.response }]);
+        if (data.scratchPad) setScratchPad(data.scratchPad);
+      } catch (e) {
+        console.error("Error resetting chat:", e);
+        alert("Could not reset the conversation. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
 
   /* ───────────────────────── INITIAL GREETING ───────────────────────── */
   useEffect(() => {
@@ -143,6 +182,18 @@ export default function ChatUI({ lesson }: ChatUIProps) {
   /* ───────────────────────── RENDER ───────────────────────── */
   return (
     <div className="chat-ui">
+      {/* Chat Header with Reset Button */}
+      <div className="chat-header">
+        <button 
+          className="chat-reset-btn" 
+          onClick={resetChatHistory} 
+          aria-label="Reset conversation" 
+          title="Reset conversation"
+        >
+          <i className="fas fa-redo-alt"></i>
+        </button>
+      </div>
+      
       <div className="chat-messages">
         {messages.map((m, i) => (
           <div
