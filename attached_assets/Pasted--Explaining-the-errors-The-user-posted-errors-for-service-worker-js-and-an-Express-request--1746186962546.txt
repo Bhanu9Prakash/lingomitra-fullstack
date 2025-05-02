@@ -1,0 +1,127 @@
+**Explaining the errors**
+
+The user posted errors for service-worker.js and an Express request.
+
+1. The first error indicates that the service worker tries to cache a POST request using `cache.put` but the Cache API only supports GET requests. The fix here is to ensure that the service worker checks if the method is GET before caching a request.
+
+2. The second error is a 500 server error from `/api/progress/lesson/.../complete`. This likely originates from the route in Express, and I'll need to check how it's implemented—likely in `storage.markLessonComplete`.
+
+**Investigating the 500 error**
+
+It looks like the error occurs when trying to mark the lesson as complete, resulting in a 500 status. The issue might be related to `storage.markLessonComplete`, specifically if `req.user` is undefined, possibly due to missing user authentication. Since `storage.markLessonComplete` could be failing to find a record or handle data properly, we should check server logs for more details. The Zod validation also seems unrelated since it's only used in updating progress, not completing the lesson.
+
+
+Thought for 8 seconds
+
+
+Here’s what’s going on:
+
+---
+
+## 1) `TypeError: Failed to execute 'put' on 'Cache': Request method 'POST' is unsupported`
+
+**Why it happens:**
+Your service-worker’s fetch handler is trying to do something like:
+
+```js
+// Pseudocode from your service-worker.js
+caches.open(CACHE_NAME).then(cache => {
+  cache.put(event.request, response.clone())
+})
+```
+
+But the Cache API only allows you to cache **GET** requests. Any attempt to `cache.put()` a POST (or DELETE, PATCH, etc.) will throw exactly that error.
+
+**How to fix it:**
+Guard your caching logic so that you only cache GETs. For example:
+
+```js
+self.addEventListener('fetch', event => {
+  // Skip all non-GET requests
+  if (event.request.method !== 'GET') return;
+
+  event.respondWith(
+    caches.open(CACHE_NAME).then(cache =>
+      cache.match(event.request).then(cached => {
+        if (cached) return cached;
+        return fetch(event.request).then(response => {
+          cache.put(event.request, response.clone());
+          return response;
+        });
+      })
+    )
+  );
+});
+```
+
+This will stop your service worker from ever calling `cache.put()` on a POST, and the TypeError will go away.
+
+---
+
+## 2) `POST /api/progress/lesson/:lessonId/complete → 500 Internal Server Error`
+
+Your client logs:
+
+```
+/api/progress/lesson/es-lesson01/complete:1 Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+progress.ts:65 Error marking lesson as completed: Error: Failed to mark lesson as completed
+```
+
+That means your Express route
+
+```ts
+router.post("/lesson/:lessonId/complete", async (req, res) => {
+  try {
+    const progress = await storage.markLessonComplete(req.user!.id, req.params.lessonId);
+    res.json(progress);
+  } catch (error) {
+    console.error("Error marking lesson as complete:", error);
+    res.status(500).json({ message: "Failed to mark lesson as complete" });
+  }
+});
+```
+
+hit an unhandled exception in `storage.markLessonComplete(...)`, which your catch block turned into a generic 500.
+
+### How to debug
+
+1. **Inspect the real error**
+   In your server console you’ll see the full `error` object logged after
+
+   ```txt
+   Error marking lesson as complete: …
+   ```
+
+   That stack‐trace will tell you exactly whether it’s a DB client error, a “user not found,” or something else.
+
+2. **Check `req.user`**
+   In development you’re using `?testUser=1` to bypass auth. Make sure you are indeed appending `?testUser=1` to the URL when you test. If `req.user` is ever undefined, `req.user!.id` will blow up.
+
+3. **Verify your storage function**
+   Open up `storage.markLessonComplete(userId, lessonId)` and confirm that:
+
+   * It can connect to your database
+   * It finds (or creates) the progress row
+   * It doesn’t violate any constraints
+   * It returns a valid object
+
+4. **Test the endpoint directly**
+   Use Postman or `curl`:
+
+   ```bash
+   curl -X POST http://localhost:3000/api/progress/lesson/es-lesson01/complete?testUser=1 \
+     -H "Content-Type: application/json"
+   ```
+
+   and look at the JSON or error message in the response body.
+
+Once you’ve read the actual stack-trace or error message from your server logs, you can pinpoint and fix whatever in `storage.markLessonComplete` is failing—whether it’s missing DB tables, a typo in the query, or bad schema validation.
+
+---
+
+### TL;DR
+
+* **Service worker error** → you can’t cache POSTs. Wrap your `cache.put` so it only runs on GET requests.
+* **500 on `/complete`** → your storage layer threw; inspect the console.log of `error` in your Express catch block to see why, then correct the DB call or auth check.
+
+After you make those two fixes, your front-end calls to mark lessons complete (and your Settings/Profile pages) will start working again.

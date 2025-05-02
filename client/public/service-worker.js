@@ -64,16 +64,24 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          // Cache a copy of the response
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          // Only cache GET responses
+          if (event.request.method === 'GET') {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseClone);
+            });
+          }
           return response;
         })
         .catch(() => {
-          // If network fails, try to get from cache
-          return caches.match(event.request);
+          // If network fails, try to get from cache (only works for GET)
+          if (event.request.method === 'GET') {
+            return caches.match(event.request);
+          }
+          return new Response('Network error happened', {
+            status: 408,
+            headers: { 'Content-Type': 'text/plain' }
+          });
         })
     );
     return;
@@ -83,12 +91,13 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       // For HTML files and CSS/JS bundles, always try network first to get fresh content
-      if (event.request.mode === 'navigate' || 
+      if ((event.request.mode === 'navigate' || 
           event.request.url.includes('.js') || 
-          event.request.url.includes('.css')) {
+          event.request.url.includes('.css')) && 
+          event.request.method === 'GET') {
         return fetch(event.request)
           .then(response => {
-            // Cache the fresh response
+            // Cache the fresh response (only for GET)
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then(cache => {
               cache.put(event.request, responseClone);
@@ -114,12 +123,15 @@ self.addEventListener('fetch', (event) => {
       // For other assets, try cache first
       if (cachedResponse) {
         // But still update the cache in the background (stale-while-revalidate)
-        fetch(event.request).then(response => {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseClone);
-          });
-        }).catch(() => {});
+        // Only for GET requests
+        if (event.request.method === 'GET') {
+          fetch(event.request).then(response => {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseClone);
+            });
+          }).catch(() => {});
+        }
         
         return cachedResponse;
       }
@@ -127,8 +139,8 @@ self.addEventListener('fetch', (event) => {
       // Not in cache, get from network
       return fetch(event.request)
         .then((response) => {
-          // Cache the network response
-          if (response.status === 200) {
+          // Cache the network response (only for GET requests)
+          if (response.status === 200 && event.request.method === 'GET') {
             const responseClone = response.clone();
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, responseClone);
