@@ -128,6 +128,7 @@ export default function AuthPage() {
         title: "Registration successful!",
         description: "Your account has been created.",
         variant: "default",
+        duration: 3000, // 3 seconds for success messages
       });
       navigate("/");
     } catch (error) {
