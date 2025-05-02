@@ -130,7 +130,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                           
                           {/* Flag in the middle */}
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <div className={`${isSolo ? 'w-14 h-14' : 'w-8 h-8'} rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md`}>
+                            <div className={`${isSolo ? 'w-14 h-14' : 'w-8 h-8'} rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-200 shadow-md border dark:border-gray-700 light:border-gray-300`}>
                               <FlagIcon 
                                 code={language.flagCode} 
                                 size={isSolo ? 48 : 24} 
@@ -172,7 +172,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                     
                     return (
                       <div key={language.code} className="flex items-center space-x-4">
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-200 shadow-md border dark:border-gray-700 light:border-gray-300">
                           <FlagIcon code={language.flagCode} size={24} className="scale-100" />
                         </div>
                         <div className="flex-1">

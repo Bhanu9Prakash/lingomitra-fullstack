@@ -229,10 +229,22 @@ export default function Profile() {
               languageNamesMap[language.code] = language.name;
             });
             
-            // Collect all progress data
+            // Collect all progress data and ensure date properties are strings
             const allProgressData = progressQueries
               .filter(query => query.data && Array.isArray(query.data))
-              .flatMap(query => query.data as UserProgress[]);
+              .flatMap(query => {
+                if (!query.data) return [];
+                return query.data.map(progress => ({
+                  ...progress,
+                  // Convert Date objects to strings to match UserProgress type
+                  lastAccessedAt: typeof progress.lastAccessedAt === 'object' 
+                    ? progress.lastAccessedAt.toISOString() 
+                    : progress.lastAccessedAt,
+                  completedAt: progress.completedAt && typeof progress.completedAt === 'object'
+                    ? progress.completedAt.toISOString()
+                    : progress.completedAt,
+                }));
+              });
             
             return (
               <StreakCalendar 
@@ -252,7 +264,16 @@ export default function Profile() {
             // Populate the maps
             languages.forEach((language: Language, index: number) => {
               if (progressQueries[index]?.data) {
-                progressByLanguage[language.code] = progressQueries[index].data || [];
+                // Transform progress data and convert Date objects to strings
+                progressByLanguage[language.code] = (progressQueries[index].data || []).map(progress => ({
+                  ...progress,
+                  lastAccessedAt: typeof progress.lastAccessedAt === 'object' 
+                    ? progress.lastAccessedAt.toISOString() 
+                    : progress.lastAccessedAt,
+                  completedAt: progress.completedAt && typeof progress.completedAt === 'object'
+                    ? progress.completedAt.toISOString()
+                    : progress.completedAt,
+                }));
               }
               
               if (lessonQueries[index]?.data) {
@@ -309,7 +330,7 @@ export default function Profile() {
                 <AccordionItem value={language.code} key={language.code}>
                   <AccordionTrigger className="px-4 py-2 hover:bg-accent/50 rounded-md">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
+                      <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-200 shadow-md border dark:border-gray-700 light:border-gray-300">
                         <FlagIcon code={language.flagCode} size={24} className="scale-100" />
                       </div>
                       <span className="font-semibold">{language.name}</span>

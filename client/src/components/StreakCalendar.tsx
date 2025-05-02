@@ -222,7 +222,7 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
                   
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className={`h-4 w-4 ${currentStreak >= 3 ? 'text-green-500' : 'text-gray-400'}`} />
-                    <Badge className={`${currentStreak >= 3 ? 'bg-green-600' : 'bg-slate-700 dark:bg-slate-700 light:bg-slate-200'} text-xs`}>
+                    <Badge className={`${currentStreak >= 3 ? 'bg-green-600 text-white' : 'bg-slate-700 dark:bg-slate-700 light:bg-slate-300 text-white dark:text-white light:text-gray-800'} text-xs`}>
                       {currentStreak >= 3 ? 'Earned' : 'In progress'}
                     </Badge>
                   </div>
@@ -238,7 +238,7 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
                   
                   <div className="flex items-center gap-2">
                     <Lock className={`h-4 w-4 ${currentStreak >= 7 ? 'text-green-500' : 'text-gray-400'}`} />
-                    <Badge className={`${currentStreak >= 7 ? 'bg-green-600' : 'bg-slate-700 dark:bg-slate-700 light:bg-slate-200'} text-xs`}>
+                    <Badge className={`${currentStreak >= 7 ? 'bg-green-600 text-white' : 'bg-slate-700 dark:bg-slate-700 light:bg-slate-300 text-white dark:text-white light:text-gray-800'} text-xs`}>
                       {currentStreak >= 7 ? 'Unlocked' : 'Locked'}
                     </Badge>
                   </div>
@@ -280,7 +280,7 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
                                   ? 'ring-2 ring-orange-500' 
                                   : day.hasActivity 
                                     ? 'bg-green-600 text-white hover:bg-green-700'
-                                    : 'bg-gray-800/80 dark:bg-gray-800/80 light:bg-gray-200/80 hover:bg-gray-700/90 dark:hover:bg-gray-700/90 light:hover:bg-gray-300/90'
+                                    : 'bg-gray-800/80 dark:bg-gray-800/80 light:bg-gray-300 hover:bg-gray-700/90 dark:hover:bg-gray-700/90 light:hover:bg-gray-400 text-gray-800 dark:text-white light:text-gray-800 border dark:border-transparent light:border-gray-400'
                                 }
                                 ${day.hasActivity && day.isToday ? 'bg-orange-500 text-white' : ''}
                               `}
