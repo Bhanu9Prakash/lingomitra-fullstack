@@ -9,13 +9,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useToast } from "@/hooks/use-toast";
+import { useSimpleToast } from "@/hooks/use-simple-toast";
 import { useLocation, Link } from "wouter";
 import { User, LogOut, Settings } from "lucide-react";
 
 export default function UserMenu() {
   const { user, logoutMutation } = useAuth();
-  const { toast } = useToast();
+  const { toast } = useSimpleToast();
   const [_, navigate] = useLocation();
 
   const handleLogout = async () => {
