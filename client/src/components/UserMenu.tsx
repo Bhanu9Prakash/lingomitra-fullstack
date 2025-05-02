@@ -66,9 +66,9 @@ export default function UserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         className="w-56 border-primary/20 bg-background shadow-lg rounded-md overflow-hidden" 
-        align="end"
+        align="center"
         alignOffset={0}
-        sideOffset={8}
+        sideOffset={5}
         avoidCollisions={true}
         collisionPadding={16}
       >

@@ -164,6 +164,9 @@ export default function LessonView() {
           isChatActive={isChatActive}
         />
       )}
+      
+      {/* Spacer to account for fixed header height */}
+      <div className="lesson-header-spacer"></div>
 
       {/* Main content */}
       <div className="container">

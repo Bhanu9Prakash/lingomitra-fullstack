@@ -70,7 +70,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className={`${theme === 'dark' ? 'dark-theme dark' : ''}`}>
       <div id="app-wrapper" className="app-wrapper overflow-x-hidden w-full">
-        <header className="relative">
+        <header className="fixed top-0 left-0 right-0 w-full z-50 border-b shadow-sm bg-background">
           <div className="container">
             <div className="logo">
               <MascotLogo className="mascot-logo" />
@@ -91,6 +91,9 @@ export default function Layout({ children }: LayoutProps) {
             </div>
           </div>
         </header>
+        
+        {/* Add a spacer to account for the fixed header */}
+        <div className="h-16"></div>
         
         <main>
           {children}

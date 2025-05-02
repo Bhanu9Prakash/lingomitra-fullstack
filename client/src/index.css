@@ -879,14 +879,29 @@ header .container {
   flex-direction: column;
 }
 
+/* Spacer for fixed lesson header */
+.lesson-header-spacer {
+  height: 64px; /* Match the height of the lesson header */
+  width: 100%;
+}
+
+@media (max-width: 576px) {
+  .lesson-header-spacer {
+    height: 55px; /* Smaller height for mobile */
+  }
+}
+
 .lesson-header {
   padding: 15px 0;
   background-color: var(--bg-light); /* Different background than main header */
   border-bottom: 1px solid var(--border-color);
-  margin-bottom: 30px;
-  position: sticky;
-  top: 72px; /* Position below the main header (adjust this value based on main header height) */
-  z-index: 800; /* Below main header but above other content */
+  margin-bottom: 0; /* Remove bottom margin since we're using a spacer */
+  position: fixed;
+  top: 64px; /* Position directly below the main header */
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 40; /* Below main header (z-50) but above other content */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Different shadow from main header for visual distinction */
   transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }
