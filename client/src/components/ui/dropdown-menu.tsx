@@ -54,7 +54,8 @@ const DropdownMenuSubContent = React.forwardRef<
           className
         )}
         style={{ 
-          position: 'fixed'
+          position: 'fixed',
+          transform: 'translateX(-50%)' /* Center the dropdown */
         }}
         {...props}
       />
@@ -82,6 +83,7 @@ const DropdownMenuContent = React.forwardRef<
         )}
         style={{ 
           position: 'fixed',
+          transform: 'translateX(-50%)', /* Center the dropdown under the trigger */
           ...props.style 
         }} 
         {...props}

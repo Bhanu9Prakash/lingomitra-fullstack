@@ -70,7 +70,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className={`${theme === 'dark' ? 'dark-theme dark' : ''}`}>
       <div id="app-wrapper" className="app-wrapper overflow-x-hidden w-full">
-        <header className="fixed top-0 left-0 right-0 w-full z-50 border-b shadow-sm bg-background">
+        <header className="fixed top-0 left-0 right-0 w-full z-50 bg-background shadow-sm">
           <div className="container">
             <div className="logo">
               <MascotLogo className="mascot-logo" />

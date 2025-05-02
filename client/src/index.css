@@ -894,7 +894,6 @@ header .container {
 .lesson-header {
   padding: 15px 0;
   background-color: var(--bg-light); /* Different background than main header */
-  border-bottom: 1px solid var(--border-color);
   margin-bottom: 0; /* Remove bottom margin since we're using a spacer */
   position: fixed;
   top: 64px; /* Position directly below the main header */
@@ -902,7 +901,7 @@ header .container {
   right: 0;
   width: 100%;
   z-index: 40; /* Below main header (z-50) but above other content */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Different shadow from main header for visual distinction */
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.08); /* Subtle shadow for depth without visible line */
   transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
