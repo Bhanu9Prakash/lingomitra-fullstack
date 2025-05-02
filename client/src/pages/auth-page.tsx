@@ -188,7 +188,7 @@ export default function AuthPage() {
                               <Input
                                 placeholder="Enter your username"
                                 {...field}
-                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                className={`px-3 py-2 rounded-md w-full text-sm auth-input ${
                                   theme === 'dark' 
                                     ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
                                     : 'bg-white border-gray-300 text-gray-800'
@@ -211,7 +211,7 @@ export default function AuthPage() {
                                 type="password"
                                 placeholder="Enter your password"
                                 {...field}
-                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                className={`px-3 py-2 rounded-md w-full text-sm auth-input ${
                                   theme === 'dark' 
                                     ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
                                     : 'bg-white border-gray-300 text-gray-800'
@@ -274,7 +274,7 @@ export default function AuthPage() {
                               <Input
                                 placeholder="Choose a username"
                                 {...field}
-                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                className={`px-3 py-2 rounded-md w-full text-sm auth-input ${
                                   theme === 'dark' 
                                     ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
                                     : 'bg-white border-gray-300 text-gray-800'
@@ -297,7 +297,7 @@ export default function AuthPage() {
                                 type="email"
                                 placeholder="Enter your email address"
                                 {...field}
-                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                className={`px-3 py-2 rounded-md w-full text-sm auth-input ${
                                   theme === 'dark' 
                                     ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
                                     : 'bg-white border-gray-300 text-gray-800'
@@ -320,7 +320,7 @@ export default function AuthPage() {
                                 type="password"
                                 placeholder="Create a password"
                                 {...field}
-                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                className={`px-3 py-2 rounded-md w-full text-sm auth-input ${
                                   theme === 'dark' 
                                     ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
                                     : 'bg-white border-gray-300 text-gray-800'
@@ -343,7 +343,7 @@ export default function AuthPage() {
                                 type="password"
                                 placeholder="Confirm your password"
                                 {...field}
-                                className={`px-3 py-2 rounded-md w-full text-sm ${
+                                className={`px-3 py-2 rounded-md w-full text-sm auth-input ${
                                   theme === 'dark' 
                                     ? 'bg-[#232323] border-[#2a2a2a] border-2 text-white focus:border-[#ff6600] focus:ring-0 focus:ring-offset-0' 
                                     : 'bg-white border-gray-300 text-gray-800'
@@ -398,9 +398,9 @@ export default function AuthPage() {
               <div className="space-y-7 mt-10 text-left">
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 mt-1">
-                    <div className={`h-5 w-5 rounded-full ${theme === 'dark' ? 'bg-gray-400' : 'bg-[#ff6600]'}`}></div>
+                    <div className={`feature-bullet ${theme === 'dark' ? 'bg-gray-400' : 'bg-[#ff6600]'}`}></div>
                   </div>
-                  <p className={`${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} text-base font-medium`}>
+                  <p className={`feature-text ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>
                     <strong className="font-bold text-[#ff6600]">Personalized AI language tutor</strong> available 24/7
                   </p>
                 </div>
