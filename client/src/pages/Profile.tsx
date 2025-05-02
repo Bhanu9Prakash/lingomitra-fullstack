@@ -320,18 +320,18 @@ export default function Profile() {
               if (progressData.length === 0) return null;
               
               const totalLessons = lessons.length;
-              const completedLessons = progressData.filter((p: UserProgress) => p.completed).length;
+              const completedLessons = progressData.filter((p: any) => p.completed).length;
               const percentComplete = calculateTotalProgressForLanguage(progressData, lessons);
               
               // Find the most recent activity
-              const mostRecent = progressData.reduce((latest: UserProgress | null, current: UserProgress) => {
+              const mostRecent = progressData.reduce((latest: any | null, current: any) => {
                 const currentDate = new Date(current.lastAccessedAt);
                 const latestDate = latest ? new Date(latest.lastAccessedAt) : new Date(0);
                 return currentDate > latestDate ? current : latest;
-              }, null as UserProgress | null);
+              }, null);
               
               // Calculate total time spent
-              const totalTimeSpent = progressData.reduce((sum: number, current: UserProgress) => {
+              const totalTimeSpent = progressData.reduce((sum: number, current: any) => {
                 return sum + (current.timeSpent || 0);
               }, 0);
               
@@ -349,21 +349,21 @@ export default function Profile() {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <Card className="border-0 shadow-none">
+                    <Card className="border dark:border-gray-800 light:border-gray-300 shadow-sm">
                       <CardContent className="p-4">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                          <div className="bg-accent/30 dark:bg-accent/30 light:bg-gray-100 p-4 rounded-lg flex items-center gap-3 shadow-sm">
+                          <div className="bg-accent/30 dark:bg-accent/30 light:bg-gray-100 p-4 rounded-lg flex items-center gap-3 shadow-sm border dark:border-gray-700 light:border-gray-300">
                             <Award className="h-8 w-8 text-primary" />
                             <div>
-                              <p className="text-sm text-muted-foreground">Completed Lessons</p>
+                              <p className="text-sm text-muted-foreground dark:text-gray-400 light:text-gray-600">Completed Lessons</p>
                               <p className="text-xl font-bold">{completedLessons} / {totalLessons}</p>
                             </div>
                           </div>
                           
-                          <div className="bg-accent/30 dark:bg-accent/30 light:bg-gray-100 p-4 rounded-lg flex items-center gap-3 shadow-sm">
+                          <div className="bg-accent/30 dark:bg-accent/30 light:bg-gray-100 p-4 rounded-lg flex items-center gap-3 shadow-sm border dark:border-gray-700 light:border-gray-300">
                             <Clock className="h-8 w-8 text-primary" />
                             <div>
-                              <p className="text-sm text-muted-foreground">Total Time Spent</p>
+                              <p className="text-sm text-muted-foreground dark:text-gray-400 light:text-gray-600">Total Time Spent</p>
                               <p className="text-xl font-bold">
                                 {totalTimeSpent < 60 
                                   ? `${totalTimeSpent} min` 
@@ -372,10 +372,10 @@ export default function Profile() {
                             </div>
                           </div>
                           
-                          <div className="bg-accent/30 dark:bg-accent/30 light:bg-gray-100 p-4 rounded-lg flex items-center gap-3 shadow-sm">
+                          <div className="bg-accent/30 dark:bg-accent/30 light:bg-gray-100 p-4 rounded-lg flex items-center gap-3 shadow-sm border dark:border-gray-700 light:border-gray-300">
                             <BookOpen className="h-8 w-8 text-primary" />
                             <div>
-                              <p className="text-sm text-muted-foreground">Last Activity</p>
+                              <p className="text-sm text-muted-foreground dark:text-gray-400 light:text-gray-600">Last Activity</p>
                               <p className="text-xl font-bold">
                                 {mostRecent 
                                   ? formatDistanceToNow(new Date(mostRecent.lastAccessedAt), { addSuffix: true }) 
@@ -397,7 +397,7 @@ export default function Profile() {
                           <h4 className="font-semibold">Lesson Breakdown</h4>
                           <div className="grid grid-cols-1 gap-2">
                             {lessons.map((lesson: Lesson) => {
-                              const progress = progressData.find((p: UserProgress) => p.lessonId === lesson.lessonId);
+                              const progress = progressData.find((p: any) => p.lessonId === lesson.lessonId);
                               const isCompleted = progress?.completed || false;
                               const timeSpent = progress?.timeSpent || 0;
                               
@@ -430,7 +430,7 @@ export default function Profile() {
                           </div>
                         </div>
                       </CardContent>
-                      <CardFooter className="px-4 py-3 border-t flex justify-between">
+                      <CardFooter className="px-4 py-3 border-t dark:border-gray-800 light:border-gray-200 flex justify-between">
                         <Button 
                           variant="outline" 
                           onClick={() => navigate(`/languages/${language.code}`)}
