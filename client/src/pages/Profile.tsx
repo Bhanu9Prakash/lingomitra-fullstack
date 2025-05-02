@@ -96,7 +96,7 @@ export default function Profile() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh] mt-16">
         <Loader2 className="w-8 h-8 text-primary animate-spin" />
         <span className="ml-2 text-lg">Loading your profile data...</span>
       </div>
@@ -126,7 +126,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="container mx-auto py-8 max-w-5xl">
+    <div className="container mx-auto py-12 max-w-5xl mt-6">
       <h1 className="text-3xl font-bold mb-8 text-center md:text-left">Your Language Learning Profile</h1>
       
       {activeLanguages.length === 0 ? (
