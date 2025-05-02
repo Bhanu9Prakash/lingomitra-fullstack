@@ -64,15 +64,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.setQueryData(["/api/user"], userData);
     },
     onError: (error: Error) => {
-      let errorMessage = error.message;
-      
-      // Provide more user-friendly messages for common errors
-      if (errorMessage.includes("Unauthorized") || errorMessage === "Login failed") {
-        errorMessage = "Incorrect username/email or password. Please try again.";
-      }
-      
-      // Show error toast with the formatted message
-      toastError("Login failed", errorMessage);
+      // Error is handled in the login form component
+      console.log("Login error:", error.message);
     },
   });
 
@@ -89,19 +82,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.setQueryData(["/api/user"], userData);
     },
     onError: (error: Error) => {
-      let errorMessage = error.message;
-      
-      // Provide more user-friendly messages for common errors
-      if (errorMessage.includes("Username already exists")) {
-        errorMessage = "This username is already taken. Please try another one.";
-      } else if (errorMessage.includes("Email already exists")) {
-        errorMessage = "An account with this email already exists. Try logging in instead.";
-      } else if (errorMessage === "Registration failed") {
-        errorMessage = "Could not create your account. Please check your information and try again.";
-      }
-      
-      // Show error toast with the formatted message
-      toastError("Registration failed", errorMessage);
+      // Error is handled in the register form component
+      console.log("Registration error:", error.message);
     },
   });
 

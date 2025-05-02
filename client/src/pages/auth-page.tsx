@@ -94,6 +94,7 @@ export default function AuthPage() {
 
   // State for form-level error message
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [registerError, setRegisterError] = useState<string | null>(null);
 
   // Submit handlers
   const onLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
@@ -103,23 +104,27 @@ export default function AuthPage() {
       success("Welcome back!", "You have successfully logged in.");
       navigate("/");
     } catch (err) {
-      // Set an inline error message in addition to the toast
+      // Set an inline error message only
       setLoginError("Incorrect username/email or password. Please try again.");
-      
-      // Extra toast for visibility - especially on mobile
-      showError("Login Error", "Incorrect username/email or password. Please try again.");
     }
   };
 
   const onRegisterSubmit = async (values: z.infer<typeof registerSchema>) => {
+    setRegisterError(null); // Clear previous errors
     try {
       const { confirmPassword, ...userData } = values;
       await registerMutation.mutateAsync(userData);
       success("Registration successful!", "Your account has been created.");
       navigate("/");
-    } catch (err) {
-      // Error handling is primarily done in the auth hook
-      // We don't need additional error handling here
+    } catch (err: any) {
+      // Set an inline error message
+      if (err.message?.includes("Username already exists")) {
+        setRegisterError("This username is already taken. Please try another one.");
+      } else if (err.message?.includes("Email already exists")) {
+        setRegisterError("An account with this email already exists. Try logging in instead.");
+      } else {
+        setRegisterError("Could not create your account. Please check your information and try again.");
+      }
     }
   };
 
@@ -362,6 +367,13 @@ export default function AuthPage() {
                           </FormItem>
                         )}
                       />
+                      
+                      {/* Inline error message */}
+                      {registerError && (
+                        <div className="p-3 mb-3 rounded-md text-white bg-red-600 dark:bg-red-700 text-sm">
+                          <p>{registerError}</p>
+                        </div>
+                      )}
                       
                       <Button
                         type="submit"
