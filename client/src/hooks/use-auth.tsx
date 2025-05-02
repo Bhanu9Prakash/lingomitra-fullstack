@@ -25,7 +25,7 @@ type LoginData = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const { toast } = useToast();
+  const { error: toastError } = useSimpleToast();
   const {
     data: user,
     error,
@@ -70,12 +70,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         errorMessage = "Incorrect username/email or password. Please try again.";
       }
       
-      toast({
-        title: "Login failed",
-        description: errorMessage,
-        variant: "destructive",
-        duration: 4000, // Show error messages for 4 seconds
-      });
+      // Show error toast with the formatted message
+      toastError("Login failed", errorMessage);
     },
   });
 
@@ -103,12 +99,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         errorMessage = "Could not create your account. Please check your information and try again.";
       }
       
-      toast({
-        title: "Registration failed",
-        description: errorMessage,
-        variant: "destructive",
-        duration: 4000, // Show error messages for 4 seconds
-      });
+      // Show error toast with the formatted message
+      toastError("Registration failed", errorMessage);
     },
   });
 
@@ -123,12 +115,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.setQueryData(["/api/user"], null);
     },
     onError: (error: Error) => {
-      toast({
-        title: "Logout failed",
-        description: error.message,
-        variant: "destructive",
-        duration: 4000, // Show error messages for 4 seconds
-      });
+      // Show error toast with the error message
+      toastError("Logout failed", error.message);
     },
   });
 
