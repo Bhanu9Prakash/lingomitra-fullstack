@@ -131,11 +131,13 @@ body {
   font-weight: 600 !important;
   margin-bottom: 6px !important;
   color: var(--text-color);
+  letter-spacing: 0.01em;
 }
 
 /* Improve Card Shadows */
 .auth-card-light {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Enhance feature bullet points */
@@ -151,6 +153,7 @@ body {
   font-weight: 500;
   line-height: 1.6;
   color: var(--text-color);
+  font-size: 1.05rem;
 }
 
 #root {

@@ -163,7 +163,7 @@ export default function AuthPage() {
               
               {/* Login Form */}
               {activeTab === 'login' && (
-                <div className={`p-7 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a] border border-[#222222]' : 'bg-white border border-gray-200 shadow-lg'}`}>
+                <div className={`p-7 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a] border border-[#222222]' : 'bg-white border border-gray-200 auth-card-light'}`}>
                   <div className="mb-7">
                     <h2 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                       Welcome Back
@@ -249,7 +249,7 @@ export default function AuthPage() {
               
               {/* Register Form */}
               {activeTab === 'register' && (
-                <div className={`p-7 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a] border border-[#222222]' : 'bg-white border border-gray-200 shadow-lg'}`}>
+                <div className={`p-7 rounded-md ${theme === 'dark' ? 'bg-[#1a1a1a] border border-[#222222]' : 'bg-white border border-gray-200 auth-card-light'}`}>
                   <div className="mb-7">
                     <h2 className={`text-2xl font-bold mb-2 ${theme === 'dark' ? 'text-white' : 'text-gray-800'}`}>
                       Create Account
@@ -406,17 +406,17 @@ export default function AuthPage() {
                 </div>
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 mt-1">
-                    <div className={`h-5 w-5 rounded-full ${theme === 'dark' ? 'bg-gray-400' : 'bg-[#ff6600]'}`}></div>
+                    <div className={`feature-bullet ${theme === 'dark' ? 'bg-gray-400' : 'bg-[#ff6600]'}`}></div>
                   </div>
-                  <p className={`${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} text-base font-medium`}>
+                  <p className={`feature-text ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>
                     <strong className="font-bold text-[#ff6600]">Interactive lessons</strong> in multiple languages
                   </p>
                 </div>
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0 mt-1">
-                    <div className={`h-5 w-5 rounded-full ${theme === 'dark' ? 'bg-gray-400' : 'bg-[#ff6600]'}`}></div>
+                    <div className={`feature-bullet ${theme === 'dark' ? 'bg-gray-400' : 'bg-[#ff6600]'}`}></div>
                   </div>
-                  <p className={`${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'} text-base font-medium`}>
+                  <p className={`feature-text ${theme === 'dark' ? 'text-gray-200' : 'text-gray-800'}`}>
                     <strong className="font-bold text-[#ff6600]">Track your progress</strong> and master new languages faster
                   </p>
                 </div>
