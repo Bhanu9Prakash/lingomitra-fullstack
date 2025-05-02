@@ -8,7 +8,7 @@ interface FlagIconProps {
 
 /**
  * Renders a flag icon based on country code
- * Uses country flag emoji or SVG
+ * Uses SVG flags from the public directory
  */
 export default function FlagIcon({ code, size = 24, className = '' }: FlagIconProps) {
   // Map language codes to country codes for flags
@@ -20,11 +20,11 @@ export default function FlagIcon({ code, size = 24, className = '' }: FlagIconPr
     'it': 'it', // Italian -> Italy
     'pt': 'pt', // Portuguese -> Portugal
     'ru': 'ru', // Russian -> Russia
-    'zh': 'cn', // Chinese -> China
+    'zh': 'zh', // Chinese
     'ja': 'jp', // Japanese -> Japan
     'ko': 'kr', // Korean -> South Korea
     'ar': 'sa', // Arabic -> Saudi Arabia
-    'hi': 'in', // Hindi -> India
+    'hi': 'hi', // Hindi
     'tr': 'tr', // Turkish -> Turkey
     'nl': 'nl', // Dutch -> Netherlands
     'pl': 'pl', // Polish -> Poland
@@ -40,34 +40,50 @@ export default function FlagIcon({ code, size = 24, className = '' }: FlagIconPr
     'hu': 'hu', // Hungarian -> Hungary
     'el': 'gr', // Greek -> Greece
     'bn': 'bd', // Bengali -> Bangladesh
-    'kn': 'in', // Kannada -> India
+    'kn': 'kn', // Kannada
   };
 
   // Use provided code (which may be a country code) or map from language code
-  const countryCode = code.length === 2 ? (languageToCountryMap[code.toLowerCase()] || code.toLowerCase()) : code.toLowerCase();
+  const flagCode = code.length === 2 ? (languageToCountryMap[code.toLowerCase()] || code.toLowerCase()) : code.toLowerCase();
   
-  // Simple style for flag emoji display
-  const style = {
+  // Style for flag container
+  const containerStyle = {
     width: `${size}px`,
     height: `${size}px`,
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: `${size * 0.75}px`,
-    borderRadius: '50%',
     overflow: 'hidden',
-    backgroundColor: '#f1f5f9'
   };
 
-  // Show emoji flag instead of SVG for simpler implementation
+  // Return SVG flag image
   return (
-    <div style={style} className={className} title={`Flag: ${countryCode.toUpperCase()}`}>
-      {getFlagEmoji(countryCode)}
+    <div 
+      style={containerStyle} 
+      className={`${className} flag-icon`} 
+      title={`Flag: ${flagCode.toUpperCase()}`}
+    >
+      <img 
+        src={`/flags/${flagCode}.svg`} 
+        alt={`${flagCode} flag`} 
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        onError={(e) => {
+          // Fallback to emoji if SVG doesn't exist
+          const target = e.target as HTMLImageElement;
+          target.style.display = 'none';
+          const parent = target.parentElement;
+          if (parent) {
+            parent.innerHTML = getFlagEmoji(flagCode);
+            parent.style.backgroundColor = '#f1f5f9';
+            parent.style.fontSize = `${size * 0.75}px`;
+          }
+        }}
+      />
     </div>
   );
 }
 
-// Convert country code to flag emoji
+// Convert country code to flag emoji (used as fallback)
 function getFlagEmoji(countryCode: string) {
   const codePoints = countryCode
     .toUpperCase()

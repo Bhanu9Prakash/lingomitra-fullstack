@@ -107,7 +107,9 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                           
                           {/* Flag in the middle */}
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <FlagIcon code={language.flagCode} size={24} />
+                            <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 shadow-md">
+                              <FlagIcon code={language.flagCode} size={24} />
+                            </div>
                             <p className="text-sm font-medium mt-1">{language.name}</p>
                             <p className="text-lg font-bold text-primary">{Math.round(percentComplete)}%</p>
                           </div>
