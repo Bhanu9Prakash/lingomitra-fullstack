@@ -53,8 +53,19 @@ export default function Layout({ children }: LayoutProps) {
   const isHomePage = location === "/";
   const isAuthPage = location === "/auth" || location.startsWith("/auth?");
   
-  // Check if we're on a lesson page to hide the footer
+  // Check user authentication status by querying the user API
+  const { data: user } = useQuery({
+    queryKey: ["/api/user"],
+    queryFn: getQueryFn(),
+    // Don't retry on failure (401 when not logged in)
+    retry: false,
+    // Disable error display in UI
+    gcTime: 0
+  });
+  
+  // Hide footer on lesson pages and when user is logged in to create an app-like experience
   const isLessonPage = location.includes("/lesson/");
+  const isUserLoggedIn = !!user;
 
   return (
     <div className={`${theme === 'dark' ? 'dark-theme dark' : ''}`}>
@@ -85,8 +96,8 @@ export default function Layout({ children }: LayoutProps) {
           {children}
         </main>
         
-        {/* Only show footer on non-lesson pages */}
-        {!isLessonPage && <Footer />}
+        {/* Only show footer when user is not logged in and not on lesson page */}
+        {!isLessonPage && !isUserLoggedIn && <Footer />}
         <ScrollToTop />
         <NetworkStatus />
         <InstallPrompt />
