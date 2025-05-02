@@ -61,9 +61,11 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.languages = new Map();
     this.lessons = new Map();
+    this.progressRecords = new Map();
     this.userCurrentId = 1;
     this.languageCurrentId = 1;
     this.lessonCurrentId = 1;
+    this.progressCurrentId = 1;
     
     // Initialize the session store
     if (process.env.DATABASE_URL) {
@@ -155,6 +157,70 @@ export class MemStorage implements IStorage {
     const lesson: Lesson = { ...insertLesson, id };
     this.lessons.set(id, lesson);
     return lesson;
+  }
+
+  // User Progress methods
+  async getUserProgress(userId: number, lessonId: string): Promise<UserProgress | undefined> {
+    const key = `${userId}:${lessonId}`;
+    return this.progressRecords.get(key);
+  }
+
+  async getUserProgressByLanguage(userId: number, languageCode: string): Promise<UserProgress[]> {
+    // Get all lessons for the language
+    const languageLessons = await this.getLessonsByLanguage(languageCode);
+    const lessonIds = languageLessons.map(lesson => lesson.lessonId);
+    
+    // Get all progress records for the user
+    return Array.from(this.progressRecords.values())
+      .filter(progress => 
+        progress.userId === userId && 
+        lessonIds.includes(progress.lessonId)
+      );
+  }
+
+  async updateUserProgress(
+    userId: number,
+    lessonId: string,
+    progressData: Partial<Omit<InsertUserProgress, 'userId' | 'lessonId'>>
+  ): Promise<UserProgress> {
+    const key = `${userId}:${lessonId}`;
+    const existingProgress = this.progressRecords.get(key);
+    
+    if (existingProgress) {
+      // Update existing record
+      const updatedProgress: UserProgress = {
+        ...existingProgress,
+        ...progressData,
+        lastAccessedAt: progressData.lastAccessedAt || new Date()
+      };
+      this.progressRecords.set(key, updatedProgress);
+      return updatedProgress;
+    } else {
+      // Create new record
+      const id = this.progressCurrentId++;
+      const newProgress: UserProgress = {
+        id,
+        userId,
+        lessonId,
+        completed: progressData.completed || false,
+        completedAt: progressData.completedAt,
+        progress: progressData.progress || 0,
+        score: progressData.score,
+        lastAccessedAt: progressData.lastAccessedAt || new Date(),
+        timeSpent: progressData.timeSpent || 0,
+        notes: progressData.notes
+      };
+      this.progressRecords.set(key, newProgress);
+      return newProgress;
+    }
+  }
+
+  async markLessonComplete(userId: number, lessonId: string): Promise<UserProgress> {
+    return this.updateUserProgress(userId, lessonId, {
+      completed: true,
+      completedAt: new Date(),
+      progress: 100
+    });
   }
 }
 
