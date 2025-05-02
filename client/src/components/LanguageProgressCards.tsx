@@ -102,7 +102,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                           }}
                         >
                           {/* Background circle */}
-                          <div className="absolute inset-0 rounded-full bg-gray-800 dark:bg-gray-800 light:bg-gray-200 opacity-60"></div>
+                          <div className="absolute inset-0 rounded-full bg-gray-800 dark:bg-gray-800 light:bg-gray-200 opacity-90 dark:opacity-90 light:opacity-60 shadow-inner"></div>
                           
                           {/* Progress circle - SVG approach */}
                           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -113,18 +113,18 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                               fill="none" 
                               strokeWidth="10"
                               stroke="currentColor" 
-                              className="text-gray-500 dark:text-gray-600 light:text-gray-300 opacity-40"
+                              className="text-gray-500 dark:text-gray-600 light:text-gray-400 opacity-40"
                             />
                             <circle 
                               cx="50" 
                               cy="50" 
                               r="40" 
                               fill="none" 
-                              strokeWidth="10"
+                              strokeWidth="11"
                               stroke="currentColor" 
                               strokeDasharray={`${2 * Math.PI * 40}`}
                               strokeDashoffset={`${2 * Math.PI * 40 * (1 - percentComplete / 100)}`}
-                              className="text-primary transition-all duration-1000 ease-in-out"
+                              className="text-primary dark:text-primary light:text-primary transition-all duration-1000 ease-in-out"
                             />
                           </svg>
                           
@@ -151,7 +151,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                   
                   {/* Overall progress message */}
                   <div className="mt-8 pt-8 text-center">
-                    <div className="inline-block bg-gray-800 dark:bg-gray-800 light:bg-gray-100 px-6 py-3 rounded-full shadow-md border dark:border-gray-700 light:border-gray-300">
+                    <div className="inline-block bg-gray-800 dark:bg-gray-800 light:bg-gray-200 px-6 py-3 rounded-full shadow-md border dark:border-gray-700 light:border-gray-400">
                       <p className="text-lg font-medium">
                         {calculateOverallProgress() === 0 
                           ? "Starting your journey!" 
@@ -184,7 +184,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                           </div>
                           <Progress 
                             value={percentComplete} 
-                            className="h-4 bg-gray-800 dark:bg-gray-800 light:bg-gray-200"
+                            className="h-4 bg-gray-800 dark:bg-gray-800 light:bg-gray-300 border dark:border-transparent light:border-gray-400"
                           />
                         </div>
                       </div>

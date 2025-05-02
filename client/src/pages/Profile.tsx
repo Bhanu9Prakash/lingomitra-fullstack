@@ -304,7 +304,16 @@ export default function Profile() {
             {activeLanguages.map((language: Language) => {
               // Find the correct language index in the original arrays
               const languageIndex = languages.findIndex(lang => lang.code === language.code);
-              const progressData = languageIndex >= 0 ? (progressQueries[languageIndex]?.data || []) : [];
+              // Transform progress data and convert Date objects to strings
+              const progressData = languageIndex >= 0 ? (progressQueries[languageIndex]?.data || []).map(progress => ({
+                ...progress,
+                lastAccessedAt: typeof progress.lastAccessedAt === 'object' 
+                  ? progress.lastAccessedAt.toISOString() 
+                  : progress.lastAccessedAt,
+                completedAt: progress.completedAt && typeof progress.completedAt === 'object'
+                  ? progress.completedAt.toISOString()
+                  : progress.completedAt,
+              })) : [];
               const lessons = languageIndex >= 0 ? (lessonQueries[languageIndex]?.data || []) : [];
               
               // Skip if no progress
@@ -395,8 +404,10 @@ export default function Profile() {
                               return (
                                 <div 
                                   key={lesson.lessonId} 
-                                  className={`p-3 rounded-md border flex justify-between items-center 
-                                    ${isCompleted ? 'bg-primary/10 border-primary/20' : 'bg-accent/10 border-accent/20'}`}
+                                  className={`p-3 rounded-md border flex justify-between items-center shadow-sm
+                                    ${isCompleted 
+                                      ? 'bg-primary/10 dark:bg-primary/10 light:bg-primary/5 border-primary/20 dark:border-primary/20 light:border-primary/30' 
+                                      : 'bg-accent/10 dark:bg-accent/10 light:bg-gray-50 border-accent/20 dark:border-accent/20 light:border-gray-300'}`}
                                 >
                                   <div className="flex items-center gap-2">
                                     {isCompleted ? (
