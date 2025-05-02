@@ -10,6 +10,7 @@ import { Language } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import LanguageDropdown from "./LanguageDropdown";
 import UserMenu from "./UserMenu";
+import { getQueryFn } from "@/lib/queryClient";
 
 interface LayoutProps {
   children: ReactNode;
@@ -40,6 +41,7 @@ export default function Layout({ children }: LayoutProps) {
   // Fetch all languages
   const { data: languages = [] } = useQuery<Language[]>({
     queryKey: ["/api/languages"],
+    queryFn: getQueryFn(),
   });
   
   // Find the selected language
