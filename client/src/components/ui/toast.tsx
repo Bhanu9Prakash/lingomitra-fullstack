@@ -26,7 +26,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({ toasts, onRemove }) => 
   }, []);
 
   return (
-    <div className="fixed top-0 right-0 z-[99999] flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-auto w-full sm:w-auto">
+    <div className="fixed top-0 right-0 z-[99999] flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-auto w-full sm:w-auto" style={{ pointerEvents: 'auto' }}>
       {toasts.map((toast) => (
         <div
           key={toast.id}

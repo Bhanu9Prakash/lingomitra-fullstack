@@ -39,7 +39,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const duration = toast.duration ?? 5000;
     const newToast = { ...toast, id };
 
-    console.log('Adding toast:', id, 'with duration:', duration);
+    console.log('DEBUG: Adding toast:', id, 'with title:', toast.title, 'and duration:', duration);
     
     // Add the toast to the state
     setToasts((prev) => [...prev, newToast]);

@@ -26,6 +26,7 @@ export function useSimpleToast() {
   
   // Helper for error toasts
   const error = (title: string, description?: string, duration = 4000) => {
+    console.log('DEBUG: Error toast called with title:', title, 'and description:', description);
     addToast({
       title,
       description,

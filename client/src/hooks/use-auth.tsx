@@ -26,6 +26,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { error: toastError } = useSimpleToast();
+  console.log("Toast hook loaded successfully");
   const {
     data: user,
     error,
