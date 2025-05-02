@@ -68,32 +68,37 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                       const lessons = lessonData[language.code] || [];
                       const percentComplete = calculateTotalProgressForLanguage(progress, lessons);
                       
-                      // Calculate position based on circular placement around the center mascot
-                      // For 6 or fewer languages, position them evenly in a circle
+                      // Determine if this is a single language case
                       const languages = activeLangs.slice(0, 6);
+                      const isSolo = languages.length === 1;
                       const angleStep = (2 * Math.PI) / languages.length;
                       const angle = index * angleStep;
                       
-                      // Calculate position along a circle around the center
-                      // Radius ratio - distance from center as percentage of container
-                      const radiusRatio = 0.38; // 38% of container width
+                      // Radius percentage from center
+                      const radiusPct = 42;
                       
                       // Calculate position - x and y coordinates
-                      const left = 50 + 42 * Math.cos(angle - Math.PI/2);
-                      const top = 50 + 42 * Math.sin(angle - Math.PI/2);
+                      // For single language, center it instead of positioning around the circle
+                      const left = isSolo
+                        ? 50
+                        : 50 + radiusPct * Math.cos(angle - Math.PI/2);
+                        
+                      const top = isSolo
+                        ? 50
+                        : 50 + radiusPct * Math.sin(angle - Math.PI/2);
                       
-                      // Size of the progress circle (responsive using CSS classes instead of window object)
-                      const size = 22; // Base size - will be adjusted with CSS for mobile
+                      // Size of the progress circle - larger for single language
+                      const size = isSolo ? 80 : 22;
                       
                       return (
                         <div 
                           key={language.code} 
-                          className="absolute transform -translate-x-1/2 -translate-y-1/2"
+                          className="absolute transform -translate-x-1/2 -translate-y-1/2 aspect-square"
                           style={{ 
                             left: `${left}%`, 
                             top: `${top}%`,
                             width: `${size}%`,
-                            height: `${size}%`,
+                            // Height is controlled by aspect-square
                           }}
                         >
                           {/* Background circle */}
@@ -108,7 +113,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                               fill="none" 
                               strokeWidth="10"
                               stroke="currentColor" 
-                              className="text-gray-800 dark:text-gray-800 light:text-gray-300 opacity-60"
+                              className="text-gray-500 dark:text-gray-600 light:text-gray-300 opacity-40"
                             />
                             <circle 
                               cx="50" 
@@ -125,12 +130,18 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                           
                           {/* Flag in the middle */}
                           <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
-                              <FlagIcon code={language.flagCode} size={40} className="scale-125" />
+                            <div className={`${isSolo ? 'w-16 h-16' : 'w-10 h-10'} rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md`}>
+                              <FlagIcon 
+                                code={language.flagCode} 
+                                size={isSolo ? 64 : 40} 
+                                className="scale-125" 
+                              />
                             </div>
                             <div className="mt-1 text-center">
-                              <p className="text-xs font-medium truncate max-w-[90%] mx-auto">{language.name}</p>
-                              <p className="text-xs sm:text-sm font-bold text-primary">{Math.round(percentComplete)}%</p>
+                              <p className={`${isSolo ? 'text-sm' : 'text-xs'} font-medium text-center`}>{language.name}</p>
+                              <p className={`${isSolo ? 'text-lg' : 'text-xs sm:text-sm'} font-bold text-primary`}>
+                                {Math.round(percentComplete)}%
+                              </p>
                             </div>
                           </div>
                         </div>
