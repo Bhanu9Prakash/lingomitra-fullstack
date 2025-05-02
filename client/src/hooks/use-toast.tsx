@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, createContext, useContext, type ReactNode } from 'react';
+import { useState, createContext, useContext, type ReactNode, useEffect, useRef } from 'react';
 
 export type ToastVariant = 'default' | 'destructive';
 
@@ -22,31 +22,60 @@ const ToastContext = createContext<ToastState | undefined>(undefined);
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastProps[]>([]);
+  // Store timeouts so we can clear them if a toast is manually dismissed
+  const timeoutsRef = useRef<Record<string, NodeJS.Timeout>>({});
+  
+  // Cleanup timeouts when component unmounts
+  useEffect(() => {
+    return () => {
+      Object.values(timeoutsRef.current).forEach(clearTimeout);
+    };
+  }, []);
 
+  // Function to dismiss a toast
+  const dismiss = React.useCallback((id: string) => {
+    // Clear any existing timeout for this toast
+    if (timeoutsRef.current[id]) {
+      clearTimeout(timeoutsRef.current[id]);
+      delete timeoutsRef.current[id];
+    }
+    
+    // Remove the toast from state
+    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+  }, []);
+
+  // Function to add a new toast
   const toast = React.useCallback((props: ToastProps) => {
     const id = props.id || Math.random().toString(36).substring(2, 9);
     // Default duration is 5 seconds (5000ms) unless specified
     const duration = props.duration ?? 5000;
     const newToast = { ...props, id, duration };
     
+    // Add the toast to state
     setToasts((prevToasts) => [...prevToasts, newToast]);
 
-    // Auto-dismiss after duration (unless it's set to Infinity)
+    // Set up auto-dismiss after duration (unless it's set to Infinity)
     if (duration !== Infinity) {
-      setTimeout(() => {
+      // Store the timeout so we can clear it if needed
+      timeoutsRef.current[id] = setTimeout(() => {
         dismiss(id);
       }, duration);
     }
-  }, []);
+    
+    return id;
+  }, [dismiss]);
 
-  const dismiss = React.useCallback((id: string) => {
-    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
-  }, []);
-
+  // Function to dismiss all toasts
   const dismissAll = React.useCallback(() => {
+    // Clear all timeouts
+    Object.values(timeoutsRef.current).forEach(clearTimeout);
+    timeoutsRef.current = {};
+    
+    // Clear all toasts
     setToasts([]);
   }, []);
 
+  // Create a memoized value for the context
   const value = React.useMemo(() => ({
     toasts,
     toast,

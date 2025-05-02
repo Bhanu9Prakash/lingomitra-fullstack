@@ -1,32 +1,53 @@
 import { useToast } from "@/hooks/use-toast";
 import { X } from "lucide-react";
-import { useEffect } from "react";
-
-// Define the ToastProps type locally
-type ToastProps = {
-  id?: string;
-  title: string;
-  description?: string;
-  variant?: 'default' | 'destructive';
-  duration?: number;
-};
+import { useEffect, useState } from "react";
+import type { ToastProps } from "@/hooks/use-toast";
 
 function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (id: string) => void }) {
-  // Handle click of the X button on a toast
+  // Get the current theme
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  
+  // Check for dark mode on component mount and when it changes
+  useEffect(() => {
+    // Initially set the theme based on the class
+    const isDark = document.documentElement.classList.contains('dark');
+    setTheme(isDark ? 'dark' : 'light');
+    
+    // Update the theme when it changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const isDarkUpdated = document.documentElement.classList.contains('dark');
+          setTheme(isDarkUpdated ? 'dark' : 'light'); 
+        }
+      });
+    });
+    
+    observer.observe(document.documentElement, { attributes: true });
+    
+    return () => observer.disconnect();
+  }, []);
+
+  // Handle the toast dismiss action
   const handleDismiss = (id: string) => {
+    // Call the dismiss function to remove the toast
     dismiss(id);
   };
 
   return (
-    <div className="fixed top-0 right-0 z-[99999] flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-none sm:max-w-[100%] max-w-full w-full sm:w-auto" style={{ zIndex: 99999 }}>
+    <div className="fixed top-0 right-0 z-[99999] flex flex-col p-4 space-y-4 max-h-screen overflow-hidden pointer-events-none sm:max-w-[100%] max-w-full w-full sm:w-auto">
       {toasts.map((toast) => (
         <div
           key={toast.id}
           className={`
-            pointer-events-auto flex w-full max-w-md overflow-hidden rounded-lg shadow-lg ring-1 
-            ring-black ring-opacity-5 transition-all duration-300 ease-in-out transform translate-x-0
-            ${toast.variant === 'destructive' ? 'bg-red-600 text-white dark:bg-red-700' : 
-              'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'}
+            pointer-events-auto flex w-full max-w-md overflow-hidden rounded-lg shadow-lg 
+            transition-all duration-300 ease-in-out transform translate-x-0
+            ${toast.variant === 'destructive' 
+              ? 'bg-red-600 text-white dark:bg-red-700 border border-red-700 dark:border-red-800' 
+              : theme === 'dark'
+                ? 'bg-gray-800 text-gray-100 border border-gray-700'
+                : 'bg-white text-gray-900 border border-gray-200'
+            }
             animate-in slide-in-from-top-full sm:slide-in-from-top-full
           `}
         >
@@ -41,7 +62,15 @@ function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (i
               </div>
               <button
                 onClick={() => handleDismiss(toast.id || '')}
-                className="ml-4 inline-flex rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
+                className={`
+                  ml-4 inline-flex rounded-md focus:outline-none focus:ring-2
+                  ${toast.variant === 'destructive'
+                    ? 'text-white hover:text-gray-200 focus:ring-red-500'
+                    : theme === 'dark'
+                      ? 'text-gray-300 hover:text-white focus:ring-gray-600'
+                      : 'text-gray-500 hover:text-gray-700 focus:ring-gray-300'
+                  }
+                `}
                 aria-label="Close toast"
               >
                 <span className="sr-only">Close</span>
@@ -58,9 +87,8 @@ function ToastContainer({ toasts, dismiss }: { toasts: ToastProps[], dismiss: (i
 export function Toaster() {
   const { toasts, dismiss } = useToast();
   
-  // Cast the toasts to the expected type
   return <ToastContainer 
-    toasts={toasts as unknown as ToastProps[]} 
+    toasts={toasts} 
     dismiss={dismiss} 
   />;
 }
