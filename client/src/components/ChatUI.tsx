@@ -33,42 +33,50 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   
+  // State for custom confirmation dialog
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  
   // Function to reset the chat history
   const resetChatHistory = async () => {
-    if (confirm("Are you sure you want to reset this conversation? All messages will be deleted.")) {
-      try {
-        setIsLoading(true);
-        
-        // Delete chat history from server
-        const res = await fetch(`/api/chat/history/${lesson.lessonId}/reset`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-        });
-        
-        if (!res.ok) {
-          throw new Error(`Failed to reset chat history: ${res.status}`);
-        }
-        
-        // Re-initialize the chat
-        const initRes = await fetch("/api/chat/init", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lessonId: lesson.lessonId }),
-        });
-        
-        if (!initRes.ok) {
-          throw new Error(`API responded with status: ${initRes.status}`);
-        }
-        
-        const data = await initRes.json();
-        setMessages([{ role: "assistant", content: data.response }]);
-        if (data.scratchPad) setScratchPad(data.scratchPad);
-      } catch (e) {
-        console.error("Error resetting chat:", e);
-        alert("Could not reset the conversation. Please try again later.");
-      } finally {
-        setIsLoading(false);
+    // Show custom confirmation dialog
+    setShowConfirmation(true);
+  };
+  
+  // Actual reset function after confirmation
+  const performReset = async () => {
+    try {
+      setIsLoading(true);
+      setShowConfirmation(false);
+      
+      // Delete chat history from server
+      const res = await fetch(`/api/chat/history/${lesson.lessonId}/reset`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+      
+      if (!res.ok) {
+        throw new Error(`Failed to reset chat history: ${res.status}`);
       }
+      
+      // Re-initialize the chat
+      const initRes = await fetch("/api/chat/init", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lessonId: lesson.lessonId }),
+      });
+      
+      if (!initRes.ok) {
+        throw new Error(`API responded with status: ${initRes.status}`);
+      }
+      
+      const data = await initRes.json();
+      setMessages([{ role: "assistant", content: data.response }]);
+      if (data.scratchPad) setScratchPad(data.scratchPad);
+    } catch (e) {
+      console.error("Error resetting chat:", e);
+      alert("Could not reset the conversation. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
   
@@ -188,6 +196,32 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
   /* ───────────────────────── RENDER ───────────────────────── */
   return (
     <div className="chat-ui">
+      {/* Custom Confirmation Dialog */}
+      {showConfirmation && (
+        <div className="confirmation-overlay">
+          <div className="confirmation-dialog">
+            <div className="confirmation-content">
+              <h3>Reset Conversation</h3>
+              <p>Are you sure you want to reset this conversation? All messages will be deleted.</p>
+              <div className="confirmation-actions">
+                <button 
+                  className="confirmation-cancel" 
+                  onClick={() => setShowConfirmation(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="confirmation-confirm" 
+                  onClick={performReset}
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Chat header removed to save space */}
       
       <div className="chat-messages">
