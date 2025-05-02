@@ -316,35 +316,7 @@ export default function StreakCalendar({ progressData, lessonData, languageNames
             </div>
           </div>
           
-          <div className="mt-6 pt-4 border-t border-gray-800 dark:border-gray-800 light:border-gray-200">
-            <h3 className="text-lg font-semibold mb-2">Reminders & Notifications</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-w-2xl mx-auto">
-              <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-200 rounded-lg shadow-md border dark:border-gray-700 light:border-gray-300 p-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-primary" />
-                  <span className="text-sm dark:text-white light:text-gray-800">Daily Reminder at 10:00 AM</span>
-                </div>
-                <Switch />
-              </div>
-              
-              <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-200 rounded-lg shadow-md border dark:border-gray-700 light:border-gray-300 p-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-primary" />
-                  <span className="text-sm dark:text-white light:text-gray-800">Email reminder</span>
-                </div>
-                <Switch />
-              </div>
-              
-              <div className="bg-gray-800/50 dark:bg-gray-800/50 light:bg-gray-200 rounded-lg shadow-md border dark:border-gray-700 light:border-gray-300 p-3 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Download className="h-4 w-4 text-primary" />
-                  <span className="text-sm dark:text-white light:text-gray-800">Mobile push</span>
-                </div>
-                <Switch />
-              </div>
-            </div>
-          </div>
+{/* Reminders section removed as requested */}
         </CardContent>
       </Card>
     </>
