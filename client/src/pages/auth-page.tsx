@@ -55,7 +55,7 @@ export default function AuthPage() {
 
   const [activeTab, setActiveTab] = useState<string>(getInitialTab());
   const { user, loginMutation, registerMutation } = useAuth();
-  const { toast, success, error } = useSimpleToast();
+  const { toast, success, error: showError } = useSimpleToast();
   const { theme } = useTheme();
   const [_, navigate] = useLocation();
 
@@ -102,12 +102,12 @@ export default function AuthPage() {
       await loginMutation.mutateAsync(values);
       success("Welcome back!", "You have successfully logged in.");
       navigate("/");
-    } catch (error) {
+    } catch (err) {
       // Set an inline error message in addition to the toast
       setLoginError("Incorrect username/email or password. Please try again.");
       
       // Extra toast for visibility - especially on mobile
-      error("Login Error", "Incorrect username/email or password. Please try again.");
+      showError("Login Error", "Incorrect username/email or password. Please try again.");
     }
   };
 
@@ -117,8 +117,9 @@ export default function AuthPage() {
       await registerMutation.mutateAsync(userData);
       success("Registration successful!", "Your account has been created.");
       navigate("/");
-    } catch (error) {
-      // Error handling is done in the mutation through auth hook
+    } catch (err) {
+      // Error handling is primarily done in the auth hook
+      // We don't need additional error handling here
     }
   };
 
