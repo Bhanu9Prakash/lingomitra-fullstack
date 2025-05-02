@@ -59,7 +59,7 @@ export default function UserMenu() {
           variant="ghost" 
           className="relative h-8 w-8 rounded-full hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary active:scale-95"
         >
-          <Avatar className="h-8 w-8 ring-1 ring-primary/40 transition-transform duration-200 hover:scale-110">
+          <Avatar className="h-8 w-8 transition-transform duration-200 hover:scale-110">
             <AvatarFallback className="bg-primary text-white font-semibold text-xs">{getInitials(user.username)}</AvatarFallback>
           </Avatar>
         </Button>
