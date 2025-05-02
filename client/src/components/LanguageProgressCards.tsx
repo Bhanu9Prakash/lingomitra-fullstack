@@ -133,8 +133,8 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                             <div className={`${isSolo ? 'w-14 h-14' : 'w-8 h-8'} rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md`}>
                               <FlagIcon 
                                 code={language.flagCode} 
-                                size={isSolo ? 56 : 32} 
-                                className="scale-125" 
+                                size={isSolo ? 48 : 24} 
+                                className="scale-100" 
                               />
                             </div>
                             <div className="mt-1 text-center">
@@ -173,7 +173,7 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                     return (
                       <div key={language.code} className="flex items-center space-x-4">
                         <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-gray-800 dark:bg-gray-800 light:bg-gray-100 shadow-md">
-                          <FlagIcon code={language.flagCode} size={32} className="scale-125" />
+                          <FlagIcon code={language.flagCode} size={24} className="scale-100" />
                         </div>
                         <div className="flex-1">
                           <div className="flex justify-between mb-1">
