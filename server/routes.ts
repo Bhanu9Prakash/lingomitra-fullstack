@@ -888,15 +888,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('Received message:', message.toString());
       
       try {
+        const parsedMessage = JSON.parse(message.toString());
+        
         // Echo back the message
         if (ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify({
             type: 'echo',
-            message: message.toString()
+            message: parsedMessage,
+            timestamp: new Date().toISOString()
           }));
         }
       } catch (error) {
         console.error('WebSocket message error:', error);
+        // Send error response
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({
+            type: 'error',
+            message: 'Invalid message format',
+            timestamp: new Date().toISOString()
+          }));
+        }
       }
     });
     

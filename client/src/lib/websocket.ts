@@ -2,36 +2,83 @@
  * WebSocket connection utility for real-time communication
  */
 
+// Private module variables
 let socket: WebSocket | null = null;
 let reconnectAttempts = 0;
+let connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error' = 'disconnected';
 const MAX_RECONNECT_ATTEMPTS = 5;
 const RECONNECT_DELAY = 1000;
 
-interface MessageCallback {
+export interface MessageCallback {
   (message: any): void;
 }
 
 const messageCallbacks: Set<MessageCallback> = new Set();
+const statusCallbacks: Set<(status: string) => void> = new Set();
+
+/**
+ * Notify all status callbacks about connection status changes
+ */
+function notifyStatusChange(): void {
+  statusCallbacks.forEach(callback => callback(connectionStatus));
+}
+
+/**
+ * Get the current connection status
+ */
+export function getConnectionStatus(): string {
+  return connectionStatus;
+}
+
+/**
+ * Register a callback for connection status changes
+ */
+export function onStatusChange(callback: (status: string) => void): void {
+  statusCallbacks.add(callback);
+  // Immediately notify with current status
+  callback(connectionStatus);
+}
+
+/**
+ * Remove a status change callback
+ */
+export function offStatusChange(callback: (status: string) => void): void {
+  statusCallbacks.delete(callback);
+}
 
 /**
  * Initialize WebSocket connection
  */
 export function initWebSocket(): WebSocket | null {
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    console.log('WebSocket already connected');
+  // Return existing connection if already connected
+  if (socket && (socket.readyState === WebSocket.OPEN || socket.readyState === WebSocket.CONNECTING)) {
     return socket;
   }
 
+  // Reset connection if socket exists but is closing or closed
+  if (socket) {
+    socket = null;
+  }
+
   try {
+    // Determine the correct WebSocket protocol based on current window protocol
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/ws`;
     console.log(`Connecting to WebSocket at ${wsUrl}`);
 
+    // Update status
+    connectionStatus = 'connecting';
+    notifyStatusChange();
+
+    // Create new WebSocket connection
     socket = new WebSocket(wsUrl);
 
+    // Set up event handlers
     socket.onopen = () => {
       console.log('WebSocket connected');
       reconnectAttempts = 0;
+      connectionStatus = 'connected';
+      notifyStatusChange();
     };
 
     socket.onmessage = (event) => {
@@ -48,10 +95,14 @@ export function initWebSocket(): WebSocket | null {
 
     socket.onerror = (error) => {
       console.error('WebSocket error:', error);
+      connectionStatus = 'error';
+      notifyStatusChange();
     };
 
     socket.onclose = (event) => {
       console.log(`WebSocket closed with code ${event.code}`);
+      connectionStatus = 'disconnected';
+      notifyStatusChange();
       socket = null;
 
       // Try to reconnect if not explicitly closed by the client
@@ -66,6 +117,8 @@ export function initWebSocket(): WebSocket | null {
     return socket;
   } catch (error) {
     console.error('Failed to initialize WebSocket:', error);
+    connectionStatus = 'error';
+    notifyStatusChange();
     return null;
   }
 }

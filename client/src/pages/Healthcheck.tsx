@@ -1,88 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { initWebSocket, sendMessage, onMessage, offMessage } from '../lib/websocket';
+import { 
+  initWebSocket, 
+  sendMessage, 
+  onMessage, 
+  offMessage, 
+  onStatusChange, 
+  offStatusChange, 
+  getConnectionStatus 
+} from '../lib/websocket';
 
+/**
+ * React hook to manage WebSocket connection and state
+ */
 function useWebSocket() {
-  const [wsStatus, setWsStatus] = useState<string>('Connecting...');
+  const [wsStatus, setWsStatus] = useState<string>(getConnectionStatus());
   const [wsResponseMessage, setWsResponseMessage] = useState<string | null>(null);
   
   useEffect(() => {
-    // Try to initialize the WebSocket
-    let socket: WebSocket | null = null;
-    try {
-      socket = initWebSocket();
+    // Initialize the WebSocket
+    const socket = initWebSocket();
+    
+    // Handle WebSocket messages
+    const handleMessage = (data: any) => {
+      setWsResponseMessage(JSON.stringify(data, null, 2));
+    };
+    
+    // Handle connection status changes
+    const handleStatusChange = (status: string) => {
+      let displayStatus: string;
       
-      if (socket) {
-        // Update status based on socket state
-        const updateSocketStatus = () => {
-          if (!socket) return;
-          
-          switch (socket.readyState) {
-            case WebSocket.CONNECTING:
-              setWsStatus('Connecting...');
-              break;
-            case WebSocket.OPEN:
-              setWsStatus('Connected! ✅');
-              break;
-            case WebSocket.CLOSING:
-              setWsStatus('Closing...');
-              break;
-            case WebSocket.CLOSED:
-              setWsStatus('Disconnected ❌');
-              break;
-          }
-        };
-        
-        updateSocketStatus();
-        
-        // Handle connection open
-        const handleOpen = () => {
-          setWsStatus('Connected! ✅');
+      switch (status) {
+        case 'connecting':
+          displayStatus = 'Connecting...';
+          break;
+        case 'connected':
+          displayStatus = 'Connected! ✅';
           // Send test message after connection is established
           setTimeout(() => {
-            if (socket && socket.readyState === WebSocket.OPEN) {
-              sendMessage({ type: 'ping', timestamp: new Date().toISOString() });
-            }
+            sendMessage({ type: 'ping', timestamp: new Date().toISOString() });
           }, 1000);
-        };
-        
-        // Handle WebSocket messages
-        const handleMessage = (data: any) => {
-          setWsResponseMessage(JSON.stringify(data, null, 2));
-          setWsStatus('Connected! ✅');
-        };
-        
-        // Handle connection errors
-        const handleError = () => {
-          setWsStatus('Connection error ❌');
-        };
-        
-        // Handle connection closed
-        const handleClose = () => {
-          setWsStatus('Disconnected ❌');
-        };
-        
-        // Register message handler
-        socket.addEventListener('open', handleOpen);
-        socket.addEventListener('error', handleError);
-        socket.addEventListener('close', handleClose);
-        onMessage(handleMessage);
-        
-        // Clean up
-        return () => {
-          if (socket) {
-            socket.removeEventListener('open', handleOpen);
-            socket.removeEventListener('error', handleError);
-            socket.removeEventListener('close', handleClose);
-            offMessage(handleMessage);
-          }
-        };
-      } else {
-        setWsStatus('Failed to initialize WebSocket connection ❌');
+          break;
+        case 'disconnected':
+          displayStatus = 'Disconnected ❌';
+          break;
+        case 'error':
+          displayStatus = 'Connection error ❌';
+          break;
+        default:
+          displayStatus = status;
       }
-    } catch (error) {
-      console.error('Error setting up WebSocket:', error);
-      setWsStatus(`WebSocket error: ${error instanceof Error ? error.message : String(error)}`);
-    }
+      
+      setWsStatus(displayStatus);
+    };
+    
+    // Register event handlers
+    onMessage(handleMessage);
+    onStatusChange(handleStatusChange);
+    
+    // Clean up
+    return () => {
+      offMessage(handleMessage);
+      offStatusChange(handleStatusChange);
+    };
   }, []);
   
   return { wsStatus, wsResponseMessage };
