@@ -63,19 +63,19 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                       <img src="/progress.svg" alt="Fox mascot" className="w-full h-full object-contain drop-shadow-md" />
                     </div>
                     
-                    {activeLangs.slice(0, 6).map((language, index) => {
+                    {activeLangs.map((language, index) => {
                       const progress = progressData[language.code] || [];
                       const lessons = lessonData[language.code] || [];
                       const percentComplete = calculateTotalProgressForLanguage(progress, lessons);
                       
                       // Determine if this is a single language case
-                      const languages = activeLangs.slice(0, 6);
+                      const languages = activeLangs;
                       const isSolo = languages.length === 1;
                       const angleStep = (2 * Math.PI) / languages.length;
                       const angle = index * angleStep;
                       
-                      // Radius percentage from center (smaller for more compact layout)
-                      const radiusPct = 38;
+                      // Adjust radius based on number of languages (smaller radius when more languages)
+                      const radiusPct = languages.length > 6 ? 42 : 38;
                       
                       // Calculate position - x and y coordinates
                       // For single language, center it instead of positioning around the circle
@@ -87,8 +87,8 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                         ? 50
                         : 50 + radiusPct * Math.sin(angle - Math.PI/2);
                       
-                      // Size of the progress circle - larger for single language
-                      const size = isSolo ? 70 : 20;
+                      // Size of the progress circle - adjust size based on number of languages
+                      const size = isSolo ? 70 : (languages.length > 6 ? 16 : 20);
                       
                       return (
                         <div 
@@ -138,8 +138,14 @@ export default function LanguageProgressCards({ languages, progressData, lessonD
                               />
                             </div>
                             <div className="mt-1 text-center">
-                              <p className={`${isSolo ? 'text-xs' : 'text-[10px]'} font-medium text-center leading-tight text-gray-800 dark:text-white`}>{language.name}</p>
-                              <p className={`${isSolo ? 'text-sm' : 'text-[10px]'} font-bold text-primary leading-tight`}>
+                              <p className={`${
+                                isSolo ? 'text-xs' : 
+                                languages.length > 6 ? 'text-[8px]' : 'text-[10px]'
+                              } font-medium text-center leading-tight text-gray-800 dark:text-white`}>{language.name}</p>
+                              <p className={`${
+                                isSolo ? 'text-sm' : 
+                                languages.length > 6 ? 'text-[8px]' : 'text-[10px]'
+                              } font-bold text-primary leading-tight`}>
                                 {Math.round(percentComplete)}%
                               </p>
                             </div>
