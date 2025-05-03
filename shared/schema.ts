@@ -36,6 +36,9 @@ export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   email: true,
   password: true,
+  isAdmin: true,
+  subscriptionTier: true,
+  subscriptionExpiry: true,
 });
 
 export const insertLanguageSchema = createInsertSchema(languages).pick({

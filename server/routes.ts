@@ -819,7 +819,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.error("Error loading lessons:", error);
   }
 
-  // API routes
+  // Admin routes - protected by isAdmin middleware
+  app.get("/api/admin/users", isAdmin, async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      // Don't send passwords to the client
+      const usersWithoutPasswords = users.map(({ password, ...user }) => user);
+      res.json(usersWithoutPasswords);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.get("/api/admin/analytics", isAdmin, async (req, res) => {
+    try {
+      // Get counts for analytics dashboard
+      const userCount = await storage.getUserCount();
+      const lessonCount = await storage.getAllLessons().then(lessons => lessons.length);
+      const languages = await storage.getAllLanguages();
+      const completedLessonCount = await storage.getCompletedLessonCount();
+      const premiumUserCount = await storage.getPremiumUserCount();
+      
+      res.json({
+        userCount,
+        lessonCount,
+        languageCount: languages.length,
+        completedLessonCount,
+        premiumUserCount
+      });
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      res.status(500).json({ message: "Failed to fetch analytics data" });
+    }
+  });
+
+  app.post("/api/admin/make-admin", isAdmin, async (req, res) => {
+    try {
+      const { userId } = req.body;
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+      
+      const user = await storage.makeUserAdmin(Number(userId));
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Don't send password back to client
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error making user admin:", error);
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
+  // Regular API routes
   app.get("/api/languages", async (req, res) => {
     try {
       const languages = await storage.getAllLanguages();

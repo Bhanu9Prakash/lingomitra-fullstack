@@ -12,6 +12,7 @@ import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import Profile from "@/pages/Profile";
 import SubscribePage from "@/pages/SubscribePage";
+import AdminDashboard from "@/pages/AdminDashboard";
 import Healthcheck from "./pages/Healthcheck";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
@@ -38,6 +39,9 @@ function Router() {
         {/* Profile and Settings pages */}
         <ProtectedRoute path="/profile" component={Profile} />
         <ProtectedRoute path="/settings" component={Settings} />
+        
+        {/* Admin Dashboard */}
+        <ProtectedRoute path="/admin" component={AdminDashboard} />
         
         {/* Authentication route */}
         <Route path="/auth" component={AuthPage} />
