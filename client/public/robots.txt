@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /auth/
+Disallow: /ws/
+
+# Sitemap
+Sitemap: https://lingomitra.com/sitemap.xml

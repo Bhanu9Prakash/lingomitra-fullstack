@@ -8,6 +8,7 @@ import LessonSelector from "@/components/LessonSelector";
 import ChatUI from "@/components/ChatUI";
 import MicrophonePermissionCheck from "@/components/MicrophonePermissionCheck";
 import { getQueryFn } from "@/lib/queryClient";
+import { trackEvent } from "@/lib/analytics";
 
 export default function LessonView() {
   const [_, navigate] = useLocation();
@@ -89,6 +90,11 @@ export default function LessonView() {
   useEffect(() => {
     if (specificLessonId) {
       setCurrentLessonId(specificLessonId);
+      // Track lesson_start event when a lesson is loaded
+      trackEvent('lesson_start', { 
+        lesson_id: specificLessonId,
+        language_code: specificLessonId.split('-')[0] 
+      });
     } else if (lessons && lessons.length > 0 && !currentLessonId) {
       // If we have lessons but no current lesson, select the first one
       setCurrentLessonId(lessons[0].lessonId);
@@ -154,7 +160,16 @@ export default function LessonView() {
   
   // Toggle between chat and lesson content
   const handleToggleChat = () => {
-    setIsChatActive(!isChatActive);
+    const newChatState = !isChatActive;
+    setIsChatActive(newChatState);
+    
+    // Track chat_started event when chat is activated
+    if (newChatState && currentLesson) {
+      trackEvent('chat_started', { 
+        lesson_id: currentLesson.lessonId,
+        language_code: currentLesson.languageCode 
+      });
+    }
   };
 
   return (
