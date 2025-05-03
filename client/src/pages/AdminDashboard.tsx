@@ -98,11 +98,11 @@ export default function AdminDashboard() {
   };
   
   return (
-    <div className="container mx-auto py-8">
+    <div className="container mx-auto pt-24 pb-12 px-4">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
+        <TabsList className="bg-background/80 backdrop-blur-sm">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
         </TabsList>
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
         <TabsContent value="overview" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Total Users Card */}
-            <Card>
+            <Card className="border-0 bg-background/70 shadow-md">
               <CardHeader className="pb-2">
                 <CardTitle>Total Users</CardTitle>
                 <CardDescription>Registered users on the platform</CardDescription>
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
             </Card>
             
             {/* Premium Users Card */}
-            <Card>
+            <Card className="border-0 bg-background/70 shadow-md">
               <CardHeader className="pb-2">
                 <CardTitle>Premium Users</CardTitle>
                 <CardDescription>Users with active subscriptions</CardDescription>
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
             </Card>
             
             {/* Available Languages Card */}
-            <Card>
+            <Card className="border-0 bg-background/70 shadow-md">
               <CardHeader className="pb-2">
                 <CardTitle>Languages</CardTitle>
                 <CardDescription>Available languages</CardDescription>
@@ -156,7 +156,7 @@ export default function AdminDashboard() {
             </Card>
             
             {/* Total Lessons Card */}
-            <Card>
+            <Card className="border-0 bg-background/70 shadow-md">
               <CardHeader className="pb-2">
                 <CardTitle>Lessons</CardTitle>
                 <CardDescription>Total lessons in system</CardDescription>
@@ -171,7 +171,7 @@ export default function AdminDashboard() {
             </Card>
             
             {/* Completed Lessons Card */}
-            <Card>
+            <Card className="border-0 bg-background/70 shadow-md">
               <CardHeader className="pb-2">
                 <CardTitle>Completed Lessons</CardTitle>
                 <CardDescription>Total lessons completed by users</CardDescription>
@@ -189,7 +189,7 @@ export default function AdminDashboard() {
         
         {/* Users Tab */}
         <TabsContent value="users">
-          <Card>
+          <Card className="border-0 bg-background/70 shadow-md">
             <CardHeader>
               <CardTitle>User Management</CardTitle>
               <CardDescription>View and manage user accounts</CardDescription>
@@ -206,7 +206,7 @@ export default function AdminDashboard() {
                 <ScrollArea className="h-[400px]">
                   <Table>
                     <TableHeader>
-                      <TableRow>
+                      <TableRow className="border-b border-gray-700">
                         <TableHead>ID</TableHead>
                         <TableHead>Username</TableHead>
                         <TableHead>Email</TableHead>
@@ -217,7 +217,7 @@ export default function AdminDashboard() {
                     </TableHeader>
                     <TableBody>
                       {(usersData as User[])?.map((user) => (
-                        <TableRow key={user.id}>
+                        <TableRow key={user.id} className="border-b border-gray-800/20">
                           <TableCell>{user.id}</TableCell>
                           <TableCell>{user.username}</TableCell>
                           <TableCell>{user.email}</TableCell>
