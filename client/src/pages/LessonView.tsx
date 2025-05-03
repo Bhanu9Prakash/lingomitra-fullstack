@@ -6,6 +6,7 @@ import LessonHeader from "@/components/LessonHeader";
 import LessonContent from "@/components/LessonContent";
 import LessonSelector from "@/components/LessonSelector";
 import ChatUI from "@/components/ChatUI";
+import MicrophonePermissionCheck from "@/components/MicrophonePermissionCheck";
 import { getQueryFn } from "@/lib/queryClient";
 
 export default function LessonView() {
@@ -179,6 +180,9 @@ export default function LessonView() {
 
       {/* Main content */}
       <div className="container">
+        {/* Microphone permission check - only show in lesson content mode */}
+        {!isChatActive && <MicrophonePermissionCheck />}
+        
         {/* Show chat UI or lesson content based on isChatActive */}
         {!currentLesson ? (
           <div className="loading-container">

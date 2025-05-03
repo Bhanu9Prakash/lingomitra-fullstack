@@ -59,7 +59,58 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // Special handling for API requests
+  // Special handling for lesson API requests - cache last 3 lessons accessed
+  if (event.request.url.includes('/api/lessons/')) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) => {
+        // Use stale-while-revalidate strategy for lesson data
+        return cache.match(event.request).then((cachedResponse) => {
+          // Create a promise for the network request
+          const fetchPromise = fetch(event.request)
+            .then((networkResponse) => {
+              // Only cache GET responses
+              if (event.request.method === 'GET' && networkResponse.ok) {
+                // Clone the response before using it
+                const responseCopy = networkResponse.clone();
+                
+                // Clean up older lesson data if we have too many cached
+                // This ensures we only keep approximately the last 3 lessons
+                cache.keys().then(keys => {
+                  const lessonKeys = keys.filter(key => 
+                    key.url.includes('/api/lessons/') && 
+                    key.url !== event.request.url
+                  );
+                  
+                  // If we have more than 2 other lessons cached (plus this one = 3 total)
+                  if (lessonKeys.length > 2) {
+                    // Sort by last accessed (assuming most recent access is what we want to keep)
+                    // We would need a more sophisticated approach with timestamps for perfect LRU
+                    const oldestKey = lessonKeys[0];
+                    cache.delete(oldestKey);
+                  }
+                });
+                
+                // Cache the fresh response
+                cache.put(event.request, responseCopy);
+              }
+              return networkResponse;
+            });
+          
+          // Return cached response if we have it, otherwise wait for the network
+          return cachedResponse || fetchPromise.catch(error => {
+            console.error('Fetch failed:', error);
+            return new Response('Network error happened', {
+              status: 408,
+              headers: { 'Content-Type': 'text/plain' }
+            });
+          });
+        });
+      })
+    );
+    return;
+  }
+  
+  // Regular API requests handling
   if (event.request.url.includes('/api/')) {
     event.respondWith(
       fetch(event.request)

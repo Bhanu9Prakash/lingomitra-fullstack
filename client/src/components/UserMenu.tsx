@@ -57,10 +57,10 @@ export default function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button 
           variant="ghost" 
-          className="relative h-8 w-8 rounded-full hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary active:scale-95"
+          className="relative h-10 w-10 rounded-full hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary active:scale-95 p-0"
         >
-          <Avatar className="h-8 w-8 transition-transform duration-200 hover:scale-110">
-            <AvatarFallback className="bg-primary text-white font-semibold text-xs">{getInitials(user.username)}</AvatarFallback>
+          <Avatar className="h-10 w-10 transition-transform duration-200 hover:scale-105">
+            <AvatarFallback className="bg-primary text-white font-semibold text-sm">{getInitials(user.username)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
