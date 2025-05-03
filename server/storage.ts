@@ -21,6 +21,10 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  getAllUsers(): Promise<User[]>;
+  getUserCount(): Promise<number>;
+  getPremiumUserCount(): Promise<number>;
+  makeUserAdmin(userId: number): Promise<User | undefined>;
   
   // Language methods
   getAllLanguages(): Promise<Language[]>;
@@ -43,6 +47,7 @@ export interface IStorage {
   ): Promise<UserProgress>;
   markLessonComplete(userId: number, lessonId: string): Promise<UserProgress>;
   resetLanguageProgress(userId: number, languageCode: string): Promise<number>;
+  getCompletedLessonCount(): Promise<number>;
   
   // Chat History methods
   getChatHistory(userId: number, lessonId: string): Promise<ChatHistory | undefined>;
@@ -117,9 +122,42 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userCurrentId++;
-    const user: User = { ...insertUser, id };
+    const user: User = { 
+      ...insertUser, 
+      id,
+      isAdmin: false, 
+      subscriptionTier: "free",
+      subscriptionExpiry: null
+    };
     this.users.set(id, user);
     return user;
+  }
+  
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
+  
+  async getUserCount(): Promise<number> {
+    return this.users.size;
+  }
+  
+  async getPremiumUserCount(): Promise<number> {
+    return Array.from(this.users.values()).filter(
+      user => user.subscriptionTier !== "free"
+    ).length;
+  }
+  
+  async makeUserAdmin(userId: number): Promise<User | undefined> {
+    const user = this.users.get(userId);
+    if (!user) return undefined;
+    
+    const updatedUser: User = {
+      ...user,
+      isAdmin: true
+    };
+    
+    this.users.set(userId, updatedUser);
+    return updatedUser;
   }
   
   // Language methods
@@ -259,6 +297,12 @@ export class MemStorage implements IStorage {
     return deleteCount;
   }
   
+  async getCompletedLessonCount(): Promise<number> {
+    return Array.from(this.progressRecords.values()).filter(
+      progress => progress.completed
+    ).length;
+  }
+  
   // Chat History methods
   async getChatHistory(userId: number, lessonId: string): Promise<ChatHistory | undefined> {
     const key = `${userId}:${lessonId}`;
@@ -340,6 +384,31 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db
       .insert(users)
       .values(insertUser)
+      .returning();
+    return user;
+  }
+  
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users);
+  }
+  
+  async getUserCount(): Promise<number> {
+    const result = await db.select({ count: sql`count(*)` }).from(users);
+    return Number(result[0]?.count || 0);
+  }
+  
+  async getPremiumUserCount(): Promise<number> {
+    const result = await db.select({ count: sql`count(*)` })
+      .from(users)
+      .where(sql`subscription_tier != 'free'`);
+    return Number(result[0]?.count || 0);
+  }
+  
+  async makeUserAdmin(userId: number): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({ isAdmin: true })
+      .where(eq(users.id, userId))
       .returning();
     return user;
   }
@@ -501,6 +570,14 @@ export class DatabaseStorage implements IStorage {
       );
     
     return result.rowCount ?? 0;
+  }
+  
+  async getCompletedLessonCount(): Promise<number> {
+    const result = await db
+      .select({ count: sql`count(*)` })
+      .from(userProgress)
+      .where(eq(userProgress.completed, true));
+    return Number(result[0]?.count || 0);
   }
   
   // Chat History methods
