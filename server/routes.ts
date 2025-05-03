@@ -822,7 +822,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin routes - protected by isAdmin middleware
   app.get("/api/admin/users", isAdmin, async (req, res) => {
     try {
+      console.log("Fetching all users from database");
       const users = await storage.getAllUsers();
+      console.log(`Retrieved ${users.length} users from database`);
+      
       // Don't send passwords to the client
       const usersWithoutPasswords = users.map(({ password, ...user }) => user);
       res.json(usersWithoutPasswords);

@@ -42,9 +42,22 @@ export function isAuthenticated(req: any, res: any, next: any) {
  * Middleware to check if the user is an admin
  */
 export function isAdmin(req: any, res: any, next: any) {
-  if (req.isAuthenticated() && req.user.isAdmin) {
+  console.log('isAdmin middleware checking authentication');
+  
+  if (!req.isAuthenticated()) {
+    console.log('User is not authenticated');
+    return res.status(401).json({ message: "Unauthorized - Login required" });
+  }
+  
+  console.log('User authenticated:', req.user.username);
+  console.log('User admin status:', req.user.isAdmin);
+  
+  if (req.user.isAdmin) {
+    console.log('Admin access granted to:', req.user.username);
     return next();
   }
+  
+  console.log('Admin access denied for user:', req.user.username);
   res.status(403).json({ message: "Forbidden - Admin access required" });
 }
 
