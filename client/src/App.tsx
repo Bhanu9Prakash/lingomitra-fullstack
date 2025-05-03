@@ -11,6 +11,7 @@ import LessonView from "@/pages/LessonView";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import Profile from "@/pages/Profile";
+import SubscribePage from "@/pages/SubscribePage";
 import Healthcheck from "./pages/Healthcheck";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
@@ -40,6 +41,9 @@ function Router() {
         
         {/* Authentication route */}
         <Route path="/auth" component={AuthPage} />
+        
+        {/* Subscription page - public */}
+        <Route path="/subscribe" component={SubscribePage} />
         
         {/* Health check - public */}
         <Route path="/health" component={Healthcheck} />

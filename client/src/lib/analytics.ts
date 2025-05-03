@@ -11,7 +11,10 @@ type EventName =
   | 'language_selected'
   | 'chat_started'
   | 'registration_complete'
-  | 'profile_viewed';
+  | 'profile_viewed'
+  | 'paywall_dismissed'
+  | 'subscription_plan_selected'
+  | 'subscription_initiated';
 
 type EventProperties = Record<string, string | number | boolean | null>;
 

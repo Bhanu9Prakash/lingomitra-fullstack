@@ -7,11 +7,14 @@ import LessonContent from "@/components/LessonContent";
 import LessonSelector from "@/components/LessonSelector";
 import ChatUI from "@/components/ChatUI";
 import MicrophonePermissionCheck from "@/components/MicrophonePermissionCheck";
+import PaywallModal from "@/components/PaywallModal";
 import { getQueryFn } from "@/lib/queryClient";
 import { trackEvent } from "@/lib/analytics";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function LessonView() {
   const [_, navigate] = useLocation();
+  const { user } = useAuth();
   
   // Helper functions for lesson ID manipulation
   const getLessonNumber = (lessonId: string) => {
@@ -44,6 +47,7 @@ export default function LessonView() {
   // State for lesson modal and chat
   const [isLessonSelectorOpen, setLessonSelectorOpen] = useState(false);
   const [isChatActive, setIsChatActive] = useState(false);
+  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
   
   // Ref for chat component to access resetChatHistory method
   const chatRef = useRef<any>(null);
@@ -100,6 +104,15 @@ export default function LessonView() {
       setCurrentLessonId(lessons[0].lessonId);
     }
   }, [specificLessonId, lessons, currentLessonId]);
+  
+  // Check if we need to show the paywall when the current lesson changes
+  useEffect(() => {
+    if (currentLesson && shouldShowPaywall(currentLesson)) {
+      setIsPaywallOpen(true);
+    } else {
+      setIsPaywallOpen(false);
+    }
+  }, [currentLesson]);
   
   // Find current lesson object
   const currentLesson = specificLesson || 
@@ -170,6 +183,19 @@ export default function LessonView() {
         language_code: currentLesson.languageCode 
       });
     }
+  };
+  
+  // Check if the user needs to see a paywall for this lesson
+  const shouldShowPaywall = (lesson: Lesson) => {
+    // Free tier gets access to the first two lessons only
+    // All lessons beyond lesson 2 are premium
+    const lessonNumber = getLessonNumber(lesson.lessonId);
+    
+    // Premium users get all lessons
+    const isPremiumUser = user?.subscriptionTier === 'premium';
+    
+    // Show paywall for lessons beyond lesson 2 for non-premium users
+    return lessonNumber > 2 && !isPremiumUser;
   };
 
   return (
