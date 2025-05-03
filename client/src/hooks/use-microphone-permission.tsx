@@ -1,12 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSimpleToast } from '@/hooks/use-simple-toast';
+
+const PERMISSION_CHECK_KEY = 'microphone_permission_checked';
 
 export function useMicrophonePermission() {
   const [permissionState, setPermissionState] = useState<'granted' | 'denied' | 'prompt' | 'unknown'>('unknown');
   const [isSupported, setIsSupported] = useState(true);
   const { toast } = useSimpleToast();
+  const hasCheckedPermission = useRef(false);
 
   useEffect(() => {
+    // Check if we already checked permissions in this session or browser
+    const alreadyChecked = localStorage.getItem(PERMISSION_CHECK_KEY) === 'true';
+    if (alreadyChecked) {
+      hasCheckedPermission.current = true;
+    }
+    
     const checkMicrophonePermission = async () => {
       // Check if browser supports the Permission API
       if (!navigator.permissions || !navigator.permissions.query) {
@@ -26,7 +35,10 @@ export function useMicrophonePermission() {
           setPermissionState(permissionStatus.state as 'granted' | 'denied' | 'prompt');
           
           // Show a toast notification when permission is granted
-          if (permissionStatus.state === 'granted') {
+          if (permissionStatus.state === 'granted' && !hasCheckedPermission.current) {
+            hasCheckedPermission.current = true;
+            localStorage.setItem(PERMISSION_CHECK_KEY, 'true');
+            
             toast({
               title: "Microphone access granted",
               description: "You can now use voice features.",
@@ -44,10 +56,12 @@ export function useMicrophonePermission() {
     checkMicrophonePermission();
 
     // If the permission API isn't supported, fall back to getUserMedia
-    if (!isSupported) {
+    if (!isSupported && !hasCheckedPermission.current) {
       navigator.mediaDevices?.getUserMedia({ audio: true })
         .then(() => {
           setPermissionState('granted');
+          hasCheckedPermission.current = true;
+          localStorage.setItem(PERMISSION_CHECK_KEY, 'true');
         })
         .catch((err) => {
           console.log('Error accessing microphone:', err);
@@ -56,13 +70,25 @@ export function useMicrophonePermission() {
           } else {
             setPermissionState('prompt');
           }
+          hasCheckedPermission.current = true;
+          localStorage.setItem(PERMISSION_CHECK_KEY, 'true');
         });
     }
-  }, [toast]);
+  }, [toast, isSupported]);
 
   // Function to request microphone permission
   const requestPermission = async () => {
+    // Only proceed if we haven't checked permission before
+    if (hasCheckedPermission.current) {
+      return false;
+    }
+    
+    hasCheckedPermission.current = true;
+    
+    // Store in localStorage to prevent checking across page refreshes
     try {
+      localStorage.setItem(PERMISSION_CHECK_KEY, 'true');
+      
       await navigator.mediaDevices.getUserMedia({ audio: true });
       setPermissionState('granted');
       return true;

@@ -38,6 +38,16 @@ export function isAuthenticated(req: any, res: any, next: any) {
   res.status(401).json({ message: "Unauthorized" });
 }
 
+/**
+ * Middleware to check if the user is an admin
+ */
+export function isAdmin(req: any, res: any, next: any) {
+  if (req.isAuthenticated() && req.user.isAdmin) {
+    return next();
+  }
+  res.status(403).json({ message: "Forbidden - Admin access required" });
+}
+
 export function setupAuth(app: Express) {
   const sessionSettings: session.SessionOptions = {
     secret: process.env.SESSION_SECRET || "lingomitra-dev-secret",

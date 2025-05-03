@@ -10,7 +10,7 @@ import { insertLanguageSchema, insertLessonSchema } from "@shared/schema";
 import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
 import progressRouter from "./routes/progress";
-import { setupAuth } from "./auth";
+import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 import { WebSocketServer, WebSocket } from 'ws';
 
 // Sample data

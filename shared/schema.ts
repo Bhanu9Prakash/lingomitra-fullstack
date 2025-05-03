@@ -10,6 +10,8 @@ export const users = pgTable("users", {
   // Add subscription information
   subscriptionTier: text("subscription_tier").default("free"),
   subscriptionExpiry: timestamp("subscription_expiry"),
+  // Admin flag
+  isAdmin: boolean("is_admin").default(false).notNull(),
 });
 
 export const languages = pgTable("languages", {
