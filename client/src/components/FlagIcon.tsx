@@ -56,29 +56,60 @@ export default function FlagIcon({ code, size = 24, className = '' }: FlagIconPr
     overflow: 'hidden',
   };
 
-  // Return SVG flag image
+  // Return SVG flag image with lazy loading
+  const [flagSrc, setFlagSrc] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
+  
+  React.useEffect(() => {
+    let isMounted = true;
+    
+    // Dynamically import the flag SVG
+    import(/* @vite-ignore */ `/flags/${flagCode}.svg`)
+      .then(module => {
+        if (isMounted) {
+          setFlagSrc(module.default || `/flags/${flagCode}.svg`);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          // If import fails, fall back to direct path
+          setFlagSrc(`/flags/${flagCode}.svg`);
+          setIsLoading(false);
+        }
+      });
+    
+    return () => { isMounted = false; };
+  }, [flagCode]);
+  
   return (
     <div 
       style={containerStyle} 
       className={`${className} flag-icon`} 
       title={`Flag: ${flagCode.toUpperCase()}`}
     >
-      <img 
-        src={`/flags/${flagCode}.svg`} 
-        alt={`${flagCode} flag`} 
-        style={{ width: '120%', height: '120%', objectFit: 'cover', objectPosition: 'center' }}
-        onError={(e) => {
-          // Fallback to emoji if SVG doesn't exist
-          const target = e.target as HTMLImageElement;
-          target.style.display = 'none';
-          const parent = target.parentElement;
-          if (parent) {
-            parent.innerHTML = getFlagEmoji(flagCode);
-            parent.style.backgroundColor = document.documentElement.classList.contains('light') ? '#f1f5f9' : '#374151';
-            parent.style.fontSize = `${size * 0.75}px`;
-          }
-        }}
-      />
+      {isLoading ? (
+        // Show a small loading placeholder while flag loads
+        <div className="animate-pulse bg-gray-200 dark:bg-gray-700 w-full h-full rounded-sm"></div>
+      ) : (
+        <img 
+          src={flagSrc || ''}
+          alt={`${flagCode} flag`} 
+          style={{ width: '120%', height: '120%', objectFit: 'cover', objectPosition: 'center' }}
+          loading="lazy"
+          onError={(e) => {
+            // Fallback to emoji if SVG doesn't exist
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+            const parent = target.parentElement;
+            if (parent) {
+              parent.innerHTML = getFlagEmoji(flagCode);
+              parent.style.backgroundColor = document.documentElement.classList.contains('light') ? '#f1f5f9' : '#374151';
+              parent.style.fontSize = `${size * 0.75}px`;
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
