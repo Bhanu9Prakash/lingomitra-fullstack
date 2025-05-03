@@ -40,25 +40,63 @@ export default function AdminDashboard() {
   const { toast } = useSimpleToast();
   
   // Fetch analytics data
-  const { data: analyticsData, isLoading: loadingAnalytics, error: analyticsError } = useQuery({
-    queryKey: ['/api/admin/analytics'],
-    retry: 1,
-    staleTime: 30000, // 30 seconds
-    refetchOnWindowFocus: true,
-    onError: (error: any) => {
+  const fetchAnalytics = async (): Promise<AnalyticsData> => {
+    try {
+      const response = await fetch('/api/admin/analytics', {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Analytics API error:', response.status, errorText);
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      return response.json();
+    } catch (error) {
       console.error('Error fetching analytics:', error);
+      throw error;
     }
+  };
+  
+  const { 
+    data: analyticsData, 
+    isLoading: loadingAnalytics, 
+    error: analyticsError
+  } = useQuery<AnalyticsData>({
+    queryKey: ['/api/admin/analytics'],
+    queryFn: fetchAnalytics,
+    retry: 1
   });
   
   // Fetch users data
-  const { data: usersData, isLoading: loadingUsers, error: usersError } = useQuery({
-    queryKey: ['/api/admin/users'],
-    retry: 1,
-    staleTime: 30000, // 30 seconds 
-    refetchOnWindowFocus: true,
-    onError: (error: any) => {
+  const fetchUsers = async (): Promise<User[]> => {
+    try {
+      const response = await fetch('/api/admin/users', {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Users API error:', response.status, errorText);
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      return response.json();
+    } catch (error) {
       console.error('Error fetching users:', error);
+      throw error;
     }
+  };
+  
+  const { 
+    data: usersData, 
+    isLoading: loadingUsers, 
+    error: usersError 
+  } = useQuery<User[]>({
+    queryKey: ['/api/admin/users'],
+    queryFn: fetchUsers,
+    retry: 1
   });
   
   // If unauthorized, redirect to home page
@@ -226,26 +264,34 @@ export default function AdminDashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {(usersData as User[])?.map((user) => (
-                        <TableRow key={user.id}>
-                          <TableCell>{user.id}</TableCell>
-                          <TableCell>{user.username}</TableCell>
-                          <TableCell>{user.email}</TableCell>
-                          <TableCell>{user.subscriptionTier || 'Free'}</TableCell>
-                          <TableCell>{user.isAdmin ? 'Yes' : 'No'}</TableCell>
-                          <TableCell>
-                            {!user.isAdmin && (
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => makeAdmin(user.id)}
-                              >
-                                Make Admin
-                              </Button>
-                            )}
+                      {usersData && usersData.length > 0 ? (
+                        usersData.map((user) => (
+                          <TableRow key={user.id}>
+                            <TableCell>{user.id}</TableCell>
+                            <TableCell>{user.username}</TableCell>
+                            <TableCell>{user.email}</TableCell>
+                            <TableCell>{user.subscriptionTier || 'Free'}</TableCell>
+                            <TableCell>{user.isAdmin ? 'Yes' : 'No'}</TableCell>
+                            <TableCell>
+                              {!user.isAdmin && (
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => makeAdmin(user.id)}
+                                >
+                                  Make Admin
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center py-6">
+                            No users found. {usersError ? 'Error loading users.' : ''}
                           </TableCell>
                         </TableRow>
-                      ))}
+                      )}
                     </TableBody>
                   </Table>
                 </ScrollArea>
