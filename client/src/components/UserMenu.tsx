@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
 import { useSimpleToast } from "@/hooks/use-simple-toast";
 import { useLocation, Link } from "wouter";
-import { User, LogOut, Settings, Sun, Moon, ChartBar } from "lucide-react";
+import { User, LogOut, Settings, Sun, Moon, ChartBar, Shield } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
 export default function UserMenu() {
@@ -92,6 +92,16 @@ export default function UserMenu() {
               <span>Settings</span>
             </Link>
           </DropdownMenuItem>
+          
+          {/* Admin Dashboard - only visible to admin users */}
+          {user.isAdmin && (
+            <DropdownMenuItem className="cursor-pointer rounded-md my-0.5 focus:bg-accent/80" asChild>
+              <Link href="/admin">
+                <Shield className="mr-2 h-4 w-4 text-muted-foreground" />
+                <span>Admin Dashboard</span>
+              </Link>
+            </DropdownMenuItem>
+          )}
           
           <DropdownMenuItem 
             className="cursor-pointer flex justify-between items-center rounded-md my-0.5 focus:bg-accent/80" 

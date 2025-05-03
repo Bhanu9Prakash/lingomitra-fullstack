@@ -14,7 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useLocation } from 'wouter';
-import { useSimpleToast } from '@/hooks/use-simple-toast';
+import { useSimpleToast } from '../hooks/use-simple-toast';
 
 // Types
 interface User {
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
       });
       setLocation('/');
     }
-  }, [analyticsError, usersError, navigate, toast]);
+  }, [analyticsError, usersError, setLocation, toast]);
   
   // Function to promote a user to admin
   const makeAdmin = async (userId: number) => {
