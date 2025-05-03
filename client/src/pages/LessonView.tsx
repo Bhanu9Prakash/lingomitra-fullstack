@@ -105,6 +105,12 @@ export default function LessonView() {
     }
   }, [specificLessonId, lessons, currentLessonId]);
   
+  // Find current lesson object
+  const currentLesson = specificLesson || 
+    (lessons && currentLessonId 
+      ? lessons.find(l => l.lessonId === currentLessonId) 
+      : null);
+      
   // Check if we need to show the paywall when the current lesson changes
   useEffect(() => {
     if (currentLesson && shouldShowPaywall(currentLesson)) {
@@ -113,12 +119,6 @@ export default function LessonView() {
       setIsPaywallOpen(false);
     }
   }, [currentLesson]);
-  
-  // Find current lesson object
-  const currentLesson = specificLesson || 
-    (lessons && currentLessonId 
-      ? lessons.find(l => l.lessonId === currentLessonId) 
-      : null);
   
   // Handle redirects from legacy URLs to new URL format
   useEffect(() => {
@@ -253,6 +253,16 @@ export default function LessonView() {
           isOpen={isLessonSelectorOpen}
           onClose={() => setLessonSelectorOpen(false)}
           onSelectLesson={handleLessonSelect}
+        />
+      )}
+      
+      {/* Paywall modal */}
+      {currentLesson && (
+        <PaywallModal
+          isOpen={isPaywallOpen}
+          onClose={() => setIsPaywallOpen(false)}
+          lessonId={currentLesson.lessonId}
+          languageCode={currentLesson.languageCode}
         />
       )}
     </div>
