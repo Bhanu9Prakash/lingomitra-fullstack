@@ -42,13 +42,23 @@ export default function AdminDashboard() {
   // Fetch analytics data
   const { data: analyticsData, isLoading: loadingAnalytics, error: analyticsError } = useQuery({
     queryKey: ['/api/admin/analytics'],
-    retry: false
+    retry: 1,
+    staleTime: 30000, // 30 seconds
+    refetchOnWindowFocus: true,
+    onError: (error: any) => {
+      console.error('Error fetching analytics:', error);
+    }
   });
   
   // Fetch users data
   const { data: usersData, isLoading: loadingUsers, error: usersError } = useQuery({
     queryKey: ['/api/admin/users'],
-    retry: false
+    retry: 1,
+    staleTime: 30000, // 30 seconds 
+    refetchOnWindowFocus: true,
+    onError: (error: any) => {
+      console.error('Error fetching users:', error);
+    }
   });
   
   // If unauthorized, redirect to home page

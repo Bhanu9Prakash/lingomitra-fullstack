@@ -67,7 +67,7 @@ export function initWebSocket(): WebSocket | null {
     // Use current window host, which already includes port if it exists
     const host = window.location.host || window.location.hostname;
     
-    // Construct WebSocket URL with fallback to prevent undefined port
+    // Construct WebSocket URL with explicit path
     const wsUrl = `${protocol}//${host}/ws`;
     console.log(`Connecting to WebSocket at ${wsUrl}`);
 
