@@ -225,8 +225,10 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ success: false, message: "Verification token is required" });
       }
       
-      // Find user with this token
-      const user = await storage.getUserByVerificationToken(token as string);
+      // Decode the token and find user with this token
+      const decodedToken = decodeURIComponent(token as string);
+      console.log('Searching for user with verification token:', decodedToken);
+      const user = await storage.getUserByVerificationToken(decodedToken);
       
       if (!user) {
         return res.status(400).json({ success: false, message: "Invalid verification token" });
@@ -497,8 +499,10 @@ export function setupAuth(app: Express) {
         });
       }
       
-      // Find user with this reset token
-      const user = await storage.getUserByResetPasswordToken(token as string);
+      // Decode the token and find user with this token
+      const decodedToken = decodeURIComponent(token as string);
+      console.log('Validating reset token:', decodedToken);
+      const user = await storage.getUserByResetPasswordToken(decodedToken);
       
       if (!user) {
         return res.status(200).json({ 
@@ -542,8 +546,10 @@ export function setupAuth(app: Express) {
         });
       }
       
-      // Find user with this reset token
-      const user = await storage.getUserByResetPasswordToken(token);
+      // Decode the token and find user with this token
+      const decodedToken = decodeURIComponent(token);
+      console.log('Resetting password with token:', decodedToken);
+      const user = await storage.getUserByResetPasswordToken(decodedToken);
       
       if (!user) {
         return res.status(400).json({ 
