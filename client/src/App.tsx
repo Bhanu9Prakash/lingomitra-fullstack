@@ -13,6 +13,7 @@ import Settings from "@/pages/Settings";
 import Profile from "@/pages/Profile";
 import SubscribePage from "@/pages/SubscribePage";
 import AdminDashboard from "@/pages/AdminDashboard";
+import AboutPage from "@/pages/AboutPage";
 import Healthcheck from "./pages/Healthcheck";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
@@ -48,6 +49,9 @@ function Router() {
         
         {/* Subscription page - public */}
         <Route path="/subscribe" component={SubscribePage} />
+        
+        {/* About page - public */}
+        <Route path="/about" component={AboutPage} />
         
         {/* Health check - public */}
         <Route path="/health" component={Healthcheck} />

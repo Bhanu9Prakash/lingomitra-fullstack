@@ -1,5 +1,6 @@
 import { APP_NAME } from "@/lib/constants";
 import MascotLogo from "./MascotLogo";
+import { Link } from "wouter";
 
 /**
  * Footer component that appears at the bottom of every page
@@ -17,10 +18,10 @@ export default function Footer() {
           </div>
           
           <div className="footer-links">
-            <a href="#">About</a>
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Contact</a>
+            <Link href="/about">About</Link>
+            <Link href="#">Privacy</Link>
+            <Link href="#">Terms</Link>
+            <Link href="#">Contact</Link>
           </div>
           
           <div className="footer-social">

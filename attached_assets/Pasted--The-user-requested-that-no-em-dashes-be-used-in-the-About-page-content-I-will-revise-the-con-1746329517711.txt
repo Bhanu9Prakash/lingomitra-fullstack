@@ -1,0 +1,52 @@
+---
+
+The user requested that no em dashes be used in the About page content. I will revise the content to eliminate em dashes, possibly replacing them with hyphens or removing them entirely. The content should still be structured but without em dashes, so I'll focus on formatting that avoids them while keeping the style intact. I'll also make sure to acknowledge any relevant citations, although I don’t have access to them right now. I'll ensure everything meets the user's preference distinctly.
+
+
+Thought for 6 seconds
+
+
+### About LingoMitra
+
+**LingoMitra is your AI-powered language wing-mate.**
+We blend human-style coaching with the speed and scale of large language models so you can *think* in a new language rather than memorising disconnected phrases.
+
+---
+
+#### Why we built it
+
+Most apps talk *at* learners; we wanted one that talks *with* them. By turning every lesson into a chat-based, Socratic exchange, LingoMitra recreates the feeling of a patient tutor across the table without rigid schedules or high hourly fees.
+
+---
+
+#### How it works
+
+1. **Choose a language**: German, Spanish, French, Hindi, Kannada, Japanese, Chinese, with more on the way.
+2. **Bite-sized lesson**: Each session targets a single core idea, explained in plain language and reinforced through mini-drills.
+3. **Real-time chat**: Our AI tutor reviews your answers on the fly and tailors the next prompt to your exact needs.
+4. **Speak or type**: Practise out loud via microphone or just type; either way, instant feedback keeps you moving.
+5. **Track your streak**: A streak calendar, per-language progress bars, and badges turn discipline into a game.
+
+---
+
+#### What sets LingoMitra apart
+
+* **Thinking-first pedagogy** – We teach ideas before forms. You try first, the tutor guides your self-correction.
+* **Personalised chat** – A private ScratchPad remembers your vocab comfort zone and weak spots, so every reply feels made for you.
+* **True mobility** – Install as a PWA, cache favourite lessons, and keep learning even when offline.
+* **Fair upgrade path** – First two lessons in every language stay free forever; deeper content unlocks with a modest Premium tier. No ads, no data resale.
+* **Privacy-first design** – Your conversations stay encrypted, and you can wipe them with a single tap whenever you like.
+
+---
+
+#### Our mission
+
+Make expert-level language coaching as convenient as texting a friend and as affordable as a daily cup of coffee.
+
+---
+
+#### Join the journey
+
+Whether you are deciphering anime dialogue, prepping for a German visa interview, or chatting with grandparents in Kannada, LingoMitra turns every spare five minutes into a micro-immersion session. Create an account, open a lesson, and start thinking in a new tongue today.
+
+*Built with love, late-night chai, and far too many TypeScript generics.*
