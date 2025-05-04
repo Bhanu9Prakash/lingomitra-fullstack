@@ -17,6 +17,8 @@ import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import FAQPage from "@/pages/FAQPage";
 import VerifyEmailPage from "@/pages/VerifyEmailPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import Healthcheck from "./pages/Healthcheck";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
@@ -50,8 +52,8 @@ function Router() {
         {/* Authentication routes */}
         <Route path="/auth" component={AuthPage} />
         <Route path="/verify-email" component={VerifyEmailPage} />
-        <Route path="/forgot-password" component={() => import("@/pages/ForgotPasswordPage").then(module => <module.default />)} />
-        <Route path="/reset-password" component={() => import("@/pages/ResetPasswordPage").then(module => <module.default />)} />
+        <Route path="/forgot-password" component={ForgotPasswordPage} />
+        <Route path="/reset-password" component={ResetPasswordPage} />
         
         {/* Subscription page - public */}
         <Route path="/subscribe" component={SubscribePage} />

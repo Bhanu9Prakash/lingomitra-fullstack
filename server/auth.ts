@@ -477,6 +477,51 @@ export function setupAuth(app: Express) {
     }
   });
   
+  // Validate reset token endpoint
+  app.get("/api/reset-password/validate", async (req, res) => {
+    try {
+      const { token } = req.query;
+      
+      if (!token) {
+        return res.status(400).json({ 
+          valid: false, 
+          message: "Token is required" 
+        });
+      }
+      
+      // Find user with this reset token
+      const user = await storage.getUserByResetPasswordToken(token as string);
+      
+      if (!user) {
+        return res.status(200).json({ 
+          valid: false, 
+          message: "Invalid token" 
+        });
+      }
+      
+      // Check if token is expired
+      const now = new Date();
+      if (user.resetPasswordTokenExpiry && user.resetPasswordTokenExpiry < now) {
+        return res.status(200).json({ 
+          valid: false, 
+          message: "Token has expired" 
+        });
+      }
+      
+      // Token is valid
+      return res.status(200).json({ 
+        valid: true, 
+        message: "Token is valid" 
+      });
+    } catch (error) {
+      console.error('Error validating token:', error);
+      return res.status(500).json({ 
+        valid: false, 
+        message: "An error occurred while validating the token" 
+      });
+    }
+  });
+
   // Reset password endpoint - validate token and update password
   app.post("/api/reset-password", async (req, res) => {
     try {
