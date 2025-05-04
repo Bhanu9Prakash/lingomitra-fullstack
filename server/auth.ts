@@ -323,4 +323,59 @@ export function setupAuth(app: Express) {
     const { password, ...userWithoutPassword } = req.user as SelectUser;
     res.json(userWithoutPassword);
   });
+  
+  // Endpoint to resend verification email
+  app.post("/api/resend-verification", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ success: false, message: "Email is required" });
+      }
+      
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        // Don't reveal if user exists or not for security
+        return res.status(200).json({ 
+          success: true, 
+          message: "If your email is registered, a new verification link has been sent." 
+        });
+      }
+      
+      // Check if already verified
+      if (user.emailVerified) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Your email is already verified." 
+        });
+      }
+      
+      // Generate new verification token
+      const newVerificationToken = generateVerificationToken();
+      const now = new Date();
+      const tokenExpiry = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
+      
+      // Update user with new verification token
+      await storage.updateUser(user.id, {
+        verificationToken: newVerificationToken,
+        verificationTokenExpiry: tokenExpiry
+      });
+      
+      // Resend verification email
+      await sendVerificationEmail(user.email, user.username, newVerificationToken);
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: "A new verification email has been sent. Please check your inbox." 
+      });
+    } catch (error) {
+      console.error('Error resending verification email:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: "An error occurred while resending verification email."
+      });
+    }
+  });
 }

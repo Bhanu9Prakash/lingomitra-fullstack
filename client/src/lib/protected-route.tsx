@@ -30,6 +30,15 @@ export function ProtectedRoute({
       </Route>
     );
   }
+  
+  // Check if user's email is verified
+  if (user && user.emailVerified === false) {
+    return (
+      <Route path={path}>
+        <Redirect to="/verify-email" />
+      </Route>
+    );
+  }
 
   return (
     <Route path={path}>
