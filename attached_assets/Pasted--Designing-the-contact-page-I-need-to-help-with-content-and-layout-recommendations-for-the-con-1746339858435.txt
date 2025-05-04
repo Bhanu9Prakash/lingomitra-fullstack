@@ -1,0 +1,114 @@
+**Designing the contact page**
+
+I need to help with content and layout recommendations for the contact page. The form should include fields like a message box, support categories, email address, and social media links. I’ll keep the styling beginner-friendly and aligned with their preference for no excessive disclaimers. I'll provide copy that’s encouraging but not overly generic. No em dashes! Plus, I’ll suggest using components from their local library and TypeScript with Next.js, React, and Tailwind. I’ll keep a warm and friendly tone throughout.
+
+
+Thought for 9 seconds
+
+
+### Contact Us page outline
+
+| Zone                      | Purpose                                         | Key elements                                                                                                                              |
+| ------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Hero strip**            | Reassure visitors that a real team is listening | - Mascot icon waving <br> - H1 “Talk to the LingoMitra team” <br> - Subhead “Questions, feedback or partnership ideas? Send them our way” |
+| **Main panel**            | Collect messages quickly and clearly            | Two-column layout on desktop, stacked on mobile:<br> **Left card** (Contact copy + info)<br> **Right card** (form)                        |
+| **FAQ teaser**            | Deflect common how-tos                          | A small banner under the form linking to `/faq`                                                                                           |
+| **Social & legal footer** | Extra channels and compliance                   | Icons for X, Instagram, LinkedIn  ·  Copyright line  ·  Privacy link                                                                      |
+
+---
+
+### Copy draft
+
+**Hero**
+
+```txt
+Talk to the LingoMitra team
+Questions, bug reports or partnership ideas? Drop a note and we’ll reply within two working days.
+```
+
+**Left card**
+
+```txt
+Prefer email? Write to product@lingomitra.com  
+Support hours: Mon–Fri · 10 am–6 pm IST
+
+For press kits and logos visit /press  
+For feature requests vote on our Public Roadmap
+```
+
+*(Turn the email into a `mailto:` link and the roadmap into an external link.)*
+
+**Form labels**
+
+| Field                 | Placeholder text                                                | Validation               |
+| --------------------- | --------------------------------------------------------------- | ------------------------ |
+| Name                  | Your full name                                                  | Required                 |
+| Email                 | [you@example.com](mailto:you@example.com)                       | Required · must be valid |
+| Category              | Dropdown: General · Bug · Feature request · Partnership · Press | Required                 |
+| Message               | How can we help?                                                | Required · min 30 chars  |
+| Attachment (optional) | Drag a screenshot or click to upload                            | Accept images & PDFs     |
+
+**Button**
+`Send message`
+
+**Success toast**
+
+```txt
+Thanks for writing in — a team member will respond at the email you provided.
+```
+
+---
+
+### UI tips for your stack (Next.js + Tailwind + ShadCN)
+
+1. **Container**
+
+   ```tsx
+   <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-5xl lg:px-8">
+   ```
+2. **Hero**
+   Use the mascot SVG in a `rounded-full bg-accent/10 p-3` circle left of the heading for consistency with the rest of the site.
+3. **Card split**
+
+   ```tsx
+   <div className="grid gap-6 lg:grid-cols-2">
+     <Card className="p-6 space-y-4"> …info copy… </Card>
+     <Card className="p-6">
+       <ContactForm />
+     </Card>
+   </div>
+   ```
+4. **Field components**
+   Reuse `<Input>`, `<Textarea>` and `<Select>` from your existing UI library; apply `required` and show inline error text using `react-hook-form`.
+5. **Accessibility**
+
+   * Each `<label>` wraps its control.
+   * `aria-invalid={!!errors.name}` on fields when errors exist.
+   * Success and error toasts fire `role="status"` for screen-reader pickup.
+6. **Anti-spam**
+
+   * Hidden honeypot `<input>` named `company` should stay blank.
+   * Server-side rate limit per IP or use Google reCAPTCHA v3.
+7. **SEO**
+   Add `<title>Contact LingoMitra · AI Language Tutor</title>` and a meta description in the page head.
+
+---
+
+### Minimal CSS helpers (Tailwind)
+
+```css
+/* utilities file */
+.form-label { @apply text-sm font-medium text-muted-foreground; }
+.form-error { @apply mt-1 text-xs text-red-600; }
+```
+
+---
+
+### Checklist before launch
+
+* [ ] Verify the `product@lingomitra.com` mailbox and test `mailto:` link.
+* [ ] Wire the API route `/api/contact` to send both a notification email and a Slack message.
+* [ ] Add the page to the global nav and the footer.
+* [ ] Update robots.txt and sitemap.xml once the contact page goes live.
+
+Roll these pieces in, push to staging and run Lighthouse to ensure the new hero image does not tank LCP.
