@@ -63,6 +63,8 @@ export default function AuthPage() {
 
   const [activeTab, setActiveTab] = useState<string>(getInitialTab());
   const [justVerified, setJustVerified] = useState<boolean>(isVerified());
+  const [showVerificationMessage, setShowVerificationMessage] = useState<boolean>(false);
+  const [verificationEmail, setVerificationEmail] = useState<string>("");
   const { user, loginMutation, registerMutation } = useAuth();
   const { toast, success, error: showError } = useSimpleToast();
   const { theme } = useTheme();
@@ -127,8 +129,15 @@ export default function AuthPage() {
       navigate("/");
     } catch (err: any) {
       // Check for verification error
-      if (err.message?.includes("verify")) {
-        setLoginError("Please verify your email address before logging in. Check your inbox for a verification link.");
+      if (err.message?.includes("verify") || 
+          (err.response && err.response.verified === false)) {
+        // Get username from the form values
+        const username = values.username;
+        
+        // Show verification message with instructions
+        setLoginError("Your email address has not been verified. Please check your inbox for a verification link or request a new one.");
+        setVerificationEmail(username); // Use username as email (may be either)
+        setShowVerificationMessage(true);
       } else {
         // Set a generic error message
         setLoginError("Incorrect username/email or password. Please try again.");
@@ -143,13 +152,16 @@ export default function AuthPage() {
       // TypeScript doesn't know the API will return this kind of response
       const response = await registerMutation.mutateAsync(userData) as any;
       
-      // Check if the response contains a verification message
-      if (response && response.message && typeof response.message === 'string' && response.message.includes("verify")) {
+      // Check if verification is needed
+      if (response && response.needsVerification) {
         // Show verification instructions
         success(
           "Registration successful!", 
           "Please check your email to verify your account. A verification link has been sent to your email address."
         );
+        // Create a verification pending UI state
+        setVerificationEmail(userData.email);
+        setShowVerificationMessage(true);
         // Stay on the login page, but switch to login tab
         setActiveTab("login");
       } else {
@@ -207,6 +219,28 @@ export default function AuthPage() {
                   Register
                 </button>
               </div>
+              
+              {/* Verification Message */}
+              {showVerificationMessage && (
+                <div className="mb-6 p-4 rounded-md bg-blue-50 border border-blue-200 text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-200">
+                  <h3 className="text-lg font-medium mb-2">Verify Your Email</h3>
+                  <p className="text-sm mb-2">
+                    We've sent a verification link to <strong>{verificationEmail}</strong>.
+                  </p>
+                  <p className="text-sm">
+                    Please check your inbox and click the link to activate your account. 
+                    You won't be able to login until your email is verified.
+                  </p>
+                  <div className="mt-3 flex justify-end">
+                    <button
+                      onClick={() => setShowVerificationMessage(false)}
+                      className="text-xs underline text-blue-600 dark:text-blue-400"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              )}
               
               {/* Login Form */}
               {activeTab === 'login' && (

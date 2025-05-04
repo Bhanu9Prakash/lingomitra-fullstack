@@ -52,7 +52,7 @@ async function sendVerificationEmail(email: string, username: string, token: str
       },
     });
     
-    const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+    const baseUrl = process.env.BASE_URL || 'https://lingomitra.com';
     const verificationUrl = `${baseUrl}/verify-email?token=${token}`;
     
     const mailOptions = {
@@ -189,9 +189,9 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
-      const { username, email, password } = req.body;
+      const { username, email, password: rawPassword } = req.body;
       
-      if (!username || !email || !password) {
+      if (!username || !email || !rawPassword) {
         return res.status(400).send("Username, email, and password are required");
       }
       
@@ -208,7 +208,7 @@ export function setupAuth(app: Express) {
       }
 
       // Generate verification token
-      const verificationToken = generateVerificationToken();
+      const newVerificationToken = generateVerificationToken();
       const now = new Date();
       const tokenExpiry = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours from now
       
@@ -216,23 +216,26 @@ export function setupAuth(app: Express) {
       const user = await storage.createUser({
         username,
         email,
-        password: await hashPassword(password),
+        password: await hashPassword(rawPassword),
         emailVerified: false,
-        verificationToken,
+        verificationToken: newVerificationToken,
         verificationTokenExpiry: tokenExpiry
       });
 
       // Send verification email
-      await sendVerificationEmail(email, username, verificationToken);
+      await sendVerificationEmail(email, username, newVerificationToken);
 
-      req.login(user, (err) => {
-        if (err) return next(err);
-        // Don't send the password back to the client
-        const { password, verificationToken, ...userWithoutPassword } = user;
-        res.status(201).json({
-          ...userWithoutPassword,
-          message: "Please check your email to verify your account."
-        });
+      // Don't log the user in automatically after registration
+      // Just tell them to check their email
+      // Extract sensitive fields to exclude them from the response
+      const userResponse = { ...user };
+      delete userResponse.password;
+      delete userResponse.verificationToken;
+      
+      res.status(201).json({
+        ...userWithoutPassword,
+        needsVerification: true,
+        message: "Please check your email to verify your account before logging in."
       });
     } catch (error) {
       next(error);
