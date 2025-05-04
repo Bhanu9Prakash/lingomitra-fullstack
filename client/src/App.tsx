@@ -14,6 +14,7 @@ import Profile from "@/pages/Profile";
 import SubscribePage from "@/pages/SubscribePage";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AboutPage from "@/pages/AboutPage";
+import ContactPage from "@/pages/ContactPage";
 import Healthcheck from "./pages/Healthcheck";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
@@ -52,6 +53,9 @@ function Router() {
         
         {/* About page - public */}
         <Route path="/about" component={AboutPage} />
+        
+        {/* Contact page - public */}
+        <Route path="/contact" component={ContactPage} />
         
         {/* Health check - public */}
         <Route path="/health" component={Healthcheck} />

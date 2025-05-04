@@ -10,6 +10,7 @@ import { insertLanguageSchema, insertLessonSchema } from "@shared/schema";
 import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
 import progressRouter from "./routes/progress";
+import contactRouter from "./routes/contact";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 import { WebSocketServer, WebSocket } from 'ws';
 
@@ -924,6 +925,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register chat API router
   app.use("/api/chat", chatRouter);
   app.use("/api/progress", progressRouter);
+  app.use("/api/contact", contactRouter);
 
   const httpServer = createServer(app);
   

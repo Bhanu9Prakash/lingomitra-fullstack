@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
+import { sendContactFormEmail, sendAutoResponseEmail } from '../utils/email';
 
 // Contact form schema validation
 const contactFormSchema = z.object({
@@ -30,17 +31,19 @@ contactRouter.post('/', async (req: Request, res: Response) => {
       return res.status(200).json({ success: true });
     }
 
-    // In a production environment, you would:
-    // 1. Send an email using SendGrid
-    // 2. Store the message in a database
-    // 3. Potentially send a notification to a Slack channel
+    console.log('Contact form submission received:', formData.name, formData.email, formData.category);
     
-    console.log('Contact form submission:', formData);
+    // Send notification email to the admin/team
+    const emailResult = await sendContactFormEmail(formData);
     
-    // For now, just simulate success
+    // Send auto-response to the user
+    await sendAutoResponseEmail(formData);
+    
+    // Return response with preview URL for development environments
     return res.status(200).json({
       success: true,
-      message: "Your message has been received. We'll get back to you soon!"
+      message: "Your message has been received. We'll get back to you soon!",
+      previewUrl: emailResult.previewUrl
     });
   } catch (error) {
     console.error('Contact form error:', error);
