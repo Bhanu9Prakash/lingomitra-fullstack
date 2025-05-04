@@ -275,25 +275,28 @@ export function setupAuth(app: Express) {
       
       // Update the user's session if they're already logged in
       if (req.isAuthenticated() && req.user && (req.user as SelectUser).id === user.id) {
-        // Update the session with the verified user
-        req.login(updatedUser, (err) => {
-          if (err) {
-            console.error('Error updating session:', err);
-          }
-        });
+        // Update the session with the verified user if it exists
+        if (updatedUser) {
+          req.login(updatedUser, (err) => {
+            if (err) {
+              console.error('Error updating session:', err);
+            }
+          });
+        }
       }
       
-      // If this is an API call, return JSON
-      if (req.headers.accept && req.headers.accept.includes('application/json')) {
-        return res.status(200).json({ 
-          success: true, 
-          message: "Email verified successfully"
-        });
-      }
+      // Get the verified user (could be either updatedUser or the original user)
+      const verifiedUser = updatedUser || user;
       
-      // Otherwise redirect to the verify-email page with token
-      // The frontend will check session and redirect appropriately
-      return res.redirect('/verify-email?verified=true');
+      // Return JSON with safe user data (omit sensitive fields)
+      return res.status(200).json({ 
+        success: true, 
+        message: "Email verified successfully",
+        username: verifiedUser.username,
+        email: verifiedUser.email,
+        emailVerified: verifiedUser.emailVerified,
+        id: verifiedUser.id
+      });
     } catch (error) {
       console.error('Email verification error:', error);
       return res.status(500).json({ 

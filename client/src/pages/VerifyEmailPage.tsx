@@ -129,10 +129,6 @@ const VerifyEmailPage = () => {
         setStatus("success");
         setMessage("Your email has been verified successfully!");
         
-        // Get user data returned from the verification endpoint
-        // This contains username and other info we can use
-        const userData = await response.json();
-        
         // Store successful verification in sessionStorage
         // This helps maintain state across potential page reloads (from service worker updates)
         sessionStorage.setItem('emailJustVerified', 'true');
@@ -140,9 +136,19 @@ const VerifyEmailPage = () => {
         // Store the verification timestamp to prevent immediate service worker updates
         sessionStorage.setItem('emailVerifiedTimestamp', Date.now().toString());
         
-        // Store the username to help with login after verification
-        if (userData && userData.username) {
-          sessionStorage.setItem('verifiedUsername', userData.username);
+        // Try to parse the response as JSON, but don't fail if it's not JSON
+        // Since our server might redirect instead of returning JSON
+        let userData;
+        try {
+          const responseClone = response.clone();
+          userData = await responseClone.json();
+          
+          // Store the username to help with login after verification
+          if (userData && userData.username) {
+            sessionStorage.setItem('verifiedUsername', userData.username);
+          }
+        } catch (e) {
+          console.log("Response was not JSON, likely a redirect response");
         }
         
         // Clear the pending token since verification was successful
@@ -173,14 +179,25 @@ const VerifyEmailPage = () => {
           }, 3000);
         }
       } else {
-        const data = await response.json();
+        // Try to parse the error as JSON, but handle cases where it's not
+        let errorMessage = "An error occurred during email verification.";
+        try {
+          const data = await response.json();
+          errorMessage = data.message || errorMessage;
+        } catch (e) {
+          console.log("Error response was not JSON:", e);
+          // Try to use the response status text if available
+          errorMessage = response.statusText || errorMessage;
+        }
+        
         setStatus("error");
-        setMessage(data.message || "An error occurred during email verification.");
+        setMessage(errorMessage);
         
         // Clear any stored verification data on error
         sessionStorage.removeItem('pendingVerificationToken');
       }
     } catch (error) {
+      console.error("Email verification error:", error);
       setStatus("error");
       setMessage("An error occurred during email verification. Please try again later.");
       
