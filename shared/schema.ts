@@ -12,6 +12,10 @@ export const users = pgTable("users", {
   subscriptionExpiry: timestamp("subscription_expiry"),
   // Admin flag
   isAdmin: boolean("is_admin").default(false).notNull(),
+  // Email verification
+  emailVerified: boolean("email_verified").default(false).notNull(),
+  verificationToken: text("verification_token"),
+  verificationTokenExpiry: timestamp("verification_token_expiry"),
 });
 
 export const languages = pgTable("languages", {
