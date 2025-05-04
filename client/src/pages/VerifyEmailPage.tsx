@@ -20,10 +20,11 @@ const VerifyEmailPage = () => {
     }
   }, [user, navigate]);
 
-  // Get token from URL if present
+  // Get token or verified flag from URL if present
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const tokenParam = searchParams.get("token");
+    const verifiedParam = searchParams.get("verified");
     
     if (tokenParam) {
       setToken(tokenParam);
@@ -34,12 +35,45 @@ const VerifyEmailPage = () => {
       const url = new URL(window.location.href);
       url.searchParams.delete('token');
       window.history.replaceState({}, document.title, url.toString());
+    } else if (verifiedParam === "true") {
+      // If redirected back with verified=true, show success and redirect
+      setToken("verified");
+      setStatus("success");
+      setMessage("Your email has been verified successfully!");
+      
+      // Try to check if we're logged in
+      fetch("/api/user")
+        .then(response => {
+          if (response.ok) {
+            // We have a valid session, update the user information
+            queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+            
+            // Redirect to languages page after 2 seconds
+            setTimeout(() => {
+              navigate("/languages");
+            }, 2000);
+          } else {
+            // No valid session, redirect to login
+            setTimeout(() => {
+              navigate("/auth?verified=true");
+            }, 2000);
+          }
+        })
+        .catch(() => {
+          // On error, redirect to login
+          setTimeout(() => {
+            navigate("/auth?verified=true");
+          }, 2000);
+        });
+    } else if (user && user.emailVerified) {
+      // If user is already verified, redirect to home page
+      navigate("/");
     } else {
       // No token in URL, so we're just showing the instruction page
-      setStatus("loading");
+      setStatus("idle");
       setMessage("");
     }
-  }, []);
+  }, [user, navigate, queryClient]);
 
   // Function to verify email with the token
   const verifyEmail = async (verificationToken: string) => {
@@ -50,12 +84,29 @@ const VerifyEmailPage = () => {
       
       if (response.ok) {
         setStatus("success");
-        setMessage("Your email has been verified successfully. You can now login to your account.");
+        setMessage("Your email has been verified successfully!");
         
-        // Redirect to auth page after 3 seconds
-        setTimeout(() => {
-          navigate("/auth?verified=true");
-        }, 3000);
+        // Try to login the user with their existing session
+        try {
+          // Check if we have a user session
+          const userResponse = await fetch("/api/user");
+          if (userResponse.ok) {
+            // We have a valid session, redirect to languages page
+            setTimeout(() => {
+              navigate("/languages");
+            }, 3000);
+          } else {
+            // No valid session, redirect to login
+            setTimeout(() => {
+              navigate("/auth?verified=true");
+            }, 3000);
+          }
+        } catch (error) {
+          // On error, redirect to login
+          setTimeout(() => {
+            navigate("/auth?verified=true");
+          }, 3000);
+        }
       } else {
         const data = await response.json();
         setStatus("error");
@@ -117,14 +168,20 @@ const VerifyEmailPage = () => {
           <h1 className="mt-6 text-2xl font-bold text-center">Email Verified</h1>
           <p className="mt-2 text-center">{message}</p>
           <p className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-            Redirecting you to the login page...
+            Redirecting you shortly...
           </p>
           <div className="mt-6">
             <Button 
               className="w-full bg-[#ff6600] hover:bg-[#cc5200]"
-              onClick={() => navigate("/auth")}
+              onClick={() => {
+                if (user && user.emailVerified) {
+                  navigate("/languages");
+                } else {
+                  navigate("/auth");
+                }
+              }}
             >
-              Go to Login Page
+              {user && user.emailVerified ? "Go to Languages" : "Go to Login"}
             </Button>
           </div>
         </div>
@@ -172,30 +229,16 @@ const VerifyEmailPage = () => {
         </p>
         
         <div className={`mt-6 p-4 rounded-md ${theme === 'dark' ? 'bg-blue-900/30 text-blue-200' : 'bg-blue-50 text-blue-800'}`}>
-          <h3 className="font-medium">Didn't receive the email?</h3>
-          <ul className="mt-2 text-sm list-disc pl-5 space-y-1">
-            <li>Check your spam or junk folder</li>
-            <li>Verify that you entered the correct email address</li>
-            <li>Try resending the verification email</li>
-          </ul>
+          <h3 className="font-medium">Next Steps:</h3>
+          <ol className="mt-2 text-sm list-decimal pl-5 space-y-1">
+            <li>Open your email inbox</li>
+            <li>Find the email from LingoMitra</li>
+            <li>Click the verification link in the email</li>
+            <li>After verification, you'll be able to log in</li>
+          </ol>
         </div>
         
-        <div className="mt-6 space-y-4">
-          <Button 
-            className="w-full bg-[#ff6600] hover:bg-[#cc5200]"
-            onClick={handleResendVerification}
-            disabled={status === "loading" || !user?.email}
-          >
-            {status === "loading" ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Sending...
-              </>
-            ) : (
-              "Resend Verification Email"
-            )}
-          </Button>
-          
+        <div className="mt-6">
           <Button 
             variant="outline"
             className="w-full"
@@ -212,6 +255,28 @@ const VerifyEmailPage = () => {
             }}
           >
             {user ? "Log Out" : "Return to Login"}
+          </Button>
+        </div>
+        
+        <div className="mt-8 border-t border-zinc-800 pt-6">
+          <p className="text-sm text-muted-foreground mb-4">
+            Didn't receive the email? Check your spam folder or try resending it.
+          </p>
+          <Button 
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={handleResendVerification}
+            disabled={status === "loading" || !user?.email}
+          >
+            {status === "loading" ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              "Resend Verification Email"
+            )}
           </Button>
         </div>
       </div>

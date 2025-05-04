@@ -269,8 +269,17 @@ export function setupAuth(app: Express) {
         verificationTokenExpiry: null
       });
       
-      // Redirect to login page with success message
-      return res.redirect('/auth?verified=true');
+      // If this is an API call, return JSON
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        return res.status(200).json({ 
+          success: true, 
+          message: "Email verified successfully"
+        });
+      }
+      
+      // Otherwise redirect to the verify-email page with token
+      // The frontend will check session and redirect appropriately
+      return res.redirect('/verify-email?verified=true');
     } catch (error) {
       console.error('Email verification error:', error);
       return res.status(500).json({ 
