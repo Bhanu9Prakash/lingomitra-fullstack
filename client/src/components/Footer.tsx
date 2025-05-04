@@ -10,7 +10,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-20 pt-10 pb-8 bg-zinc-800 text-white dark:bg-zinc-900">
+    <footer className="mt-20 pt-10 pb-8 bg-background/50">
       <div className="container px-4 mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
           <div className="flex items-center">
@@ -26,19 +26,19 @@ export default function Footer() {
           </div>
           
           <div className="flex gap-4">
-            <a href="#" className="social-icon rounded-full bg-zinc-700 p-2 hover:bg-primary/40 transition-colors">
+            <a href="#" className="social-icon rounded-full bg-muted/30 p-2 hover:bg-primary/20 transition-colors">
               <Facebook size={20} />
             </a>
-            <a href="#" className="social-icon rounded-full bg-zinc-700 p-2 hover:bg-primary/40 transition-colors">
+            <a href="#" className="social-icon rounded-full bg-muted/30 p-2 hover:bg-primary/20 transition-colors">
               <Twitter size={20} />
             </a>
-            <a href="#" className="social-icon rounded-full bg-zinc-700 p-2 hover:bg-primary/40 transition-colors">
+            <a href="#" className="social-icon rounded-full bg-muted/30 p-2 hover:bg-primary/20 transition-colors">
               <Instagram size={20} />
             </a>
           </div>
         </div>
         
-        <div className="border-t border-zinc-700 pt-6 text-center text-sm text-zinc-400">
+        <div className="border-t border-border pt-6 text-center text-sm text-muted-foreground">
           <p>© {currentYear} {APP_NAME}. Master languages naturally through pattern recognition.</p>
         </div>
       </div>
