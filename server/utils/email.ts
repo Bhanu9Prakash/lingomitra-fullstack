@@ -2,17 +2,28 @@ import nodemailer from 'nodemailer';
 import { ContactFormData } from '../routes/contact';
 
 // Create email transport
-// For production, you'd use a real SMTP server
-// For development/testing, we can use either:
-// 1. A test account from Ethereal (fake SMTP service for testing)
-// 2. Log emails to console instead of sending them
+// Using configured SMTP server if credentials are available
+// Otherwise, fall back to Ethereal for testing
 let transporter: nodemailer.Transporter;
 
 // Initialize the email transporter
 async function createTransporter() {
-  // In development or without SMTP credentials, use Ethereal for testing
-  if (process.env.NODE_ENV !== 'production' || !process.env.SMTP_HOST) {
-    // Create a test account at ethereal.email
+  // Check if SMTP credentials are available
+  if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+    // Use the provided SMTP server settings
+    transporter = nodemailer.createTransport({
+      host: 'smtpout.secureserver.net',
+      port: 465,
+      secure: true, // Use SSL
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+    
+    console.log('Using configured SMTP server with credentials');
+  } else {
+    // Fall back to Ethereal test account if no credentials
     const testAccount = await nodemailer.createTestAccount();
     
     // Create a testing transporter
@@ -28,17 +39,6 @@ async function createTransporter() {
     
     console.log('Using Ethereal test email account:', testAccount.user);
     console.log('Emails will be viewable at: https://ethereal.email');
-  } else {
-    // Use real SMTP server in production
-    transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
   }
 }
 
