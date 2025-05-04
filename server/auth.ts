@@ -228,12 +228,10 @@ export function setupAuth(app: Express) {
       // Don't log the user in automatically after registration
       // Just tell them to check their email
       // Extract sensitive fields to exclude them from the response
-      const userResponse = { ...user };
-      delete userResponse.password;
-      delete userResponse.verificationToken;
+      const { password: _, verificationToken: __, verificationTokenExpiry: ___, ...userResponse } = user;
       
       res.status(201).json({
-        ...userWithoutPassword,
+        ...userResponse,
         needsVerification: true,
         message: "Please check your email to verify your account before logging in."
       });
