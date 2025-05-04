@@ -23,14 +23,35 @@ export function registerServiceWorker() {
                   const lastUpdateTime = sessionStorage.getItem('lastUpdatePrompt');
                   const now = Date.now();
                   
-                  // Only show if we haven't shown in the last 5 minutes
-                  if (!lastUpdateTime || (now - parseInt(lastUpdateTime)) > 5 * 60 * 1000) {
+                  // Check if we're in the email verification flow
+                  const isVerifyingEmail = window.location.pathname.includes('/verify-email') || 
+                                          sessionStorage.getItem('pendingVerificationToken') || 
+                                          sessionStorage.getItem('emailJustVerified');
+                  
+                  // Check if we recently verified (within the last minute)
+                  const lastVerifiedTime = sessionStorage.getItem('emailVerifiedTimestamp');
+                  const recentlyVerified = lastVerifiedTime && 
+                                          (now - parseInt(lastVerifiedTime)) < 60 * 1000;
+                  
+                  // Only show if:
+                  // 1. We haven't shown in the last 5 minutes
+                  // 2. We're not in the email verification flow
+                  // 3. We haven't recently verified our email
+                  if ((!lastUpdateTime || (now - parseInt(lastUpdateTime)) > 5 * 60 * 1000) && 
+                      !isVerifyingEmail && 
+                      !recentlyVerified) {
+                    
                     sessionStorage.setItem('lastUpdatePrompt', now.toString());
                     
                     // New content is available; notify the user
                     if (confirm('New content available. Reload once to see the latest version?')) {
                       window.location.reload();
                     }
+                  } else {
+                    console.log('Skipping service worker update notification during sensitive operation');
+                    // We'll skip showing the popup now
+                    // But we'll set a flag to show it later when it's safe
+                    sessionStorage.setItem('pendingServiceWorkerUpdate', 'true');
                   }
                 }
               });

@@ -137,6 +137,9 @@ const VerifyEmailPage = () => {
         // This helps maintain state across potential page reloads (from service worker updates)
         sessionStorage.setItem('emailJustVerified', 'true');
         
+        // Store the verification timestamp to prevent immediate service worker updates
+        sessionStorage.setItem('emailVerifiedTimestamp', Date.now().toString());
+        
         // Store the username to help with login after verification
         if (userData && userData.username) {
           sessionStorage.setItem('verifiedUsername', userData.username);
