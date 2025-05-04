@@ -1,26 +1,20 @@
-import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { useLocation } from 'wouter';
 import { Language } from '@shared/schema';
 import FlagIcon from '@/components/FlagIcon';
+import { getQueryFn } from '@/lib/queryClient';
 
 export default function AboutPage() {
   const [, navigate] = useLocation();
   
   // Fetch available languages
-  const { data: languages } = useQuery<Language[]>({
+  const { data: languages = [] } = useQuery<Language[]>({
     queryKey: ['/api/languages'],
-    queryFn: async () => {
-      const response = await fetch('/api/languages');
-      if (!response.ok) {
-        throw new Error('Failed to fetch languages');
-      }
-      return response.json();
-    }
+    queryFn: getQueryFn()
   });
 
   return (
