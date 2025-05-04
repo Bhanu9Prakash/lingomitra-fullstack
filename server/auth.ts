@@ -225,20 +225,8 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ success: false, message: "Verification token is required" });
       }
       
-      // Decode the token and find user with this token
-      const decodedToken = decodeURIComponent(token as string);
-      console.log('Searching for user with verification token:', decodedToken);
-      
-      // First, let's debug all available tokens
-      const allUsers = await storage.getAllUsers();
-      console.log('Available verification tokens:');
-      allUsers.forEach(u => {
-        if (u.verificationToken) {
-          console.log(`- User ${u.username}: Token = ${u.verificationToken}`);
-        }
-      });
-      
-      const user = await storage.getUserByVerificationToken(decodedToken);
+      // Find user with this token
+      const user = await storage.getUserByVerificationToken(token as string);
       
       if (!user) {
         return res.status(400).json({ success: false, message: "Invalid verification token" });
@@ -389,29 +377,20 @@ export function setupAuth(app: Express) {
   // Endpoint to resend verification email
   app.post("/api/resend-verification", async (req, res) => {
     try {
-      const { email, username } = req.body;
+      const { email } = req.body;
       
-      // Need either email or username
-      if (!email && !username) {
-        return res.status(400).json({ 
-          success: false, 
-          message: "Either email or username is required" 
-        });
+      if (!email) {
+        return res.status(400).json({ success: false, message: "Email is required" });
       }
       
-      // Find user by email or username
-      let user;
-      if (email) {
-        user = await storage.getUserByEmail(email);
-      } else {
-        user = await storage.getUserByUsername(username);
-      }
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
       
       if (!user) {
         // Don't reveal if user exists or not for security
         return res.status(200).json({ 
           success: true, 
-          message: "If your account is registered, a new verification link has been sent." 
+          message: "If your email is registered, a new verification link has been sent." 
         });
       }
       
@@ -509,10 +488,8 @@ export function setupAuth(app: Express) {
         });
       }
       
-      // Decode the token and find user with this token
-      const decodedToken = decodeURIComponent(token as string);
-      console.log('Validating reset token:', decodedToken);
-      const user = await storage.getUserByResetPasswordToken(decodedToken);
+      // Find user with this reset token
+      const user = await storage.getUserByResetPasswordToken(token as string);
       
       if (!user) {
         return res.status(200).json({ 
@@ -556,10 +533,8 @@ export function setupAuth(app: Express) {
         });
       }
       
-      // Decode the token and find user with this token
-      const decodedToken = decodeURIComponent(token);
-      console.log('Resetting password with token:', decodedToken);
-      const user = await storage.getUserByResetPasswordToken(decodedToken);
+      // Find user with this reset token
+      const user = await storage.getUserByResetPasswordToken(token);
       
       if (!user) {
         return res.status(400).json({ 

@@ -168,23 +168,12 @@ export default function AuthPage() {
 
     setResendingVerification(true);
     try {
-      // First determine if verificationEmail is a username or an email
-      const isEmail = verificationEmail.includes('@');
-      
-      // Use appropriate endpoint parameters based on what we have
-      let requestBody = {};
-      if (isEmail) {
-        requestBody = { email: verificationEmail };
-      } else {
-        requestBody = { username: verificationEmail };
-      }
-      
       const response = await fetch('/api/resend-verification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({ email: verificationEmail }),
       });
 
       const data = await response.json();
