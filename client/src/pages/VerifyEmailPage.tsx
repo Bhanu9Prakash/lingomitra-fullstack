@@ -52,7 +52,7 @@ const VerifyEmailPage = () => {
         setStatus("success");
         setMessage("Your email has been verified successfully. You can now login to your account.");
         
-        // Redirect to login page after 3 seconds
+        // Redirect to auth page after 3 seconds
         setTimeout(() => {
           navigate("/auth?verified=true");
         }, 3000);

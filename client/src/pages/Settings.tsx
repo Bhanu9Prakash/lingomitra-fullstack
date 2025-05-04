@@ -210,8 +210,8 @@ export default function Settings() {
       // Log the user out
       await logoutMutation.mutateAsync();
       
-      // Redirect to home page
-      navigate('/');
+      // Redirect to languages page
+      navigate('/languages');
     },
     onError: (error: Error) => {
       toast.toast({
