@@ -61,8 +61,8 @@ async function sendVerificationEmailToUser(email: string, username: string, toke
  */
 async function sendPasswordResetEmailToUser(email: string, token: string) {
   try {
-    const baseUrl = process.env.BASE_URL || 'https://lingomitra.com';
-    const emailOptions = generatePasswordResetEmail(email, token, baseUrl);
+    // Use the email service which has the correct URL fallback
+    const emailOptions = generatePasswordResetEmail(email, token, process.env.BASE_URL);
     
     const result = await sendEmail(emailOptions);
     if (result) {
