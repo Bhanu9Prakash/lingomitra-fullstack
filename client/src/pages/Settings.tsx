@@ -452,6 +452,138 @@ export default function Settings() {
         </div>
       </div>
       
+      {/* Password Change Section */}
+      <div className="border-t border-zinc-800 pt-10 mb-10">
+        <h2 className="text-2xl font-bold mb-2">Change Password</h2>
+        <p className="text-muted-foreground mb-6">Update your password to keep your account secure</p>
+        
+        <div className="rounded-lg p-6 bg-zinc-800/20 max-w-md">
+          <Form {...passwordChangeForm}>
+            <form 
+              onSubmit={passwordChangeForm.handleSubmit((values) => changePasswordMutation.mutate(values))} 
+              className="space-y-4"
+            >
+              <FormField
+                control={passwordChangeForm.control}
+                name="currentPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Current Password</FormLabel>
+                    <div className="relative">
+                      <FormControl>
+                        <Input
+                          type={showCurrentPassword ? "text" : "password"}
+                          placeholder="Enter your current password"
+                          {...field}
+                          className="pr-10"
+                        />
+                      </FormControl>
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 flex items-center pr-3"
+                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                        tabIndex={-1}
+                      >
+                        {showCurrentPassword ? (
+                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={passwordChangeForm.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Password</FormLabel>
+                    <div className="relative">
+                      <FormControl>
+                        <Input
+                          type={showNewPassword ? "text" : "password"}
+                          placeholder="Enter your new password"
+                          {...field}
+                          className="pr-10"
+                        />
+                      </FormControl>
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 flex items-center pr-3"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        tabIndex={-1}
+                      >
+                        {showNewPassword ? (
+                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={passwordChangeForm.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm New Password</FormLabel>
+                    <div className="relative">
+                      <FormControl>
+                        <Input
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="Confirm your new password"
+                          {...field}
+                          className="pr-10"
+                        />
+                      </FormControl>
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 flex items-center pr-3"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        tabIndex={-1}
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <Eye className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <Button 
+                type="submit" 
+                className="bg-[#ff6600] hover:bg-[#cc5200] mt-2"
+                disabled={changePasswordMutation.isPending}
+              >
+                {changePasswordMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <LockKeyhole className="mr-2 h-4 w-4" />
+                    Change Password
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
+        </div>
+      </div>
+      
       <div className="border-t border-zinc-800 pt-10">
         <h2 className="text-2xl font-bold mb-2">Language Courses</h2>
         <p className="text-muted-foreground mb-6">Your enrolled language courses and progress</p>
