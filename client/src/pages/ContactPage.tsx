@@ -86,21 +86,13 @@ export default function ContactPage() {
       
       // If there's a preview URL (for test emails), show another toast with the link
       if (data.previewUrl) {
+        // Create a custom message for the test email link
+        const previewMessage = `Since we're in development mode, emails are sent to a test service. 
+          You can view the test email at: ${data.previewUrl}`;
+        
         toast.toast({
           title: "Test Email Preview Available",
-          description: (
-            <div className="mt-2">
-              <p className="mb-2">Since we're in development mode, emails are sent to a test service.</p>
-              <a 
-                href={data.previewUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Click here to view the test email
-              </a>
-            </div>
-          ),
+          description: previewMessage,
           variant: 'default',
           duration: 10000, // Longer duration to give time to click
         });
@@ -162,10 +154,7 @@ export default function ContactPage() {
               </p>
             </div>
             
-            <div className="border-t border-border pt-4 mt-6 space-y-2">
-              <p>For press kits and logos visit <a href="#" className="text-primary hover:underline">/press</a></p>
-              <p>For feature requests vote on our <a href="#" className="text-primary hover:underline">Public Roadmap</a></p>
-            </div>
+
           </CardContent>
         </Card>
         
