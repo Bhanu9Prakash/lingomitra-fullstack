@@ -377,20 +377,29 @@ export function setupAuth(app: Express) {
   // Endpoint to resend verification email
   app.post("/api/resend-verification", async (req, res) => {
     try {
-      const { email } = req.body;
+      const { email, username } = req.body;
       
-      if (!email) {
-        return res.status(400).json({ success: false, message: "Email is required" });
+      // Need either email or username
+      if (!email && !username) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Either email or username is required" 
+        });
       }
       
-      // Find user by email
-      const user = await storage.getUserByEmail(email);
+      // Find user by email or username
+      let user;
+      if (email) {
+        user = await storage.getUserByEmail(email);
+      } else {
+        user = await storage.getUserByUsername(username);
+      }
       
       if (!user) {
         // Don't reveal if user exists or not for security
         return res.status(200).json({ 
           success: true, 
-          message: "If your email is registered, a new verification link has been sent." 
+          message: "If your account is registered, a new verification link has been sent." 
         });
       }
       

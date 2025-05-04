@@ -126,6 +126,7 @@ const VerifyEmailPage = () => {
       const response = await fetch(`/api/verify-email?token=${verificationToken}`);
       
       if (response.ok) {
+        // Set verification as successful immediately to avoid flashing "failure" page
         setStatus("success");
         setMessage("Your email has been verified successfully!");
         
@@ -156,23 +157,31 @@ const VerifyEmailPage = () => {
             // Redirect to languages page
             setTimeout(() => {
               navigate("/languages");
-            }, 3000);
+            }, 2500);
           } else {
-            // No valid session, redirect to login
+            // No valid session, redirect to login with verified flag
             setTimeout(() => {
-              navigate("/auth?verified=true");
-            }, 3000);
+              // Using replace to ensure the URL is completely replaced
+              window.location.replace("/auth?verified=true");
+            }, 2500);
           }
         } catch (error) {
-          // On error, redirect to login
+          // On error, redirect to login with verified flag
           setTimeout(() => {
-            navigate("/auth?verified=true");
-          }, 3000);
+            // Using replace to ensure the URL is completely replaced
+            window.location.replace("/auth?verified=true");
+          }, 2500);
         }
       } else {
-        const data = await response.json();
-        setStatus("error");
-        setMessage(data.message || "An error occurred during email verification.");
+        // Only set error state if verification actually failed
+        try {
+          const data = await response.json();
+          setStatus("error");
+          setMessage(data.message || "An error occurred during email verification.");
+        } catch (e) {
+          setStatus("error");
+          setMessage("An error occurred during email verification. Please try again later.");
+        }
         
         // Clear any stored verification data on error
         sessionStorage.removeItem('pendingVerificationToken');
@@ -191,12 +200,36 @@ const VerifyEmailPage = () => {
     try {
       setStatus("loading");
       
+      let requestBody = {};
+      // If we have a user object with email, use it
+      if (user?.email) {
+        requestBody = { email: user.email };
+      } 
+      // If no email but we have username, use that
+      else if (user?.username) {
+        requestBody = { username: user.username };
+      }
+      // Otherwise try to get email from URL or get from the user
+      else {
+        // Handle from verification page
+        const searchParams = new URLSearchParams(window.location.search);
+        const emailParam = searchParams.get("email");
+        if (emailParam) {
+          requestBody = { email: emailParam };
+        } else {
+          // No user data and no email param - this shouldn't really happen
+          setStatus("error");
+          setMessage("No email address available. Please log in and try again.");
+          return;
+        }
+      }
+      
       const response = await fetch("/api/resend-verification", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: user?.email }),
+        body: JSON.stringify(requestBody),
       });
       
       const data = await response.json();
@@ -335,7 +368,7 @@ const VerifyEmailPage = () => {
             size="sm"
             className="w-full"
             onClick={handleResendVerification}
-            disabled={status === "loading" || !user?.email}
+            disabled={status === "loading"}
           >
             {status === "loading" ? (
               <>
