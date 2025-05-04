@@ -228,6 +228,16 @@ export function setupAuth(app: Express) {
       // Decode the token and find user with this token
       const decodedToken = decodeURIComponent(token as string);
       console.log('Searching for user with verification token:', decodedToken);
+      
+      // First, let's debug all available tokens
+      const allUsers = await storage.getAllUsers();
+      console.log('Available verification tokens:');
+      allUsers.forEach(u => {
+        if (u.verificationToken) {
+          console.log(`- User ${u.username}: Token = ${u.verificationToken}`);
+        }
+      });
+      
       const user = await storage.getUserByVerificationToken(decodedToken);
       
       if (!user) {

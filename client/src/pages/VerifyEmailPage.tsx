@@ -1,18 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, Link } from "wouter";
 import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import { Loader2, Mail, CheckCircle, AlertCircle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { queryClient } from "@/lib/queryClient";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const VerifyEmailPage = () => {
   const [token, setToken] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("loading");
   const [message, setMessage] = useState<string>("");
+  const [manualToken, setManualToken] = useState<string>("");
   const { theme } = useTheme();
   const [_, navigate] = useLocation();
   const { user, logoutMutation } = useAuth();
+  const tokenInputRef = useRef<HTMLInputElement>(null);
 
   // If the user is already verified and logged in, redirect to home
   useEffect(() => {
@@ -196,6 +200,18 @@ const VerifyEmailPage = () => {
     }
   };
 
+  // Handle manual verification
+  const handleManualVerification = async () => {
+    if (!manualToken) {
+      setMessage("Please enter your verification code");
+      return;
+    }
+    
+    setStatus("loading");
+    // Try to verify with the manually entered token
+    await verifyEmail(manualToken);
+  };
+
   // Function to handle resend verification email
   const handleResendVerification = async () => {
     try {
@@ -299,7 +315,43 @@ const VerifyEmailPage = () => {
           <AlertCircle className="mx-auto h-16 w-16 text-red-500" />
           <h1 className="mt-6 text-2xl font-bold text-center">Verification Failed</h1>
           <p className="mt-2 text-center">{message}</p>
-          <div className="mt-6">
+          
+          <div className="mt-6 p-4 rounded-md border border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-500/30">
+            <h3 className="font-medium text-amber-800 dark:text-amber-300">Enter verification code manually</h3>
+            <p className="mt-1 text-sm text-amber-700 dark:text-amber-300/80">
+              If you're having trouble with the verification link, copy the code from your email and paste it here:
+            </p>
+            
+            <div className="mt-3">
+              <Label htmlFor="verification-code">Verification Code</Label>
+              <Input
+                id="verification-code"
+                ref={tokenInputRef}
+                className="mt-1"
+                value={manualToken}
+                onChange={(e) => setManualToken(e.target.value)}
+                placeholder="Paste your verification code here"
+              />
+            </div>
+            
+            <Button 
+              onClick={handleManualVerification}
+              className="mt-3 w-full bg-amber-600 hover:bg-amber-700 text-white"
+              disabled={!manualToken}
+            >
+              Verify Manually
+            </Button>
+          </div>
+          
+          <div className="mt-6 space-y-4">
+            <Button 
+              className="w-full"
+              variant="outline"
+              onClick={handleResendVerification}
+            >
+              Resend Verification Email
+            </Button>
+            
             <Button 
               className="w-full bg-[#ff6600] hover:bg-[#cc5200]"
               onClick={() => navigate("/auth")}
@@ -360,7 +412,38 @@ const VerifyEmailPage = () => {
           </Button>
         </div>
         
-        <div className="mt-8 border-t border-zinc-800 pt-6">
+        <div className="mt-6 border-t border-zinc-800 pt-6">
+          <h3 className="font-medium mb-2">Enter verification code manually</h3>
+          <p className="text-sm text-muted-foreground mb-3">
+            If you have the verification code from your email, you can paste it here:
+          </p>
+          
+          <div className="space-y-2">
+            <Input
+              ref={tokenInputRef}
+              value={manualToken}
+              onChange={(e) => setManualToken(e.target.value)}
+              placeholder="Paste your verification code here"
+            />
+            
+            <Button 
+              onClick={handleManualVerification}
+              className="w-full bg-[#ff6600] hover:bg-[#cc5200]"
+              disabled={!manualToken || status === "loading"}
+            >
+              {status === "loading" ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Verifying...
+                </>
+              ) : (
+                "Verify Code"
+              )}
+            </Button>
+          </div>
+        </div>
+          
+        <div className="mt-6 border-t border-zinc-800 pt-6">
           <p className="text-sm text-muted-foreground mb-4">
             Didn't receive the email? Check your spam folder or try resending it.
           </p>
