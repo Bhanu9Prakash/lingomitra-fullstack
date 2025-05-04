@@ -18,8 +18,8 @@ export default function AboutPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="space-y-8">
+    <div className="container mx-auto px-4 py-8 max-w-4xl mb-20">
+      <div className="space-y-6">
         <section className="text-center">
           <h1 className="text-4xl font-bold mb-4">About LingoMitra</h1>
           <p className="text-xl mb-6">
@@ -54,7 +54,7 @@ export default function AboutPage() {
             {languages?.map((language) => (
               <Card 
                 key={language.code}
-                className="overflow-hidden transition-all duration-200 hover:shadow-md cursor-pointer"
+                className="overflow-hidden transition-all duration-200 hover:shadow-md cursor-pointer border-0 bg-background/60"
                 onClick={() => navigate(`/language/${language.code}`)}
               >
                 <CardContent className="p-4 flex items-center space-x-3">
@@ -76,7 +76,7 @@ export default function AboutPage() {
         <section>
           <h2 className="text-2xl font-bold mb-4">How it works</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card>
+            <Card className="border-0 bg-background/60">
               <CardContent className="pt-6 text-center">
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold text-primary">1</span>
@@ -85,7 +85,7 @@ export default function AboutPage() {
                 <p>German, Spanish, French, Hindi, Kannada, Japanese, Chinese, with more on the way.</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-0 bg-background/60">
               <CardContent className="pt-6 text-center">
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold text-primary">2</span>
@@ -94,7 +94,7 @@ export default function AboutPage() {
                 <p>Each session targets a single core idea, explained in plain language and reinforced through mini-drills.</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-0 bg-background/60">
               <CardContent className="pt-6 text-center">
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold text-primary">3</span>
@@ -103,7 +103,7 @@ export default function AboutPage() {
                 <p>Our AI tutor reviews your answers on the fly and tailors the next prompt to your exact needs.</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-0 bg-background/60">
               <CardContent className="pt-6 text-center">
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold text-primary">4</span>
@@ -112,7 +112,7 @@ export default function AboutPage() {
                 <p>Practise out loud via microphone or just type; either way, instant feedback keeps you moving.</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-0 bg-background/60">
               <CardContent className="pt-6 text-center">
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold text-primary">5</span>
@@ -129,7 +129,7 @@ export default function AboutPage() {
         <section>
           <h2 className="text-2xl font-bold mb-4">What sets LingoMitra apart</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card>
+            <Card className="border-0 bg-background/60">
               <CardContent className="pt-6">
                 <h3 className="font-bold mb-2 flex items-center">
                   <Badge variant="outline" className="mr-2 bg-primary/10">Feature</Badge>
@@ -138,7 +138,7 @@ export default function AboutPage() {
                 <p>We teach ideas before forms. You try first, the tutor guides your self-correction.</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-0 bg-background/60">
               <CardContent className="pt-6">
                 <h3 className="font-bold mb-2 flex items-center">
                   <Badge variant="outline" className="mr-2 bg-primary/10">Feature</Badge>
@@ -147,7 +147,7 @@ export default function AboutPage() {
                 <p>A private ScratchPad remembers your vocab comfort zone and weak spots, so every reply feels made for you.</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-0 bg-background/60">
               <CardContent className="pt-6">
                 <h3 className="font-bold mb-2 flex items-center">
                   <Badge variant="outline" className="mr-2 bg-primary/10">Feature</Badge>
@@ -156,7 +156,7 @@ export default function AboutPage() {
                 <p>Install as a PWA, cache favourite lessons, and keep learning even when offline.</p>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="border-0 bg-background/60">
               <CardContent className="pt-6">
                 <h3 className="font-bold mb-2 flex items-center">
                   <Badge variant="outline" className="mr-2 bg-primary/10">Feature</Badge>
@@ -172,7 +172,7 @@ export default function AboutPage() {
 
         <section>
           <h2 className="text-2xl font-bold mb-4">Our mission</h2>
-          <Card className="bg-muted/50">
+          <Card className="border-0 bg-primary/10">
             <CardContent className="pt-6">
               <p className="text-lg text-center italic">
                 Make expert-level language coaching as convenient as texting a friend and as affordable as a daily cup of coffee.
