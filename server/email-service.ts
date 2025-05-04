@@ -46,7 +46,7 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
 export function generateVerificationEmail(email: string, token: string, appUrl: string): EmailOptions {
   // If appUrl is not provided, use the production URL
   const baseUrl = appUrl || (process.env.BASE_URL || 'https://lingomitra.com');
-  const verificationLink = `${baseUrl}/verify-email?token=${token}`;
+  const verificationLink = `${baseUrl}/verify-email?token=${encodeURIComponent(token)}`;
   
   return {
     to: email,
@@ -88,7 +88,7 @@ export function generateVerificationEmail(email: string, token: string, appUrl: 
 export function generatePasswordResetEmail(email: string, token: string, appUrl: string): EmailOptions {
   // If appUrl is not provided, use the production URL
   const baseUrl = appUrl || (process.env.BASE_URL || 'https://lingomitra.com');
-  const resetLink = `${baseUrl}/reset-password?token=${token}`;
+  const resetLink = `${baseUrl}/reset-password?token=${encodeURIComponent(token)}`;
   
   return {
     to: email,
