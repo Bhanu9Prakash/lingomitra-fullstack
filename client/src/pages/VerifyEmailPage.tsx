@@ -11,7 +11,7 @@ const VerifyEmailPage = () => {
   const [message, setMessage] = useState<string>("");
   const { theme } = useTheme();
   const [_, navigate] = useLocation();
-  const { user } = useAuth();
+  const { user, logoutMutation } = useAuth();
 
   // If the user is already verified and logged in, redirect to home
   useEffect(() => {
@@ -28,6 +28,12 @@ const VerifyEmailPage = () => {
     if (tokenParam) {
       setToken(tokenParam);
       verifyEmail(tokenParam);
+      
+      // Clear the token from URL after processing
+      // This prevents re-verification attempts on page refresh
+      const url = new URL(window.location.href);
+      url.searchParams.delete('token');
+      window.history.replaceState({}, document.title, url.toString());
     } else {
       // No token in URL, so we're just showing the instruction page
       setStatus("loading");
@@ -155,7 +161,14 @@ const VerifyEmailPage = () => {
         <h1 className="mt-6 text-2xl font-bold text-center">Verify Your Email</h1>
         
         <p className="mt-4 text-center">
-          We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.
+          {user ? (
+            <>
+              A verification link has been sent to <strong>{user.email}</strong>. 
+              Please check your inbox and click the link to verify your account.
+            </>
+          ) : (
+            "We've sent a verification link to your email address. Please check your inbox and click the link to verify your account."
+          )}
         </p>
         
         <div className={`mt-6 p-4 rounded-md ${theme === 'dark' ? 'bg-blue-900/30 text-blue-200' : 'bg-blue-50 text-blue-800'}`}>
@@ -171,7 +184,7 @@ const VerifyEmailPage = () => {
           <Button 
             className="w-full bg-[#ff6600] hover:bg-[#cc5200]"
             onClick={handleResendVerification}
-            disabled={status === "loading"}
+            disabled={status === "loading" || !user?.email}
           >
             {status === "loading" ? (
               <>
@@ -186,9 +199,19 @@ const VerifyEmailPage = () => {
           <Button 
             variant="outline"
             className="w-full"
-            onClick={() => navigate("/auth")}
+            onClick={async () => {
+              if (user) {
+                // Logout user
+                await logoutMutation.mutateAsync();
+                // Then redirect to login page
+                navigate("/auth");
+              } else {
+                // If no user, just redirect to login page
+                navigate("/auth");
+              }
+            }}
           >
-            Return to Login
+            {user ? "Log Out" : "Return to Login"}
           </Button>
         </div>
       </div>
