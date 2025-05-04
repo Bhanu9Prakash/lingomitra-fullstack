@@ -244,6 +244,7 @@ export default function AdminDashboard() {
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="contact">Contact Submissions</TabsTrigger>
         </TabsList>
         
         {/* Overview Tab */}
@@ -386,6 +387,140 @@ export default function AdminDashboard() {
                     </TableBody>
                   </Table>
                 </ScrollArea>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        {/* Contact Submissions Tab */}
+        <TabsContent value="contact">
+          <Card className="border border-gray-800">
+            <CardHeader>
+              <CardTitle>Contact Form Submissions</CardTitle>
+              <CardDescription>View and manage user inquiries</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {loadingSubmissions ? (
+                <div className="space-y-2">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              ) : (
+                <>
+                  {selectedSubmission ? (
+                    <div className="space-y-4">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setSelectedSubmission(null)}
+                        className="mb-4"
+                      >
+                        Back to list
+                      </Button>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <h3 className="text-lg font-medium">Submission Details</h3>
+                          <p><strong>Name:</strong> {selectedSubmission.name}</p>
+                          <p><strong>Email:</strong> {selectedSubmission.email}</p>
+                          <p><strong>Category:</strong> {selectedSubmission.category}</p>
+                          <p><strong>Date:</strong> {format(new Date(selectedSubmission.createdAt), 'PPP pp')}</p>
+                          <p><strong>Status:</strong> 
+                            <Badge className="ml-2" variant={selectedSubmission.isResolved ? "outline" : "default"}>
+                              {selectedSubmission.isResolved ? 'Resolved' : 'Pending'}
+                            </Badge>
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <h3 className="text-lg font-medium">Message</h3>
+                          <div className="rounded-md border border-gray-200 p-4 mt-2 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                            <p className="whitespace-pre-wrap">{selectedSubmission.message}</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {selectedSubmission.notes && (
+                        <div className="mt-4">
+                          <h3 className="text-lg font-medium">Resolution Notes</h3>
+                          <div className="rounded-md border border-gray-200 p-4 mt-2 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
+                            <p className="whitespace-pre-wrap">{selectedSubmission.notes}</p>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {!selectedSubmission.isResolved && (
+                        <div className="mt-4">
+                          <h3 className="text-lg font-medium">Resolve Submission</h3>
+                          <Textarea 
+                            className="mt-2" 
+                            placeholder="Enter resolution notes here..."
+                            value={resolutionNotes}
+                            onChange={(e) => setResolutionNotes(e.target.value)}
+                          />
+                          <Button 
+                            className="mt-2" 
+                            onClick={() => handleResolveSubmission(selectedSubmission)}
+                            disabled={resolveMutation.isPending}
+                          >
+                            {resolveMutation.isPending ? 'Resolving...' : 'Mark as Resolved'}
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-[400px]">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>ID</TableHead>
+                            <TableHead>Date</TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Category</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {contactSubmissionsData && contactSubmissionsData.length > 0 ? (
+                            contactSubmissionsData.map((submission) => (
+                              <TableRow key={submission.id}>
+                                <TableCell>{submission.id}</TableCell>
+                                <TableCell>{format(new Date(submission.createdAt), 'PP')}</TableCell>
+                                <TableCell>{submission.name}</TableCell>
+                                <TableCell>{submission.email}</TableCell>
+                                <TableCell>{submission.category}</TableCell>
+                                <TableCell>
+                                  <Badge variant={submission.isResolved ? "outline" : "default"}>
+                                    {submission.isResolved ? 'Resolved' : 'Pending'}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => setSelectedSubmission(submission)}
+                                  >
+                                    View Details
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          ) : (
+                            <TableRow>
+                              <TableCell colSpan={7} className="text-center py-6">
+                                No contact submissions found. {submissionsError ? 'Error loading data.' : ''}
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </ScrollArea>
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
