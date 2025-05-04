@@ -29,6 +29,11 @@ const VerifyEmailPage = () => {
     
     if (tokenParam) {
       setToken(tokenParam);
+      
+      // Store verification token in sessionStorage before verification
+      // This ensures we can resume verification process if page reloads
+      sessionStorage.setItem('pendingVerificationToken', tokenParam);
+      
       verifyEmail(tokenParam);
       
       // Clear the token from URL after processing
@@ -41,6 +46,9 @@ const VerifyEmailPage = () => {
       setToken("verified");
       setStatus("success");
       setMessage("Your email has been verified successfully!");
+      
+      // Store verification success in sessionStorage
+      sessionStorage.setItem('emailJustVerified', 'true');
       
       // Try to check if we're logged in
       fetch("/api/user")
@@ -66,13 +74,47 @@ const VerifyEmailPage = () => {
             navigate("/auth?verified=true");
           }, 2000);
         });
-    } else if (user && user.emailVerified) {
-      // If user is already verified, redirect to home page
-      navigate("/");
     } else {
-      // No token in URL, so we're just showing the instruction page
-      setStatus("idle" as "loading" | "success" | "error" | "idle");
-      setMessage("");
+      // Check for stored verification token in sessionStorage (from page reload)
+      const storedToken = sessionStorage.getItem('pendingVerificationToken');
+      const justVerified = sessionStorage.getItem('emailJustVerified');
+      
+      if (storedToken) {
+        // Resume verification process
+        setToken(storedToken);
+        verifyEmail(storedToken);
+        // Clear the stored token after using it
+        sessionStorage.removeItem('pendingVerificationToken');
+      } else if (justVerified === 'true') {
+        // If we just verified but got reloaded, restore the success state
+        setToken("verified");
+        setStatus("success");
+        setMessage("Your email has been verified successfully!");
+        
+        // Check if user is logged in after reload
+        if (user) {
+          queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+          
+          setTimeout(() => {
+            navigate("/languages");
+            // Clear the verification flag after redirecting
+            sessionStorage.removeItem('emailJustVerified');
+          }, 2000);
+        } else {
+          setTimeout(() => {
+            navigate("/auth?verified=true");
+            // Clear the verification flag after redirecting
+            sessionStorage.removeItem('emailJustVerified');
+          }, 2000);
+        }
+      } else if (user && user.emailVerified) {
+        // If user is already verified, redirect to home page
+        navigate("/");
+      } else {
+        // No token in URL, so we're just showing the instruction page
+        setStatus("idle" as "loading" | "success" | "error" | "idle");
+        setMessage("");
+      }
     }
   }, [user, navigate]);
 
@@ -87,12 +129,31 @@ const VerifyEmailPage = () => {
         setStatus("success");
         setMessage("Your email has been verified successfully!");
         
+        // Get user data returned from the verification endpoint
+        // This contains username and other info we can use
+        const userData = await response.json();
+        
+        // Store successful verification in sessionStorage
+        // This helps maintain state across potential page reloads (from service worker updates)
+        sessionStorage.setItem('emailJustVerified', 'true');
+        
+        // Store the username to help with login after verification
+        if (userData && userData.username) {
+          sessionStorage.setItem('verifiedUsername', userData.username);
+        }
+        
+        // Clear the pending token since verification was successful
+        sessionStorage.removeItem('pendingVerificationToken');
+        
         // Try to login the user with their existing session
         try {
           // Check if we have a user session
           const userResponse = await fetch("/api/user");
           if (userResponse.ok) {
-            // We have a valid session, redirect to languages page
+            // We have a valid session, update local user data
+            queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+            
+            // Redirect to languages page
             setTimeout(() => {
               navigate("/languages");
             }, 3000);
@@ -112,10 +173,16 @@ const VerifyEmailPage = () => {
         const data = await response.json();
         setStatus("error");
         setMessage(data.message || "An error occurred during email verification.");
+        
+        // Clear any stored verification data on error
+        sessionStorage.removeItem('pendingVerificationToken');
       }
     } catch (error) {
       setStatus("error");
       setMessage("An error occurred during email verification. Please try again later.");
+      
+      // Clear any stored verification data on error
+      sessionStorage.removeItem('pendingVerificationToken');
     }
   };
 

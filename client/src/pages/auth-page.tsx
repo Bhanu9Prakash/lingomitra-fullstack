@@ -75,8 +75,11 @@ export default function AuthPage() {
     const tabFromUrl = getInitialTab();
     setActiveTab(tabFromUrl);
     
-    // Show success message if email was just verified
-    if (isVerified()) {
+    // Check if email was just verified - both from URL and sessionStorage
+    const justVerifiedFromUrl = isVerified();
+    const justVerifiedFromStorage = sessionStorage.getItem('emailJustVerified') === 'true';
+    
+    if (justVerifiedFromUrl || justVerifiedFromStorage) {
       success(
         "Email verified successfully!", 
         "Your email has been verified. You can now log in to your account."
@@ -86,6 +89,16 @@ export default function AuthPage() {
       const url = new URL(window.location.href);
       url.searchParams.delete('verified');
       window.history.replaceState({}, document.title, url.toString());
+      
+      // Clear the verification flag from sessionStorage
+      sessionStorage.removeItem('emailJustVerified');
+      
+      // Pre-populate username field if available in sessionStorage
+      const verifiedUsername = sessionStorage.getItem('verifiedUsername');
+      if (verifiedUsername) {
+        loginForm.setValue('username', verifiedUsername);
+        sessionStorage.removeItem('verifiedUsername');
+      }
     }
   }, []);
 
