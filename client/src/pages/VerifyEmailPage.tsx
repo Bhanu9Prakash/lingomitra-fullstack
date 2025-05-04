@@ -122,8 +122,9 @@ const VerifyEmailPage = () => {
   const verifyEmail = async (verificationToken: string) => {
     try {
       setStatus("loading");
+      console.log("Verifying with token:", verificationToken);
       
-      const response = await fetch(`/api/verify-email?token=${verificationToken}`);
+      const response = await fetch(`/api/verify-email?token=${encodeURIComponent(verificationToken)}`);
       
       if (response.ok) {
         // Set verification as successful immediately to avoid flashing "failure" page
