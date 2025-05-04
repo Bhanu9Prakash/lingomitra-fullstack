@@ -6,7 +6,7 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
-import nodemailer from "nodemailer";
+import { sendEmail, generateVerificationEmail, generatePasswordResetEmail } from "./email-service";
 
 declare global {
   namespace Express {
@@ -39,68 +39,41 @@ function generateVerificationToken(): string {
 /**
  * Send verification email to user
  */
-async function sendVerificationEmail(email: string, username: string, token: string) {
+async function sendVerificationEmailToUser(email: string, username: string, token: string) {
   try {
-    // Setup the same email transporter we use for contact forms
-    const transporter = nodemailer.createTransport({
-      host: 'smtpout.secureserver.net',
-      port: 465,
-      secure: true, // Use SSL
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
-    
     const baseUrl = process.env.BASE_URL || 'https://lingomitra.com';
-    const verificationUrl = `${baseUrl}/verify-email?token=${token}`;
+    const emailOptions = generateVerificationEmail(email, token, baseUrl);
     
-    const mailOptions = {
-      from: `"LingoMitra" <support@lingomitra.com>`,
-      to: email,
-      subject: "Verify Your LingoMitra Account",
-      text: `
-Hello ${username},
-
-Thank you for creating an account with LingoMitra! Please verify your email address by clicking the link below:
-
-${verificationUrl}
-
-This link will expire in 24 hours.
-
-If you did not create an account, please ignore this email.
-
-Best regards,
-The LingoMitra Team
-      `,
-      html: `
-<h2>Welcome to LingoMitra!</h2>
-<p>Hello ${username},</p>
-<p>Thank you for creating an account with LingoMitra! Please verify your email address by clicking the button below:</p>
-<p style="text-align: center;">
-  <a href="${verificationUrl}" style="
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #ff6600;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-  ">Verify Your Email</a>
-</p>
-<p>Or copy and paste this link into your browser:</p>
-<p>${verificationUrl}</p>
-<p>This link will expire in 24 hours.</p>
-<p>If you did not create an account, please ignore this email.</p>
-<p>Best regards,<br>The LingoMitra Team</p>
-      `,
-    };
-    
-    await transporter.sendMail(mailOptions);
-    console.log(`Verification email sent to ${email}`);
-    return true;
+    const result = await sendEmail(emailOptions);
+    if (result) {
+      console.log(`Verification email sent to ${email}`);
+    } else {
+      console.warn(`Failed to send verification email to ${email}`);
+    }
+    return result;
   } catch (error) {
     console.error('Error sending verification email:', error);
+    return false;
+  }
+}
+
+/**
+ * Send password reset email to user
+ */
+async function sendPasswordResetEmailToUser(email: string, token: string) {
+  try {
+    const baseUrl = process.env.BASE_URL || 'https://lingomitra.com';
+    const emailOptions = generatePasswordResetEmail(email, token, baseUrl);
+    
+    const result = await sendEmail(emailOptions);
+    if (result) {
+      console.log(`Password reset email sent to ${email}`);
+    } else {
+      console.warn(`Failed to send password reset email to ${email}`);
+    }
+    return result;
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
     return false;
   }
 }
@@ -223,7 +196,7 @@ export function setupAuth(app: Express) {
       });
 
       // Send verification email
-      await sendVerificationEmail(email, username, newVerificationToken);
+      await sendVerificationEmailToUser(email, username, newVerificationToken);
 
       // Log the user in automatically after registration
       // This preserves their session for when they verify their email
@@ -442,7 +415,7 @@ export function setupAuth(app: Express) {
       });
       
       // Resend verification email
-      await sendVerificationEmail(user.email, user.username, newVerificationToken);
+      await sendVerificationEmailToUser(user.email, user.username, newVerificationToken);
       
       return res.status(200).json({ 
         success: true, 
@@ -453,6 +426,144 @@ export function setupAuth(app: Express) {
       return res.status(500).json({ 
         success: false, 
         message: "An error occurred while resending verification email."
+      });
+    }
+  });
+  
+  // Forgot password endpoint - generates a token and sends a reset email
+  app.post("/api/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ success: false, message: "Email is required" });
+      }
+      
+      // Find user by email
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user) {
+        // Don't reveal if user exists or not for security
+        return res.status(200).json({ 
+          success: true, 
+          message: "If your email is registered, a password reset link has been sent." 
+        });
+      }
+      
+      // Generate new reset token
+      const resetToken = generateVerificationToken(); // We can reuse this function
+      const now = new Date();
+      const tokenExpiry = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
+      
+      // Update user with reset token
+      await storage.updateUser(user.id, {
+        resetPasswordToken: resetToken,
+        resetPasswordTokenExpiry: tokenExpiry
+      });
+      
+      // Send password reset email
+      await sendPasswordResetEmailToUser(user.email, resetToken);
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: "A password reset link has been sent to your email. Please check your inbox." 
+      });
+    } catch (error) {
+      console.error('Error sending password reset email:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: "An error occurred while sending password reset email." 
+      });
+    }
+  });
+  
+  // Reset password endpoint - validate token and update password
+  app.post("/api/reset-password", async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      
+      if (!token || !newPassword) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Token and new password are required" 
+        });
+      }
+      
+      // Find user with this reset token
+      const user = await storage.getUserByResetPasswordToken(token);
+      
+      if (!user) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid or expired password reset token" 
+        });
+      }
+      
+      // Check if token is expired
+      const now = new Date();
+      if (user.resetPasswordTokenExpiry && user.resetPasswordTokenExpiry < now) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Password reset token has expired" 
+        });
+      }
+      
+      // Update user with new hashed password and clear token
+      const updatedUser = await storage.updateUser(user.id, {
+        password: await hashPassword(newPassword),
+        resetPasswordToken: null,
+        resetPasswordTokenExpiry: null
+      });
+      
+      // If successful, return success response
+      return res.status(200).json({ 
+        success: true, 
+        message: "Your password has been reset successfully. You can now log in with your new password." 
+      });
+    } catch (error) {
+      console.error('Error resetting password:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: "An error occurred while resetting your password." 
+      });
+    }
+  });
+  
+  // Change password endpoint (for authenticated users)
+  app.post("/api/change-password", isAuthenticated, async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const user = req.user as SelectUser;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Current password and new password are required" 
+        });
+      }
+      
+      // Verify current password
+      if (!(await comparePasswords(currentPassword, user.password))) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Current password is incorrect" 
+        });
+      }
+      
+      // Update user with new hashed password
+      await storage.updateUser(user.id, {
+        password: await hashPassword(newPassword)
+      });
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: "Your password has been changed successfully." 
+      });
+    } catch (error) {
+      console.error('Error changing password:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: "An error occurred while changing your password." 
       });
     }
   });

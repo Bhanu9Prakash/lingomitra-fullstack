@@ -501,6 +501,11 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
   
+  async getUserByResetPasswordToken(token: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.resetPasswordToken, token));
+    return user || undefined;
+  }
+  
   async updateUser(userId: number, data: Partial<Omit<User, 'id'>>): Promise<User | undefined> {
     const [user] = await db
       .update(users)
