@@ -225,15 +225,19 @@ export function setupAuth(app: Express) {
       // Send verification email
       await sendVerificationEmail(email, username, newVerificationToken);
 
-      // Don't log the user in automatically after registration
-      // Just tell them to check their email
-      // Extract sensitive fields to exclude them from the response
-      const { password: _, verificationToken: __, verificationTokenExpiry: ___, ...userResponse } = user;
-      
-      res.status(201).json({
-        ...userResponse,
-        needsVerification: true,
-        message: "Please check your email to verify your account before logging in."
+      // Log the user in automatically after registration
+      // This preserves their session for when they verify their email
+      req.login(user, (err) => {
+        if (err) return next(err);
+        
+        // Extract sensitive fields to exclude them from the response
+        const { password: _, verificationToken: __, verificationTokenExpiry: ___, ...userResponse } = user;
+        
+        res.status(201).json({
+          ...userResponse,
+          needsVerification: true,
+          message: "Please check your email to verify your account."
+        });
       });
     } catch (error) {
       next(error);
@@ -263,11 +267,21 @@ export function setupAuth(app: Express) {
       }
       
       // Mark user as verified and clear token
-      await storage.updateUser(user.id, {
+      const updatedUser = await storage.updateUser(user.id, {
         emailVerified: true,
         verificationToken: null,
         verificationTokenExpiry: null
       });
+      
+      // Update the user's session if they're already logged in
+      if (req.isAuthenticated() && req.user && (req.user as SelectUser).id === user.id) {
+        // Update the session with the verified user
+        req.login(updatedUser, (err) => {
+          if (err) {
+            console.error('Error updating session:', err);
+          }
+        });
+      }
       
       // If this is an API call, return JSON
       if (req.headers.accept && req.headers.accept.includes('application/json')) {
