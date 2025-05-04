@@ -4,10 +4,11 @@ import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import { Loader2, Mail, CheckCircle, AlertCircle } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { queryClient } from "@/lib/queryClient";
 
 const VerifyEmailPage = () => {
   const [token, setToken] = useState<string | null>(null);
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("loading");
   const [message, setMessage] = useState<string>("");
   const { theme } = useTheme();
   const [_, navigate] = useLocation();
@@ -70,10 +71,10 @@ const VerifyEmailPage = () => {
       navigate("/");
     } else {
       // No token in URL, so we're just showing the instruction page
-      setStatus("idle");
+      setStatus("idle" as "loading" | "success" | "error" | "idle");
       setMessage("");
     }
-  }, [user, navigate, queryClient]);
+  }, [user, navigate]);
 
   // Function to verify email with the token
   const verifyEmail = async (verificationToken: string) => {
