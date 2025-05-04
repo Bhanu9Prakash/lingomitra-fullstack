@@ -43,6 +43,9 @@ export const insertUserSchema = createInsertSchema(users).pick({
   isAdmin: true,
   subscriptionTier: true,
   subscriptionExpiry: true,
+  emailVerified: true,
+  verificationToken: true,
+  verificationTokenExpiry: true,
 });
 
 export const insertLanguageSchema = createInsertSchema(languages).pick({

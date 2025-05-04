@@ -21,7 +21,9 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByVerificationToken(token: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(userId: number, data: Partial<Omit<User, 'id'>>): Promise<User | undefined>;
   getAllUsers(): Promise<User[]>;
   getUserCount(): Promise<number>;
   getPremiumUserCount(): Promise<number>;
@@ -131,6 +133,25 @@ export class MemStorage implements IStorage {
     );
   }
 
+  async getUserByVerificationToken(token: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.verificationToken === token
+    );
+  }
+  
+  async updateUser(userId: number, data: Partial<Omit<User, 'id'>>): Promise<User | undefined> {
+    const user = this.users.get(userId);
+    if (!user) return undefined;
+    
+    const updatedUser: User = {
+      ...user,
+      ...data
+    };
+    
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+  
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userCurrentId++;
     const user: User = { 
@@ -138,7 +159,10 @@ export class MemStorage implements IStorage {
       id,
       isAdmin: false, 
       subscriptionTier: "free",
-      subscriptionExpiry: null
+      subscriptionExpiry: null,
+      emailVerified: insertUser.emailVerified !== undefined ? insertUser.emailVerified : false,
+      verificationToken: insertUser.verificationToken || null,
+      verificationTokenExpiry: insertUser.verificationTokenExpiry || null
     };
     this.users.set(id, user);
     return user;
@@ -427,6 +451,20 @@ export class DatabaseStorage implements IStorage {
   
   async getUserByEmail(email: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+  
+  async getUserByVerificationToken(token: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.verificationToken, token));
+    return user || undefined;
+  }
+  
+  async updateUser(userId: number, data: Partial<Omit<User, 'id'>>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set(data)
+      .where(eq(users.id, userId))
+      .returning();
     return user || undefined;
   }
 
