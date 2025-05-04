@@ -95,7 +95,7 @@ export default function Layout({ children }: LayoutProps) {
         {/* Add a spacer to account for the fixed header */}
         <div className="h-16"></div>
         
-        <main>
+        <main className="mt-6">
           {children}
         </main>
         
