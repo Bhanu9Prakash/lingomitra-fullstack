@@ -18,8 +18,8 @@ export default function AboutPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl mb-20">
-      <div className="space-y-6">
+    <div className="container mx-auto px-4 py-16 max-w-4xl mb-32">
+      <div className="space-y-8">
         <section className="text-center">
           <h1 className="text-4xl font-bold mb-4">About LingoMitra</h1>
           <p className="text-xl mb-6">
@@ -57,12 +57,12 @@ export default function AboutPage() {
                 className="overflow-hidden transition-all duration-200 hover:shadow-md cursor-pointer border-0 bg-background/60"
                 onClick={() => navigate(`/language/${language.code}`)}
               >
-                <CardContent className="p-4 flex items-center space-x-3">
-                  <div className="w-10 h-10 relative flex-shrink-0">
-                    <FlagIcon code={language.flagCode} size={40} />
+                <CardContent className="p-5 flex items-center space-x-4">
+                  <div className="w-14 h-14 relative flex-shrink-0">
+                    <FlagIcon code={language.flagCode} size={56} />
                   </div>
                   <div>
-                    <h3 className="font-medium">{language.name}</h3>
+                    <h3 className="font-medium text-lg">{language.name}</h3>
                     <p className="text-sm text-muted-foreground">{language.code.toUpperCase()}</p>
                   </div>
                 </CardContent>
