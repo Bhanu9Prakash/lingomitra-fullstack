@@ -5,8 +5,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
 import { useSimpleToast } from '@/hooks/use-simple-toast';
-import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import { Loader2, AlertCircle, RefreshCw, Trash2 } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
+import { useLocation } from 'wouter';
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -157,7 +160,11 @@ function EnrolledLanguageCard({
 export default function Settings() {
   const toast = useSimpleToast();
   const queryClient = useQueryClient();
+  const [_, navigate] = useLocation();
+  const { logoutMutation } = useAuth();
   const [enrolledLanguages, setEnrolledLanguages] = useState<Language[]>([]);
+  const [confirmDeleteText, setConfirmDeleteText] = useState<string>("");
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   
   // Fetch all languages
   const { data: languages, isLoading: isLoadingLanguages } = useQuery<Language[]>({
@@ -168,6 +175,68 @@ export default function Settings() {
   const { data: user, isLoading: isLoadingUser } = useQuery<User>({
     queryKey: ['/api/user'],
   });
+  
+  // Delete account mutation
+  const deleteAccountMutation = useMutation({
+    mutationFn: async (confirmation: string) => {
+      setIsDeleting(true);
+      
+      try {
+        const response = await fetch('/api/user/delete', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ confirmation }),
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to delete account');
+        }
+        
+        return await response.json();
+      } finally {
+        setIsDeleting(false);
+      }
+    },
+    onSuccess: async () => {
+      toast.toast({
+        title: 'Account Deleted',
+        description: 'Your account has been successfully deleted.',
+        variant: 'default',
+      });
+      
+      // Log the user out
+      await logoutMutation.mutateAsync();
+      
+      // Redirect to home page
+      navigate('/');
+    },
+    onError: (error: Error) => {
+      toast.toast({
+        title: 'Error',
+        description: error.message || 'Failed to delete your account. Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
+  
+  // Handle account deletion
+  const handleDeleteAccount = () => {
+    if (!user) return;
+    
+    if (confirmDeleteText !== user.username) {
+      toast.toast({
+        title: 'Confirmation Failed',
+        description: 'The confirmation text does not match your username.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    deleteAccountMutation.mutate(confirmDeleteText);
+  };
   
   // Reset progress mutation
   const resetProgressMutation = useMutation({
@@ -334,6 +403,78 @@ export default function Settings() {
         <p className="text-sm text-muted-foreground text-center mt-8">
           Your progress is automatically saved as you complete lessons
         </p>
+      </div>
+      
+      {/* Danger Zone */}
+      <div className="border-t border-zinc-800 pt-10 mt-10">
+        <h2 className="text-2xl font-bold mb-2 text-red-500">Danger Zone</h2>
+        <p className="text-muted-foreground mb-6">Irreversible account actions</p>
+        
+        <div className="rounded-lg p-6 bg-red-950/20 border border-red-900">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h3 className="text-lg font-semibold text-red-400">Delete Account</h3>
+              <p className="text-sm text-muted-foreground max-w-md">
+                Permanently delete your account and all associated data. This action cannot be undone.
+              </p>
+            </div>
+            
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive" 
+                  className="whitespace-nowrap"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-red-500">
+                    Delete Account Permanently?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    <p className="mb-4">
+                      This will permanently delete your account, all your progress, and personal data.
+                      This action <b>cannot be undone</b>.
+                    </p>
+                    <div className="bg-red-950/20 border border-red-900 rounded-md p-4 mb-4">
+                      <p className="font-semibold mb-2">To confirm, type your username: <b>{user.username}</b></p>
+                      <Input
+                        type="text"
+                        placeholder="Enter your username"
+                        value={confirmDeleteText}
+                        onChange={(e) => setConfirmDeleteText(e.target.value)}
+                        className="bg-red-950/30 border-red-900/50"
+                      />
+                    </div>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent dialog from closing if validation fails
+                      handleDeleteAccount();
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                    disabled={confirmDeleteText !== user.username || isDeleting}
+                  >
+                    {isDeleting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Deleting Account...
+                      </>
+                    ) : (
+                      "Delete My Account"
+                    )}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
       </div>
     </div>
   );
