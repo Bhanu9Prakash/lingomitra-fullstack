@@ -43,7 +43,7 @@ const registerSchema = loginSchema.extend({
 });
 
 export default function AuthPage() {
-  // Check for tab parameter in URL
+  // Check for tab parameter in URL and verification status
   const getInitialTab = () => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
@@ -53,7 +53,16 @@ export default function AuthPage() {
     return 'login';
   };
 
+  const isVerified = () => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('verified') === 'true';
+    }
+    return false;
+  };
+
   const [activeTab, setActiveTab] = useState<string>(getInitialTab());
+  const [justVerified, setJustVerified] = useState<boolean>(isVerified());
   const { user, loginMutation, registerMutation } = useAuth();
   const { toast, success, error: showError } = useSimpleToast();
   const { theme } = useTheme();
@@ -63,6 +72,19 @@ export default function AuthPage() {
   useEffect(() => {
     const tabFromUrl = getInitialTab();
     setActiveTab(tabFromUrl);
+    
+    // Show success message if email was just verified
+    if (isVerified()) {
+      success(
+        "Email verified successfully!", 
+        "Your email has been verified. You can now log in to your account."
+      );
+      
+      // Remove the verified parameter from URL without reload
+      const url = new URL(window.location.href);
+      url.searchParams.delete('verified');
+      window.history.replaceState({}, document.title, url.toString());
+    }
   }, []);
 
   // Redirect if already logged in

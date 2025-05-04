@@ -16,6 +16,7 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import FAQPage from "@/pages/FAQPage";
+import VerifyEmailPage from "@/pages/VerifyEmailPage";
 import Healthcheck from "./pages/Healthcheck";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
@@ -46,8 +47,9 @@ function Router() {
         {/* Admin Dashboard */}
         <ProtectedRoute path="/admin" component={AdminDashboard} />
         
-        {/* Authentication route */}
+        {/* Authentication routes */}
         <Route path="/auth" component={AuthPage} />
+        <Route path="/verify-email" component={VerifyEmailPage} />
         
         {/* Subscription page - public */}
         <Route path="/subscribe" component={SubscribePage} />
