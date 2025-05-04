@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import MascotLogo from "./MascotLogo";
 import { useTheme } from "./ThemeProvider";
 import Footer from "./Footer";
@@ -19,6 +19,11 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const { theme } = useTheme();
   const [location] = useLocation();
+  
+  // Scroll to top when location changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
   
   // Extract language code from URL path
   let languageCode = null;
