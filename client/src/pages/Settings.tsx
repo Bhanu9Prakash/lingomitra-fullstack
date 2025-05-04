@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { useSimpleToast } from '@/hooks/use-simple-toast';
-import { Loader2, AlertCircle, RefreshCw, Trash2 } from 'lucide-react';
+import { Loader2, AlertCircle, RefreshCw, Trash2, LockKeyhole, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useLocation } from 'wouter';
 import { 
@@ -21,6 +21,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
 interface User {
   id: number;
@@ -157,6 +168,18 @@ function EnrolledLanguageCard({
   );
 }
 
+// Password change form schema
+const passwordChangeSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z.string().min(8, "New password must be at least 8 characters"),
+  confirmPassword: z.string().min(1, "Please confirm your new password"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+type PasswordChangeFormValues = z.infer<typeof passwordChangeSchema>;
+
 export default function Settings() {
   const toast = useSimpleToast();
   const queryClient = useQueryClient();
@@ -165,6 +188,58 @@ export default function Settings() {
   const [enrolledLanguages, setEnrolledLanguages] = useState<Language[]>([]);
   const [confirmDeleteText, setConfirmDeleteText] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  // Password change form
+  const passwordChangeForm = useForm<PasswordChangeFormValues>({
+    resolver: zodResolver(passwordChangeSchema),
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
+  
+  // Password change mutation
+  const changePasswordMutation = useMutation({
+    mutationFn: async (values: PasswordChangeFormValues) => {
+      const response = await fetch('/api/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          currentPassword: values.currentPassword,
+          newPassword: values.newPassword,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to change password');
+      }
+      
+      return await response.json();
+    },
+    onSuccess: () => {
+      toast.success(
+        "Password Changed",
+        "Your password has been changed successfully."
+      );
+      
+      // Reset the form
+      passwordChangeForm.reset();
+    },
+    onError: (error: Error) => {
+      toast.toast({
+        title: 'Error',
+        description: error.message || 'Failed to change your password. Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
   
   // Fetch all languages
   const { data: languages, isLoading: isLoadingLanguages } = useQuery<Language[]>({

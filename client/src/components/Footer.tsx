@@ -26,7 +26,7 @@ export default function Footer() {
           </div>
           
           <div className="flex gap-4">
-            <a href="#" className="text-gray-300 hover:text-white transition-colors rounded-full p-2" aria-label="Instagram">
+            <a href="https://www.instagram.com/lingomitra" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors rounded-full p-2" aria-label="Instagram">
               <Instagram size={20} />
             </a>
           </div>
