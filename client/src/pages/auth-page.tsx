@@ -125,9 +125,14 @@ export default function AuthPage() {
       await loginMutation.mutateAsync(values);
       success("Welcome back!", "You have successfully logged in.");
       navigate("/");
-    } catch (err) {
-      // Set an inline error message only
-      setLoginError("Incorrect username/email or password. Please try again.");
+    } catch (err: any) {
+      // Check for verification error
+      if (err.message?.includes("verify")) {
+        setLoginError("Please verify your email address before logging in. Check your inbox for a verification link.");
+      } else {
+        // Set a generic error message
+        setLoginError("Incorrect username/email or password. Please try again.");
+      }
     }
   };
 
@@ -135,9 +140,23 @@ export default function AuthPage() {
     setRegisterError(null); // Clear previous errors
     try {
       const { confirmPassword, ...userData } = values;
-      await registerMutation.mutateAsync(userData);
-      success("Registration successful!", "Your account has been created.");
-      navigate("/");
+      // TypeScript doesn't know the API will return this kind of response
+      const response = await registerMutation.mutateAsync(userData) as any;
+      
+      // Check if the response contains a verification message
+      if (response && response.message && typeof response.message === 'string' && response.message.includes("verify")) {
+        // Show verification instructions
+        success(
+          "Registration successful!", 
+          "Please check your email to verify your account. A verification link has been sent to your email address."
+        );
+        // Stay on the login page, but switch to login tab
+        setActiveTab("login");
+      } else {
+        // Legacy behavior (if verification is not required)
+        success("Registration successful!", "Your account has been created.");
+        navigate("/");
+      }
     } catch (err: any) {
       // Set an inline error message
       if (err.message?.includes("Username already exists")) {
