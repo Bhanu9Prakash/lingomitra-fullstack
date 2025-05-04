@@ -324,6 +324,61 @@ export function setupAuth(app: Express) {
     res.json(userWithoutPassword);
   });
   
+  // Account deletion endpoint
+  app.delete("/api/user/delete", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ 
+          success: false, 
+          message: "You must be logged in to delete your account" 
+        });
+      }
+      
+      const { confirmation } = req.body;
+      const user = req.user as SelectUser;
+      
+      // Verify that the confirmation matches the username
+      if (confirmation !== user.username) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Confirmation text doesn't match your username" 
+        });
+      }
+      
+      // Log the user out first
+      req.logout(async (err) => {
+        if (err) {
+          return res.status(500).json({ 
+            success: false, 
+            message: "Error logging out before account deletion" 
+          });
+        }
+        
+        try {
+          // Delete the user account
+          await storage.deleteUser(user.id);
+          
+          return res.status(200).json({ 
+            success: true, 
+            message: "Your account has been successfully deleted" 
+          });
+        } catch (error) {
+          console.error('Error deleting user account:', error);
+          return res.status(500).json({ 
+            success: false, 
+            message: "An error occurred while deleting your account" 
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Account deletion error:', error);
+      return res.status(500).json({ 
+        success: false, 
+        message: "An error occurred during account deletion" 
+      });
+    }
+  });
+  
   // Endpoint to resend verification email
   app.post("/api/resend-verification", async (req, res) => {
     try {

@@ -24,6 +24,7 @@ export interface IStorage {
   getUserByVerificationToken(token: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(userId: number, data: Partial<Omit<User, 'id'>>): Promise<User | undefined>;
+  deleteUser(userId: number): Promise<boolean>;  // Add this new method
   getAllUsers(): Promise<User[]>;
   getUserCount(): Promise<number>;
   getPremiumUserCount(): Promise<number>;
@@ -193,6 +194,38 @@ export class MemStorage implements IStorage {
     
     this.users.set(userId, updatedUser);
     return updatedUser;
+  }
+  
+  async deleteUser(userId: number): Promise<boolean> {
+    // Check if the user exists
+    if (!this.users.has(userId)) {
+      return false;
+    }
+    
+    try {
+      // Delete associated data for the user
+      
+      // Delete progress records
+      Array.from(this.progressRecords.entries()).forEach(([key, progress]) => {
+        if (progress.userId === userId) {
+          this.progressRecords.delete(key);
+        }
+      });
+      
+      // Delete chat histories
+      Array.from(this.chatHistories.entries()).forEach(([key, history]) => {
+        if (key.startsWith(`${userId}:`)) {
+          this.chatHistories.delete(key);
+        }
+      });
+      
+      // Finally delete the user
+      this.users.delete(userId);
+      return true;
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      return false;
+    }
   }
   
   // Language methods
@@ -499,6 +532,33 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId))
       .returning();
     return user;
+  }
+  
+  async deleteUser(userId: number): Promise<boolean> {
+    try {
+      // First, check if the user exists
+      const user = await this.getUser(userId);
+      if (!user) {
+        return false;
+      }
+      
+      // Start a transaction to ensure data consistency
+      await db.transaction(async (tx) => {
+        // Delete user progress records
+        await tx.delete(userProgress).where(eq(userProgress.userId, userId));
+        
+        // Delete chat history records
+        await tx.delete(chatHistory).where(eq(chatHistory.userId, userId));
+        
+        // Finally delete the user
+        await tx.delete(users).where(eq(users.id, userId));
+      });
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      return false;
+    }
   }
 
   // Language methods
