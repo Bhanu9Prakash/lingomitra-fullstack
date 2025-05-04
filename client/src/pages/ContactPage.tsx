@@ -86,13 +86,9 @@ export default function ContactPage() {
       
       // If there's a preview URL (for test emails), show another toast with the link
       if (data.previewUrl) {
-        // Create a custom message for the test email link
-        const previewMessage = `Since we're in development mode, emails are sent to a test service. 
-          You can view the test email at: ${data.previewUrl}`;
-        
         toast.toast({
           title: "Test Email Preview Available",
-          description: previewMessage,
+          description: `Since we're in development mode, emails are sent to a test service. View test email at: ${data.previewUrl}`,
           variant: 'default',
           duration: 10000, // Longer duration to give time to click
         });
@@ -127,39 +123,44 @@ export default function ContactPage() {
       </div>
       
       {/* Main Content - Two Column Layout */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-8 lg:grid-cols-2">
         {/* Info Card */}
-        <Card className="p-6">
+        <Card className="h-fit p-6 lg:sticky lg:top-20 self-start">
           <CardHeader>
             <CardTitle className="text-2xl">Contact Information</CardTitle>
             <CardDescription>
               How to reach us through different channels
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-start gap-3">
-              <Mail className="h-5 w-5 text-primary mt-0.5" />
+          <CardContent className="space-y-6">
+            <div className="flex items-start gap-4">
+              <div className="bg-primary/10 p-2 rounded-full">
+                <Mail className="h-5 w-5 text-primary" />
+              </div>
               <div>
-                <p className="font-medium">Email Us Directly</p>
+                <p className="font-medium mb-1">Email Us Directly</p>
                 <a href="mailto:product@lingomitra.com" className="text-primary hover:underline">
                   product@lingomitra.com
                 </a>
               </div>
             </div>
             
-            <div>
-              <p className="font-medium mt-6 mb-2">Support Hours</p>
-              <p className="text-muted-foreground">
-                Mon–Fri · 10 am–6 pm IST
-              </p>
+            <div className="flex items-start gap-4">
+              <div className="bg-primary/10 p-2 rounded-full">
+                <span className="h-5 w-5 flex items-center justify-center text-primary">⏱️</span>
+              </div>
+              <div>
+                <p className="font-medium mb-1">Support Hours</p>
+                <p className="text-muted-foreground">
+                  Mon–Fri · 10 am–6 pm IST
+                </p>
+              </div>
             </div>
-            
-
           </CardContent>
         </Card>
         
         {/* Contact Form Card */}
-        <Card className="p-6">
+        <Card className="p-6 h-fit">
           <CardHeader>
             <CardTitle className="text-2xl">Send us a message</CardTitle>
             <CardDescription>
@@ -284,14 +285,25 @@ export default function ContactPage() {
       </div>
       
       {/* FAQ Teaser */}
-      <div className="mt-12 text-center bg-muted/50 p-6 rounded-lg">
-        <h3 className="text-xl font-medium mb-2">Frequently Asked Questions</h3>
-        <p className="mb-4">
-          Find quick answers to common questions about LingoMitra features and policies.
-        </p>
-        <Button variant="outline" onClick={() => window.location.href = "/faq"}>
-          Visit our FAQ
-        </Button>
+      <div className="mt-16 text-center">
+        <Card className="p-8 max-w-3xl mx-auto">
+          <CardContent className="flex flex-col items-center">
+            <div className="rounded-full bg-primary/10 p-3 mb-4">
+              <span className="text-2xl">❓</span>
+            </div>
+            <h3 className="text-xl font-medium mb-2">Frequently Asked Questions</h3>
+            <p className="mb-6 text-muted-foreground">
+              Find quick answers to common questions about LingoMitra features and policies.
+            </p>
+            <Button 
+              variant="outline" 
+              onClick={() => window.location.href = "/faq"}
+              className="min-w-[150px]"
+            >
+              Visit our FAQ
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
