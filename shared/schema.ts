@@ -16,6 +16,9 @@ export const users = pgTable("users", {
   emailVerified: boolean("email_verified").default(false).notNull(),
   verificationToken: text("verification_token"),
   verificationTokenExpiry: timestamp("verification_token_expiry"),
+  // Password reset
+  resetPasswordToken: text("reset_password_token"),
+  resetPasswordTokenExpiry: timestamp("reset_password_token_expiry"),
 });
 
 export const languages = pgTable("languages", {
@@ -46,6 +49,8 @@ export const insertUserSchema = createInsertSchema(users).pick({
   emailVerified: true,
   verificationToken: true,
   verificationTokenExpiry: true,
+  resetPasswordToken: true,
+  resetPasswordTokenExpiry: true,
 });
 
 export const insertLanguageSchema = createInsertSchema(languages).pick({

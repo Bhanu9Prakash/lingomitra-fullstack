@@ -22,9 +22,10 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByVerificationToken(token: string): Promise<User | undefined>;
+  getUserByResetPasswordToken(token: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(userId: number, data: Partial<Omit<User, 'id'>>): Promise<User | undefined>;
-  deleteUser(userId: number): Promise<boolean>;  // Add this new method
+  deleteUser(userId: number): Promise<boolean>;
   getAllUsers(): Promise<User[]>;
   getUserCount(): Promise<number>;
   getPremiumUserCount(): Promise<number>;
@@ -140,6 +141,12 @@ export class MemStorage implements IStorage {
     );
   }
   
+  async getUserByResetPasswordToken(token: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.resetPasswordToken === token
+    );
+  }
+  
   async updateUser(userId: number, data: Partial<Omit<User, 'id'>>): Promise<User | undefined> {
     const user = this.users.get(userId);
     if (!user) return undefined;
@@ -163,7 +170,9 @@ export class MemStorage implements IStorage {
       subscriptionExpiry: null,
       emailVerified: insertUser.emailVerified !== undefined ? insertUser.emailVerified : false,
       verificationToken: insertUser.verificationToken || null,
-      verificationTokenExpiry: insertUser.verificationTokenExpiry || null
+      verificationTokenExpiry: insertUser.verificationTokenExpiry || null,
+      resetPasswordToken: insertUser.resetPasswordToken || null,
+      resetPasswordTokenExpiry: insertUser.resetPasswordTokenExpiry || null
     };
     this.users.set(id, user);
     return user;
