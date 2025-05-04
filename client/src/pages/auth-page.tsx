@@ -299,7 +299,15 @@ export default function AuthPage() {
                         name="password"
                         render={({ field }) => (
                           <FormItem className={theme === 'dark' ? 'text-gray-200' : 'text-gray-700'}>
-                            <FormLabel className="mb-1 font-medium">Password</FormLabel>
+                            <div className="flex justify-between items-center mb-1">
+                              <FormLabel className="font-medium">Password</FormLabel>
+                              <a 
+                                href="/forgot-password"
+                                className="text-xs text-[#ff6600] hover:underline"
+                              >
+                                Forgot Password?
+                              </a>
+                            </div>
                             <FormControl>
                               <Input
                                 type="password"

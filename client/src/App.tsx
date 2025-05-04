@@ -50,6 +50,8 @@ function Router() {
         {/* Authentication routes */}
         <Route path="/auth" component={AuthPage} />
         <Route path="/verify-email" component={VerifyEmailPage} />
+        <Route path="/forgot-password" component={() => import("@/pages/ForgotPasswordPage").then(module => <module.default />)} />
+        <Route path="/reset-password" component={() => import("@/pages/ResetPasswordPage").then(module => <module.default />)} />
         
         {/* Subscription page - public */}
         <Route path="/subscribe" component={SubscribePage} />
