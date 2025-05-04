@@ -41,8 +41,7 @@ function generateVerificationToken(): string {
  */
 async function sendVerificationEmailToUser(email: string, username: string, token: string) {
   try {
-    const baseUrl = process.env.BASE_URL || 'https://lingomitra.com';
-    const emailOptions = generateVerificationEmail(email, token, baseUrl);
+    const emailOptions = generateVerificationEmail(email, token, process.env.BASE_URL);
     
     const result = await sendEmail(emailOptions);
     if (result) {

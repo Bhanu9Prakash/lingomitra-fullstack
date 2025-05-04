@@ -1,10 +1,15 @@
-import { MailService } from '@sendgrid/mail';
+import nodemailer from 'nodemailer';
 
-// Initialize SendGrid mail service
-const mailService = new MailService();
-if (process.env.SENDGRID_API_KEY) {
-  mailService.setApiKey(process.env.SENDGRID_API_KEY);
-}
+// Setup the email transporter with existing SMTP config
+const transporter = nodemailer.createTransport({
+  host: 'smtpout.secureserver.net',
+  port: 465,
+  secure: true, // Use SSL
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 interface EmailOptions {
   to: string;
@@ -15,19 +20,22 @@ interface EmailOptions {
 }
 
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.warn('SENDGRID_API_KEY is not set. Email sending is disabled.');
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.warn('SMTP configuration is not complete. Email sending is disabled.');
     return false;
   }
 
   try {
-    await mailService.send({
-      to: options.to,
+    const mailOptions = {
       from: options.from,
+      to: options.to,
       subject: options.subject,
       text: options.text,
       html: options.html,
-    });
+    };
+    
+    await transporter.sendMail(mailOptions);
+    console.log(`Email sent to ${options.to}`);
     return true;
   } catch (error) {
     console.error('Failed to send email:', error);
@@ -36,11 +44,13 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
 }
 
 export function generateVerificationEmail(email: string, token: string, appUrl: string): EmailOptions {
-  const verificationLink = `${appUrl}/verify-email?token=${token}`;
+  // If appUrl is not provided, use a default URL
+  const baseUrl = appUrl || (process.env.BASE_URL || 'http://localhost:5000');
+  const verificationLink = `${baseUrl}/verify-email?token=${token}`;
   
   return {
     to: email,
-    from: 'noreply@lingomitra.com',
+    from: `"LingoMitra" <${process.env.SMTP_USER}>`,
     subject: 'LingoMitra - Verify Your Email',
     text: `
       Welcome to LingoMitra!
@@ -58,10 +68,10 @@ export function generateVerificationEmail(email: string, token: string, appUrl: 
     `,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-        <h2 style="color: #4a6cf7;">Welcome to LingoMitra!</h2>
+        <h2 style="color: #ff6600;">Welcome to LingoMitra!</h2>
         <p>Please verify your email address by clicking the button below:</p>
         <div style="text-align: center; margin: 30px 0;">
-          <a href="${verificationLink}" style="background-color: #4a6cf7; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">Verify Email</a>
+          <a href="${verificationLink}" style="background-color: #ff6600; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">Verify Email</a>
         </div>
         <p>Or copy and paste this link in your browser:</p>
         <p style="background-color: #f7f9fc; padding: 10px; border-radius: 4px; word-break: break-all;">${verificationLink}</p>
@@ -76,11 +86,13 @@ export function generateVerificationEmail(email: string, token: string, appUrl: 
 }
 
 export function generatePasswordResetEmail(email: string, token: string, appUrl: string): EmailOptions {
-  const resetLink = `${appUrl}/reset-password?token=${token}`;
+  // If appUrl is not provided, use a default URL
+  const baseUrl = appUrl || (process.env.BASE_URL || 'http://localhost:5000');
+  const resetLink = `${baseUrl}/reset-password?token=${token}`;
   
   return {
     to: email,
-    from: 'noreply@lingomitra.com',
+    from: `"LingoMitra" <${process.env.SMTP_USER}>`,
     subject: 'LingoMitra - Reset Your Password',
     text: `
       You requested to reset your password on LingoMitra.
@@ -98,10 +110,10 @@ export function generatePasswordResetEmail(email: string, token: string, appUrl:
     `,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-        <h2 style="color: #4a6cf7;">Reset Your Password</h2>
+        <h2 style="color: #ff6600;">Reset Your Password</h2>
         <p>You requested to reset your password on LingoMitra.</p>
         <div style="text-align: center; margin: 30px 0;">
-          <a href="${resetLink}" style="background-color: #4a6cf7; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">Reset Password</a>
+          <a href="${resetLink}" style="background-color: #ff6600; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">Reset Password</a>
         </div>
         <p>Or copy and paste this link in your browser:</p>
         <p style="background-color: #f7f9fc; padding: 10px; border-radius: 4px; word-break: break-all;">${resetLink}</p>
