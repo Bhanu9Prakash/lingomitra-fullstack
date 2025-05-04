@@ -15,6 +15,7 @@ import SubscribePage from "@/pages/SubscribePage";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
+import FAQPage from "@/pages/FAQPage";
 import Healthcheck from "./pages/Healthcheck";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
@@ -56,6 +57,9 @@ function Router() {
         
         {/* Contact page - public */}
         <Route path="/contact" component={ContactPage} />
+        
+        {/* FAQ page - public */}
+        <Route path="/faq" component={FAQPage} />
         
         {/* Health check - public */}
         <Route path="/health" component={Healthcheck} />

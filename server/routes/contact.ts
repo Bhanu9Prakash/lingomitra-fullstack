@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { sendContactFormEmail, sendAutoResponseEmail } from '../utils/email';
+import { storage } from '../storage';
 
 // Contact form schema validation
 const contactFormSchema = z.object({
@@ -31,7 +32,21 @@ contactRouter.post('/', async (req: Request, res: Response) => {
       return res.status(200).json({ success: true });
     }
 
-    console.log('Contact form submission received:', formData.name, formData.email, formData.category);
+    console.log('Contact form submission:', {
+      name: formData.name,
+      email: formData.email,
+      category: formData.category,
+      message: formData.message,
+      company: formData.company
+    });
+    
+    // Store submission in the database
+    await storage.createContactSubmission({
+      name: formData.name,
+      email: formData.email,
+      category: formData.category,
+      message: formData.message
+    });
     
     // Send notification email to the admin/team
     const emailResult = await sendContactFormEmail(formData);

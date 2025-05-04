@@ -3,7 +3,8 @@ import {
   languages, type Language, type InsertLanguage,
   lessons, type Lesson, type InsertLesson,
   userProgress, type UserProgress, type InsertUserProgress,
-  chatHistory, type ChatHistory, type InsertChatHistory
+  chatHistory, type ChatHistory, type InsertChatHistory,
+  contactSubmissions, type ContactSubmission, type InsertContactSubmission
 } from "@shared/schema";
 import session from "express-session";
 import { Pool } from "@neondatabase/serverless";
@@ -53,6 +54,12 @@ export interface IStorage {
   getChatHistory(userId: number, lessonId: string): Promise<ChatHistory | undefined>;
   saveChatHistory(userId: number, lessonId: string, messages: any[]): Promise<ChatHistory>;
   
+  // Contact Submission methods
+  createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission>;
+  getAllContactSubmissions(): Promise<ContactSubmission[]>;
+  getContactSubmissionById(id: number): Promise<ContactSubmission | undefined>;
+  markContactSubmissionAsResolved(id: number, notes?: string): Promise<ContactSubmission | undefined>;
+  
   // Session store
   sessionStore: session.Store;
 }
@@ -63,11 +70,13 @@ export class MemStorage implements IStorage {
   private lessons: Map<number, Lesson>;
   private progressRecords: Map<string, UserProgress>;
   private chatHistories: Map<string, ChatHistory>;
+  private contactSubmissions: Map<number, ContactSubmission>;
   private userCurrentId: number;
   private languageCurrentId: number;
   private lessonCurrentId: number;
   private progressCurrentId: number;
   private chatHistoryCurrentId: number;
+  private contactSubmissionCurrentId: number;
   public sessionStore: session.Store;
 
   constructor() {
@@ -76,11 +85,13 @@ export class MemStorage implements IStorage {
     this.lessons = new Map();
     this.progressRecords = new Map();
     this.chatHistories = new Map();
+    this.contactSubmissions = new Map();
     this.userCurrentId = 1;
     this.languageCurrentId = 1;
     this.lessonCurrentId = 1;
     this.progressCurrentId = 1;
     this.chatHistoryCurrentId = 1;
+    this.contactSubmissionCurrentId = 1;
     
     // Initialize the session store
     if (process.env.DATABASE_URL) {
@@ -337,6 +348,45 @@ export class MemStorage implements IStorage {
       this.chatHistories.set(key, newHistory);
       return newHistory;
     }
+  }
+
+  // Contact Submission methods
+  async createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission> {
+    const id = this.contactSubmissionCurrentId++;
+    const now = new Date();
+    const contactSubmission: ContactSubmission = {
+      id,
+      ...submission,
+      createdAt: now,
+      isResolved: false,
+      notes: submission.notes || null
+    };
+    
+    this.contactSubmissions.set(id, contactSubmission);
+    return contactSubmission;
+  }
+  
+  async getAllContactSubmissions(): Promise<ContactSubmission[]> {
+    return Array.from(this.contactSubmissions.values())
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); // newest first
+  }
+  
+  async getContactSubmissionById(id: number): Promise<ContactSubmission | undefined> {
+    return this.contactSubmissions.get(id);
+  }
+  
+  async markContactSubmissionAsResolved(id: number, notes?: string): Promise<ContactSubmission | undefined> {
+    const submission = this.contactSubmissions.get(id);
+    if (!submission) return undefined;
+    
+    const updatedSubmission: ContactSubmission = {
+      ...submission,
+      isResolved: true,
+      notes: notes || submission.notes
+    };
+    
+    this.contactSubmissions.set(id, updatedSubmission);
+    return updatedSubmission;
   }
 }
 
@@ -628,6 +678,48 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return newHistory;
     }
+  }
+  
+  // Contact Submission methods
+  async createContactSubmission(submission: InsertContactSubmission): Promise<ContactSubmission> {
+    const [newSubmission] = await db
+      .insert(contactSubmissions)
+      .values({
+        ...submission,
+        createdAt: new Date(),
+        isResolved: false,
+        notes: submission.notes || null
+      })
+      .returning();
+    return newSubmission;
+  }
+  
+  async getAllContactSubmissions(): Promise<ContactSubmission[]> {
+    return await db
+      .select()
+      .from(contactSubmissions)
+      .orderBy(sql`created_at desc`);
+  }
+  
+  async getContactSubmissionById(id: number): Promise<ContactSubmission | undefined> {
+    const [submission] = await db
+      .select()
+      .from(contactSubmissions)
+      .where(eq(contactSubmissions.id, id));
+    return submission || undefined;
+  }
+  
+  async markContactSubmissionAsResolved(id: number, notes?: string): Promise<ContactSubmission | undefined> {
+    const updateData: Partial<ContactSubmission> = { isResolved: true };
+    if (notes) updateData.notes = notes;
+    
+    const [updatedSubmission] = await db
+      .update(contactSubmissions)
+      .set(updateData)
+      .where(eq(contactSubmissions.id, id))
+      .returning();
+    
+    return updatedSubmission;
   }
 }
 

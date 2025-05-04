@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -15,6 +17,7 @@ import {
 } from '@/components/ui/table';
 import { useLocation } from 'wouter';
 import { useSimpleToast } from '../hooks/use-simple-toast';
+import { format } from 'date-fns';
 
 // Types
 interface User {
@@ -34,10 +37,23 @@ interface AnalyticsData {
   premiumUserCount: number;
 }
 
+interface ContactSubmission {
+  id: number;
+  name: string;
+  email: string;
+  category: string;
+  message: string;
+  createdAt: string;
+  isResolved: boolean;
+  notes: string | null;
+}
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [, setLocation] = useLocation();
   const { toast } = useSimpleToast();
+  const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
+  const [resolutionNotes, setResolutionNotes] = useState('');
   
   // Fetch analytics data
   const fetchAnalytics = async (): Promise<AnalyticsData> => {
@@ -113,6 +129,81 @@ export default function AdminDashboard() {
       setLocation('/');
     }
   }, [analyticsError, usersError, setLocation, toast]);
+  
+  // Fetch contact submissions data
+  const fetchContactSubmissions = async (): Promise<ContactSubmission[]> => {
+    try {
+      const response = await fetch('/api/admin/contact-submissions', {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Contact submissions API error:', response.status, errorText);
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      return response.json();
+    } catch (error) {
+      console.error('Error fetching contact submissions:', error);
+      throw error;
+    }
+  };
+  
+  const { 
+    data: contactSubmissionsData, 
+    isLoading: loadingSubmissions, 
+    error: submissionsError,
+    refetch: refetchSubmissions
+  } = useQuery<ContactSubmission[]>({
+    queryKey: ['/api/admin/contact-submissions'],
+    queryFn: fetchContactSubmissions,
+    retry: 1
+  });
+  
+  // Function to mark a submission as resolved
+  const resolveMutation = useMutation({
+    mutationFn: async (submissionId: number) => {
+      const response = await fetch(`/api/admin/contact-submissions/${submissionId}/resolve`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ notes: resolutionNotes }),
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to resolve submission');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Contact submission marked as resolved.",
+      });
+      setSelectedSubmission(null);
+      setResolutionNotes('');
+      refetchSubmissions();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to resolve submission.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  // Function to handle resolving a submission
+  const handleResolveSubmission = (submission: ContactSubmission) => {
+    if (!submission.id) return;
+    
+    resolveMutation.mutate(submission.id);
+  };
   
   // Function to promote a user to admin
   const makeAdmin = async (userId: number) => {

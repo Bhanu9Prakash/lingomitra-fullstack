@@ -878,6 +878,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to update user" });
     }
   });
+  
+  // Get all contact form submissions
+  app.get("/api/admin/contact-submissions", isAdmin, async (req, res) => {
+    try {
+      const submissions = await storage.getAllContactSubmissions();
+      res.json(submissions);
+    } catch (error) {
+      console.error("Error fetching contact submissions:", error);
+      res.status(500).json({ message: "Failed to fetch contact submissions" });
+    }
+  });
+  
+  // Mark a contact submission as resolved
+  app.post("/api/admin/contact-submissions/:id/resolve", isAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { notes } = req.body;
+      
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid submission ID" });
+      }
+      
+      const updatedSubmission = await storage.markContactSubmissionAsResolved(id, notes);
+      
+      if (!updatedSubmission) {
+        return res.status(404).json({ message: "Submission not found" });
+      }
+      
+      res.json(updatedSubmission);
+    } catch (error) {
+      console.error("Error resolving contact submission:", error);
+      res.status(500).json({ message: "Failed to update submission" });
+    }
+  });
 
   // Regular API routes
   app.get("/api/languages", async (req, res) => {

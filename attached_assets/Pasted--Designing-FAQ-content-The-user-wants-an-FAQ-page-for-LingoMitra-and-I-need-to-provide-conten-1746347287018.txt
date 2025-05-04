@@ -1,0 +1,246 @@
+**Designing FAQ content**
+
+The user wants an FAQ page for LingoMitra, and I need to provide content and a design layout. The FAQ should be structured with questions and answers. They are using Next.js and Tailwind CSS with shadcn/ui components. I should suggest an accordion-style FAQ section using shadcn/ui's "Accordion" or "Collapsible" component. I should avoid em dashes as previously requested and use simple hyphens instead. I'll focus on clear, beginner-friendly explanations, and I don't need to include images here.
+
+**Designing FAQ structure**
+
+The user wants help with both design and content for the FAQ page. Since they didn’t explicitly ask for a code file or canvas, I think it’s best to share a suggested FAQ structure directly in the chat. I’ll provide about 8-10 question-answer pairs, along with design suggestions for the layout, using an accordion component from shadcn/ui. I’ll also include a React code snippet for the layout, avoiding using tables since that's not necessary for this case.
+
+
+Thought for 16 seconds
+
+
+Below is a ready-to-ship FAQ page package for **LingoMitra**.
+It covers three parts:
+
+1. **UX layout blueprint** – how the page should feel and flow.
+2. **Copy deck** – crisp questions and answers you can paste into the site.
+3. **React + Tailwind component** – a drop-in page using shadcn/ui `Accordion`.
+
+---
+
+## 1. UX layout blueprint
+
+```
+┌────────────────────────────────────────────┐
+│ Hero strip                                │
+│  • Title: “Frequently Asked Questions”    │
+│  • Subtitle: “Everything you want to know │
+│    before you start thinking in a new     │
+│    language.”                             │
+│  • Mascot or subtle flag icons            │
+└────────────────────────────────────────────┘
+
+┌── Sticky anchor list (optional) ───────────┐
+│  • General • Pricing • Features • Privacy  │
+└────────────────────────────────────────────┘
+
+┌── Accordion stack (single-expand) ────────┐
+│  ▸ Question 1                             │
+│    Answer …                               │
+│  ▸ Question 2                             │
+│    Answer …                               │
+│   …                                       │
+└────────────────────────────────────────────┘
+
+┌── Still need help? banner ────────────────┐
+│  Button: “Chat with support”              │
+│  mailto:hello@lingomitra.com fallback     │
+└────────────────────────────────────────────┘
+```
+
+Design hints:
+
+* **Width** – max-w-2xl for text for comfy reading.
+* **Spacing** – `space-y-4` between accordion items and a generous `py-24` around the hero.
+* **Iconography** – preload a small SVG question mark for the hero, use chevrons in accordions.
+* **SEO** – wrap each `<AccordionItem>` in a `<section>` with `itemProp="mainEntity"` microdata.
+
+---
+
+## 2. Copy deck
+
+> Copy avoids em dashes and keeps sentences short for quick scanning.
+
+### GENERAL
+
+**What is LingoMitra?**
+LingoMitra is a chat-based tutor that uses large language models to teach you how to *think* in a new language. It follows the Thinking Method, which means you answer first, then the AI helps you correct yourself.
+
+**Which languages are available today?**
+German, Spanish, French, Hindi, Kannada, Japanese and Chinese. More languages are on the roadmap and you can vote inside the app.
+
+**Do I need to know English?**
+Lessons are written in English for now. We plan to add full Telugu and Hindi interfaces soon.
+
+### PRICING
+
+**Is it free?**
+The first two lessons in every language are free forever. After that you can unlock the full course with the Pro plan.
+
+**How much is Pro?**
+Pro is ₹799 per year. That gives you unlimited lessons, offline caching and priority support.
+
+**Can I cancel any time?**
+Yes. Go to Settings → Subscription → Cancel. You keep access until the renewal date.
+
+### FEATURES
+
+**How is LingoMitra different from Duolingo or Memrise?**
+We focus on guided discovery not flashcards. Every lesson is a live conversation where the tutor adapts after each sentence you produce.
+
+**Can I speak instead of type?**
+Yes. Tap the mic icon to enable speech. The app transcribes locally, sends only the text to the AI, then speaks the reply back.
+
+**Will it work offline?**
+If you install the app as a PWA you can cache favourite lessons and review them without a connection. Speaking features need internet.
+
+**Does it support streaks and progress tracking?**
+A streak calendar and per-language progress bars motivate you. You can also reset or hide streaks if you prefer zero-pressure learning.
+
+### PRIVACY AND SECURITY
+
+**Are my chats private?**
+Chats are encrypted in transit and at rest. We never sell or share your data.
+
+**How do I delete my data?**
+Open Settings → Privacy → Delete account. This wipes all messages, streaks and subscription info within 24 hours.
+
+**Who can I contact for support?**
+Use the in-app chat or email [hello@lingomitra.com](mailto:hello@lingomitra.com). We reply within one business day.
+
+---
+
+## 3. React + Tailwind implementation
+
+```tsx
+// app/(public)/faq/page.tsx
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+
+const faqs = [
+  {
+    category: "General",
+    items: [
+      {
+        q: "What is LingoMitra?",
+        a: "LingoMitra is a chat-based tutor that uses large language models to teach you how to think in a new language. It follows the Thinking Method, which means you answer first, then the AI helps you correct yourself."
+      },
+      {
+        q: "Which languages are available today?",
+        a: "German, Spanish, French, Hindi, Kannada, Japanese and Chinese. More languages are on the roadmap and you can vote inside the app."
+      },
+      {
+        q: "Do I need to know English?",
+        a: "Lessons are written in English for now. We plan to add full Telugu and Hindi interfaces soon."
+      }
+    ]
+  },
+  {
+    category: "Pricing",
+    items: [
+      {
+        q: "Is it free?",
+        a: "The first two lessons in every language are free forever. After that you can unlock the full course with the Pro plan."
+      },
+      {
+        q: "How much is Pro?",
+        a: "Pro is ₹799 per year. That gives you unlimited lessons, offline caching and priority support."
+      },
+      {
+        q: "Can I cancel any time?",
+        a: "Yes. Go to Settings → Subscription → Cancel. You keep access until the renewal date."
+      }
+    ]
+  },
+  {
+    category: "Features",
+    items: [
+      {
+        q: "How is LingoMitra different from Duolingo or Memrise?",
+        a: "We focus on guided discovery not flashcards. Every lesson is a live conversation where the tutor adapts after each sentence you produce."
+      },
+      {
+        q: "Can I speak instead of type?",
+        a: "Yes. Tap the mic icon to enable speech. The app transcribes locally, sends only the text to the AI, then speaks the reply back."
+      },
+      {
+        q: "Will it work offline?",
+        a: "If you install the app as a PWA you can cache favourite lessons and review them without a connection. Speaking features need internet."
+      },
+      {
+        q: "Does it support streaks and progress tracking?",
+        a: "A streak calendar and per-language progress bars motivate you. You can also reset or hide streaks if you prefer zero-pressure learning."
+      }
+    ]
+  },
+  {
+    category: "Privacy and Security",
+    items: [
+      {
+        q: "Are my chats private?",
+        a: "Chats are encrypted in transit and at rest. We never sell or share your data."
+      },
+      {
+        q: "How do I delete my data?",
+        a: "Open Settings → Privacy → Delete account. This wipes all messages, streaks and subscription info within 24 hours."
+      },
+      {
+        q: "Who can I contact for support?",
+        a: "Use the in-app chat or email hello@lingomitra.com. We reply within one business day."
+      }
+    ]
+  }
+];
+
+export default function FAQPage() {
+  return (
+    <div className="mx-auto max-w-2xl px-4 py-24">
+      <header className="mb-12 text-center">
+        <h1 className="text-4xl font-bold">Frequently Asked Questions</h1>
+        <p className="mt-2 text-muted-foreground">
+          Everything you want to know before you start thinking in a new language.
+        </p>
+      </header>
+
+      {/* Optional anchor list */}
+      <nav className="mb-8 flex flex-wrap gap-4 justify-center">
+        {faqs.map(({ category }) => (
+          <a key={category} href={`#${category}`} className="text-sm font-medium underline underline-offset-4">
+            {category}
+          </a>
+        ))}
+      </nav>
+
+      {faqs.map(({ category, items }) => (
+        <section key={category} id={category} className="mb-10">
+          <h2 className="mb-4 text-2xl font-semibold">{category}</h2>
+          <Accordion type="single" collapsible className="space-y-4">
+            {items.map(({ q, a }) => (
+              <AccordionItem key={q} value={q}>
+                <AccordionTrigger className="text-left">{q}</AccordionTrigger>
+                <AccordionContent>{a}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </section>
+      ))}
+
+      <div className="mt-16 flex flex-col items-center gap-4">
+        <p className="text-center text-lg font-medium">Still need help?</p>
+        <Button asChild>
+          <a href="mailto:hello@lingomitra.com">Chat with support</a>
+        </Button>
+      </div>
+    </div>
+  );
+}
+```
+
+**Usage**
+
+1. Save as `app/(public)/faq/page.tsx` (or wherever your routing expects).
+2. Ensure `Accordion` and `Button` are exported from shadcn/ui.
+3. Adjust prices, feature names or email address as needed.
+
+With microcopy tuned for clarity and the accordion keeping scroll length short, this FAQ page should resolve most objections and let the support team focus on edge cases.
