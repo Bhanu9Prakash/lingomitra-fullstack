@@ -38,41 +38,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const res = await fetch("/api/user", {
           credentials: "include"
         });
-        
-        // Handle different status codes
         if (res.status === 401) {
-          return null; // Not authenticated
+          return null;
         }
-        
-        if (res.status === 503) {
-          // Server temporarily unavailable (likely restarting)
-          console.log("Server temporarily unavailable, might be restarting...");
-          // Wait a bit and try again
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          // Retry the request once
-          try {
-            const retryRes = await fetch("/api/user", { credentials: "include" });
-            if (retryRes.ok) {
-              return await retryRes.json();
-            }
-          } catch {
-            // Failed retry, continue to error handling
-          }
-        }
-        
         if (!res.ok) {
           throw new Error("Failed to fetch user");
         }
-        
         return await res.json();
       } catch (error) {
-        // Any network errors or other exceptions, return null
-        console.log("Error fetching user session:", error);
         return null;
       }
     },
-    retry: 2, // Retry failed requests 2 additional times
-    retryDelay: 1000, // Wait 1 second between retries
   });
 
   const loginMutation = useMutation<Omit<User, "password">, Error, LoginData>({
