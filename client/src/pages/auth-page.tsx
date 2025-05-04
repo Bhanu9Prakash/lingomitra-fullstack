@@ -65,6 +65,7 @@ export default function AuthPage() {
   const [justVerified, setJustVerified] = useState<boolean>(isVerified());
   const [showVerificationMessage, setShowVerificationMessage] = useState<boolean>(false);
   const [verificationEmail, setVerificationEmail] = useState<string>("");
+  const [resendingVerification, setResendingVerification] = useState<boolean>(false);
   const { user, loginMutation, registerMutation } = useAuth();
   const { toast, success, error: showError } = useSimpleToast();
   const { theme } = useTheme();
@@ -158,6 +159,47 @@ export default function AuthPage() {
     }
   };
 
+  // Function to resend verification email
+  const handleResendVerification = async () => {
+    if (!verificationEmail) {
+      showError("Error", "Email address is missing. Please try logging in again.");
+      return;
+    }
+
+    setResendingVerification(true);
+    try {
+      const response = await fetch('/api/resend-verification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: verificationEmail }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        success(
+          "Verification email sent!", 
+          "A new verification link has been sent to your email. Please check your inbox."
+        );
+      } else {
+        showError(
+          "Failed to resend", 
+          data.message || "Could not resend verification email. Please try again later."
+        );
+      }
+    } catch (error) {
+      showError(
+        "Error", 
+        "An unexpected error occurred. Please try again later."
+      );
+      console.error("Error resending verification email:", error);
+    } finally {
+      setResendingVerification(false);
+    }
+  };
+
   const onRegisterSubmit = async (values: z.infer<typeof registerSchema>) => {
     setRegisterError(null); // Clear previous errors
     try {
@@ -235,7 +277,7 @@ export default function AuthPage() {
               
               {/* Verification Message */}
               {showVerificationMessage && (
-                <div className="mb-6 p-4 rounded-md bg-blue-50 border border-blue-200 text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-200">
+                <div className="mb-6 p-4 rounded-md bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-900/30 dark:border-amber-800 dark:text-amber-200">
                   <h3 className="text-lg font-medium mb-2">Verify Your Email</h3>
                   <p className="text-sm mb-2">
                     We've sent a verification link to <strong>{verificationEmail}</strong>.
@@ -244,10 +286,17 @@ export default function AuthPage() {
                     Please check your inbox and click the link to activate your account. 
                     You won't be able to login until your email is verified.
                   </p>
-                  <div className="mt-3 flex justify-end">
+                  <div className="mt-4 flex flex-wrap justify-between items-center gap-2">
+                    <button
+                      onClick={handleResendVerification}
+                      disabled={resendingVerification}
+                      className={`text-sm px-3 py-1.5 rounded bg-[#ff6600] text-white hover:bg-[#cc5200] transition-colors ${resendingVerification ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    >
+                      {resendingVerification ? 'Sending...' : 'Resend Verification Email'}
+                    </button>
                     <button
                       onClick={() => setShowVerificationMessage(false)}
-                      className="text-xs underline text-blue-600 dark:text-blue-400"
+                      className="text-xs underline text-amber-600 dark:text-amber-400"
                     >
                       Dismiss
                     </button>
@@ -329,6 +378,16 @@ export default function AuthPage() {
                       {loginError && (
                         <div className="p-3 mb-3 rounded-md text-white bg-red-600 dark:bg-red-700 text-sm">
                           <p>{loginError}</p>
+                          {/* Show resend link if error is about verification */}
+                          {loginError.includes("verify") && (
+                            <button
+                              onClick={handleResendVerification}
+                              disabled={resendingVerification}
+                              className="mt-2 text-xs font-medium underline hover:no-underline"
+                            >
+                              {resendingVerification ? 'Sending verification email...' : 'Resend verification email'}
+                            </button>
+                          )}
                         </div>
                       )}
                       
