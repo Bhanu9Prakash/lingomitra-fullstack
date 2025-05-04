@@ -9,7 +9,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer>
+    <footer className="mt-16">
       <div className="container">
         <div className="footer-content">
           <div className="footer-logo">

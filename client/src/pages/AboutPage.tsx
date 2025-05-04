@@ -18,7 +18,7 @@ export default function AboutPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 pt-6 pb-16 max-w-4xl mb-32">
+    <div className="container mx-auto px-4 pt-6 pb-16 max-w-4xl mb-8">
       <div className="space-y-8">
         <section className="text-center">
           <h1 className="text-4xl font-bold mb-4">About LingoMitra</h1>
