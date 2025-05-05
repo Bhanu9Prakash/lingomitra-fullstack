@@ -24,8 +24,6 @@ interface User {
   id: number;
   username: string;
   email: string;
-  subscriptionTier: string;
-  subscriptionExpiry: string | null;
   isAdmin: boolean;
 }
 
@@ -34,7 +32,6 @@ interface AnalyticsData {
   lessonCount: number;
   languageCount: number;
   completedLessonCount: number;
-  premiumUserCount: number;
 }
 
 interface ContactSubmission {
@@ -265,20 +262,7 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
             
-            {/* Premium Users Card */}
-            <Card className="border border-gray-800">
-              <CardHeader className="pb-2">
-                <CardTitle>Premium Users</CardTitle>
-                <CardDescription>Users with active subscriptions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {loadingAnalytics ? (
-                  <Skeleton className="h-12 w-12" />
-                ) : (
-                  <p className="text-3xl font-bold">{(analyticsData as AnalyticsData)?.premiumUserCount || 0}</p>
-                )}
-              </CardContent>
-            </Card>
+            {/* Premium Users Card removed */}
             
             {/* Available Languages Card */}
             <Card className="border border-gray-800">
@@ -350,7 +334,6 @@ export default function AdminDashboard() {
                         <TableHead>ID</TableHead>
                         <TableHead>Username</TableHead>
                         <TableHead>Email</TableHead>
-                        <TableHead>Subscription</TableHead>
                         <TableHead>Admin</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
@@ -362,7 +345,6 @@ export default function AdminDashboard() {
                             <TableCell>{user.id}</TableCell>
                             <TableCell>{user.username}</TableCell>
                             <TableCell>{user.email}</TableCell>
-                            <TableCell>{user.subscriptionTier || 'Free'}</TableCell>
                             <TableCell>{user.isAdmin ? 'Yes' : 'No'}</TableCell>
                             <TableCell>
                               {!user.isAdmin && (
@@ -379,7 +361,7 @@ export default function AdminDashboard() {
                         ))
                       ) : (
                         <TableRow>
-                          <TableCell colSpan={6} className="text-center py-6">
+                          <TableCell colSpan={5} className="text-center py-6">
                             No users found. {usersError ? 'Error loading users.' : ''}
                           </TableCell>
                         </TableRow>
