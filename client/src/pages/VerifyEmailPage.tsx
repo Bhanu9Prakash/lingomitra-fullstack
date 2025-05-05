@@ -159,15 +159,21 @@ const VerifyEmailPage = () => {
   // Function to verify email with the token
   const verifyEmail = async (verificationToken: string) => {
     try {
+      console.log('Starting verification with token:', verificationToken);
       setStatus("loading");
       
       // Set verification in progress before making request
       // This ensures we can restore state even if the page refreshes mid-verification
       localStorage.setItem('verificationInProgress', 'true');
       
+      // Log the token before making the request
+      console.log('Making verification request with token:', verificationToken);
+      
       const response = await fetch(`/api/verify-email?token=${verificationToken}`);
+      console.log('Verification response status:', response.status);
       
       if (response.ok) {
+        console.log('Verification successful!');
         // Immediately set success state in both component and storage
         setStatus("success");
         setMessage("Your email has been verified successfully!");
@@ -200,21 +206,33 @@ const VerifyEmailPage = () => {
             // We have a valid session, update local user data
             queryClient.invalidateQueries({ queryKey: ["/api/user"] });
             
-            // Redirect to languages page
+            // Redirect to languages page - use window.location for a harder redirect
+            console.log("Redirecting to languages page...");
+            // First try navigate
+            navigate("/languages");
+            // Also use a direct location change for a guaranteed redirect
             setTimeout(() => {
-              navigate("/languages");
-            }, 3000);
+              window.location.href = "/languages";
+            }, 1000);
           } else {
-            // No valid session, redirect to login
+            // No valid session, redirect to login - use window.location for a harder redirect
+            console.log("Redirecting to login page...");
+            // First try navigate
+            navigate("/auth?verified=true");
+            // Also use a direct location change for a guaranteed redirect
             setTimeout(() => {
-              navigate("/auth?verified=true");
-            }, 3000);
+              window.location.href = "/auth?verified=true";
+            }, 1000);
           }
         } catch (error) {
-          // On error, redirect to login
+          // On error, redirect to login - use window.location for a harder redirect
+          console.log("Error occurred, redirecting to login page...");
+          // First try navigate
+          navigate("/auth?verified=true");
+          // Also use a direct location change for a guaranteed redirect
           setTimeout(() => {
-            navigate("/auth?verified=true");
-          }, 3000);
+            window.location.href = "/auth?verified=true";
+          }, 1000);
         }
       } else {
         const data = await response.json();
@@ -289,10 +307,15 @@ const VerifyEmailPage = () => {
             <Button 
               className="w-full bg-[#ff6600] hover:bg-[#cc5200]"
               onClick={() => {
+                console.log("Manual redirect via button clicked");
                 if (user && user.emailVerified) {
+                  // Navigate to languages with both methods
                   navigate("/languages");
+                  window.location.href = "/languages";
                 } else {
+                  // Navigate to auth with both methods
                   navigate("/auth");
+                  window.location.href = "/auth";
                 }
               }}
             >
@@ -315,7 +338,11 @@ const VerifyEmailPage = () => {
           <div className="mt-6">
             <Button 
               className="w-full bg-[#ff6600] hover:bg-[#cc5200]"
-              onClick={() => navigate("/auth")}
+              onClick={() => {
+                console.log("Manual redirect to auth from error state");
+                navigate("/auth");
+                window.location.href = "/auth";
+              }}
             >
               Return to Login
             </Button>
