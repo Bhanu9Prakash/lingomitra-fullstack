@@ -21,6 +21,17 @@ const VerifyEmailPage = () => {
     }
   }, [user, navigate]);
 
+  // Add an effect to temporarily disable service worker updates during verification
+  useEffect(() => {
+    // Mark that we're in the verification process to prevent SW updates
+    sessionStorage.setItem('inVerificationProcess', 'true');
+    
+    return () => {
+      // Clean up when component unmounts
+      sessionStorage.removeItem('inVerificationProcess');
+    };
+  }, []);
+
   // Get token or verified flag from URL if present
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);

@@ -24,7 +24,12 @@ export function registerServiceWorker() {
                   const now = Date.now();
                   
                   // Only show if we haven't shown in the last 5 minutes
-                  if (!lastUpdateTime || (now - parseInt(lastUpdateTime)) > 5 * 60 * 1000) {
+                  // Skip during verification process (both by URL check and sessionStorage flag)
+                  const inVerification = window.location.pathname.startsWith('/verify-email') || 
+                                      sessionStorage.getItem('inVerificationProcess') === 'true';
+                  
+                  if ((!lastUpdateTime || (now - parseInt(lastUpdateTime)) > 5 * 60 * 1000) && 
+                      !inVerification) {
                     sessionStorage.setItem('lastUpdatePrompt', now.toString());
                     
                     // New content is available; notify the user
