@@ -7,9 +7,7 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
-  // Add subscription information
-  subscriptionTier: text("subscription_tier").default("free"),
-  subscriptionExpiry: timestamp("subscription_expiry"),
+  // Subscription fields removed
   // Admin flag
   isAdmin: boolean("is_admin").default(false).notNull(),
   // Email verification
@@ -44,8 +42,6 @@ export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
   password: true,
   isAdmin: true,
-  subscriptionTier: true,
-  subscriptionExpiry: true,
   emailVerified: true,
   verificationToken: true,
   verificationTokenExpiry: true,
