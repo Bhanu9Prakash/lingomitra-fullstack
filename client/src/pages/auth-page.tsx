@@ -218,12 +218,6 @@ export default function AuthPage() {
         // Store the email for verification purposes
         sessionStorage.setItem('pendingVerificationEmail', userData.email);
         
-        // Explicitly mark this as a new registration in both session and local storage
-        // This helps the verification page know to show instructions rather than success
-        sessionStorage.setItem('isNewRegistration', 'true');
-        
-        console.log('Setting isNewRegistration flag to true in sessionStorage');
-        
         // Redirect to verification page with registration flag
         // This ensures the page shows instructions rather than success
         setTimeout(() => {
