@@ -209,16 +209,20 @@ export default function AuthPage() {
       
       // Check if verification is needed
       if (response && response.needsVerification) {
-        // Show verification instructions
+        // Show success message briefly
         success(
           "Registration successful!", 
-          "Please check your email to verify your account. A verification link has been sent to your email address."
+          "Redirecting you to verification instructions..."
         );
-        // Create a verification pending UI state
-        setVerificationEmail(userData.email);
-        setShowVerificationMessage(true);
-        // Stay on the login page, but switch to login tab
-        setActiveTab("login");
+        
+        // Store the email for verification purposes
+        sessionStorage.setItem('pendingVerificationEmail', userData.email);
+        
+        // Redirect to verification page with registration flag
+        // This ensures the page shows instructions rather than success
+        setTimeout(() => {
+          navigate("/verify-email?registration=true");
+        }, 1000);
       } else {
         // Legacy behavior (if verification is not required)
         success("Registration successful!", "Your account has been created.");

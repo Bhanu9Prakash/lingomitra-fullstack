@@ -274,12 +274,21 @@ const VerifyEmailPage = () => {
     try {
       setStatus("loading");
       
+      // Get email from user object or from pendingEmail in sessionStorage
+      const emailToUse = user?.email || sessionStorage.getItem('pendingVerificationEmail');
+      
+      if (!emailToUse) {
+        setStatus("error");
+        setMessage("No email address available. Please log in again.");
+        return;
+      }
+      
       const response = await fetch("/api/resend-verification", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: user?.email }),
+        body: JSON.stringify({ email: emailToUse }),
       });
       
       const data = await response.json();
@@ -370,6 +379,9 @@ const VerifyEmailPage = () => {
     );
   }
 
+  // Get the pending verification email if it exists (from registration)
+  const pendingEmail = typeof window !== 'undefined' ? sessionStorage.getItem('pendingVerificationEmail') : null;
+  
   // Default state: show instructions for unverified users
   return (
     <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#111111] text-white' : 'bg-[#f5f5f5] text-gray-900'}`}>
@@ -378,9 +390,9 @@ const VerifyEmailPage = () => {
         <h1 className="mt-6 text-2xl font-bold text-center">Verify Your Email</h1>
         
         <p className="mt-4 text-center">
-          {user ? (
+          {(user && user.email) || pendingEmail ? (
             <>
-              A verification link has been sent to <strong>{user.email}</strong>. 
+              A verification link has been sent to <strong>{(user && user.email) || pendingEmail}</strong>. 
               Please check your inbox and click the link to verify your account.
             </>
           ) : (
@@ -427,7 +439,7 @@ const VerifyEmailPage = () => {
             size="sm"
             className="w-full"
             onClick={handleResendVerification}
-            disabled={status === "loading" || !user?.email}
+            disabled={status === "loading" || (!user?.email && !pendingEmail)}
           >
             {status === "loading" ? (
               <>
