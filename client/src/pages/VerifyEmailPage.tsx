@@ -51,6 +51,10 @@ const VerifyEmailPage = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const tokenParam = searchParams.get("token");
     const verifiedParam = searchParams.get("verified");
+    const registrationParam = searchParams.get("registration");
+    
+    // If this is a fresh registration, show verification instructions, not success
+    const isNewRegistration = registrationParam === "true";
     
     if (tokenParam) {
       setToken(tokenParam);
@@ -66,8 +70,8 @@ const VerifyEmailPage = () => {
       const url = new URL(window.location.href);
       url.searchParams.delete('token');
       window.history.replaceState({}, document.title, url.toString());
-    } else if (verifiedParam === "true") {
-      // If redirected back with verified=true, show success and redirect
+    } else if (verifiedParam === "true" && !isNewRegistration) {
+      // If redirected back with verified=true and not a new registration, show success and redirect
       setToken("verified");
       setStatus("success");
       setMessage("Your email has been verified successfully!");
@@ -99,6 +103,15 @@ const VerifyEmailPage = () => {
             navigate("/auth?verified=true");
           }, 2000);
         });
+    } else if (isNewRegistration) {
+      // If this is a new registration, explicitly show the instructions
+      console.log('New registration detected, showing verification instructions');
+      setStatus("idle");
+      
+      // Clean up the URL to remove the registration param
+      const url = new URL(window.location.href);
+      url.searchParams.delete('registration');
+      window.history.replaceState({}, document.title, url.toString());
     } else {
       // Check if we have a verification in progress or one that just completed
       const storedToken = sessionStorage.getItem('pendingVerificationToken');

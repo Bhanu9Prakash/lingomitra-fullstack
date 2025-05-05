@@ -12,6 +12,7 @@ import { sendEmail, generateVerificationEmail, generatePasswordResetEmail } from
 declare module 'express-session' {
   interface SessionData {
     verifiedUsername?: string;
+    isNewRegistration?: boolean;
   }
 }
 
@@ -212,6 +213,10 @@ export function setupAuth(app: Express) {
         // Extract sensitive fields to exclude them from the response
         const { password: _, verificationToken: __, verificationTokenExpiry: ___, ...userResponse } = user;
         
+        // Flag that this user is a new registration, so the verification page knows to show
+        // instructions rather than success message
+        req.session.isNewRegistration = true;
+        
         res.status(201).json({
           ...userResponse,
           needsVerification: true,
@@ -270,8 +275,16 @@ export function setupAuth(app: Express) {
             });
           }
           
-          // Otherwise redirect to the verify-email page with success flag
-          return res.redirect('/verify-email?verified=true');
+          // Check if this is a new registration and include in the redirect
+          const isNewRegistration = req.session.isNewRegistration === true;
+          
+          // Clear the new registration flag as we're using it now
+          if (isNewRegistration) {
+            req.session.isNewRegistration = false;
+          }
+          
+          // Otherwise redirect to the verify-email page with verified flag and registration info
+          return res.redirect(`/verify-email?verified=true${isNewRegistration ? '&registration=true' : ''}`);
         }
         
         // If we reach here, the token is truly invalid
@@ -297,8 +310,16 @@ export function setupAuth(app: Express) {
           });
         }
         
-        // Otherwise redirect to the verify-email page with verified flag
-        return res.redirect('/verify-email?verified=true');
+        // Check if this is a new registration and include in the redirect
+        const isNewRegistration = req.session.isNewRegistration === true;
+        
+        // Clear the new registration flag as we're using it now
+        if (isNewRegistration) {
+          req.session.isNewRegistration = false;
+        }
+        
+        // Otherwise redirect to the verify-email page with verified flag and registration info
+        return res.redirect(`/verify-email?verified=true${isNewRegistration ? '&registration=true' : ''}`);
       }
       
       // Check if token is expired
@@ -339,8 +360,16 @@ export function setupAuth(app: Express) {
         });
       }
       
-      // Otherwise redirect to the verify-email page with verified flag
-      return res.redirect('/verify-email?verified=true');
+      // Check if this is a new registration and include in the redirect
+      const isNewRegistration = req.session.isNewRegistration === true;
+      
+      // Clear the new registration flag as we're using it now
+      if (isNewRegistration) {
+        req.session.isNewRegistration = false;
+      }
+      
+      // Otherwise redirect to the verify-email page with verified flag and registration info
+      return res.redirect(`/verify-email?verified=true${isNewRegistration ? '&registration=true' : ''}`);
     } catch (error) {
       console.error('Email verification error:', error);
       return res.status(500).json({ 
