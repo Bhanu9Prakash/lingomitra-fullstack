@@ -879,6 +879,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Update a user's subscription tier
+  app.post("/api/admin/update-subscription", isAdmin, async (req, res) => {
+    try {
+      const { userId, subscriptionTier, subscriptionExpiry } = req.body;
+      
+      if (!userId) {
+        return res.status(400).json({ message: "User ID is required" });
+      }
+      
+      if (!subscriptionTier) {
+        return res.status(400).json({ message: "Subscription tier is required" });
+      }
+      
+      // Convert string date to Date object if provided
+      let expiryDate: Date | null = null;
+      if (subscriptionExpiry) {
+        expiryDate = new Date(subscriptionExpiry);
+        
+        // Validate the date is valid
+        if (isNaN(expiryDate.getTime())) {
+          return res.status(400).json({ message: "Invalid subscription expiry date" });
+        }
+      }
+      
+      // Update the user's subscription
+      const user = await storage.updateUser(Number(userId), {
+        subscriptionTier,
+        subscriptionExpiry: expiryDate
+      });
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Don't send password back to client
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error updating subscription:", error);
+      res.status(500).json({ message: "Failed to update subscription" });
+    }
+  });
+  
   // Get all contact form submissions
   app.get("/api/admin/contact-submissions", isAdmin, async (req, res) => {
     try {

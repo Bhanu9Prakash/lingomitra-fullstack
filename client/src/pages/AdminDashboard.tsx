@@ -18,6 +18,7 @@ import {
 import { useLocation } from 'wouter';
 import { useSimpleToast } from '../hooks/use-simple-toast';
 import { format } from 'date-fns';
+import SubscriptionDialog from '@/components/admin/SubscriptionDialog';
 
 // Types
 interface User {
@@ -54,6 +55,8 @@ export default function AdminDashboard() {
   const { toast } = useSimpleToast();
   const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
   const [resolutionNotes, setResolutionNotes] = useState('');
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
   
   // Fetch analytics data
   const fetchAnalytics = async (): Promise<AnalyticsData> => {
@@ -236,6 +239,51 @@ export default function AdminDashboard() {
     }
   };
   
+  // Function to update subscription
+  const updateSubscription = async (userId: number, subscriptionTier: string, subscriptionExpiry?: Date) => {
+    try {
+      const response = await fetch('/api/admin/update-subscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          userId, 
+          subscriptionTier, 
+          subscriptionExpiry: subscriptionExpiry ? subscriptionExpiry.toISOString() : null 
+        }),
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to update subscription');
+      }
+      
+      toast({
+        title: "Success",
+        description: `Subscription updated to ${subscriptionTier}.`,
+      });
+      
+      // Refresh users data
+      const updatedUsers = await fetchUsers();
+      
+      // Close the dialog
+      setSelectedUser(null);
+      setShowSubscriptionDialog(false);
+      
+      // If this causes a refresh of the users data, we'll get an updated list
+      return updatedUsers;
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update subscription.",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+  
   return (
     <div className="container mx-auto mt-16 px-4">
       <h1 className="text-3xl font-bold my-6">Admin Dashboard</h1>
@@ -365,15 +413,27 @@ export default function AdminDashboard() {
                             <TableCell>{user.subscriptionTier || 'Free'}</TableCell>
                             <TableCell>{user.isAdmin ? 'Yes' : 'No'}</TableCell>
                             <TableCell>
-                              {!user.isAdmin && (
+                              <div className="flex gap-2">
+                                {!user.isAdmin && (
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => makeAdmin(user.id)}
+                                  >
+                                    Make Admin
+                                  </Button>
+                                )}
                                 <Button 
-                                  variant="outline" 
+                                  variant="secondary" 
                                   size="sm"
-                                  onClick={() => makeAdmin(user.id)}
+                                  onClick={() => {
+                                    setSelectedUser(user);
+                                    setShowSubscriptionDialog(true);
+                                  }}
                                 >
-                                  Make Admin
+                                  Subscription
                                 </Button>
-                              )}
+                              </div>
                             </TableCell>
                           </TableRow>
                         ))
@@ -526,6 +586,16 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Subscription Dialog */}
+      {selectedUser && (
+        <SubscriptionDialog
+          isOpen={showSubscriptionDialog}
+          onClose={() => setShowSubscriptionDialog(false)}
+          user={selectedUser}
+          onSave={updateSubscription}
+        />
+      )}
     </div>
   );
 }
