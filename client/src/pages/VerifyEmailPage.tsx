@@ -14,12 +14,34 @@ const VerifyEmailPage = () => {
   const [_, navigate] = useLocation();
   const { user, logoutMutation } = useAuth();
 
-  // If the user is already verified and logged in, redirect to home
+  // Check if this is a new registration coming from the registration form
+  const isNewRegistration = (() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const fromURL = searchParams.get("registration") === "true";
+      const fromSession = sessionStorage.getItem('isNewRegistration') === 'true';
+      
+      // If either source indicates this is a new registration, treat it as such
+      const result = fromURL || fromSession;
+      
+      // Store the result in sessionStorage for cross-page persistence
+      if (result) {
+        sessionStorage.setItem('isNewRegistration', 'true');
+        console.log('This is a new registration - showing instructions instead of success');
+      }
+      
+      return result;
+    }
+    return false;
+  })();
+  
+  // If the user is already verified and logged in (and not a new registration), redirect to home
   useEffect(() => {
-    if (user && user.emailVerified) {
+    // Don't redirect if this is a new registration - we want to show verification instructions
+    if (user && user.emailVerified && !isNewRegistration) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [user, navigate, isNewRegistration]);
 
   // Unregister service worker to prevent updates during verification
   useEffect(() => {
@@ -54,7 +76,7 @@ const VerifyEmailPage = () => {
     const registrationParam = searchParams.get("registration");
     
     // If this is a fresh registration, show verification instructions, not success
-    const isNewRegistration = registrationParam === "true";
+    // Note: We're using the outer isNewRegistration variable defined earlier
     
     if (tokenParam) {
       setToken(tokenParam);
