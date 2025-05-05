@@ -1,5 +1,15 @@
 // Register the service worker
 export function registerServiceWorker() {
+  // Check if we're in the verification process or on verification page
+  // If so, skip service worker registration to avoid interrupting verification
+  const isVerificationPage = window.location.pathname.startsWith('/verify-email');
+  const inVerificationProcess = sessionStorage.getItem('inVerificationProcess') === 'true';
+  
+  if (isVerificationPage || inVerificationProcess) {
+    console.log('Skipping service worker registration during verification process');
+    return;
+  }
+  
   // Skip registration if not supported
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

@@ -21,14 +21,28 @@ const VerifyEmailPage = () => {
     }
   }, [user, navigate]);
 
-  // Add an effect to temporarily disable service worker updates during verification
+  // Unregister service worker to prevent updates during verification
   useEffect(() => {
     // Mark that we're in the verification process to prevent SW updates
     sessionStorage.setItem('inVerificationProcess', 'true');
     
+    // Explicitly unregister the service worker to prevent any interference
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(registration => {
+          registration.unregister().then(() => {
+            console.log('ServiceWorker unregistered for verification process');
+          });
+        });
+      });
+    }
+    
     return () => {
       // Clean up when component unmounts
       sessionStorage.removeItem('inVerificationProcess');
+      
+      // Re-register service worker when leaving the page
+      // It will register again on the next page load
     };
   }, []);
 
@@ -86,21 +100,34 @@ const VerifyEmailPage = () => {
           }, 2000);
         });
     } else {
-      // Check for stored verification token in sessionStorage (from page reload)
+      // Check if we have a verification in progress or one that just completed
       const storedToken = sessionStorage.getItem('pendingVerificationToken');
-      const justVerified = sessionStorage.getItem('emailJustVerified');
+      const justVerifiedSession = sessionStorage.getItem('emailJustVerified');
+      const justVerifiedLocal = localStorage.getItem('emailJustVerified');
+      const verificationInProgress = localStorage.getItem('verificationInProgress');
+      
+      // Check for a recently successful verification within the last hour (3600000 ms)
+      const verificationTimestamp = parseInt(localStorage.getItem('verificationSuccessTimestamp') || '0');
+      const isRecentVerification = (Date.now() - verificationTimestamp) < 3600000;
       
       if (storedToken) {
-        // Resume verification process
+        // Resume verification process from the stored token
+        console.log('Resuming verification from stored token');
         setToken(storedToken);
         verifyEmail(storedToken);
-        // Clear the stored token after using it
-        sessionStorage.removeItem('pendingVerificationToken');
-      } else if (justVerified === 'true') {
+      } else if (justVerifiedSession === 'true' || (justVerifiedLocal === 'true' && isRecentVerification)) {
         // If we just verified but got reloaded, restore the success state
+        // This handles cases where service worker caused a reload
+        console.log('Restoring verification success state from storage');
         setToken("verified");
         setStatus("success");
         setMessage("Your email has been verified successfully!");
+      } else if (verificationInProgress === 'true') {
+        // If we have a verification in progress but got interrupted
+        console.log('Verification was in progress but got interrupted');
+        setStatus("error");
+        setMessage("Your verification process was interrupted. Please try clicking the link in your email again.");
+        localStorage.removeItem('verificationInProgress');
         
         // Check if user is logged in after reload
         if (user) {
@@ -134,27 +161,36 @@ const VerifyEmailPage = () => {
     try {
       setStatus("loading");
       
+      // Set verification in progress before making request
+      // This ensures we can restore state even if the page refreshes mid-verification
+      localStorage.setItem('verificationInProgress', 'true');
+      
       const response = await fetch(`/api/verify-email?token=${verificationToken}`);
       
       if (response.ok) {
+        // Immediately set success state in both component and storage
         setStatus("success");
         setMessage("Your email has been verified successfully!");
+        
+        // Store successful verification in both sessionStorage AND localStorage
+        // This helps maintain state across potential page reloads or tab closures
+        sessionStorage.setItem('emailJustVerified', 'true');
+        localStorage.setItem('emailJustVerified', 'true');
+        localStorage.setItem('verificationSuccessTimestamp', Date.now().toString());
         
         // Get user data returned from the verification endpoint
         // This contains username and other info we can use
         const userData = await response.json();
         
-        // Store successful verification in sessionStorage
-        // This helps maintain state across potential page reloads (from service worker updates)
-        sessionStorage.setItem('emailJustVerified', 'true');
-        
         // Store the username to help with login after verification
         if (userData && userData.username) {
           sessionStorage.setItem('verifiedUsername', userData.username);
+          localStorage.setItem('verifiedUsername', userData.username);
         }
         
         // Clear the pending token since verification was successful
         sessionStorage.removeItem('pendingVerificationToken');
+        localStorage.removeItem('verificationInProgress');
         
         // Try to login the user with their existing session
         try {
