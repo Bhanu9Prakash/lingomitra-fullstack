@@ -92,39 +92,50 @@ const VerifyEmailPage = () => {
       const url = new URL(window.location.href);
       url.searchParams.delete('token');
       window.history.replaceState({}, document.title, url.toString());
-    } else if (verifiedParam === "true" && !isNewRegistration) {
-      // If redirected back with verified=true and not a new registration, show success and redirect
-      setToken("verified");
-      setStatus("success");
-      setMessage("Your email has been verified successfully!");
+    } else if (verifiedParam === "true") {
+      // If redirected back with verified=true
+      if (!isNewRegistration) {
+        // Only show success if not a new registration
+        console.log('User has verified email - showing success message');
+        setToken("verified");
+        setStatus("success");
+        setMessage("Your email has been verified successfully!");
+      } else {
+        // If this is a new registration, show instructions instead of success
+        console.log('New registration detected - showing verification instructions instead of success');
+        setStatus("idle");
+      }
       
-      // Store verification success in sessionStorage
-      sessionStorage.setItem('emailJustVerified', 'true');
-      
-      // Try to check if we're logged in
-      fetch("/api/user")
-        .then(response => {
-          if (response.ok) {
-            // We have a valid session, update the user information
-            queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-            
-            // Redirect to languages page after 2 seconds
-            setTimeout(() => {
-              navigate("/languages");
-            }, 2000);
-          } else {
-            // No valid session, redirect to login
+      if (!isNewRegistration) {
+        // Only store verification success and redirect for actual verifications,
+        // not for new registrations (which haven't been verified yet)
+        sessionStorage.setItem('emailJustVerified', 'true');
+        
+        // Try to check if we're logged in
+        fetch("/api/user")
+          .then(response => {
+            if (response.ok) {
+              // We have a valid session, update the user information
+              queryClient.invalidateQueries({ queryKey: ["/api/user"] });
+              
+              // Redirect to languages page after 2 seconds
+              setTimeout(() => {
+                navigate("/languages");
+              }, 2000);
+            } else {
+              // No valid session, redirect to login
+              setTimeout(() => {
+                navigate("/auth?verified=true");
+              }, 2000);
+            }
+          })
+          .catch(() => {
+            // On error, redirect to login
             setTimeout(() => {
               navigate("/auth?verified=true");
             }, 2000);
-          }
-        })
-        .catch(() => {
-          // On error, redirect to login
-          setTimeout(() => {
-            navigate("/auth?verified=true");
-          }, 2000);
-        });
+          });
+      }
     } else if (isNewRegistration) {
       // If this is a new registration, explicitly show the instructions
       console.log('New registration detected, showing verification instructions');
