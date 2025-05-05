@@ -172,11 +172,16 @@ const VerifyEmailPage = () => {
       const response = await fetch(`/api/verify-email?token=${verificationToken}`);
       console.log('Verification response status:', response.status);
       
-      if (response.ok) {
-        console.log('Verification successful!');
+      // Get the response data even in error cases to check the message
+      const data = await response.json();
+      console.log('Verification response data:', data);
+      
+      // Handle already verified tokens as a success case
+      if (response.ok || (data && data.message && data.message.includes("already verified"))) {
+        console.log('Verification successful or email already verified!');
         // Immediately set success state in both component and storage
         setStatus("success");
-        setMessage("Your email has been verified successfully!");
+        setMessage(data.message || "Your email has been verified successfully!");
         
         // Store successful verification in both sessionStorage AND localStorage
         // This helps maintain state across potential page reloads or tab closures
@@ -186,7 +191,7 @@ const VerifyEmailPage = () => {
         
         // Get user data returned from the verification endpoint
         // This contains username and other info we can use
-        const userData = await response.json();
+        const userData = data;
         
         // Store the username to help with login after verification
         if (userData && userData.username) {
@@ -235,7 +240,7 @@ const VerifyEmailPage = () => {
           }, 1000);
         }
       } else {
-        const data = await response.json();
+        // We already have data from the response (pulled above)
         setStatus("error");
         setMessage(data.message || "An error occurred during email verification.");
         

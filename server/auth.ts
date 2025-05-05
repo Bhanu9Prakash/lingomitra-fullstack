@@ -8,6 +8,13 @@ import { storage } from "./storage";
 import { User as SelectUser } from "@shared/schema";
 import { sendEmail, generateVerificationEmail, generatePasswordResetEmail } from "./email-service";
 
+// Extend express-session with custom properties
+declare module 'express-session' {
+  interface SessionData {
+    verifiedUsername?: string;
+  }
+}
+
 declare global {
   namespace Express {
     interface User extends SelectUser {}
@@ -222,20 +229,85 @@ export function setupAuth(app: Express) {
       const { token } = req.query;
       
       if (!token) {
-        return res.status(400).json({ success: false, message: "Verification token is required" });
+        return res.status(400).json({ 
+          success: false, 
+          message: "Verification token is required" 
+        });
       }
       
       // Find user with this token
       const user = await storage.getUserByVerificationToken(token as string);
       
       if (!user) {
-        return res.status(400).json({ success: false, message: "Invalid verification token" });
+        // Important: token not found, but this might be because it was already used
+        // Let's check for tokens that might have been used by looking up the token in the request
+        // This helps with page reloads during verification where the first request succeeded
+        // but the client is making a second request with the same token
+        
+        // First try getting username from email verification params if stored in session
+        const verifiedUsername = req.session?.verifiedUsername;
+        let alreadyVerifiedUser = null;
+        
+        if (verifiedUsername) {
+          // Try looking up by username
+          try {
+            alreadyVerifiedUser = await storage.getUserByUsername(verifiedUsername);
+          } catch (e) {
+            // Username not found, continue to next check
+          }
+        }
+        
+        // If we find a user that's already verified, we can consider this a success case
+        if (alreadyVerifiedUser && alreadyVerifiedUser.emailVerified) {
+          console.log('Token already used, but user is verified. Treating as success.');
+          
+          // If this is an API call, return JSON
+          if (req.headers.accept && req.headers.accept.includes('application/json')) {
+            return res.status(200).json({ 
+              success: true, 
+              message: "Email already verified",
+              username: alreadyVerifiedUser.username
+            });
+          }
+          
+          // Otherwise redirect to the verify-email page with success flag
+          return res.redirect('/verify-email?verified=true');
+        }
+        
+        // If we reach here, the token is truly invalid
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid verification token or email already verified. Try logging in." 
+        });
+      }
+      
+      // Check if user is already verified
+      if (user.emailVerified) {
+        console.log('User already verified, returning success.');
+        
+        // Store username in session to help with subsequent token checks
+        req.session.verifiedUsername = user.username;
+        
+        // If this is an API call, return JSON
+        if (req.headers.accept && req.headers.accept.includes('application/json')) {
+          return res.status(200).json({ 
+            success: true, 
+            message: "Email already verified",
+            username: user.username
+          });
+        }
+        
+        // Otherwise redirect to the verify-email page with verified flag
+        return res.redirect('/verify-email?verified=true');
       }
       
       // Check if token is expired
       const now = new Date();
       if (user.verificationTokenExpiry && user.verificationTokenExpiry < now) {
-        return res.status(400).json({ success: false, message: "Verification token has expired" });
+        return res.status(400).json({ 
+          success: false, 
+          message: "Verification token has expired" 
+        });
       }
       
       // Mark user as verified and clear token
@@ -244,6 +316,9 @@ export function setupAuth(app: Express) {
         verificationToken: null,
         verificationTokenExpiry: null
       });
+      
+      // Store username in session to help with subsequent token checks
+      req.session.verifiedUsername = user.username;
       
       // Update the user's session if they're already logged in
       if (req.isAuthenticated() && req.user && (req.user as SelectUser).id === user.id) {
@@ -259,12 +334,12 @@ export function setupAuth(app: Express) {
       if (req.headers.accept && req.headers.accept.includes('application/json')) {
         return res.status(200).json({ 
           success: true, 
-          message: "Email verified successfully"
+          message: "Email verified successfully",
+          username: user.username
         });
       }
       
-      // Otherwise redirect to the verify-email page with token
-      // The frontend will check session and redirect appropriately
+      // Otherwise redirect to the verify-email page with verified flag
       return res.redirect('/verify-email?verified=true');
     } catch (error) {
       console.error('Email verification error:', error);
