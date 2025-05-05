@@ -11,7 +11,7 @@ import LessonView from "@/pages/LessonView";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
 import Profile from "@/pages/Profile";
-import SubscribePage from "@/pages/SubscribePage";
+// Subscription page removed
 import AdminDashboard from "@/pages/AdminDashboard";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
@@ -55,8 +55,7 @@ function Router() {
         <Route path="/forgot-password" component={ForgotPasswordPage} />
         <Route path="/reset-password" component={ResetPasswordPage} />
         
-        {/* Subscription page - public */}
-        <Route path="/subscribe" component={SubscribePage} />
+        {/* Subscription page removed */}
         
         {/* About page - public */}
         <Route path="/about" component={AboutPage} />
