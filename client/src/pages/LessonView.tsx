@@ -188,14 +188,19 @@ export default function LessonView() {
   // Check if the user needs to see a paywall for this lesson
   const shouldShowPaywall = (lesson: Lesson) => {
     // Free tier gets access to the first two lessons only
-    // All lessons beyond lesson 2 are premium
+    // All lessons beyond lesson 2 require a paid subscription
     const lessonNumber = getLessonNumber(lesson.lessonId);
     
-    // Premium users get all lessons
-    const isPremiumUser = user?.subscriptionTier === 'premium';
+    // Check if user has any paid subscription tier
+    const hasPaidSubscription = user?.subscriptionTier && 
+      ['basic', 'premium', 'pro'].includes(user.subscriptionTier);
     
-    // Show paywall for lessons beyond lesson 2 for non-premium users
-    return lessonNumber > 2 && !isPremiumUser;
+    // Also check if subscription is still valid (not expired)
+    const isSubscriptionValid = !user?.subscriptionExpiry || 
+      new Date(user.subscriptionExpiry) > new Date();
+    
+    // Show paywall for lessons beyond lesson 2 for users without valid paid subscription
+    return lessonNumber > 2 && (!hasPaidSubscription || !isSubscriptionValid);
   };
 
   return (
