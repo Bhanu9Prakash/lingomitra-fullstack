@@ -36,6 +36,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
   });
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [lastAutoPlayedIndex, setLastAutoPlayedIndex] = useState(-1);
   const chatEndRef = useRef<HTMLDivElement>(null);
   
   // State for custom confirmation dialog
@@ -245,7 +246,11 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
         audioData: audioData || null,
         isNewMessage: true
       };
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages((prev) => {
+        const newMessages = [...prev, assistantMessage];
+        setLastAutoPlayedIndex(newMessages.length - 1);
+        return newMessages;
+      });
       
       // Update scratch pad if provided
       if (newSP) setScratchPad(newSP);
@@ -345,7 +350,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
                     text={m.content} 
                     languageCode={lesson.languageCode}
                     audioData={m.audioData}
-                    autoPlay={true}
+                    autoPlay={false}
                     isNewMessage={m.isNewMessage}
                     className="mt-2"
                   />

@@ -73,7 +73,22 @@ Text to speak: "${text}"`;
   }
 
   /**
-   * Generate speech from text using Gemini 2.5 Flash TTS
+   * Create a cache key for the TTS request
+   */
+  private createCacheKey(text: string, languageCode: string): string {
+    const content = `${text.trim()}_${languageCode}`;
+    // Simple hash function for caching
+    let hash = 0;
+    for (let i = 0; i < content.length; i++) {
+      const char = content.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash).toString();
+  }
+
+  /**
+   * Generate speech from text using Gemini 2.5 Flash TTS with caching
    */
   async generateSpeech(options: TTSOptions): Promise<TTSResponse> {
     try {

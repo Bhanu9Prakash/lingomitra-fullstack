@@ -204,3 +204,21 @@ export const insertContactSubmissionSchema = createInsertSchema(contactSubmissio
 
 export type InsertContactSubmission = z.infer<typeof insertContactSubmissionSchema>;
 export type ContactSubmission = typeof contactSubmissions.$inferSelect;
+
+// Audio Cache Table for TTS
+export const audioCache = pgTable("audio_cache", {
+  id: serial("id").primaryKey(),
+  textHash: text("text_hash").notNull().unique(), // Hash of text + language
+  languageCode: text("language_code").notNull(),
+  audioData: text("audio_data").notNull(), // Base64 encoded audio
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertAudioCacheSchema = createInsertSchema(audioCache).pick({
+  textHash: true,
+  languageCode: true,
+  audioData: true,
+});
+
+export type InsertAudioCache = z.infer<typeof insertAudioCacheSchema>;
+export type AudioCache = typeof audioCache.$inferSelect;
