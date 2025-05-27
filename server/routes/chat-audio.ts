@@ -65,10 +65,24 @@ router.post("/", upload.single('audio'), async (req, res) => {
 
     console.log(`Processing audio file: ${audioFile.originalname}, size: ${audioFile.size} bytes, type: ${audioFile.mimetype}`);
     
+    if (audioFile.size === 0) {
+      return res.status(400).json({ error: "Audio file is empty" });
+    }
+    
+    if (audioFile.size > 10 * 1024 * 1024) {
+      return res.status(400).json({ error: "Audio file too large" });
+    }
+    
+    console.log('Starting Gemini audio processing...');
+    const startTime = Date.now();
+    
     // Generate response using Gemini with audio input
     const { response, transcription } = await generateGeminiAudioResponse(lesson, audioFile.buffer);
     
-    console.log('Audio transcription successful:', transcription);
+    const processingTime = Date.now() - startTime;
+    console.log(`Audio processing completed in ${processingTime}ms`);
+    console.log('Transcription result:', transcription);
+    console.log('Response preview:', response.substring(0, 100) + '...');
 
     // Save the conversation to chat history if user is authenticated
     const user = (req as any).user;
@@ -92,8 +106,10 @@ router.post("/", upload.single('audio'), async (req, res) => {
 
   } catch (error) {
     console.error("Error processing audio chat:", error);
+    console.error("Error details:", error instanceof Error ? error.message : String(error));
     res.status(500).json({ 
-      error: "Failed to process audio message. Please try again." 
+      error: "Failed to process audio message. Please try again.",
+      details: error instanceof Error ? error.message : String(error)
     });
   }
 });
