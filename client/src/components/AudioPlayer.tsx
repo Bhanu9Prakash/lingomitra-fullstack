@@ -47,6 +47,7 @@ function createWavBlob(pcmData: Uint8Array, sampleRate: number, channels: number
 interface AudioPlayerProps {
   text: string;
   languageCode?: string;
+  audioData?: string | null; // Pre-generated audio data
   autoPlay?: boolean;
   className?: string;
 }

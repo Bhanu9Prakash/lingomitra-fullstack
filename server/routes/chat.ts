@@ -364,9 +364,28 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
       }
     }
     
+    // Generate TTS audio for the response
+    let audioData = null;
+    try {
+      const { ttsService } = await import('../tts-service.js');
+      const ttsResult = await ttsService.generateSpeech({
+        text: responseText,
+        languageCode: lesson.languageCode
+      });
+      
+      if (ttsResult.success) {
+        audioData = ttsResult.audioData;
+      } else {
+        console.warn('TTS generation failed:', ttsResult.error);
+      }
+    } catch (ttsError) {
+      console.warn('TTS service error:', ttsError);
+    }
+
     return res.json({ 
       response: responseText,
-      scratchPad: updatedScratchPad
+      scratchPad: updatedScratchPad,
+      audioData: audioData
     });
     
   } catch (error) {

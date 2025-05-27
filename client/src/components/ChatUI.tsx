@@ -10,6 +10,7 @@ import { AudioPlayer } from "./AudioPlayer";
 interface Message {
   role: "user" | "assistant";
   content: string;
+  audioData?: string | null;
 }
 
 interface ScratchPad {
@@ -222,7 +223,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
         throw new Error(`API responded with status: ${res.status}`);
       }
 
-      const { response, transcription, scratchPad: newSP } = await res.json();
+      const { response, transcription, scratchPad: newSP, audioData } = await res.json();
       
       // Update the user message with the transcription if available
       if (transcription) {
@@ -236,8 +237,13 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
         });
       }
       
-      // Add assistant response to chat
-      setMessages((prev) => [...prev, { role: "assistant", content: response }]);
+      // Add assistant response to chat with audio data
+      const assistantMessage = { 
+        role: "assistant" as const, 
+        content: response,
+        audioData: audioData || null
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
       
       // Update scratch pad if provided
       if (newSP) setScratchPad(newSP);
