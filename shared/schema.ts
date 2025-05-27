@@ -24,6 +24,9 @@ export const users = pgTable("users", {
   // Password reset
   resetPasswordToken: text("reset_password_token"),
   resetPasswordTokenExpiry: timestamp("reset_password_token_expiry"),
+  // TTS preferences
+  ttsEnabled: boolean("tts_enabled").default(true).notNull(),
+  ttsAutoPlay: boolean("tts_auto_play").default(true).notNull(),
 });
 
 export const languages = pgTable("languages", {

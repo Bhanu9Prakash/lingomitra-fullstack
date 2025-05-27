@@ -1,5 +1,3 @@
-import { genai } from '@google/genai';
-
 interface TTSOptions {
   text: string;
   languageCode?: string;
@@ -15,13 +13,13 @@ interface TTSResponse {
 }
 
 class TTSService {
-  private client: any;
+  private apiKey: string;
 
   constructor() {
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY is required for TTS functionality');
     }
-    this.client = genai.Client({ apiKey: process.env.GEMINI_API_KEY });
+    this.apiKey = process.env.GEMINI_API_KEY;
   }
 
   /**
@@ -103,25 +101,47 @@ Text to speak: "${text}"`;
       const voice = this.getVoiceForLanguage(languageCode);
       const prompt = this.createTTSPrompt(cleanText, languageCode);
 
-      const model = this.client.getGenerativeModel({ 
-        model: 'gemini-2.5-flash-preview-tts' 
-      });
-
-      const response = await model.generateContent({
-        contents: [{ parts: [{ text: prompt }] }],
+      const requestBody = {
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
         generationConfig: {
-          responseModalities: ['AUDIO'],
+          responseModalities: ["AUDIO"],
           speechConfig: {
             voiceConfig: {
-              prebuiltVoiceConfig: { 
-                voiceName: voice 
+              prebuiltVoiceConfig: {
+                voiceName: voice
               }
             }
           }
         }
-      });
+      };
 
-      const audioData = response.response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${this.apiKey}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody)
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('TTS API Error:', errorData);
+        return {
+          audioData: '',
+          success: false,
+          error: `TTS API error: ${response.status} ${response.statusText}`
+        };
+      }
+
+      const data = await response.json();
+      const audioData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
 
       if (!audioData) {
         return {

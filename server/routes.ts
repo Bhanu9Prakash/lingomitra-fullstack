@@ -12,6 +12,7 @@ import chatRouter from "./routes/chat";
 import chatAudioRouter from "./routes/chat-audio";
 import progressRouter from "./routes/progress";
 import contactRouter from "./routes/contact";
+import ttsRouter from "./routes/tts";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 import { WebSocketServer, WebSocket } from 'ws';
 
@@ -1005,6 +1006,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use("/api/chat/audio", chatAudioRouter);
   app.use("/api/progress", progressRouter);
   app.use("/api/contact", contactRouter);
+  app.use("/api/tts", ttsRouter);
 
   const httpServer = createServer(app);
   
