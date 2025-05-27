@@ -113,8 +113,9 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
       if (audioRef.current) {
         audioRef.current.src = url;
         console.log('Set audio source to:', url);
-        if (autoPlay) {
+        if (autoPlay && isNewMessage) {
           try {
+            console.log('Auto-playing newly generated audio');
             await audioRef.current.play();
             console.log('Auto-play successful');
           } catch (playError) {
