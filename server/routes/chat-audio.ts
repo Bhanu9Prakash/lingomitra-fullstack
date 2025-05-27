@@ -36,8 +36,9 @@ router.post("/", upload.single('audio'), async (req, res) => {
       return res.status(400).json({ error: "Lesson ID is required" });
     }
 
-    // Get the lesson
-    const lesson = await storage.getLesson(lessonId);
+    // Get the lesson from storage
+    const lessons = await storage.getAllLessons();
+    const lesson = lessons.find(l => l.lessonId === lessonId);
     if (!lesson) {
       return res.status(404).json({ error: "Lesson not found" });
     }

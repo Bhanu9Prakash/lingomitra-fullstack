@@ -1002,6 +1002,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register chat API router
   app.use("/api/chat", chatRouter);
+  app.use("/api/chat/audio", chatAudioRouter);
   app.use("/api/progress", progressRouter);
   app.use("/api/contact", contactRouter);
 
