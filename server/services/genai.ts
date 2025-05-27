@@ -140,24 +140,20 @@ export async function generateGeminiResponse(lesson: Lesson, userMessage: string
 }
 
 /**
- * Generate a response from Gemini based on audio input
+ * Transcribe audio using Gemini
  */
-export async function generateGeminiAudioResponse(lesson: Lesson, audioBuffer: Buffer) {
+export async function transcribeAudioWithGemini(audioBuffer: Buffer) {
   try {
     const genAI = initializeGenAI();
     
-    // Format the system instructions with lesson content as context
-    const systemInstruction = formatLessonContext(lesson);
-    
-    // Generate the response using the Gemini model with audio input
-    const result = await genAI.models.generateContent({
+    // First, just get the transcription
+    const transcriptionResult = await genAI.models.generateContent({
       model: 'gemini-2.0-flash',
       contents: [
         {
           role: 'user',
           parts: [
-            { text: systemInstruction },
-            { text: "Please transcribe what the user said and then respond as their language tutor." },
+            { text: "Please provide only the transcription of this audio. Return just the text that was spoken, nothing else." },
             {
               inlineData: {
                 mimeType: 'audio/webm',
@@ -168,8 +164,8 @@ export async function generateGeminiAudioResponse(lesson: Lesson, audioBuffer: B
         }
       ],
       config: {
-        maxOutputTokens: 400, // Slightly higher for audio responses that include transcription
-        temperature: 0.7,
+        maxOutputTokens: 200,
+        temperature: 0.1, // Low temperature for accurate transcription
         topP: 0.8,
         topK: 40,
         safetySettings: [
@@ -193,19 +189,32 @@ export async function generateGeminiAudioResponse(lesson: Lesson, audioBuffer: B
       }
     });
     
-    const responseText = result.text;
+    const transcription = transcriptionResult.text?.trim();
     
-    if (!responseText) {
-      throw new Error('Empty response text from Gemini API');
+    if (!transcription) {
+      throw new Error('Could not transcribe audio');
     }
     
-    // Try to extract transcription from the response
-    // Look for patterns like "You said: ..." or "Transcription: ..."
-    const transcriptionMatch = responseText.match(/(?:You said|Transcription|User said):\s*["']?([^"'\n]+)["']?/i);
-    const transcription = transcriptionMatch ? transcriptionMatch[1].trim() : null;
+    return transcription;
+  } catch (error) {
+    console.error('Error transcribing audio with Gemini:', error);
+    throw error;
+  }
+}
+
+/**
+ * Generate a response from Gemini based on audio input
+ */
+export async function generateGeminiAudioResponse(lesson: Lesson, audioBuffer: Buffer) {
+  try {
+    // First transcribe the audio
+    const transcription = await transcribeAudioWithGemini(audioBuffer);
+    
+    // Then generate a response based on the transcription
+    const response = await generateGeminiResponse(lesson, transcription);
     
     return {
-      response: responseText,
+      response,
       transcription
     };
   } catch (error) {

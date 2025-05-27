@@ -63,8 +63,12 @@ router.post("/", upload.single('audio'), async (req, res) => {
       console.error("Error parsing form data:", parseError);
     }
 
+    console.log(`Processing audio file: ${audioFile.originalname}, size: ${audioFile.size} bytes, type: ${audioFile.mimetype}`);
+    
     // Generate response using Gemini with audio input
     const { response, transcription } = await generateGeminiAudioResponse(lesson, audioFile.buffer);
+    
+    console.log('Audio transcription successful:', transcription);
 
     // Save the conversation to chat history if user is authenticated
     const user = (req as any).user;

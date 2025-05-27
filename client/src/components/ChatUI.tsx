@@ -202,7 +202,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
     setIsLoading(true);
 
     // Add a placeholder for the user's audio message
-    const audioMessage: Message = { role: "user", content: "🎤 Audio message sent" };
+    const audioMessage: Message = { role: "user", content: "🎤 Processing audio..." };
     setMessages((prev) => [...prev, audioMessage]);
 
     try {
