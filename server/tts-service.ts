@@ -121,6 +121,11 @@ Text to speak: "${text}"`;
         }
       };
 
+      console.log('Making TTS API call with:', {
+        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${this.apiKey.substring(0, 10)}...`,
+        bodyPreview: JSON.stringify(requestBody).substring(0, 200)
+      });
+
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${this.apiKey}`,
         {
@@ -131,6 +136,8 @@ Text to speak: "${text}"`;
           body: JSON.stringify(requestBody)
         }
       );
+
+      console.log('TTS API response status:', response.status, response.statusText);
 
       if (!response.ok) {
         const errorData = await response.text();
