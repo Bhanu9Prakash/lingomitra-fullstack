@@ -103,11 +103,13 @@ Text to speak: "${text}"`;
 
       const requestBody = {
         contents: [{
+          role: 'user',
           parts: [{
             text: prompt
           }]
         }],
         generationConfig: {
+          temperature: 1,
           responseModalities: ["AUDIO"],
           speechConfig: {
             voiceConfig: {
