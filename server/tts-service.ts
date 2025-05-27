@@ -218,9 +218,13 @@ Text to speak: "${text}"`;
           languageCode,
           audioData
         });
-        console.log('TTS result cached successfully');
+        console.log('TTS result cached successfully for hash:', cacheKey);
       } catch (cacheError) {
-        console.log('Cache save error (audio still works):', cacheError);
+        console.error('Cache save error:', cacheError);
+        // Check if it's a duplicate key error
+        if (cacheError.code === '23505') {
+          console.log('Audio already cached, skipping duplicate insert');
+        }
       }
 
       return {
