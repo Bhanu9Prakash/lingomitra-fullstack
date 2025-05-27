@@ -231,9 +231,9 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
         console.error('Error processing pre-generated audio:', error);
       }
     } else if (text.trim() && !audioUrl && !isLoading && !audioData) {
-      // Only generate missing audio if not already tried
-      console.log('Message has no cached audio - audio generation on demand only');
-      // Don't auto-generate to save API quota
+      // Generate missing audio for messages without cached audio
+      console.log('Generating missing audio for message:', text.substring(0, 30) + '...');
+      generateAudio();
     }
   }, [audioData, text]);
 

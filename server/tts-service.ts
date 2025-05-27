@@ -216,14 +216,20 @@ Text to speak: "${text}"`;
 
       // Cache the successful result
       try {
-        await db.insert(audioCache).values({
+        console.log('Attempting to cache TTS result for hash:', cacheKey);
+        const result = await db.insert(audioCache).values({
           textHash: cacheKey,
           languageCode,
           audioData
         }).onConflictDoNothing();
-        console.log('✅ TTS result cached successfully for hash:', cacheKey);
+        console.log('✅ TTS result cached successfully for hash:', cacheKey, 'Result:', result);
       } catch (cacheError: any) {
-        console.error('Cache save error:', cacheError);
+        console.error('❌ Cache save FAILED:', cacheError);
+        console.error('Cache error details:', {
+          message: cacheError.message,
+          code: cacheError.code,
+          detail: cacheError.detail
+        });
       }
 
       return {
