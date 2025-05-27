@@ -221,8 +221,10 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
           audioRef.current.src = url;
           // Auto-play only if enabled AND this is a new message
           if (autoPlay && isNewMessage) {
-            console.log('Auto-playing new message');
-            audioRef.current.play().catch(console.error);
+            console.log('Auto-playing new message with pre-generated audio');
+            setTimeout(() => {
+              audioRef.current?.play().catch(console.error);
+            }, 100); // Small delay to ensure audio is ready
           }
         }
       } catch (error) {

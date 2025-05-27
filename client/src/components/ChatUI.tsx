@@ -183,7 +183,39 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
 
       const { response, scratchPad: newSP } = await res.json();
 
-      setMessages((prev) => [...prev, { role: "assistant", content: response }]);
+      // Generate TTS audio first, then add message
+      let audioData = null;
+      try {
+        const ttsRes = await fetch('/api/tts/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: response,
+            languageCode: lesson.languageCode
+          })
+        });
+        
+        if (ttsRes.ok) {
+          const ttsData = await ttsRes.json();
+          audioData = ttsData.audioData;
+        }
+      } catch (ttsError) {
+        console.log('TTS generation failed, proceeding without audio:', ttsError);
+      }
+
+      // Add assistant response with audio data and mark as new
+      const assistantMessage = { 
+        role: "assistant" as const, 
+        content: response,
+        audioData: audioData || null,
+        isNewMessage: true
+      };
+      setMessages((prev) => {
+        const newMessages = [...prev, assistantMessage];
+        setLastAutoPlayedIndex(newMessages.length - 1);
+        return newMessages;
+      });
+      
       if (newSP) setScratchPad(newSP);
     } catch (err) {
       console.error("Error getting AI response:", err);

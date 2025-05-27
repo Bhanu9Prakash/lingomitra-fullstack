@@ -81,8 +81,9 @@ Text to speak: "${text}"`;
    */
   private createCacheKey(text: string, languageCode: string): string {
     const content = `${text.trim()}_${languageCode}`;
-    // Simple hash function for caching
+    // Create a more robust hash for better caching
     let hash = 0;
+    if (content.length === 0) return '0';
     for (let i = 0; i < content.length; i++) {
       const char = content.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
