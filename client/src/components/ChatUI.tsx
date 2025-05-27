@@ -3,6 +3,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Lesson } from "@shared/schema";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
+import { AudioRecorder } from "./AudioRecorder";
+import MicrophonePermissionCheck from "./MicrophonePermissionCheck";
 
 interface Message {
   role: "user" | "assistant";
