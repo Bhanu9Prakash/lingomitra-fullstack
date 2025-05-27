@@ -21,6 +21,7 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByGoogleId(googleId: string): Promise<User | undefined>;
   getUserByVerificationToken(token: string): Promise<User | undefined>;
   getUserByResetPasswordToken(token: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
@@ -135,6 +136,12 @@ export class MemStorage implements IStorage {
     );
   }
 
+  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.googleId === googleId,
+    );
+  }
+
   async getUserByVerificationToken(token: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(
       (user) => user.verificationToken === token
@@ -165,6 +172,11 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id,
+      password: insertUser.password || null,
+      googleId: insertUser.googleId || null,
+      profilePicture: insertUser.profilePicture || null,
+      firstName: insertUser.firstName || null,
+      lastName: insertUser.lastName || null,
       isAdmin: false, 
       subscriptionTier: "free",
       subscriptionExpiry: null,
@@ -493,6 +505,11 @@ export class DatabaseStorage implements IStorage {
   
   async getUserByEmail(email: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.googleId, googleId));
     return user || undefined;
   }
   
