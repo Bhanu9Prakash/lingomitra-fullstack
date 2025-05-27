@@ -62,7 +62,9 @@ export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, class
   const generateAudio = async () => {
     if (isLoading || !text.trim()) return;
 
+    console.log('Generating TTS audio for text:', text.substring(0, 50) + '...');
     setIsLoading(true);
+    
     try {
       const response = await fetch('/api/tts/generate', {
         method: 'POST',
@@ -75,11 +77,14 @@ export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, class
         }),
       });
 
+      console.log('TTS API response status:', response.status);
+
       if (!response.ok) {
         throw new Error(`Failed to generate speech: ${response.statusText}`);
       }
 
       const data = await response.json();
+      console.log('TTS API response:', { success: data.success, hasAudioData: !!data.audioData });
       
       if (!data.success || !data.audioData) {
         throw new Error(data.error || 'Failed to generate audio');
@@ -93,16 +98,26 @@ export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, class
         audioArray[i] = binaryString.charCodeAt(i);
       }
       
+      console.log('Audio data length:', audioArray.length);
+      
       // Create a proper WAV file with header for PCM data
       const wavBlob = createWavBlob(audioArray, 24000, 1); // 24kHz, mono
       const url = URL.createObjectURL(wavBlob);
       setAudioUrl(url);
+      
+      console.log('Created audio blob URL:', url);
 
       // Create and play audio
       if (audioRef.current) {
         audioRef.current.src = url;
+        console.log('Set audio source to:', url);
         if (autoPlay) {
-          await audioRef.current.play();
+          try {
+            await audioRef.current.play();
+            console.log('Auto-play successful');
+          } catch (playError) {
+            console.error('Auto-play failed:', playError);
+          }
         }
       }
 
@@ -115,19 +130,30 @@ export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, class
 
   // Play/pause audio
   const togglePlayback = async () => {
+    console.log('Audio player clicked, audioUrl:', !!audioUrl, 'isLoading:', isLoading);
+    
     if (!audioUrl) {
+      console.log('No audio URL, generating audio...');
       await generateAudio();
       return;
     }
 
     if (audioRef.current) {
       if (isPlaying) {
+        console.log('Pausing audio...');
         audioRef.current.pause();
       } else {
         try {
+          console.log('Attempting to play audio...');
+          audioRef.current.load(); // Ensure audio is loaded
           await audioRef.current.play();
+          console.log('Audio playing successfully');
         } catch (error) {
           console.error('Error playing audio:', error);
+          // Try regenerating audio if playback fails
+          console.log('Retrying with fresh audio generation...');
+          setAudioUrl(null);
+          await generateAudio();
         }
       }
     }
