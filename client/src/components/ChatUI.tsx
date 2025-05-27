@@ -5,6 +5,7 @@ import { Lesson } from "@shared/schema";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
 import { VoiceRecorder } from "./VoiceRecorder";
 import MicrophonePermissionCheck from "./MicrophonePermissionCheck";
+import { AudioPlayer } from "./AudioPlayer";
 
 interface Message {
   role: "user" | "assistant";
@@ -330,6 +331,16 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
               >
                 {m.content}
               </ReactMarkdown>
+              {m.role === "assistant" && (
+                <div className="message-audio-controls">
+                  <AudioPlayer 
+                    text={m.content} 
+                    languageCode={lesson.languageCode}
+                    autoPlay={false}
+                    className="mt-2"
+                  />
+                </div>
+              )}
             </div>
 
             {m.role === "user" && (

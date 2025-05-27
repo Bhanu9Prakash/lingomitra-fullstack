@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
+// Note: Toast functionality will be added when available
 
 interface AudioPlayerProps {
   text: string;
