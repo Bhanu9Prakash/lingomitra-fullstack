@@ -15,7 +15,7 @@ export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, class
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { toast } = useToast();
+  // Simple console logging for errors (toast will be added later)
 
   // Generate TTS audio
   const generateAudio = async () => {
@@ -65,11 +65,6 @@ export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, class
 
     } catch (error) {
       console.error('Error generating TTS audio:', error);
-      toast({
-        title: "Audio Error",
-        description: error instanceof Error ? error.message : "Failed to generate speech audio",
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
     }
@@ -90,11 +85,6 @@ export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, class
           await audioRef.current.play();
         } catch (error) {
           console.error('Error playing audio:', error);
-          toast({
-            title: "Playback Error",
-            description: "Unable to play audio. Please try again.",
-            variant: "destructive",
-          });
         }
       }
     }
@@ -110,11 +100,7 @@ export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, class
     const handleEnded = () => setIsPlaying(false);
     const handleError = () => {
       setIsPlaying(false);
-      toast({
-        title: "Audio Error",
-        description: "There was an error playing the audio.",
-        variant: "destructive",
-      });
+      console.error("There was an error playing the audio.");
     };
 
     audio.addEventListener('play', handlePlay);
@@ -128,7 +114,7 @@ export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, class
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
     };
-  }, [toast]);
+  }, []);
 
   // Cleanup blob URL on unmount
   useEffect(() => {
