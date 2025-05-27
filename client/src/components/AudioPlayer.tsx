@@ -147,6 +147,10 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
       } else {
         try {
           console.log('Attempting to play audio...');
+          // Ensure audio source is set
+          if (audioUrl && audioRef.current.src !== audioUrl) {
+            audioRef.current.src = audioUrl;
+          }
           audioRef.current.load(); // Ensure audio is loaded
           await audioRef.current.play();
           console.log('Audio playing successfully');
@@ -211,19 +215,24 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
         const url = URL.createObjectURL(wavBlob);
         setAudioUrl(url);
         
-        // Auto-play only if enabled AND this is a new message
-        if (audioRef.current && autoPlay && isNewMessage) {
+        // Set audio source for playback
+        if (audioRef.current) {
           audioRef.current.src = url;
-          audioRef.current.play().catch(console.error);
+          // Auto-play only if enabled AND this is a new message
+          if (autoPlay && isNewMessage) {
+            console.log('Auto-playing new message');
+            audioRef.current.play().catch(console.error);
+          }
         }
       } catch (error) {
         console.error('Error processing pre-generated audio:', error);
       }
-    } else if (autoPlay && text.trim() && !audioUrl && !isLoading && !audioData) {
-      // Fallback: generate audio if no pre-generated data
+    } else if (text.trim() && !audioUrl && !isLoading && !audioData) {
+      // Generate missing audio for messages without cached audio
+      console.log('Generating missing audio for message');
       generateAudio();
     }
-  }, [audioData, autoPlay, text, audioUrl, isLoading]);
+  }, [audioData, text]);
 
   if (!text.trim()) {
     return null;
