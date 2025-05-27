@@ -363,7 +363,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message or hold the mic..."
+            placeholder="Type or hold mic..."
             disabled={isLoading}
           />
           <div className="chat-input-buttons">

@@ -2312,7 +2312,7 @@ footer {
 
 .chat-input input {
   flex: 1;
-  padding: 12px 50px 12px 16px;
+  padding: 12px 90px 12px 16px; /* More space for buttons on desktop too */
   border-radius: 30px;
   border: 2px solid var(--primary-color);
   background-color: transparent;
@@ -2653,8 +2653,8 @@ footer {
   }
   
   .chat-input input {
-    padding: 14px 80px 14px 16px; /* More comfortable touch target */
-    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 14px 90px 14px 16px; /* More space for buttons */
+    font-size: 14px; /* Smaller text for mobile */
     border-radius: 25px;
     height: 48px; /* Standard mobile touch target */
     box-sizing: border-box;
