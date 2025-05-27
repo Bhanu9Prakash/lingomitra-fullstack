@@ -86,7 +86,10 @@ router.post("/", upload.single('audio'), async (req, res) => {
 
     // Save the conversation to chat history if user is authenticated
     const user = (req as any).user;
-    if (user?.id) {
+    console.log('Debug - User object:', user);
+    console.log('Debug - User ID:', user?.id, 'Type:', typeof user?.id);
+    
+    if (user?.id && typeof user.id === 'number') {
       const userId = user.id;
       
       // Build the updated conversation
@@ -96,6 +99,8 @@ router.post("/", upload.single('audio'), async (req, res) => {
       
       // Save to storage
       await storage.saveChatHistory(userId, lessonId, updatedMessages);
+    } else if (user?.id) {
+      console.error('User ID is not a number:', user.id, 'Type:', typeof user.id);
     }
 
     res.json({
