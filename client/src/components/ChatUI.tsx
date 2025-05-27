@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Lesson } from "@shared/schema";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
-import { AudioRecorder } from "./AudioRecorder";
+import { VoiceRecorder } from "./VoiceRecorder";
 import MicrophonePermissionCheck from "./MicrophonePermissionCheck";
 
 interface Message {
@@ -358,25 +358,27 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
 
       <div className="chat-input-container">
         <MicrophonePermissionCheck />
-        <AudioRecorder 
-          onAudioSubmit={handleAudioSubmit}
-          disabled={isLoading}
-        />
         <form className="chat-input" onSubmit={handleSubmit}>
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message or use the audio recorder above..."
+            placeholder="Type a message or hold the mic to speak..."
             disabled={isLoading}
           />
-          <button 
-            type="submit" 
-            className="send-button" 
-            disabled={isLoading || !input.trim()}
-          >
-            <i className="fas fa-paper-plane"></i>
-          </button>
+          <div className="chat-input-buttons">
+            <VoiceRecorder 
+              onAudioSubmit={handleAudioSubmit}
+              disabled={isLoading}
+            />
+            <button 
+              type="submit" 
+              className="send-button" 
+              disabled={isLoading || !input.trim()}
+            >
+              <i className="fas fa-paper-plane"></i>
+            </button>
+          </div>
         </form>
       </div>
     </div>
