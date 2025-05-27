@@ -86,21 +86,36 @@ router.post("/", upload.single('audio'), async (req, res) => {
 
     // Save the conversation to chat history if user is authenticated
     const user = (req as any).user;
-    console.log('Debug - User object:', user);
-    console.log('Debug - User ID:', user?.id, 'Type:', typeof user?.id);
     
-    if (user?.id && typeof user.id === 'number') {
-      const userId = user.id;
-      
-      // Build the updated conversation
-      const userMessage = { role: "user" as const, content: transcription || "🎤 Audio message" };
-      const assistantMessage = { role: "assistant" as const, content: response };
-      const updatedMessages = [...parsedConversation.slice(0, -1), userMessage, assistantMessage];
-      
-      // Save to storage
-      await storage.saveChatHistory(userId, lessonId, updatedMessages);
-    } else if (user?.id) {
-      console.error('User ID is not a number:', user.id, 'Type:', typeof user.id);
+    if (user?.id) {
+      // Ensure userId is a number - handle both string and number cases
+      let userId: number;
+      if (typeof user.id === 'string') {
+        userId = parseInt(user.id, 10);
+        if (isNaN(userId)) {
+          console.error('Invalid user ID format:', user.id);
+          // Don't save to history if ID is invalid, but continue with response
+        } else {
+          // Valid numeric string converted to number
+          const userMessage = { role: "user" as const, content: transcription || "🎤 Audio message" };
+          const assistantMessage = { role: "assistant" as const, content: response };
+          const updatedMessages = [...parsedConversation.slice(0, -1), userMessage, assistantMessage];
+          
+          await storage.saveChatHistory(userId, lessonId, updatedMessages);
+        }
+      } else if (typeof user.id === 'number') {
+        userId = user.id;
+        
+        // Build the updated conversation
+        const userMessage = { role: "user" as const, content: transcription || "🎤 Audio message" };
+        const assistantMessage = { role: "assistant" as const, content: response };
+        const updatedMessages = [...parsedConversation.slice(0, -1), userMessage, assistantMessage];
+        
+        // Save to storage
+        await storage.saveChatHistory(userId, lessonId, updatedMessages);
+      } else {
+        console.error('User ID is neither string nor number:', user.id, 'Type:', typeof user.id);
+      }
     }
 
     res.json({
