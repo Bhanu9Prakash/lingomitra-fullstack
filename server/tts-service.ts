@@ -109,18 +109,21 @@ Text to speak: "${text}"`;
 
       // Check cache first
       const cacheKey = this.createCacheKey(text, languageCode);
+      console.log('Looking for cached audio with hash:', cacheKey, 'for text:', text.substring(0, 30) + '...');
       
       try {
         const cached = await db.select().from(audioCache).where(eq(audioCache.textHash, cacheKey)).limit(1);
         if (cached.length > 0) {
-          console.log('TTS cache hit for:', text.substring(0, 50) + '...');
+          console.log('✅ TTS CACHE HIT! Using cached audio for:', text.substring(0, 50) + '...');
           return {
             audioData: cached[0].audioData,
             success: true
           };
+        } else {
+          console.log('❌ Cache miss - generating new audio for hash:', cacheKey);
         }
       } catch (cacheError) {
-        console.log('Cache lookup error (continuing with API):', cacheError);
+        console.error('Cache lookup error:', cacheError);
       }
 
       // Clean the text for better TTS output
@@ -217,14 +220,10 @@ Text to speak: "${text}"`;
           textHash: cacheKey,
           languageCode,
           audioData
-        });
-        console.log('TTS result cached successfully for hash:', cacheKey);
-      } catch (cacheError) {
+        }).onConflictDoNothing();
+        console.log('✅ TTS result cached successfully for hash:', cacheKey);
+      } catch (cacheError: any) {
         console.error('Cache save error:', cacheError);
-        // Check if it's a duplicate key error
-        if (cacheError.code === '23505') {
-          console.log('Audio already cached, skipping duplicate insert');
-        }
       }
 
       return {
