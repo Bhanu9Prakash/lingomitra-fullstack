@@ -1,3 +1,7 @@
+import { db } from './db';
+import { audioCache, insertAudioCacheSchema } from '../shared/schema';
+import { eq } from 'drizzle-orm';
+
 interface TTSOptions {
   text: string;
   languageCode?: string;
@@ -102,6 +106,22 @@ Text to speak: "${text}"`;
         };
       }
 
+      // Check cache first
+      const cacheKey = this.createCacheKey(text, languageCode);
+      
+      try {
+        const cached = await db.select().from(audioCache).where(eq(audioCache.textHash, cacheKey)).limit(1);
+        if (cached.length > 0) {
+          console.log('TTS cache hit for:', text.substring(0, 50) + '...');
+          return {
+            audioData: cached[0].audioData,
+            success: true
+          };
+        }
+      } catch (cacheError) {
+        console.log('Cache lookup error (continuing with API):', cacheError);
+      }
+
       // Clean the text for better TTS output
       const cleanText = this.cleanTextForTTS(text);
       
@@ -188,6 +208,18 @@ Text to speak: "${text}"`;
           success: false,
           error: 'No audio data received from TTS service'
         };
+      }
+
+      // Cache the successful result
+      try {
+        await db.insert(audioCache).values({
+          textHash: cacheKey,
+          languageCode,
+          audioData
+        });
+        console.log('TTS result cached successfully');
+      } catch (cacheError) {
+        console.log('Cache save error (audio still works):', cacheError);
       }
 
       return {

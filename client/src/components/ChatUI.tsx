@@ -350,7 +350,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
                     text={m.content} 
                     languageCode={lesson.languageCode}
                     audioData={m.audioData}
-                    autoPlay={false}
+                    autoPlay={i === messages.length - 1 && m.isNewMessage}
                     isNewMessage={m.isNewMessage}
                     className="mt-2"
                   />
