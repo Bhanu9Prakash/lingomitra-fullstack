@@ -6,7 +6,12 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password"), // Make password optional for OAuth users
+  // Google OAuth fields
+  googleId: text("google_id").unique(),
+  profilePicture: text("profile_picture"),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
   // Add subscription information
   subscriptionTier: text("subscription_tier").default("free"),
   subscriptionExpiry: timestamp("subscription_expiry"),
@@ -43,6 +48,10 @@ export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   email: true,
   password: true,
+  googleId: true,
+  profilePicture: true,
+  firstName: true,
+  lastName: true,
   isAdmin: true,
   subscriptionTier: true,
   subscriptionExpiry: true,
