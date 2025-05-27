@@ -52,7 +52,7 @@ interface AudioPlayerProps {
   className?: string;
 }
 
-export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, className = '' }: AudioPlayerProps) {
+export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = false, className = '' }: AudioPlayerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -195,12 +195,34 @@ export function AudioPlayer({ text, languageCode = 'en', autoPlay = false, class
     };
   }, [audioUrl]);
 
-  // Auto-generate audio if autoPlay is enabled
+  // Handle pre-generated audio data or auto-generate if needed
   useEffect(() => {
-    if (autoPlay && text.trim() && !audioUrl && !isLoading) {
+    if (audioData && !audioUrl) {
+      // Use pre-generated audio data
+      try {
+        const binaryString = atob(audioData);
+        const audioArray = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          audioArray[i] = binaryString.charCodeAt(i);
+        }
+        
+        const wavBlob = createWavBlob(audioArray, 24000, 1);
+        const url = URL.createObjectURL(wavBlob);
+        setAudioUrl(url);
+        
+        // Auto-play if enabled
+        if (audioRef.current && autoPlay) {
+          audioRef.current.src = url;
+          audioRef.current.play().catch(console.error);
+        }
+      } catch (error) {
+        console.error('Error processing pre-generated audio:', error);
+      }
+    } else if (autoPlay && text.trim() && !audioUrl && !isLoading && !audioData) {
+      // Fallback: generate audio if no pre-generated data
       generateAudio();
     }
-  }, [autoPlay, text, audioUrl, isLoading]);
+  }, [audioData, autoPlay, text, audioUrl, isLoading]);
 
   if (!text.trim()) {
     return null;

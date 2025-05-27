@@ -342,7 +342,8 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
                   <AudioPlayer 
                     text={m.content} 
                     languageCode={lesson.languageCode}
-                    autoPlay={false}
+                    audioData={m.audioData}
+                    autoPlay={true}
                     className="mt-2"
                   />
                 </div>
