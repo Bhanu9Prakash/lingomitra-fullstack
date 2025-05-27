@@ -49,10 +49,11 @@ interface AudioPlayerProps {
   languageCode?: string;
   audioData?: string | null; // Pre-generated audio data
   autoPlay?: boolean;
+  isNewMessage?: boolean; // Only auto-play if this is a new message
   className?: string;
 }
 
-export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = false, className = '' }: AudioPlayerProps) {
+export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = false, isNewMessage = false, className = '' }: AudioPlayerProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -210,8 +211,8 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
         const url = URL.createObjectURL(wavBlob);
         setAudioUrl(url);
         
-        // Auto-play if enabled
-        if (audioRef.current && autoPlay) {
+        // Auto-play only if enabled AND this is a new message
+        if (audioRef.current && autoPlay && isNewMessage) {
           audioRef.current.src = url;
           audioRef.current.play().catch(console.error);
         }

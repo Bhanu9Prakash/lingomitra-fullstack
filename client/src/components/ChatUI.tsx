@@ -11,6 +11,7 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   audioData?: string | null;
+  isNewMessage?: boolean;
 }
 
 interface ScratchPad {
@@ -241,7 +242,8 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
       const assistantMessage = { 
         role: "assistant" as const, 
         content: response,
-        audioData: audioData || null
+        audioData: audioData || null,
+        isNewMessage: true
       };
       setMessages((prev) => [...prev, assistantMessage]);
       
@@ -344,6 +346,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
                     languageCode={lesson.languageCode}
                     audioData={m.audioData}
                     autoPlay={true}
+                    isNewMessage={m.isNewMessage}
                     className="mt-2"
                   />
                 </div>
