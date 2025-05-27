@@ -232,7 +232,7 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
       }
     } else if (text.trim() && !audioUrl && !isLoading && !audioData) {
       // Generate missing audio for messages without cached audio
-      console.log('Generating missing audio for message:', text.substring(0, 30) + '...');
+      console.log('Generating missing audio for message');
       generateAudio();
     }
   }, [audioData, text]);
