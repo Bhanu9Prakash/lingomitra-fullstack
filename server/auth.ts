@@ -474,8 +474,8 @@ export function setupAuth(app: Express) {
   app.get("/api/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/auth?error=google_auth_failed" }),
     (req, res) => {
-      // Successful authentication, redirect to dashboard or intended page
-      res.redirect("/dashboard");
+      // Successful authentication, redirect to home page
+      res.redirect("/");
     }
   );
 
