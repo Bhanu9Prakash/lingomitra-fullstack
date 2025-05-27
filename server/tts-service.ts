@@ -140,7 +140,22 @@ Text to speak: "${text}"`;
         };
       }
 
-      const data = await response.json();
+      const responseText = await response.text();
+      console.log('TTS API raw response:', responseText.substring(0, 200));
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('Failed to parse TTS response as JSON:', parseError);
+        console.error('Response content:', responseText);
+        return {
+          audioData: '',
+          success: false,
+          error: 'Invalid response format from TTS service'
+        };
+      }
+      console.log('TTS Response structure:', JSON.stringify(data, null, 2).substring(0, 500));
       const audioData = data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
 
       if (!audioData) {
