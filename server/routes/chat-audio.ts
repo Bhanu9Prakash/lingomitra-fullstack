@@ -149,9 +149,28 @@ router.post("/", upload.single("audio"), async (req, res) => {
       }
     }
 
+    // Generate TTS audio for the response
+    let audioData = null;
+    try {
+      const { ttsService } = await import('../tts-service.js');
+      const ttsResult = await ttsService.generateSpeech({
+        text: response,
+        languageCode: lesson.languageCode
+      });
+      
+      if (ttsResult.success) {
+        audioData = ttsResult.audioData;
+      } else {
+        console.warn('TTS generation failed:', ttsResult.error);
+      }
+    } catch (ttsError) {
+      console.warn('TTS service error:', ttsError);
+    }
+
     res.json({
       response,
       transcription,
+      audioData,
       scratchPad: parsedScratchPad, // For now, return the same scratchPad
     });
   } catch (error) {
