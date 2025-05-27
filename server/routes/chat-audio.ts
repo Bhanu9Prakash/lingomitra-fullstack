@@ -86,8 +86,8 @@ router.post("/", upload.single('audio'), async (req, res) => {
 
     // Save the conversation to chat history if user is authenticated
     const user = (req as any).user;
-    if (user?.username) {
-      const userId = user.username;
+    if (user?.id) {
+      const userId = user.id;
       
       // Build the updated conversation
       const userMessage = { role: "user" as const, content: transcription || "🎤 Audio message" };
