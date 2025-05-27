@@ -89,7 +89,7 @@ export async function generateGeminiResponse(lesson: Lesson, userMessage: string
     
     // Generate the response using the Gemini model
     const result = await genAI.models.generateContent({
-      model: 'gemini-2.0-flash', // Using the flash model as specified
+      model: 'gemini-2.0-flash',
       contents: [
         {
           role: 'user',
@@ -100,7 +100,7 @@ export async function generateGeminiResponse(lesson: Lesson, userMessage: string
         }
       ],
       config: {
-        maxOutputTokens: 300, // Reduced from 1024 to encourage shorter responses
+        maxOutputTokens: 300,
         temperature: 0.7,
         topP: 0.8,
         topK: 40,
@@ -125,7 +125,7 @@ export async function generateGeminiResponse(lesson: Lesson, userMessage: string
       }
     });
     
-    // Extract the text from the response using the text getter
+    // Extract the text from the response
     const responseText = result.text;
     
     if (!responseText) {
@@ -142,9 +142,11 @@ export async function generateGeminiResponse(lesson: Lesson, userMessage: string
 /**
  * Transcribe audio using Gemini
  */
-export async function transcribeAudioWithGemini(audioBuffer: Buffer) {
+export async function transcribeAudioWithGemini(audioBuffer: Buffer, mimeType: string) {
   try {
     const genAI = initializeGenAI();
+    
+    console.log(`Attempting transcription with MIME type: ${mimeType}, buffer size: ${audioBuffer.length}`);
     
     // First, just get the transcription
     const transcriptionResult = await genAI.models.generateContent({
@@ -156,7 +158,7 @@ export async function transcribeAudioWithGemini(audioBuffer: Buffer) {
             { text: "Please provide only the transcription of this audio. Return just the text that was spoken, nothing else." },
             {
               inlineData: {
-                mimeType: 'audio/webm',
+                mimeType: mimeType,
                 data: audioBuffer.toString('base64')
               }
             }
@@ -165,7 +167,7 @@ export async function transcribeAudioWithGemini(audioBuffer: Buffer) {
       ],
       config: {
         maxOutputTokens: 200,
-        temperature: 0.1, // Low temperature for accurate transcription
+        temperature: 0.1,
         topP: 0.8,
         topK: 40,
         safetySettings: [
@@ -205,10 +207,10 @@ export async function transcribeAudioWithGemini(audioBuffer: Buffer) {
 /**
  * Generate a response from Gemini based on audio input
  */
-export async function generateGeminiAudioResponse(lesson: Lesson, audioBuffer: Buffer) {
+export async function generateGeminiAudioResponse(lesson: Lesson, audioBuffer: Buffer, mimeType: string) {
   try {
     // First transcribe the audio
-    const transcription = await transcribeAudioWithGemini(audioBuffer);
+    const transcription = await transcribeAudioWithGemini(audioBuffer, mimeType);
     
     // Then generate a response based on the transcription
     const response = await generateGeminiResponse(lesson, transcription);

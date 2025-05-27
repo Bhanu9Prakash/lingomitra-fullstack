@@ -77,7 +77,7 @@ router.post("/", upload.single('audio'), async (req, res) => {
     const startTime = Date.now();
     
     // Generate response using Gemini with audio input
-    const { response, transcription } = await generateGeminiAudioResponse(lesson, audioFile.buffer);
+    const { response, transcription } = await generateGeminiAudioResponse(lesson, audioFile.buffer, audioFile.mimetype);
     
     const processingTime = Date.now() - startTime;
     console.log(`Audio processing completed in ${processingTime}ms`);
