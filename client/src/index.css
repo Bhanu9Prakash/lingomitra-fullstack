@@ -921,44 +921,44 @@ header .container {
 .mobile-lesson-header {
   width: 100%;
   display: flex;
-  justify-content: flex-start; /* Pack items at the start instead of space-between */
+  justify-content: space-between; /* Better distribution of space */
   align-items: center;
-  padding: 10px 0;
+  padding: 16px 0; /* More generous padding */
   max-width: 100%;
-  overflow: hidden; /* Prevent overflow */
-  gap: 12px; /* Add consistent gap between items */
+  overflow: hidden;
+  gap: 8px; /* Consistent gap */
 }
 
 .mobile-lesson-title {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Left-align the text */
-  min-width: 0; /* Allow flex item to shrink below content size */
-  flex: 1; /* Take available space */
-  margin-right: 10px; /* Add some right margin */
+  justify-content: flex-start;
+  min-width: 0;
+  flex: 1;
+  margin: 0 8px; /* Balanced margins */
 }
 
 .mobile-lesson-title span {
-  font-size: 15px;
+  font-size: 16px; /* Slightly larger for better readability */
   font-weight: 600;
   white-space: nowrap;
   color: var(--text-color);
   overflow: hidden;
-  text-overflow: ellipsis; /* Add ellipsis for very long titles */
+  text-overflow: ellipsis;
 }
 
 .mobile-lesson-title .full-lesson-title {
-  white-space: normal; /* Allow wrapping for very long titles */
-  line-height: 1.2;
-  max-height: 2.4em; /* Limit to 2 lines of text */
+  white-space: normal;
+  line-height: 1.3; /* Better line spacing */
+  max-height: 2.6em; /* Accommodate larger font */
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15px; /* Slightly larger */
+  font-weight: 600; /* Less heavy */
   color: var(--text-color);
-  padding: 4px 0;
+  padding: 2px 0; /* Reduced padding */
 }
 
 /* Enhanced mobile lesson header */
@@ -2361,15 +2361,16 @@ footer {
 .chat-buttons {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px; /* Better spacing */
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 /* Chat reset button */
 .chat-reset-btn {
   background-color: var(--bg-light);
   color: var(--text-color);
-  width: 36px;
-  height: 36px;
+  width: 40px; /* Larger touch target */
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2377,6 +2378,7 @@ footer {
   border: 1px solid var(--border-color);
   cursor: pointer;
   transition: var(--transition);
+  flex-shrink: 0;
 }
 
 .chat-reset-btn:hover {
@@ -2388,8 +2390,8 @@ footer {
 .chat-toggle {
   background-color: var(--bg-light);
   color: var(--primary-color);
-  width: 40px;
-  height: 40px;
+  width: 42px; /* Slightly larger for main action */
+  height: 42px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2397,6 +2399,7 @@ footer {
   border: 1px solid var(--border-color);
   cursor: pointer;
   transition: var(--transition);
+  flex-shrink: 0;
 }
 
 .chat-toggle:hover {
@@ -2593,7 +2596,7 @@ footer {
   }
   
   .chat-messages {
-    height: calc(100vh - 250px); /* Adjusted for mobile headers and input area */
+    height: calc(100vh - 280px); /* More space for cleaner input area */
     padding: 15px 10px;
   }
   
@@ -2626,19 +2629,58 @@ footer {
     white-space: pre-wrap;
   }
   
+  /* Improved mobile input area styling */
+  .chat-input-container {
+    padding: 20px 16px 24px 16px; /* Extra bottom padding for thumb space */
+    background-color: var(--bg-color);
+    border-top: 1px solid var(--border-color);
+    gap: 12px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow for separation */
+  }
+  
+  /* Better lesson selector button on mobile */
+  .lesson-selector-btn {
+    width: 42px !important;
+    height: 42px !important;
+    background-color: var(--bg-light) !important;
+    border: 1px solid var(--border-color) !important;
+    flex-shrink: 0;
+  }
+  
   .chat-input {
-    padding: 10px 15px;
+    padding: 0; /* Remove extra padding */
+    gap: 12px; /* Better spacing between elements */
   }
   
   .chat-input input {
-    padding: 10px 40px 10px 14px;
-    font-size: 14px;
+    padding: 14px 80px 14px 16px; /* More comfortable touch target */
+    font-size: 16px; /* Prevent zoom on iOS */
+    border-radius: 25px;
+    height: 48px; /* Standard mobile touch target */
+    box-sizing: border-box;
   }
   
+  .chat-input-buttons {
+    right: 8px; /* Better positioning */
+    gap: 6px; /* Space between mic and send buttons */
+  }
+  
+  .voice-recorder-btn,
   .send-button {
-    width: 36px;
-    height: 36px;
-    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+  }
+  
+  /* Make mic button more prominent on mobile */
+  .voice-recorder-btn {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-color);
+  }
+  
+  .voice-recorder-btn:hover {
+    background-color: var(--primary-light);
   }
 }
 
