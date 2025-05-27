@@ -138,3 +138,78 @@ export async function generateGeminiResponse(lesson: Lesson, userMessage: string
     throw error;
   }
 }
+
+/**
+ * Generate a response from Gemini based on audio input
+ */
+export async function generateGeminiAudioResponse(lesson: Lesson, audioBuffer: Buffer) {
+  try {
+    const genAI = initializeGenAI();
+    
+    // Format the system instructions with lesson content as context
+    const systemInstruction = formatLessonContext(lesson);
+    
+    // Generate the response using the Gemini model with audio input
+    const result = await genAI.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: [
+        {
+          role: 'user',
+          parts: [
+            { text: systemInstruction },
+            { text: "Please transcribe what the user said and then respond as their language tutor." },
+            {
+              inlineData: {
+                mimeType: 'audio/webm',
+                data: audioBuffer.toString('base64')
+              }
+            }
+          ]
+        }
+      ],
+      config: {
+        maxOutputTokens: 400, // Slightly higher for audio responses that include transcription
+        temperature: 0.7,
+        topP: 0.8,
+        topK: 40,
+        safetySettings: [
+          {
+            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
+          }
+        ]
+      }
+    });
+    
+    const responseText = result.text;
+    
+    if (!responseText) {
+      throw new Error('Empty response text from Gemini API');
+    }
+    
+    // Try to extract transcription from the response
+    // Look for patterns like "You said: ..." or "Transcription: ..."
+    const transcriptionMatch = responseText.match(/(?:You said|Transcription|User said):\s*["']?([^"'\n]+)["']?/i);
+    const transcription = transcriptionMatch ? transcriptionMatch[1].trim() : null;
+    
+    return {
+      response: responseText,
+      transcription
+    };
+  } catch (error) {
+    console.error('Error generating Gemini audio response:', error);
+    throw error;
+  }
+}

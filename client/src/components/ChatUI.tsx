@@ -195,6 +195,65 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
     }
   };
 
+  /* ───────────────────────── HANDLE AUDIO ───────────────────────── */
+  const handleAudioSubmit = async (audioBlob: Blob) => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+
+    // Add a placeholder for the user's audio message
+    const audioMessage: Message = { role: "user", content: "🎤 Audio message sent" };
+    setMessages((prev) => [...prev, audioMessage]);
+
+    try {
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'audio.webm');
+      formData.append('lessonId', lesson.lessonId);
+      formData.append('conversation', JSON.stringify([...messages, audioMessage]));
+      formData.append('scratchPad', JSON.stringify(scratchPad));
+
+      const res = await fetch("/api/chat/audio", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error(`API responded with status: ${res.status}`);
+      }
+
+      const { response, transcription, scratchPad: newSP } = await res.json();
+      
+      // Update the user message with the transcription if available
+      if (transcription) {
+        setMessages((prev) => {
+          const newMessages = [...prev];
+          const lastUserMessageIndex = newMessages.length - 1;
+          if (newMessages[lastUserMessageIndex]?.role === "user") {
+            newMessages[lastUserMessageIndex].content = transcription;
+          }
+          return newMessages;
+        });
+      }
+      
+      // Add assistant response to chat
+      setMessages((prev) => [...prev, { role: "assistant", content: response }]);
+      
+      // Update scratch pad if provided
+      if (newSP) setScratchPad(newSP);
+    } catch (err) {
+      console.error("Error sending audio message:", err);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: `I'm sorry, I encountered an error processing your audio. ${DEFAULT_ERROR_MESSAGE}`
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   /* ───────────────────────── RENDER ───────────────────────── */
   return (
     <div className="chat-ui">
@@ -297,22 +356,29 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
         <div ref={chatEndRef} />
       </div>
 
-      <form className="chat-input" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask me anything about this lesson..."
+      <div className="chat-input-container">
+        <MicrophonePermissionCheck />
+        <AudioRecorder 
+          onAudioSubmit={handleAudioSubmit}
           disabled={isLoading}
         />
-        <button 
-          type="submit" 
-          className="send-button" 
-          disabled={isLoading || !input.trim()}
-        >
-          <i className="fas fa-paper-plane"></i>
-        </button>
-      </form>
+        <form className="chat-input" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type a message or use the audio recorder above..."
+            disabled={isLoading}
+          />
+          <button 
+            type="submit" 
+            className="send-button" 
+            disabled={isLoading || !input.trim()}
+          >
+            <i className="fas fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
     </div>
   );
 });

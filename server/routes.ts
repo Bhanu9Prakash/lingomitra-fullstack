@@ -9,6 +9,7 @@ import { z } from "zod";
 import { insertLanguageSchema, insertLessonSchema } from "@shared/schema";
 import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
+import chatAudioRouter from "./routes/chat-audio";
 import progressRouter from "./routes/progress";
 import contactRouter from "./routes/contact";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
