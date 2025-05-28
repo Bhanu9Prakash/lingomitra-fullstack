@@ -120,8 +120,36 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
             if (historyRes.ok) {
               const historyData = await historyRes.json();
               if (historyData.messages && Array.isArray(historyData.messages) && historyData.messages.length > 0) {
-                // Set the full conversation history
-                setMessages(historyData.messages);
+                // Preload audio for all assistant messages in parallel
+                const messagesWithAudio = await Promise.all(
+                  historyData.messages.map(async (message: any) => {
+                    if (message.role === 'assistant' && message.content && !message.audioData) {
+                      try {
+                        const ttsRes = await fetch('/api/tts/generate', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            text: message.content,
+                            languageCode: lesson.language.code
+                          }),
+                        });
+                        
+                        if (ttsRes.ok) {
+                          const ttsData = await ttsRes.json();
+                          if (ttsData.success && ttsData.audioData) {
+                            return { ...message, audioData: ttsData.audioData };
+                          }
+                        }
+                      } catch (error) {
+                        console.log('Preloading audio failed for message:', error);
+                      }
+                    }
+                    return message;
+                  })
+                );
+                
+                // Set the full conversation history with preloaded audio
+                setMessages(messagesWithAudio);
                 if (data.scratchPad) setScratchPad(data.scratchPad);
                 return; // Exit early since we've loaded the history
               }
