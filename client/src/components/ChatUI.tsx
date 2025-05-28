@@ -161,7 +161,34 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
         }
         
         // If we don't have history or history fetch failed, initialize with just the response
-        setMessages([{ role: "assistant", content: data.response }]);
+        // Generate TTS for the initial greeting
+        let audioData = null;
+        try {
+          const ttsRes = await fetch('/api/tts/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text: data.response,
+              languageCode: lesson.languageCode
+            }),
+          });
+          
+          if (ttsRes.ok) {
+            const ttsData = await ttsRes.json();
+            if (ttsData.success && ttsData.audioData) {
+              audioData = ttsData.audioData;
+            }
+          }
+        } catch (ttsError) {
+          console.log('TTS generation failed for initial greeting:', ttsError);
+        }
+
+        setMessages([{ 
+          role: "assistant", 
+          content: data.response,
+          audioData: audioData,
+          isNewMessage: true 
+        }]);
         if (data.scratchPad) setScratchPad(data.scratchPad);
       } catch (e) {
         console.error("Error initializing chat:", e);
