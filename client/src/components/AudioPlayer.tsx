@@ -113,7 +113,17 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
       if (audioRef.current) {
         audioRef.current.src = url;
         console.log('Set audio source to:', url);
-        if (autoPlay && isNewMessage) {
+        
+        // If this was triggered by a speaker button click (not auto-play), play immediately
+        if (!autoPlay && !isNewMessage) {
+          try {
+            console.log('Playing audio immediately after generation');
+            await audioRef.current.play();
+            console.log('Immediate playback successful');
+          } catch (playError) {
+            console.error('Immediate playback failed:', playError);
+          }
+        } else if (autoPlay && isNewMessage) {
           try {
             console.log('Auto-playing newly generated audio');
             await audioRef.current.play();
@@ -138,6 +148,14 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
     if (!audioUrl) {
       console.log('No audio URL, generating audio...');
       await generateAudio();
+      // After generation, try to play immediately
+      if (audioRef.current && audioUrl) {
+        try {
+          await audioRef.current.play();
+        } catch (error) {
+          console.error('Error playing after generation:', error);
+        }
+      }
       return;
     }
 
