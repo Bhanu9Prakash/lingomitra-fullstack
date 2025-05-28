@@ -1,6 +1,4 @@
-import { db } from './db';
-import { audioCache } from '../shared/schema';
-import { eq } from 'drizzle-orm';
+import { googleCloudAudioCache } from './google-cloud-audio-cache';
 import OpenAI from 'openai';
 
 interface TTSOptions {
@@ -88,20 +86,18 @@ class OpenAITTSService {
         };
       }
 
-      // Check cache first
-      const cacheKey = this.createCacheKey(text, languageCode);
-      
+      // Check Google Cloud Storage cache first
       try {
-        const cached = await db.select().from(audioCache).where(eq(audioCache.textHash, cacheKey)).limit(1);
-        if (cached.length > 0) {
-          console.log('TTS cache hit for:', text.substring(0, 50) + '...');
+        const cachedAudio = await googleCloudAudioCache.get(text, languageCode);
+        if (cachedAudio) {
+          console.log('Google Cloud Storage cache hit for:', text.substring(0, 50) + '...');
           return {
-            audioData: cached[0].audioData,
+            audioData: cachedAudio,
             success: true
           };
         }
       } catch (cacheError) {
-        console.log('Cache lookup error (continuing with API):', cacheError);
+        console.log('Google Cloud Storage lookup error (continuing with API):', cacheError);
       }
 
       // Clean the text for better TTS output
@@ -136,16 +132,12 @@ class OpenAITTSService {
 
       console.log('OpenAI TTS audio data length:', audioData.length);
 
-      // Cache the successful result
+      // Cache the successful result to Google Cloud Storage
       try {
-        await db.insert(audioCache).values({
-          textHash: cacheKey,
-          languageCode,
-          audioData
-        });
-        console.log('TTS result cached successfully');
+        await googleCloudAudioCache.set(cleanText, languageCode, audioData);
+        console.log('TTS result cached to Google Cloud Storage successfully');
       } catch (cacheError) {
-        console.log('Cache save error (audio still works):', cacheError);
+        console.log('Google Cloud Storage save error (audio still works):', cacheError);
       }
 
       return {
