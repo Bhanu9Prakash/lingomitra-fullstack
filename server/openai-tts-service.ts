@@ -24,23 +24,23 @@ class OpenAITTSService {
   /**
    * Get appropriate voice name based on language code
    */
-  private getVoiceForLanguage(languageCode: string): 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer' {
+  private getVoiceForLanguage(languageCode: string): 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer' | 'coral' {
     // OpenAI voices are optimized for English, but work for other languages
-    const voiceMap: { [key: string]: 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer' } = {
-      'en': 'alloy',
-      'de': 'echo',    // Good for German
-      'es': 'nova',    // Good for Spanish  
-      'fr': 'shimmer', // Good for French
-      'it': 'fable',   // Good for Italian
-      'ja': 'onyx',    // Good for Japanese
-      'ko': 'alloy',   // Korean
-      'pt': 'nova',    // Portuguese
-      'zh': 'onyx',    // Chinese
-      'hi': 'shimmer', // Hindi
-      'kn': 'fable',   // Kannada
+    const voiceMap: { [key: string]: 'alloy' | 'echo' | 'fable' | 'onyx' | 'nova' | 'shimmer' | 'coral' } = {
+      'en': 'coral',
+      'de': 'coral',    // Good for German
+      'es': 'coral',    // Good for Spanish  
+      'fr': 'coral',    // Good for French
+      'it': 'coral',    // Good for Italian
+      'ja': 'coral',    // Good for Japanese
+      'ko': 'coral',    // Korean
+      'pt': 'coral',    // Portuguese
+      'zh': 'coral',    // Chinese
+      'hi': 'coral',    // Hindi
+      'kn': 'coral',    // Kannada
     };
     
-    return voiceMap[languageCode] || 'alloy';
+    return voiceMap[languageCode] || 'coral';
   }
 
   /**
