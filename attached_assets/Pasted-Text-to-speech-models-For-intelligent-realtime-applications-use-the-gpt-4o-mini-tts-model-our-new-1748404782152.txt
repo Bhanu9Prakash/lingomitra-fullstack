@@ -1,0 +1,56 @@
+Text-to-speech models
+For intelligent realtime applications, use the gpt-4o-mini-tts model, our newest and most reliable text-to-speech model. You can prompt the model to control aspects of speech, including:
+
+Accent
+Emotional range
+Intonation
+Impressions
+Speed of speech
+Tone
+Whispering
+Our other text-to-speech models are tts-1 and tts-1-hd. The tts-1 model provides lower latency, but at a lower quality than the tts-1-hd model.
+
+Voice options
+The TTS endpoint provides 11 built‑in voices to control how speech is rendered from text. Hear and play with these voices in OpenAI.fm, our interactive demo for trying the latest text-to-speech model in the OpenAI API. Voices are currently optimized for English.
+
+alloy
+ash
+ballad
+coral
+echo
+fable
+nova
+onyx
+sage
+shimmer
+If you're using the Realtime API, note that the set of available voices is slightly different—see the realtime conversations guide for current realtime voices.
+
+Streaming realtime audio
+The Speech API provides support for realtime audio streaming using chunk transfer encoding. This means the audio can be played before the full file is generated and made accessible.
+
+Stream spoken audio from input text directly to your speakers
+import OpenAI from "openai";
+import { playAudio } from "openai/helpers/audio";
+
+const openai = new OpenAI();
+
+const response = await openai.audio.speech.create({
+  model: "gpt-4o-mini-tts",
+  voice: "coral",
+  input: "Today is a wonderful day to build something people love!",
+  instructions: "Speak in a cheerful and positive tone.",
+  response_format: "wav",
+});
+
+await playAudio(response);
+For the fastest response times, we recommend using wav or pcm as the response format.
+
+Supported output formats
+The default response format is mp3, but other formats like opus and wav are available.
+
+MP3: The default response format for general use cases.
+Opus: For internet streaming and communication, low latency.
+AAC: For digital audio compression, preferred by YouTube, Android, iOS.
+FLAC: For lossless audio compression, favored by audio enthusiasts for archiving.
+WAV: Uncompressed WAV audio, suitable for low-latency applications to avoid decoding overhead.
+PCM: Similar to WAV but contains the raw samples in 24kHz (16-bit signed, low-endian), without the header.

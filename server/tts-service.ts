@@ -1,6 +1,7 @@
 import { db } from './db';
 import { audioCache, insertAudioCacheSchema } from '../shared/schema';
 import { eq } from 'drizzle-orm';
+import OpenAI from 'openai';
 
 interface TTSOptions {
   text: string;
@@ -17,13 +18,12 @@ interface TTSResponse {
 }
 
 class TTSService {
-  private apiKey: string;
+  private openai: OpenAI;
 
   constructor() {
-    if (!process.env.GEMINI_API_KEY) {
-      throw new Error('GEMINI_API_KEY is required for TTS functionality');
-    }
-    this.apiKey = process.env.GEMINI_API_KEY;
+    this.openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
   }
 
   /**

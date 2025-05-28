@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { ttsService } from '../tts-service.js';
+import { openaiTTSService } from '../openai-tts-service.js';
 
 const router = Router();
 
@@ -23,7 +23,7 @@ router.post('/generate', async (req: Request, res: Response) => {
       });
     }
 
-    const result = await ttsService.generateSpeech({
+    const result = await openaiTTSService.generateSpeech({
       text: text.trim(),
       languageCode: languageCode || 'en'
     });
