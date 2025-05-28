@@ -367,8 +367,8 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     // Generate TTS audio for the response
     let audioData = null;
     try {
-      const { ttsService } = await import('../tts-service.js');
-      const ttsResult = await ttsService.generateSpeech({
+      const { openaiTTSService } = await import('../openai-tts-service.js');
+      const ttsResult = await openaiTTSService.generateSpeech({
         text: responseText,
         languageCode: lesson.languageCode
       });

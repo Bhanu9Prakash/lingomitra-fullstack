@@ -152,8 +152,8 @@ router.post("/", upload.single("audio"), async (req, res) => {
     // Generate TTS audio for the response
     let audioData = null;
     try {
-      const { ttsService } = await import('../tts-service.js');
-      const ttsResult = await ttsService.generateSpeech({
+      const { openaiTTSService } = await import('../openai-tts-service.js');
+      const ttsResult = await openaiTTSService.generateSpeech({
         text: response,
         languageCode: lesson.languageCode
       });
