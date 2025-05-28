@@ -231,9 +231,11 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
         console.error('Error processing pre-generated audio:', error);
       }
     } else if (text.trim() && !audioUrl && !isLoading && !audioData) {
-      // Generate missing audio for messages without cached audio
-      console.log('Generating missing audio for message');
-      generateAudio();
+      // Only generate missing audio for new messages, not when clicking speaker buttons
+      if (isNewMessage) {
+        console.log('Generating missing audio for new message');
+        generateAudio();
+      }
     }
   }, [audioData, text]);
 

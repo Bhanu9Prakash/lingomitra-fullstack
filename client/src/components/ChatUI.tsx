@@ -198,6 +198,8 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
         if (ttsRes.ok) {
           const ttsData = await ttsRes.json();
           audioData = ttsData.audioData;
+        } else {
+          console.log('TTS generation failed with status:', ttsRes.status);
         }
       } catch (ttsError) {
         console.log('TTS generation failed, proceeding without audio:', ttsError);
