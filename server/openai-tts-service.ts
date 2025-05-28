@@ -86,9 +86,12 @@ class OpenAITTSService {
         };
       }
 
-      // Check Google Cloud Storage cache first
+      // Clean the text for better TTS output
+      const cleanText = this.cleanTextForTTS(text);
+
+      // Check Google Cloud Storage cache first (using cleanText for consistency)
       try {
-        const cachedAudio = await googleCloudAudioCache.get(text, languageCode);
+        const cachedAudio = await googleCloudAudioCache.get(cleanText, languageCode);
         if (cachedAudio) {
           console.log('Google Cloud Storage cache hit for:', text.substring(0, 50) + '...');
           return {
@@ -99,9 +102,6 @@ class OpenAITTSService {
       } catch (cacheError) {
         console.log('Google Cloud Storage lookup error (continuing with API):', cacheError);
       }
-
-      // Clean the text for better TTS output
-      const cleanText = this.cleanTextForTTS(text);
       
       if (cleanText.length > 4000) {
         return {
