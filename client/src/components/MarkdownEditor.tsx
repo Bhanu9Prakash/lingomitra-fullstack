@@ -69,9 +69,13 @@ export default function MarkdownEditor({ value, onChange, placeholder, rows = 15
 
   const replaceImagePlaceholder = useCallback((placeholder: string, imageUrl: string, altText: string) => {
     const newImageMarkdown = `![${altText}](${imageUrl})`;
-    const newValue = value.replace(placeholder, newImageMarkdown);
-    onChange(newValue);
-  }, [value, onChange]);
+    const textarea = textareaRef.current;
+    if (textarea) {
+      const currentValue = textarea.value;
+      const newValue = currentValue.replace(placeholder, newImageMarkdown);
+      onChange(newValue);
+    }
+  }, [onChange]);
 
   const handleFileUpload = useCallback(async (files: FileList) => {
     const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
