@@ -23,7 +23,7 @@ export function ModernVoiceRecorder({ onAudioSubmit, disabled = false }: ModernV
   // Generate waveform bars spanning full width
   const generateWaveform = () => {
     const bars = [];
-    const barCount = 25; // More bars for the wider space
+    const barCount = 35; // More bars to fill the entire space
     
     for (let i = 0; i < barCount; i++) {
       const height = isRecording 
@@ -33,7 +33,7 @@ export function ModernVoiceRecorder({ onAudioSubmit, disabled = false }: ModernV
       bars.push(
         <div
           key={i}
-          className="bg-orange-400 rounded-full transition-all duration-75"
+          className="bg-orange-400 rounded-full transition-all duration-75 flex-shrink-0"
           style={{
             width: '2px',
             height: `${height}px`,
@@ -193,8 +193,10 @@ export function ModernVoiceRecorder({ onAudioSubmit, disabled = false }: ModernV
 
       {/* Waveform spanning full horizontal space as shown */}
       {isRecording && (
-        <div className="absolute left-4 right-4 bottom-full mb-3 flex items-center justify-center space-x-1 h-6 px-6 bg-gray-800 rounded-lg">
-          {generateWaveform()}
+        <div className="absolute left-4 right-16 bottom-full mb-3 flex items-center h-6 px-4 bg-gray-800 rounded-lg">
+          <div className="flex items-center justify-between w-full space-x-1">
+            {generateWaveform()}
+          </div>
         </div>
       )}
 
