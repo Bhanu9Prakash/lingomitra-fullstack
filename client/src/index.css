@@ -8,9 +8,9 @@
     --primary-color: #ff6600;
     --primary-light: #ff8533;
     --primary-dark: #cc5200;
-    --secondary-color: #4c7ef9;
-    --secondary-light: #7a9dfb;
-    --secondary-dark: #2b5bf7;
+    --secondary-color: #6b7280;
+    --secondary-light: #9ca3af;
+    --secondary-dark: #4b5563;
     --text-color: #333333;
     --text-light: #666666;
     --bg-color: #ffffff;
@@ -35,8 +35,8 @@
     --popover-foreground: 0 0% 20%;
     --primary: 24 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 217 88% 64%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 42%;
+    --secondary-foreground: 0 0% 90%;
     --muted: 210 17% 98%;
     --muted-foreground: 0 0% 40%;
     --accent: 210 17% 98%;
@@ -68,8 +68,8 @@
     --popover-foreground: 0 0% 94%;
     --primary: 24 100% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 217 88% 64%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 27%;
+    --secondary-foreground: 0 0% 85%;
     --muted: 0 0% 16%;
     --muted-foreground: 0 0% 80%;
     --accent: 0 0% 16%;
