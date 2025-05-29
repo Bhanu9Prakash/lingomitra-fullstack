@@ -38,6 +38,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
   const [isLoading, setIsLoading] = useState(false);
   const [lastAutoPlayedIndex, setLastAutoPlayedIndex] = useState(-1);
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const [showAudioPrompt, setShowAudioPrompt] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   
   // State for custom confirmation dialog
@@ -191,6 +192,11 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
           isNewMessage: true 
         }]);
         if (data.scratchPad) setScratchPad(data.scratchPad);
+        
+        // Show audio prompt if we have audio but it might not auto-play
+        if (audioData) {
+          setShowAudioPrompt(true);
+        }
       } catch (e) {
         console.error("Error initializing chat:", e);
         setMessages([
@@ -471,6 +477,27 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
 
         <div ref={chatEndRef} />
       </div>
+
+      {/* Audio Prompt Notification */}
+      {showAudioPrompt && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mx-4 mb-3 flex items-center justify-between">
+          <div className="flex items-center">
+            <Volume2 className="h-5 w-5 text-blue-600 mr-3" />
+            <div>
+              <p className="text-blue-800 font-medium">🎧 Audio is ready!</p>
+              <p className="text-blue-600 text-sm">Click the speaker button to enable auto-play</p>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowAudioPrompt(false)}
+            className="text-blue-600 hover:bg-blue-100"
+          >
+            ✕
+          </Button>
+        </div>
+      )}
 
       <div className="chat-input-container">
         <MicrophonePermissionCheck />
