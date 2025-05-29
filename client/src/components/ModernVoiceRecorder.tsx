@@ -20,10 +20,10 @@ export function ModernVoiceRecorder({ onAudioSubmit, disabled = false }: ModernV
   const animationFrameRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  // Generate compact waveform bars
+  // Generate waveform bars spanning full width
   const generateWaveform = () => {
     const bars = [];
-    const barCount = 12;
+    const barCount = 25; // More bars for the wider space
     
     for (let i = 0; i < barCount; i++) {
       const height = isRecording 
@@ -168,14 +168,14 @@ export function ModernVoiceRecorder({ onAudioSubmit, disabled = false }: ModernV
 
   return (
     <>
-      {/* Main Recording Button - fits in existing button area */}
+      {/* Main Recording Button - circular */}
       <button
         type="button"
         onClick={isRecording ? stopRecording : startRecording}
         disabled={disabled}
         className={`
-          mic-button transition-all duration-200 relative
-          ${isRecording ? 'recording bg-red-600' : 'bg-gray-600 hover:bg-gray-500'}
+          w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 relative
+          ${isRecording ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-600 hover:bg-gray-500'}
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
       >
@@ -191,9 +191,9 @@ export function ModernVoiceRecorder({ onAudioSubmit, disabled = false }: ModernV
         )}
       </button>
 
-      {/* Waveform in the space above input */}
+      {/* Waveform spanning full horizontal space as shown */}
       {isRecording && (
-        <div className="absolute left-4 right-20 bottom-full mb-3 flex items-center justify-center space-x-1 h-6 px-4 bg-gray-800 rounded-lg">
+        <div className="absolute left-4 right-4 bottom-full mb-3 flex items-center justify-center space-x-1 h-6 px-6 bg-gray-800 rounded-lg">
           {generateWaveform()}
         </div>
       )}
