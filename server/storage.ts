@@ -491,6 +491,7 @@ export class MemStorage implements IStorage {
     const blogPost: BlogPost = {
       id,
       ...post,
+      status: post.status || "draft",
       viewCount: 0,
       createdAt: now,
       updatedAt: now,
@@ -1015,7 +1016,7 @@ export class DatabaseStorage implements IStorage {
       .delete(blogPosts)
       .where(eq(blogPosts.id, id));
     
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async incrementBlogPostViews(id: number): Promise<boolean> {
@@ -1026,7 +1027,7 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(blogPosts.id, id));
     
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 }
 
