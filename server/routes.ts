@@ -1008,9 +1008,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
       });
       
-      // Make the file publicly accessible
-      await file.makePublic();
-      
       // Get the public URL
       const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
       
