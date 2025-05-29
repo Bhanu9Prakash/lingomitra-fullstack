@@ -1000,13 +1000,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const file = bucket.file(filename);
       
-      // Upload to Google Cloud Storage
+      // Upload to Google Cloud Storage with public access
       await file.save(req.file.buffer, {
         metadata: {
           contentType: req.file.mimetype,
           cacheControl: 'public, max-age=31536000', // Cache for 1 year
         },
+        public: true,
       });
+      
+      // Set IAM policy to make the file publicly accessible
+      try {
+        await file.setMetadata({
+          acl: [{
+            entity: 'allUsers',
+            role: 'READER'
+          }]
+        });
+      } catch (aclError) {
+        console.warn('Could not set ACL (uniform bucket-level access may be enabled):', aclError.message);
+        // Try to make bucket objects publicly readable
+        try {
+          await bucket.iam.setPolicy({
+            bindings: [
+              {
+                role: 'roles/storage.objectViewer',
+                members: ['allUsers'],
+              },
+            ],
+          });
+        } catch (iamError) {
+          console.warn('Could not set IAM policy:', iamError.message);
+        }
+      }
       
       // Get the public URL
       const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
