@@ -954,10 +954,22 @@ export default function AdminDashboard() {
               <Input
                 id="tags"
                 value={blogFormData.tags.join(', ')}
-                onChange={(e) => setBlogFormData(prev => ({ 
-                  ...prev, 
-                  tags: e.target.value.split(',').map(tag => tag.trim()).filter(Boolean)
-                }))}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Only split and process if there's a comma, otherwise keep as is for typing
+                  if (value.includes(',')) {
+                    setBlogFormData(prev => ({ 
+                      ...prev, 
+                      tags: value.split(',').map(tag => tag.trim()).filter(Boolean)
+                    }));
+                  } else {
+                    // For single tag being typed, just update the input
+                    setBlogFormData(prev => ({ 
+                      ...prev, 
+                      tags: value ? [value] : []
+                    }));
+                  }
+                }}
                 placeholder="language learning, tips, grammar"
               />
             </div>
