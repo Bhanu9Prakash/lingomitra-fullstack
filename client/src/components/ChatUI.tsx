@@ -80,8 +80,41 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
       }
       
       const data = await initRes.json();
-      setMessages([{ role: "assistant", content: data.response }]);
+      
+      // Generate TTS for the reset greeting message
+      let audioData = null;
+      try {
+        const ttsRes = await fetch('/api/tts/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: data.response,
+            languageCode: lesson.languageCode
+          }),
+        });
+        
+        if (ttsRes.ok) {
+          const ttsData = await ttsRes.json();
+          if (ttsData.success && ttsData.audioData) {
+            audioData = ttsData.audioData;
+          }
+        }
+      } catch (ttsError) {
+        console.log('TTS generation failed for reset greeting:', ttsError);
+      }
+
+      setMessages([{ 
+        role: "assistant", 
+        content: data.response,
+        audioData: audioData,
+        isNewMessage: true 
+      }]);
       if (data.scratchPad) setScratchPad(data.scratchPad);
+      
+      // Show audio prompt for reset message too
+      if (audioData) {
+        setShowAudioPrompt(true);
+      }
     } catch (e) {
       console.error("Error resetting chat:", e);
       alert("Could not reset the conversation. Please try again later.");
@@ -483,19 +516,19 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
 
       {/* Audio Prompt Notification */}
       {showAudioPrompt && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mx-4 mb-3 flex items-center justify-between">
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mx-4 mb-3 flex items-center justify-between">
           <div className="flex items-center">
-            <Volume2 className="h-5 w-5 text-blue-600 mr-3" />
+            <Volume2 className="h-5 w-5 text-orange-600 mr-3" />
             <div>
-              <p className="text-blue-800 font-medium">🎧 Audio is ready!</p>
-              <p className="text-blue-600 text-sm">Click the speaker button to enable auto-play</p>
+              <p className="text-orange-800 font-medium">🎧 Audio is ready!</p>
+              <p className="text-orange-600 text-sm">Click the speaker button to enable auto-play</p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setShowAudioPrompt(false)}
-            className="text-blue-600 hover:bg-blue-100"
+            className="text-orange-600 hover:bg-orange-100"
           >
             ✕
           </Button>
