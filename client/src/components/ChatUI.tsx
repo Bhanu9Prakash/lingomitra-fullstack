@@ -5,7 +5,7 @@ import { Volume2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Lesson } from "@shared/schema";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
-import { VoiceRecorder } from "./VoiceRecorder";
+import { ModernVoiceRecorder } from "./ModernVoiceRecorder";
 import MicrophonePermissionCheck from "./MicrophonePermissionCheck";
 import { AudioPlayer } from "./AudioPlayer";
 
@@ -546,7 +546,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
             disabled={isLoading}
           />
           <div className="chat-input-buttons">
-            <VoiceRecorder 
+            <ModernVoiceRecorder 
               onAudioSubmit={handleAudioSubmit}
               disabled={isLoading}
             />
