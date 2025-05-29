@@ -25,6 +25,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { queryClient } from '@/lib/queryClient';
 import MarkdownEditor from '@/components/MarkdownEditor';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // Types
 interface User {
@@ -681,6 +683,16 @@ export default function AdminDashboard() {
                             <Button 
                               variant="outline" 
                               size="sm"
+                              onClick={() => {
+                                setSelectedBlogPost(post);
+                                setShowBlogPreview(true);
+                              }}
+                            >
+                              Preview
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
                               onClick={() => openBlogEditor(post)}
                             >
                               Edit
@@ -903,18 +915,12 @@ export default function AdminDashboard() {
               />
             </div>
 
-            <div>
-              <Label htmlFor="content">Content (Markdown)</Label>
-              <Textarea
-                id="content"
-                value={blogFormData.content}
-                onChange={(e) => setBlogFormData(prev => ({ ...prev, content: e.target.value }))}
-                rows={15}
-                placeholder="Write your blog post content in Markdown..."
-                className="font-mono text-sm"
-                required
-              />
-            </div>
+            <MarkdownEditor
+              value={blogFormData.content}
+              onChange={(content) => setBlogFormData(prev => ({ ...prev, content }))}
+              placeholder="Write your blog post content in Markdown...\n\nTip: You can drag & drop images or paste them directly!"
+              rows={20}
+            />
 
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -996,6 +1002,144 @@ export default function AdminDashboard() {
               </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Blog Preview Dialog */}
+      <Dialog open={showBlogPreview} onOpenChange={setShowBlogPreview}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Preview: {selectedBlogPost?.title}</DialogTitle>
+          </DialogHeader>
+          
+          {selectedBlogPost && (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="border-b pb-6">
+                <h1 className="text-3xl font-bold mb-3">{selectedBlogPost.title}</h1>
+                
+                {/* Meta information */}
+                <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-4">
+                  <div className="flex items-center gap-1">
+                    <span>Status:</span>
+                    <Badge variant={selectedBlogPost.status === 'published' ? 'default' : 'secondary'}>
+                      {selectedBlogPost.status}
+                    </Badge>
+                  </div>
+                  <div>Views: {selectedBlogPost.viewCount}</div>
+                  <div>Created: {format(new Date(selectedBlogPost.createdAt), 'MMM d, yyyy')}</div>
+                </div>
+
+                {/* Tags */}
+                {selectedBlogPost.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {selectedBlogPost.tags.map((tag) => (
+                      <Badge key={tag} variant="secondary">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Excerpt */}
+                {selectedBlogPost.excerpt && (
+                  <p className="text-lg text-gray-600 italic">{selectedBlogPost.excerpt}</p>
+                )}
+              </div>
+
+              {/* Featured Image */}
+              {selectedBlogPost.featuredImage && (
+                <div className="aspect-video w-full overflow-hidden rounded-lg">
+                  <img
+                    src={selectedBlogPost.featuredImage}
+                    alt={selectedBlogPost.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
+              {/* Content */}
+              <div className="prose prose-lg max-w-none dark:prose-invert">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h1: ({ children }) => <h1 className="text-3xl font-bold mt-8 mb-4">{children}</h1>,
+                    h2: ({ children }) => <h2 className="text-2xl font-semibold mt-6 mb-3">{children}</h2>,
+                    h3: ({ children }) => <h3 className="text-xl font-medium mt-4 mb-2">{children}</h3>,
+                    p: ({ children }) => <p className="mb-4 leading-relaxed">{children}</p>,
+                    ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>,
+                    blockquote: ({ children }) => (
+                      <blockquote className="border-l-4 border-primary/20 pl-4 my-4 italic text-gray-700 dark:text-gray-300">
+                        {children}
+                      </blockquote>
+                    ),
+                    code: ({ className, children }) => {
+                      const isInline = !className?.includes('language-');
+                      return isInline ? (
+                        <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">{children}</code>
+                      ) : (
+                        <code className="block bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-sm overflow-x-auto">{children}</code>
+                      );
+                    },
+                    img: ({ src, alt }) => (
+                      <img 
+                        src={src} 
+                        alt={alt} 
+                        className="max-w-full h-auto rounded-lg my-4"
+                      />
+                    ),
+                    a: ({ href, children }) => (
+                      <a 
+                        href={href} 
+                        className="text-primary hover:underline"
+                        target={href?.startsWith('http') ? '_blank' : undefined}
+                        rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      >
+                        {children}
+                      </a>
+                    ),
+                  }}
+                >
+                  {selectedBlogPost.content}
+                </ReactMarkdown>
+              </div>
+
+              {/* Actions */}
+              <div className="flex justify-between items-center pt-6 border-t">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowBlogPreview(false)}
+                >
+                  Close Preview
+                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setShowBlogPreview(false);
+                      openBlogEditor(selectedBlogPost);
+                    }}
+                  >
+                    Edit Post
+                  </Button>
+                  {selectedBlogPost.status === 'draft' && (
+                    <Button 
+                      onClick={() => {
+                        updateBlogPostMutation.mutate({ 
+                          id: selectedBlogPost.id, 
+                          data: { status: 'published', publishedAt: new Date() }
+                        });
+                        setShowBlogPreview(false);
+                      }}
+                    >
+                      Publish Now
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
