@@ -984,7 +984,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Use dedicated public bucket for blog images
       const credentials = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS || '{}');
-      const blogImagesBucketName = process.env.BLOG_IMAGES_BUCKET_NAME || process.env.GOOGLE_CLOUD_BUCKET_NAME || '';
+      const blogImagesBucketName = (process.env.BLOG_IMAGES_BUCKET_NAME || process.env.GOOGLE_CLOUD_BUCKET_NAME || '').trim();
       
       const storage = new Storage({
         credentials,
