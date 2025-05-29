@@ -7,6 +7,7 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { z } from "zod";
 import { insertLanguageSchema, insertLessonSchema, insertBlogPostSchema } from "@shared/schema";
+import multer from 'multer';
 import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
 import chatAudioRouter from "./routes/chat-audio";
@@ -955,6 +956,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error resolving contact submission:", error);
       res.status(500).json({ message: "Failed to update submission" });
+    }
+  });
+
+  // Configure multer for image uploads
+  const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5MB limit
+    },
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+      } else {
+        cb(new Error('Only image files are allowed'));
+      }
+    }
+  });
+
+  // Image upload endpoint for blog editor
+  app.post("/api/admin/blog/upload-image", isAdmin, upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No image file provided" });
+      }
+
+      // Convert image to base64 data URL for immediate use
+      const base64 = req.file.buffer.toString('base64');
+      const dataUrl = `data:${req.file.mimetype};base64,${base64}`;
+      
+      res.json({ 
+        url: dataUrl,
+        filename: req.file.originalname,
+        size: req.file.size,
+        type: req.file.mimetype
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      res.status(500).json({ message: "Failed to upload image" });
     }
   });
 

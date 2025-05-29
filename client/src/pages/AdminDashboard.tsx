@@ -24,6 +24,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { queryClient } from '@/lib/queryClient';
+import MarkdownEditor from '@/components/MarkdownEditor';
 
 // Types
 interface User {
@@ -82,6 +83,7 @@ export default function AdminDashboard() {
   const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
   const [selectedBlogPost, setSelectedBlogPost] = useState<BlogPost | null>(null);
   const [showBlogEditor, setShowBlogEditor] = useState(false);
+  const [showBlogPreview, setShowBlogPreview] = useState(false);
   const [blogFormData, setBlogFormData] = useState({
     title: '',
     slug: '',
