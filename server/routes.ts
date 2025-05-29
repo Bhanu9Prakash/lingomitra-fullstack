@@ -982,16 +982,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No image file provided" });
       }
 
-      // Use existing Google Cloud Storage setup from audio cache
+      // Use dedicated public bucket for blog images
       const credentials = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS || '{}');
-      const bucketName = process.env.GOOGLE_CLOUD_BUCKET_NAME || '';
+      const blogImagesBucketName = process.env.BLOG_IMAGES_BUCKET_NAME || process.env.GOOGLE_CLOUD_BUCKET_NAME || '';
       
       const storage = new Storage({
         credentials,
         projectId: credentials.project_id,
       });
       
-      const bucket = storage.bucket(bucketName);
+      const bucket = storage.bucket(blogImagesBucketName);
       
       // Generate unique filename
       const timestamp = Date.now();
@@ -1000,42 +1000,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const file = bucket.file(filename);
       
-      // Upload to Google Cloud Storage with public access
+      // Upload to Google Cloud Storage (bucket should be configured for public access)
       await file.save(req.file.buffer, {
         metadata: {
           contentType: req.file.mimetype,
           cacheControl: 'public, max-age=31536000', // Cache for 1 year
         },
-        public: true,
       });
       
-      // Set IAM policy to make the file publicly accessible
-      try {
-        await file.setMetadata({
-          acl: [{
-            entity: 'allUsers',
-            role: 'READER'
-          }]
-        });
-      } catch (aclError) {
-        console.warn('Could not set ACL (uniform bucket-level access may be enabled):', aclError.message);
-        // Try to make bucket objects publicly readable
-        try {
-          await bucket.iam.setPolicy({
-            bindings: [
-              {
-                role: 'roles/storage.objectViewer',
-                members: ['allUsers'],
-              },
-            ],
-          });
-        } catch (iamError) {
-          console.warn('Could not set IAM policy:', iamError.message);
-        }
-      }
-      
       // Get the public URL
-      const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
+      const publicUrl = `https://storage.googleapis.com/${blogImagesBucketName}/${filename}`;
       
       res.json({ 
         url: publicUrl,
