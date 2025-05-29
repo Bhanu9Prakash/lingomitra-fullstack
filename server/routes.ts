@@ -1022,7 +1022,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertBlogPostSchema.parse({
         ...req.body,
-        authorId: req.user.id,
+        authorId: req.user?.id,
       });
       
       const post = await storage.createBlogPost(validatedData);

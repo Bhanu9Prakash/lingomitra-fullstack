@@ -16,6 +16,8 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import FAQPage from "@/pages/FAQPage";
+import Blog from "@/pages/Blog";
+import BlogPost from "@/pages/BlogPost";
 import VerifyEmailPage from "@/pages/VerifyEmailPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
@@ -66,6 +68,10 @@ function Router() {
         
         {/* FAQ page - public */}
         <Route path="/faq" component={FAQPage} />
+        
+        {/* Blog pages - public */}
+        <Route path="/blog" component={Blog} />
+        <Route path="/blog/:slug" component={BlogPost} />
         
         {/* Health check - public */}
         <Route path="/health" component={Healthcheck} />

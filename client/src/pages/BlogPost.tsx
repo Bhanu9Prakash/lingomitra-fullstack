@@ -174,12 +174,14 @@ export default function BlogPost() {
                       {children}
                     </blockquote>
                   ),
-                  code: ({ inline, children }) => 
-                    inline ? (
+                  code: ({ className, children }) => {
+                    const isInline = !className?.includes('language-');
+                    return isInline ? (
                       <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">{children}</code>
                     ) : (
                       <code className="block bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-sm overflow-x-auto">{children}</code>
-                    ),
+                    );
+                  },
                   img: ({ src, alt }) => (
                     <img 
                       src={src} 
