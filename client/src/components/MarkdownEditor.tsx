@@ -66,16 +66,20 @@ export default function MarkdownEditor({ value, onChange, placeholder, rows = 15
   }, [value, onChange]);
 
   const handleFileUpload = useCallback(async (files: FileList) => {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (file.type.startsWith('image/')) {
-        try {
-          const imageUrl = await uploadImage(file);
-          const altText = file.name.replace(/\.[^/.]+$/, ''); // Remove extension for alt text
-          insertImageMarkdown(imageUrl, altText);
-        } catch (error) {
-          console.error(`Failed to upload ${file.name}:`, error);
-        }
+    const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+    
+    if (imageFiles.length === 0) {
+      console.warn('No image files found in selection');
+      return;
+    }
+
+    for (const file of imageFiles) {
+      try {
+        const imageUrl = await uploadImage(file);
+        const altText = file.name.replace(/\.[^/.]+$/, ''); // Remove extension for alt text
+        insertImageMarkdown(imageUrl, altText);
+      } catch (error) {
+        console.error(`Failed to upload ${file.name}:`, error);
       }
     }
   }, [uploadImage, insertImageMarkdown]);
@@ -100,26 +104,27 @@ export default function MarkdownEditor({ value, onChange, placeholder, rows = 15
     }
   }, [handleFileUpload]);
 
-  const handlePaste = useCallback((e: React.ClipboardEvent) => {
-    const items = e.clipboardData.items;
-    const imageFiles: File[] = [];
+  const handlePaste = useCallback(async (e: React.ClipboardEvent) => {
+    const items = Array.from(e.clipboardData.items);
+    const imageItems = items.filter(item => item.type.startsWith('image/'));
 
-    for (let i = 0; i < items.length; i++) {
-      if (items[i].type.startsWith('image/')) {
-        const file = items[i].getAsFile();
+    if (imageItems.length > 0) {
+      e.preventDefault();
+      
+      for (const item of imageItems) {
+        const file = item.getAsFile();
         if (file) {
-          imageFiles.push(file);
+          try {
+            const imageUrl = await uploadImage(file);
+            const altText = `pasted-image-${Date.now()}`;
+            insertImageMarkdown(imageUrl, altText);
+          } catch (error) {
+            console.error('Failed to upload pasted image:', error);
+          }
         }
       }
     }
-
-    if (imageFiles.length > 0) {
-      e.preventDefault();
-      const fileList = new DataTransfer();
-      imageFiles.forEach(file => fileList.items.add(file));
-      handleFileUpload(fileList.files);
-    }
-  }, [handleFileUpload]);
+  }, [uploadImage, insertImageMarkdown]);
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();

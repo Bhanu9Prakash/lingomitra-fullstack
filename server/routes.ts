@@ -981,12 +981,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No image file provided" });
       }
 
-      // Convert image to base64 data URL for immediate use
-      const base64 = req.file.buffer.toString('base64');
-      const dataUrl = `data:${req.file.mimetype};base64,${base64}`;
+      // Import Google Cloud Storage from existing setup
+      const { Storage } = require('@google-cloud/storage');
+      const credentials = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS || '{}');
+      const bucketName = process.env.GOOGLE_CLOUD_BUCKET_NAME || '';
+      
+      const storage = new Storage({
+        credentials,
+        projectId: credentials.project_id,
+      });
+      
+      const bucket = storage.bucket(bucketName);
+      
+      // Generate unique filename
+      const timestamp = Date.now();
+      const fileExtension = req.file.originalname.split('.').pop();
+      const filename = `blog-images/${timestamp}-${Math.random().toString(36).substring(7)}.${fileExtension}`;
+      
+      const file = bucket.file(filename);
+      
+      // Upload to Google Cloud Storage
+      await file.save(req.file.buffer, {
+        metadata: {
+          contentType: req.file.mimetype,
+          cacheControl: 'public, max-age=31536000', // Cache for 1 year
+        },
+      });
+      
+      // Make the file publicly accessible
+      await file.makePublic();
+      
+      // Get the public URL
+      const publicUrl = `https://storage.googleapis.com/${bucketName}/${filename}`;
       
       res.json({ 
-        url: dataUrl,
+        url: publicUrl,
         filename: req.file.originalname,
         size: req.file.size,
         type: req.file.mimetype
