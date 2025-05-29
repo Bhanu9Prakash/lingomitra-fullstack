@@ -69,18 +69,20 @@ export default function BlogPost() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4">Blog Post Not Found</h1>
-          <p className="text-gray-600 mb-6">
-            The blog post you're looking for doesn't exist or has been removed.
-          </p>
-          <Link href="/blog">
-            <Button>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Blog
-            </Button>
-          </Link>
+      <div className="min-h-screen bg-gray-900">
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold mb-4 text-white">Blog Post Not Found</h1>
+            <p className="text-gray-300 mb-6">
+              The blog post you're looking for doesn't exist or has been removed.
+            </p>
+            <Link href="/blog">
+              <Button>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Blog
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -88,16 +90,18 @@ export default function BlogPost() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto">
-          <Skeleton className="h-8 w-32 mb-6" />
-          <Skeleton className="h-12 w-3/4 mb-4" />
-          <Skeleton className="h-6 w-1/2 mb-8" />
-          <Skeleton className="h-64 w-full mb-8" />
-          <div className="space-y-4">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-5/6" />
-            <Skeleton className="h-4 w-4/5" />
+      <div className="min-h-screen bg-gray-900">
+        <div className="container mx-auto px-4 py-16">
+          <div className="max-w-4xl mx-auto">
+            <Skeleton className="h-8 w-32 mb-6 bg-gray-700" />
+            <Skeleton className="h-12 w-3/4 mb-4 bg-gray-700" />
+            <Skeleton className="h-6 w-1/2 mb-8 bg-gray-700" />
+            <Skeleton className="h-64 w-full mb-8 bg-gray-700" />
+            <div className="space-y-4">
+              <Skeleton className="h-4 w-full bg-gray-700" />
+              <Skeleton className="h-4 w-5/6 bg-gray-700" />
+              <Skeleton className="h-4 w-4/5 bg-gray-700" />
+            </div>
           </div>
         </div>
       </div>
@@ -107,8 +111,9 @@ export default function BlogPost() {
   if (!post) return null;
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-900">
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-4xl mx-auto">
         {/* Back button */}
         <Link href="/blog">
           <Button variant="ghost" className="mb-6">
@@ -130,10 +135,10 @@ export default function BlogPost() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+          <h1 className="text-4xl font-bold mb-4 text-white">{post.title}</h1>
           
           {/* Meta information */}
-          <div className="flex flex-wrap items-center gap-4 text-gray-600 mb-6">
+          <div className="flex flex-wrap items-center gap-4 text-gray-300 mb-6">
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
               <span>{format(new Date(post.publishedAt), 'MMMM d, yyyy')}</span>
@@ -148,7 +153,7 @@ export default function BlogPost() {
           {post.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
               {post.tags.map((tag) => (
-                <Badge key={tag} variant="secondary">
+                <Badge key={tag} variant="secondary" className="bg-gray-700 text-gray-300 border-gray-600">
                   {tag}
                 </Badge>
               ))}
@@ -157,7 +162,7 @@ export default function BlogPost() {
         </div>
 
         {/* Content */}
-        <Card>
+        <Card className="bg-gray-800 border-gray-700">
           <CardContent className="pt-6">
             <article className="prose prose-lg max-w-none dark:prose-invert">
               <ReactMarkdown
@@ -209,19 +214,20 @@ export default function BlogPost() {
 
         {/* Call to action */}
         <div className="mt-12 text-center">
-          <Card className="bg-gradient-to-r from-primary/10 to-primary/5">
+          <Card className="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border-gray-700">
             <CardContent className="pt-6">
-              <h3 className="text-2xl font-semibold mb-4">Ready to Start Learning?</h3>
-              <p className="text-gray-600 mb-6">
+              <h3 className="text-2xl font-semibold mb-4 text-white">Ready to Start Learning?</h3>
+              <p className="text-gray-300 mb-6">
                 Join thousands of learners using LingoMitra to master new languages with AI-powered conversations.
               </p>
               <Link href="/languages">
-                <Button size="lg">
+                <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white">
                   Start Learning Now
                 </Button>
               </Link>
             </CardContent>
           </Card>
+        </div>
         </div>
       </div>
     </div>
