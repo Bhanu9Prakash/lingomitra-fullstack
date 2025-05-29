@@ -31,7 +31,6 @@ import { useSimpleToast } from "@/hooks/use-simple-toast";
 import { Loader2, Send, Mail, Wand2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useTheme } from "@/components/ThemeProvider";
-import Footer from "@/components/Footer";
 
 // Form validation schema
 const contactFormSchema = z.object({
@@ -306,7 +305,6 @@ export default function ContactPage() {
           </CardContent>
         </Card>
       </div>
-      <Footer />
     </div>
   );
 }
