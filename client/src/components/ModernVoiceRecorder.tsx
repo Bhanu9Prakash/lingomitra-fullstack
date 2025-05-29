@@ -20,24 +20,24 @@ export function ModernVoiceRecorder({ onAudioSubmit, disabled = false }: ModernV
   const animationFrameRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  // Generate waveform bars based on audio level
+  // Generate compact waveform bars
   const generateWaveform = () => {
     const bars = [];
-    const barCount = 20;
+    const barCount = 12;
     
     for (let i = 0; i < barCount; i++) {
       const height = isRecording 
-        ? Math.random() * audioLevel * 40 + 10 
-        : 10;
+        ? Math.random() * audioLevel * 20 + 4 
+        : 4;
       
       bars.push(
         <div
           key={i}
           className="bg-orange-500 rounded-full transition-all duration-75"
           style={{
-            width: '3px',
+            width: '2px',
             height: `${height}px`,
-            opacity: isRecording ? 0.7 + Math.random() * 0.3 : 0.3
+            opacity: isRecording ? 0.8 + Math.random() * 0.2 : 0.4
           }}
         />
       );
@@ -167,77 +167,57 @@ export function ModernVoiceRecorder({ onAudioSubmit, disabled = false }: ModernV
   }, []);
 
   return (
-    <div className="flex flex-col items-center space-y-3">
-      {/* Main Recording Button */}
-      <div className="relative">
-        <Button
-          type="button"
-          onClick={isRecording ? stopRecording : startRecording}
-          disabled={disabled}
-          className={`
-            w-16 h-16 rounded-full flex items-center justify-center transition-all duration-200
-            ${isRecording 
-              ? 'bg-red-500 hover:bg-red-600 scale-110' 
-              : 'bg-orange-500 hover:bg-orange-600'
-            }
-            ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-          `}
-        >
-          {isRecording ? (
-            <MicOff className="w-6 h-6 text-white" />
-          ) : (
-            <Mic className="w-6 h-6 text-white" />
-          )}
-        </Button>
+    <>
+      {/* Main Recording Button - fits in existing button area */}
+      <button
+        type="button"
+        onClick={isRecording ? stopRecording : startRecording}
+        disabled={disabled}
+        className={`
+          mic-button transition-all duration-200
+          ${isRecording ? 'recording' : ''}
+          ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+        `}
+      >
+        {isRecording ? (
+          <MicOff className="w-5 h-5" />
+        ) : (
+          <Mic className="w-5 h-5" />
+        )}
         
         {/* Recording indicator */}
         {isRecording && (
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-pulse" />
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse" />
         )}
-      </div>
+      </button>
 
-      {/* Waveform Visualization */}
-      {(isRecording || hasRecording) && (
-        <div className="flex items-center justify-center space-x-1 h-12 px-4 bg-gray-900 rounded-full">
+      {/* Compact Waveform - appears over the input when recording */}
+      {isRecording && (
+        <div className="absolute inset-x-0 bottom-full mb-2 flex items-center justify-center space-x-1 h-8 px-4 bg-gray-900 bg-opacity-90 rounded-full backdrop-blur-sm">
           {generateWaveform()}
         </div>
       )}
 
-      {/* Action Controls */}
+      {/* Action Controls - compact overlay */}
       {showControls && hasRecording && (
-        <div className="flex items-center space-x-4">
-          <Button
+        <div className="absolute inset-x-0 bottom-full mb-2 flex items-center justify-center space-x-3 bg-white bg-opacity-95 rounded-full px-4 py-2 shadow-lg backdrop-blur-sm">
+          <button
             type="button"
             onClick={cancelRecording}
-            variant="outline"
-            size="sm"
-            className="flex items-center space-x-2 border-red-300 text-red-600 hover:bg-red-50"
+            className="w-8 h-8 rounded-full bg-red-100 text-red-600 hover:bg-red-200 flex items-center justify-center transition-colors"
           >
             <X className="w-4 h-4" />
-            <span className="hidden sm:inline">Cancel</span>
-          </Button>
+          </button>
           
-          <Button
+          <button
             type="button"
             onClick={submitRecording}
-            size="sm"
-            className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white"
+            className="w-8 h-8 rounded-full bg-green-100 text-green-600 hover:bg-green-200 flex items-center justify-center transition-colors"
           >
             <Check className="w-4 h-4" />
-            <span className="hidden sm:inline">Send</span>
-          </Button>
+          </button>
         </div>
       )}
-
-      {/* Status Text */}
-      <p className="text-sm text-gray-600 text-center">
-        {isRecording 
-          ? 'Recording... Click to stop' 
-          : hasRecording 
-            ? 'Choose an action'
-            : 'Click to start recording'
-        }
-      </p>
-    </div>
+    </>
   );
 }

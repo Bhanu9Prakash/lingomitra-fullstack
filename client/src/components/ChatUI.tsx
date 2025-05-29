@@ -545,7 +545,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
             placeholder="Type or hold mic..."
             disabled={isLoading}
           />
-          <div className="chat-input-buttons">
+          <div className="chat-input-buttons relative">
             <ModernVoiceRecorder 
               onAudioSubmit={handleAudioSubmit}
               disabled={isLoading}
