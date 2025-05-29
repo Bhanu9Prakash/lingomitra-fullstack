@@ -19,6 +19,11 @@ import { useLocation } from 'wouter';
 import { useSimpleToast } from '../hooks/use-simple-toast';
 import { format } from 'date-fns';
 import SubscriptionDialog from '@/components/admin/SubscriptionDialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { queryClient } from '@/lib/queryClient';
 
 // Types
 interface User {
@@ -49,6 +54,24 @@ interface ContactSubmission {
   notes: string | null;
 }
 
+interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt: string | null;
+  featuredImage: string | null;
+  authorId: number;
+  status: string;
+  tags: string[];
+  metaTitle: string | null;
+  metaDescription: string | null;
+  viewCount: number;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string | null;
+}
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   const [, setLocation] = useLocation();
@@ -57,6 +80,19 @@ export default function AdminDashboard() {
   const [resolutionNotes, setResolutionNotes] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
+  const [selectedBlogPost, setSelectedBlogPost] = useState<BlogPost | null>(null);
+  const [showBlogEditor, setShowBlogEditor] = useState(false);
+  const [blogFormData, setBlogFormData] = useState({
+    title: '',
+    slug: '',
+    content: '',
+    excerpt: '',
+    featuredImage: '',
+    tags: [] as string[],
+    metaTitle: '',
+    metaDescription: '',
+    status: 'draft'
+  });
   
   // Fetch analytics data
   const fetchAnalytics = async (): Promise<AnalyticsData> => {
@@ -86,6 +122,96 @@ export default function AdminDashboard() {
     queryKey: ['/api/admin/analytics'],
     queryFn: fetchAnalytics,
     retry: 1
+  });
+
+  // Fetch blog posts
+  const { 
+    data: blogPosts, 
+    isLoading: loadingBlogPosts,
+    refetch: refetchBlogPosts
+  } = useQuery<BlogPost[]>({
+    queryKey: ['/api/admin/blog'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/blog', {
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to fetch blog posts');
+      return response.json();
+    },
+    retry: 1
+  });
+
+  // Blog mutations
+  const createBlogPostMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch('/api/admin/blog', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) throw new Error('Failed to create blog post');
+      return response.json();
+    },
+    onSuccess: () => {
+      refetchBlogPosts();
+      setShowBlogEditor(false);
+      setBlogFormData({
+        title: '',
+        slug: '',
+        content: '',
+        excerpt: '',
+        featuredImage: '',
+        tags: [],
+        metaTitle: '',
+        metaDescription: '',
+        status: 'draft'
+      });
+      toast({ title: "Success", description: "Blog post created successfully" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to create blog post", variant: "destructive" });
+    }
+  });
+
+  const updateBlogPostMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: any }) => {
+      const response = await fetch(`/api/admin/blog/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) throw new Error('Failed to update blog post');
+      return response.json();
+    },
+    onSuccess: () => {
+      refetchBlogPosts();
+      setShowBlogEditor(false);
+      setSelectedBlogPost(null);
+      toast({ title: "Success", description: "Blog post updated successfully" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to update blog post", variant: "destructive" });
+    }
+  });
+
+  const deleteBlogPostMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/admin/blog/${id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to delete blog post');
+      return response.json();
+    },
+    onSuccess: () => {
+      refetchBlogPosts();
+      toast({ title: "Success", description: "Blog post deleted successfully" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to delete blog post", variant: "destructive" });
+    }
   });
   
   // Fetch users data
@@ -282,6 +408,55 @@ export default function AdminDashboard() {
       });
       throw error;
     }
+  };
+
+  // Blog form handlers
+  const handleBlogFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedBlogPost) {
+      updateBlogPostMutation.mutate({ id: selectedBlogPost.id, data: blogFormData });
+    } else {
+      createBlogPostMutation.mutate(blogFormData);
+    }
+  };
+
+  const openBlogEditor = (post?: BlogPost) => {
+    if (post) {
+      setSelectedBlogPost(post);
+      setBlogFormData({
+        title: post.title,
+        slug: post.slug,
+        content: post.content,
+        excerpt: post.excerpt || '',
+        featuredImage: post.featuredImage || '',
+        tags: post.tags,
+        metaTitle: post.metaTitle || '',
+        metaDescription: post.metaDescription || '',
+        status: post.status
+      });
+    } else {
+      setSelectedBlogPost(null);
+      setBlogFormData({
+        title: '',
+        slug: '',
+        content: '',
+        excerpt: '',
+        featuredImage: '',
+        tags: [],
+        metaTitle: '',
+        metaDescription: '',
+        status: 'draft'
+      });
+    }
+    setShowBlogEditor(true);
+  };
+
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9 -]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
   };
   
   return (
