@@ -467,6 +467,7 @@ export default function AdminDashboard() {
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="blog">Blog</TabsTrigger>
           <TabsTrigger value="contact">Contact Submissions</TabsTrigger>
         </TabsList>
         
@@ -627,6 +628,85 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
         
+        {/* Blog Tab */}
+        <TabsContent value="blog" className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-semibold">Blog Management</h2>
+            <Button onClick={() => openBlogEditor()}>
+              Create New Post
+            </Button>
+          </div>
+          
+          {loadingBlogPosts ? (
+            <div className="grid grid-cols-1 gap-4">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="h-24 w-full" />
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {blogPosts && blogPosts.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Views</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {blogPosts.map((post) => (
+                      <TableRow key={post.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">{post.title}</div>
+                            <div className="text-sm text-gray-500">/{post.slug}</div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={post.status === 'published' ? 'default' : 'secondary'}>
+                            {post.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{post.viewCount}</TableCell>
+                        <TableCell>
+                          {format(new Date(post.createdAt), 'MMM d, yyyy')}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => openBlogEditor(post)}
+                            >
+                              Edit
+                            </Button>
+                            <Button 
+                              variant="destructive" 
+                              size="sm"
+                              onClick={() => deleteBlogPostMutation.mutate(post.id)}
+                            >
+                              Delete
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <Card>
+                  <CardContent className="text-center py-6">
+                    <p>No blog posts yet. Create your first post to get started!</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+        </TabsContent>
+        
         {/* Contact Submissions Tab */}
         <TabsContent value="contact">
           <Card className="border border-gray-800">
@@ -771,6 +851,151 @@ export default function AdminDashboard() {
           onSave={updateSubscription}
         />
       )}
+
+      {/* Blog Editor Dialog */}
+      <Dialog open={showBlogEditor} onOpenChange={setShowBlogEditor}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedBlogPost ? 'Edit Blog Post' : 'Create New Blog Post'}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <form onSubmit={handleBlogFormSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  value={blogFormData.title}
+                  onChange={(e) => {
+                    const title = e.target.value;
+                    setBlogFormData(prev => ({
+                      ...prev,
+                      title,
+                      slug: generateSlug(title)
+                    }));
+                  }}
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="slug">URL Slug</Label>
+                <Input
+                  id="slug"
+                  value={blogFormData.slug}
+                  onChange={(e) => setBlogFormData(prev => ({ ...prev, slug: e.target.value }))}
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="excerpt">Excerpt (SEO Description)</Label>
+              <Textarea
+                id="excerpt"
+                value={blogFormData.excerpt}
+                onChange={(e) => setBlogFormData(prev => ({ ...prev, excerpt: e.target.value }))}
+                rows={2}
+                placeholder="Brief description for search engines..."
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="content">Content (Markdown)</Label>
+              <Textarea
+                id="content"
+                value={blogFormData.content}
+                onChange={(e) => setBlogFormData(prev => ({ ...prev, content: e.target.value }))}
+                rows={15}
+                placeholder="Write your blog post content in Markdown..."
+                className="font-mono text-sm"
+                required
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="featuredImage">Featured Image URL</Label>
+                <Input
+                  id="featuredImage"
+                  value={blogFormData.featuredImage}
+                  onChange={(e) => setBlogFormData(prev => ({ ...prev, featuredImage: e.target.value }))}
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+              <div>
+                <Label htmlFor="status">Status</Label>
+                <Select
+                  value={blogFormData.status}
+                  onValueChange={(value) => setBlogFormData(prev => ({ ...prev, status: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="tags">Tags (comma separated)</Label>
+              <Input
+                id="tags"
+                value={blogFormData.tags.join(', ')}
+                onChange={(e) => setBlogFormData(prev => ({ 
+                  ...prev, 
+                  tags: e.target.value.split(',').map(tag => tag.trim()).filter(Boolean)
+                }))}
+                placeholder="language learning, tips, grammar"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="metaTitle">SEO Title</Label>
+                <Input
+                  id="metaTitle"
+                  value={blogFormData.metaTitle}
+                  onChange={(e) => setBlogFormData(prev => ({ ...prev, metaTitle: e.target.value }))}
+                  placeholder="Custom title for search engines"
+                />
+              </div>
+              <div>
+                <Label htmlFor="metaDescription">SEO Meta Description</Label>
+                <Input
+                  id="metaDescription"
+                  value={blogFormData.metaDescription}
+                  onChange={(e) => setBlogFormData(prev => ({ ...prev, metaDescription: e.target.value }))}
+                  placeholder="Description for search results"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setShowBlogEditor(false)}
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={createBlogPostMutation.isPending || updateBlogPostMutation.isPending}
+              >
+                {createBlogPostMutation.isPending || updateBlogPostMutation.isPending 
+                  ? 'Saving...' 
+                  : selectedBlogPost ? 'Update Post' : 'Create Post'
+                }
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
