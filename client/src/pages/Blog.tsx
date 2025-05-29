@@ -39,9 +39,9 @@ export default function Blog() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--text-color)' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
       {/* Hero Section */}
-      <div style={{ backgroundColor: 'var(--text-color)', borderBottomColor: 'var(--border-color)' }} className="text-white border-b">
+      <div style={{ backgroundColor: '#1a1a1a', borderBottomColor: '#333333' }} className="text-white border-b">
         <div className="container mx-auto px-4 py-16">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
@@ -59,12 +59,12 @@ export default function Blog() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="rounded-lg overflow-hidden" style={{ backgroundColor: 'var(--bg-color)', borderColor: 'var(--border-color)' }}>
-                <Skeleton className="h-48 w-full" style={{ backgroundColor: 'var(--bg-dark)' }} />
+              <div key={i} className="rounded-lg overflow-hidden border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+                <Skeleton className="h-48 w-full" style={{ backgroundColor: '#404040' }} />
                 <div className="p-6 space-y-3">
-                  <Skeleton className="h-6 w-full" style={{ backgroundColor: 'var(--bg-dark)' }} />
-                  <Skeleton className="h-4 w-3/4" style={{ backgroundColor: 'var(--bg-dark)' }} />
-                  <Skeleton className="h-4 w-1/2" style={{ backgroundColor: 'var(--bg-dark)' }} />
+                  <Skeleton className="h-6 w-full" style={{ backgroundColor: '#404040' }} />
+                  <Skeleton className="h-4 w-3/4" style={{ backgroundColor: '#404040' }} />
+                  <Skeleton className="h-4 w-1/2" style={{ backgroundColor: '#404040' }} />
                 </div>
               </div>
             ))}
@@ -74,10 +74,10 @@ export default function Blog() {
             {posts.map((post) => (
               <Link key={post.id} href={`/blog/${post.slug}`}>
                 <Card 
-                  className="h-full transition-all duration-200 cursor-pointer hover:shadow-lg"
+                  className="h-full transition-all duration-200 cursor-pointer hover:shadow-lg border"
                   style={{ 
-                    backgroundColor: 'var(--bg-color)', 
-                    borderColor: 'var(--border-color)'
+                    backgroundColor: '#2a2a2a', 
+                    borderColor: '#404040'
                   }}
                 >
                   {post.featuredImage && (
@@ -90,9 +90,9 @@ export default function Blog() {
                     </div>
                   )}
                   <CardHeader>
-                    <CardTitle className="line-clamp-2" style={{ color: 'var(--text-color)' }}>{post.title}</CardTitle>
+                    <CardTitle className="line-clamp-2 text-white">{post.title}</CardTitle>
                     {post.excerpt && (
-                      <CardDescription className="line-clamp-3" style={{ color: 'var(--text-light)' }}>
+                      <CardDescription className="line-clamp-3" style={{ color: '#cccccc' }}>
                         {post.excerpt}
                       </CardDescription>
                     )}
@@ -105,16 +105,16 @@ export default function Blog() {
                           variant="secondary" 
                           className="text-xs"
                           style={{ 
-                            backgroundColor: 'var(--bg-dark)', 
-                            color: 'var(--text-light)', 
-                            borderColor: 'var(--border-color)' 
+                            backgroundColor: '#404040', 
+                            color: '#cccccc', 
+                            borderColor: '#555555' 
                           }}
                         >
                           {tag}
                         </Badge>
                       ))}
                     </div>
-                    <div className="flex justify-between items-center text-sm" style={{ color: 'var(--text-light)' }}>
+                    <div className="flex justify-between items-center text-sm" style={{ color: '#aaaaaa' }}>
                       <span>{format(new Date(post.publishedAt), 'MMM d, yyyy')}</span>
                       <div className="flex items-center gap-1">
                         <Eye className="h-4 w-4" />
