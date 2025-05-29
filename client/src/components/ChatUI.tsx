@@ -37,6 +37,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [lastAutoPlayedIndex, setLastAutoPlayedIndex] = useState(-1);
+  const [audioEnabled, setAudioEnabled] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   
   // State for custom confirmation dialog

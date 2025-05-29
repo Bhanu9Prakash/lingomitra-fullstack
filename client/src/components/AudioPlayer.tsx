@@ -240,8 +240,16 @@ export function AudioPlayer({ text, languageCode = 'en', audioData, autoPlay = f
           // Auto-play only if enabled AND this is a new message
           if (autoPlay && isNewMessage) {
             console.log('Auto-playing new message with pre-generated audio');
-            setTimeout(() => {
-              audioRef.current?.play().catch(console.error);
+            setTimeout(async () => {
+              if (audioRef.current) {
+                try {
+                  await audioRef.current.play();
+                  console.log('Auto-play successful for new message');
+                } catch (error) {
+                  console.warn('Auto-play blocked by browser:', error);
+                  console.log('Click anywhere on the page to enable audio auto-play');
+                }
+              }
             }, 100); // Small delay to ensure audio is ready
           }
         }
