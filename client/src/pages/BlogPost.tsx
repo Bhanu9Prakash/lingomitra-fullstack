@@ -164,46 +164,49 @@ export default function BlogPost() {
         {/* Content */}
         <Card className="bg-gray-800 border-gray-700">
           <CardContent className="pt-6">
-            <article className="prose prose-lg max-w-none dark:prose-invert">
+            <article className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-white prose-p:text-gray-300 prose-li:text-gray-300 prose-strong:text-orange-400 prose-em:text-orange-300">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  h1: ({ children }) => <h1 className="text-3xl font-bold mt-8 mb-4">{children}</h1>,
-                  h2: ({ children }) => <h2 className="text-2xl font-semibold mt-6 mb-3">{children}</h2>,
-                  h3: ({ children }) => <h3 className="text-xl font-medium mt-4 mb-2">{children}</h3>,
-                  p: ({ children }) => <p className="mb-4 leading-relaxed">{children}</p>,
-                  ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1">{children}</ul>,
-                  ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1">{children}</ol>,
+                  h1: ({ children }) => <h1 className="text-3xl font-bold mt-8 mb-4 text-white">{children}</h1>,
+                  h2: ({ children }) => <h2 className="text-2xl font-semibold mt-6 mb-3 text-orange-400">{children}</h2>,
+                  h3: ({ children }) => <h3 className="text-xl font-medium mt-4 mb-2 text-orange-300">{children}</h3>,
+                  p: ({ children }) => <p className="mb-4 leading-relaxed text-gray-300">{children}</p>,
+                  ul: ({ children }) => <ul className="list-disc list-inside mb-4 space-y-1 text-gray-300">{children}</ul>,
+                  ol: ({ children }) => <ol className="list-decimal list-inside mb-4 space-y-1 text-gray-300">{children}</ol>,
                   blockquote: ({ children }) => (
-                    <blockquote className="border-l-4 border-primary/20 pl-4 my-4 italic text-gray-700 dark:text-gray-300">
+                    <blockquote className="border-l-4 border-orange-500/50 pl-4 my-4 italic text-orange-200 bg-orange-500/5 py-2 rounded-r">
                       {children}
                     </blockquote>
                   ),
                   code: ({ className, children }) => {
                     const isInline = !className?.includes('language-');
                     return isInline ? (
-                      <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-sm">{children}</code>
+                      <code className="bg-gray-700 text-orange-300 px-2 py-1 rounded text-sm font-medium">{children}</code>
                     ) : (
-                      <code className="block bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-sm overflow-x-auto">{children}</code>
+                      <code className="block bg-gray-800 border border-gray-700 text-gray-300 p-4 rounded-lg text-sm overflow-x-auto">{children}</code>
                     );
                   },
                   img: ({ src, alt }) => (
                     <img 
                       src={src} 
                       alt={alt} 
-                      className="max-w-full h-auto rounded-lg my-4"
+                      className="max-w-full h-auto rounded-lg my-4 border border-gray-700"
                     />
                   ),
                   a: ({ href, children }) => (
                     <a 
                       href={href} 
-                      className="text-primary hover:underline"
+                      className="text-orange-400 hover:text-orange-300 hover:underline transition-colors"
                       target={href?.startsWith('http') ? '_blank' : undefined}
                       rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
                     >
                       {children}
                     </a>
                   ),
+                  li: ({ children }) => <li className="text-gray-300">{children}</li>,
+                  strong: ({ children }) => <strong className="text-orange-400 font-semibold">{children}</strong>,
+                  em: ({ children }) => <em className="text-orange-300">{children}</em>,
                 }}
               >
                 {post.content}
