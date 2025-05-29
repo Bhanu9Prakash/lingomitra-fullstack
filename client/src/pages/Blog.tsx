@@ -39,9 +39,9 @@ export default function Blog() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section - matching your app's style */}
-      <div className="bg-gray-900 text-white">
+    <div className="min-h-screen bg-gray-900">
+      {/* Hero Section */}
+      <div className="bg-gray-900 text-white border-b border-gray-800">
         <div className="container mx-auto px-4 py-16">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
@@ -57,14 +57,14 @@ export default function Blog() {
       {/* Blog Posts Section */}
       <div className="container mx-auto px-4 py-12">
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                <Skeleton className="h-48 w-full" />
+              <div key={i} className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+                <Skeleton className="h-48 w-full bg-gray-700" />
                 <div className="p-6 space-y-3">
-                  <Skeleton className="h-6 w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-6 w-full bg-gray-700" />
+                  <Skeleton className="h-4 w-3/4 bg-gray-700" />
+                  <Skeleton className="h-4 w-1/2 bg-gray-700" />
                 </div>
               </div>
             ))}
@@ -73,7 +73,7 @@ export default function Blog() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
               <Link key={post.id} href={`/blog/${post.slug}`}>
-                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer bg-white border border-gray-200">
+                <Card className="h-full hover:border-gray-600 transition-all duration-200 cursor-pointer bg-gray-800 border border-gray-700 hover:bg-gray-750">
                   {post.featuredImage && (
                     <div className="aspect-video w-full overflow-hidden rounded-t-lg">
                       <img
@@ -84,9 +84,9 @@ export default function Blog() {
                     </div>
                   )}
                   <CardHeader>
-                    <CardTitle className="line-clamp-2 text-gray-900">{post.title}</CardTitle>
+                    <CardTitle className="line-clamp-2 text-white">{post.title}</CardTitle>
                     {post.excerpt && (
-                      <CardDescription className="line-clamp-3 text-gray-600">
+                      <CardDescription className="line-clamp-3 text-gray-300">
                         {post.excerpt}
                       </CardDescription>
                     )}
@@ -94,12 +94,12 @@ export default function Blog() {
                   <CardContent>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {post.tags.slice(0, 3).map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-xs bg-gray-100 text-gray-700">
+                        <Badge key={tag} variant="secondary" className="text-xs bg-gray-700 text-gray-300 border-gray-600">
                           {tag}
                         </Badge>
                       ))}
                     </div>
-                    <div className="flex justify-between items-center text-sm text-gray-500">
+                    <div className="flex justify-between items-center text-sm text-gray-400">
                       <span>{format(new Date(post.publishedAt), 'MMM d, yyyy')}</span>
                       <div className="flex items-center gap-1">
                         <Eye className="h-4 w-4" />
@@ -113,8 +113,8 @@ export default function Blog() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900">No Blog Posts Yet</h2>
-            <p className="text-gray-600">
+            <h2 className="text-2xl font-semibold mb-4 text-white">No Blog Posts Yet</h2>
+            <p className="text-gray-300">
               We're working on creating great content for you. Check back soon!
             </p>
           </div>
