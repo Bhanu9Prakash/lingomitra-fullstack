@@ -8,6 +8,7 @@ import { fileURLToPath } from "url";
 import { z } from "zod";
 import { insertLanguageSchema, insertLessonSchema, insertBlogPostSchema } from "@shared/schema";
 import multer from 'multer';
+import { Storage } from '@google-cloud/storage';
 import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
 import chatAudioRouter from "./routes/chat-audio";
@@ -981,8 +982,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No image file provided" });
       }
 
-      // Import Google Cloud Storage from existing setup
-      const { Storage } = require('@google-cloud/storage');
+      // Use existing Google Cloud Storage setup from audio cache
       const credentials = JSON.parse(process.env.GOOGLE_CLOUD_CREDENTIALS || '{}');
       const bucketName = process.env.GOOGLE_CLOUD_BUCKET_NAME || '';
       

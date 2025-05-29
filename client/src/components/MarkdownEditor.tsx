@@ -47,22 +47,30 @@ export default function MarkdownEditor({ value, onChange, placeholder, rows = 15
     }
   }, []);
 
-  const insertImageMarkdown = useCallback((imageUrl: string, altText: string = 'image') => {
+  const insertImagePlaceholder = useCallback((filename: string) => {
     const textarea = textareaRef.current;
-    if (!textarea) return;
+    if (!textarea) return { start: 0, end: 0, placeholder: '' };
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    const imageMarkdown = `![${altText}](${imageUrl})`;
+    const placeholder = `![Uploading ${filename}...]()`;
     
-    const newValue = value.substring(0, start) + imageMarkdown + value.substring(end);
+    const newValue = value.substring(0, start) + placeholder + value.substring(end);
     onChange(newValue);
 
-    // Set cursor position after the inserted markdown
+    // Set cursor position after the placeholder
     setTimeout(() => {
       textarea.focus();
-      textarea.setSelectionRange(start + imageMarkdown.length, start + imageMarkdown.length);
+      textarea.setSelectionRange(start + placeholder.length, start + placeholder.length);
     }, 0);
+
+    return { start, end: start + placeholder.length, placeholder };
+  }, [value, onChange]);
+
+  const replaceImagePlaceholder = useCallback((placeholder: string, imageUrl: string, altText: string) => {
+    const newImageMarkdown = `![${altText}](${imageUrl})`;
+    const newValue = value.replace(placeholder, newImageMarkdown);
+    onChange(newValue);
   }, [value, onChange]);
 
   const handleFileUpload = useCallback(async (files: FileList) => {
@@ -74,15 +82,19 @@ export default function MarkdownEditor({ value, onChange, placeholder, rows = 15
     }
 
     for (const file of imageFiles) {
+      const altText = file.name.replace(/\.[^/.]+$/, '');
+      const placeholderInfo = insertImagePlaceholder(file.name);
+      
       try {
         const imageUrl = await uploadImage(file);
-        const altText = file.name.replace(/\.[^/.]+$/, ''); // Remove extension for alt text
-        insertImageMarkdown(imageUrl, altText);
+        replaceImagePlaceholder(placeholderInfo.placeholder, imageUrl, altText);
       } catch (error) {
         console.error(`Failed to upload ${file.name}:`, error);
+        // Replace placeholder with error message
+        replaceImagePlaceholder(placeholderInfo.placeholder, '', `Failed to upload ${file.name}`);
       }
     }
-  }, [uploadImage, insertImageMarkdown]);
+  }, [uploadImage, insertImagePlaceholder, replaceImagePlaceholder]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -114,17 +126,21 @@ export default function MarkdownEditor({ value, onChange, placeholder, rows = 15
       for (const item of imageItems) {
         const file = item.getAsFile();
         if (file) {
+          const filename = `pasted-image-${Date.now()}.${file.type.split('/')[1]}`;
+          const altText = `pasted-image-${Date.now()}`;
+          const placeholderInfo = insertImagePlaceholder(filename);
+          
           try {
             const imageUrl = await uploadImage(file);
-            const altText = `pasted-image-${Date.now()}`;
-            insertImageMarkdown(imageUrl, altText);
+            replaceImagePlaceholder(placeholderInfo.placeholder, imageUrl, altText);
           } catch (error) {
             console.error('Failed to upload pasted image:', error);
+            replaceImagePlaceholder(placeholderInfo.placeholder, '', 'Failed to upload pasted image');
           }
         }
       }
     }
-  }, [uploadImage, insertImageMarkdown]);
+  }, [uploadImage, insertImagePlaceholder, replaceImagePlaceholder]);
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
