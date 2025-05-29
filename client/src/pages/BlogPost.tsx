@@ -69,11 +69,11 @@ export default function BlogPost() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-900">
+      <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-4 text-white">Blog Post Not Found</h1>
-            <p className="text-gray-300 mb-6">
+            <p className="mb-6" style={{ color: '#cccccc' }}>
               The blog post you're looking for doesn't exist or has been removed.
             </p>
             <Link href="/blog">
@@ -90,17 +90,17 @@ export default function BlogPost() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-900">
+      <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto">
-            <Skeleton className="h-8 w-32 mb-6 bg-gray-700" />
-            <Skeleton className="h-12 w-3/4 mb-4 bg-gray-700" />
-            <Skeleton className="h-6 w-1/2 mb-8 bg-gray-700" />
-            <Skeleton className="h-64 w-full mb-8 bg-gray-700" />
+            <Skeleton className="h-8 w-32 mb-6" style={{ backgroundColor: '#404040' }} />
+            <Skeleton className="h-12 w-3/4 mb-4" style={{ backgroundColor: '#404040' }} />
+            <Skeleton className="h-6 w-1/2 mb-8" style={{ backgroundColor: '#404040' }} />
+            <Skeleton className="h-64 w-full mb-8" style={{ backgroundColor: '#404040' }} />
             <div className="space-y-4">
-              <Skeleton className="h-4 w-full bg-gray-700" />
-              <Skeleton className="h-4 w-5/6 bg-gray-700" />
-              <Skeleton className="h-4 w-4/5 bg-gray-700" />
+              <Skeleton className="h-4 w-full" style={{ backgroundColor: '#404040' }} />
+              <Skeleton className="h-4 w-5/6" style={{ backgroundColor: '#404040' }} />
+              <Skeleton className="h-4 w-4/5" style={{ backgroundColor: '#404040' }} />
             </div>
           </div>
         </div>
@@ -111,12 +111,12 @@ export default function BlogPost() {
   if (!post) return null;
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
         {/* Back button */}
         <Link href="/blog">
-          <Button variant="ghost" className="mb-6">
+          <Button variant="ghost" className="mb-6" style={{ color: '#ff6600' }}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Blog
           </Button>
@@ -138,7 +138,7 @@ export default function BlogPost() {
           <h1 className="text-4xl font-bold mb-4 text-white">{post.title}</h1>
           
           {/* Meta information */}
-          <div className="flex flex-wrap items-center gap-4 text-gray-300 mb-6">
+          <div className="flex flex-wrap items-center gap-4 mb-6" style={{ color: '#cccccc' }}>
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
               <span>{format(new Date(post.publishedAt), 'MMMM d, yyyy')}</span>
@@ -153,7 +153,15 @@ export default function BlogPost() {
           {post.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
               {post.tags.map((tag) => (
-                <Badge key={tag} variant="secondary" className="bg-gray-700 text-gray-300 border-gray-600">
+                <Badge 
+                  key={tag} 
+                  variant="secondary" 
+                  style={{ 
+                    backgroundColor: '#404040', 
+                    color: '#cccccc', 
+                    borderColor: '#555555' 
+                  }}
+                >
                   {tag}
                 </Badge>
               ))}
@@ -162,7 +170,7 @@ export default function BlogPost() {
         </div>
 
         {/* Content */}
-        <Card className="bg-gray-800 border-gray-700">
+        <Card style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
           <CardContent className="pt-6">
             <article className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-white prose-p:text-gray-300 prose-li:text-gray-300 prose-strong:text-orange-400 prose-em:text-orange-300">
               <ReactMarkdown
@@ -217,10 +225,10 @@ export default function BlogPost() {
 
         {/* Call to action */}
         <div className="mt-12 text-center">
-          <Card className="bg-gradient-to-r from-orange-500/10 to-orange-600/5 border-gray-700">
+          <Card style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
             <CardContent className="pt-6">
               <h3 className="text-2xl font-semibold mb-4 text-white">Ready to Start Learning?</h3>
-              <p className="text-gray-300 mb-6">
+              <p className="mb-6" style={{ color: '#cccccc' }}>
                 Join thousands of learners using LingoMitra to master new languages with AI-powered conversations.
               </p>
               <Link href="/languages">
