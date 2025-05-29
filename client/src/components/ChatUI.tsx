@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Volume2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Lesson } from "@shared/schema";
 import { DEFAULT_ERROR_MESSAGE } from "@/lib/constants";
 import { VoiceRecorder } from "./VoiceRecorder";
@@ -163,7 +165,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
         }
         
         // If we don't have history or history fetch failed, initialize with just the response
-        // Generate TTS for the initial greeting
+        // Generate TTS for the initial greeting FIRST, then show the message
         let audioData = null;
         try {
           const ttsRes = await fetch('/api/tts/generate', {
@@ -185,6 +187,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
           console.log('TTS generation failed for initial greeting:', ttsError);
         }
 
+        // Only show the message AFTER audio is ready
         setMessages([{ 
           role: "assistant", 
           content: data.response,
