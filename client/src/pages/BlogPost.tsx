@@ -10,6 +10,7 @@ import { ArrowLeft, Eye, Calendar } from 'lucide-react';
 import { Link } from 'wouter';
 import { format } from 'date-fns';
 import { useEffect } from 'react';
+import Footer from '@/components/Footer';
 
 interface BlogPost {
   id: number;
@@ -241,6 +242,7 @@ export default function BlogPost() {
         </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

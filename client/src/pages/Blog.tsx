@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'wouter';
 import { format } from 'date-fns';
 import { Eye } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 interface BlogPost {
   id: number;
@@ -135,6 +136,7 @@ export default function Blog() {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 }
