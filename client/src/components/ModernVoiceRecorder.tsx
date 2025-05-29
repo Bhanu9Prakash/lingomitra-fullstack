@@ -193,8 +193,8 @@ export function ModernVoiceRecorder({ onAudioSubmit, disabled = false }: ModernV
 
       {/* Waveform spanning full horizontal space as shown */}
       {isRecording && (
-        <div className="absolute left-4 right-16 bottom-full mb-3 flex items-center h-6 px-4 bg-gray-800 rounded-lg">
-          <div className="flex items-center justify-between w-full space-x-1">
+        <div className="absolute left-4 right-20 bottom-full mb-3 flex items-center h-6 px-4 bg-gray-800 rounded-lg">
+          <div className="flex items-center justify-evenly w-full">
             {generateWaveform()}
           </div>
         </div>
