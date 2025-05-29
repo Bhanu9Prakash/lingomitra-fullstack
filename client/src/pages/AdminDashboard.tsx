@@ -922,31 +922,84 @@ export default function AdminDashboard() {
               rows={20}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="featuredImage">Featured Image URL</Label>
-                <Input
-                  id="featuredImage"
-                  value={blogFormData.featuredImage}
-                  onChange={(e) => setBlogFormData(prev => ({ ...prev, featuredImage: e.target.value }))}
-                  placeholder="https://example.com/image.jpg"
+            <div>
+              <Label htmlFor="featuredImage">Featured Image</Label>
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Input
+                    id="featuredImage"
+                    value={blogFormData.featuredImage}
+                    onChange={(e) => setBlogFormData(prev => ({ ...prev, featuredImage: e.target.value }))}
+                    placeholder="https://example.com/image.jpg or upload below"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById('featuredImageFile')?.click()}
+                  >
+                    Upload
+                  </Button>
+                </div>
+                <input
+                  type="file"
+                  id="featuredImageFile"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      try {
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        const response = await fetch('/api/admin/blog/upload-image', {
+                          method: 'POST',
+                          body: formData,
+                        });
+                        const result = await response.json();
+                        if (response.ok) {
+                          setBlogFormData(prev => ({ ...prev, featuredImage: result.url }));
+                        }
+                      } catch (error) {
+                        console.error('Failed to upload featured image:', error);
+                      }
+                    }
+                  }}
                 />
+                {blogFormData.featuredImage && (
+                  <div className="relative">
+                    <img 
+                      src={blogFormData.featuredImage} 
+                      alt="Featured image preview" 
+                      className="w-full h-32 object-cover rounded border"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="absolute top-1 right-1"
+                      onClick={() => setBlogFormData(prev => ({ ...prev, featuredImage: '' }))}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                )}
               </div>
-              <div>
-                <Label htmlFor="status">Status</Label>
-                <Select
-                  value={blogFormData.status}
-                  onValueChange={(value) => setBlogFormData(prev => ({ ...prev, status: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="status">Status</Label>
+              <Select
+                value={blogFormData.status}
+                onValueChange={(value) => setBlogFormData(prev => ({ ...prev, status: value }))}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">Draft</SelectItem>
+                  <SelectItem value="published">Published</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
