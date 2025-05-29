@@ -222,3 +222,47 @@ export const insertAudioCacheSchema = createInsertSchema(audioCache).pick({
 
 export type InsertAudioCache = z.infer<typeof insertAudioCacheSchema>;
 export type AudioCache = typeof audioCache.$inferSelect;
+
+// Blog Posts Table
+export const blogPosts = pgTable("blog_posts", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  content: text("content").notNull(), // Markdown content
+  excerpt: text("excerpt"), // Short description for SEO
+  featuredImage: text("featured_image"), // URL to featured image
+  authorId: integer("author_id").notNull().references(() => users.id),
+  status: text("status").notNull().default("draft"), // draft, published
+  tags: text("tags").array().default([]), // Array of tags
+  metaTitle: text("meta_title"), // SEO meta title
+  metaDescription: text("meta_description"), // SEO meta description
+  viewCount: integer("view_count").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  publishedAt: timestamp("published_at"),
+});
+
+export const blogPostsRelations = {
+  author: () => ({
+    relation: "n:1",
+    fields: [blogPosts.authorId],
+    references: [users.id],
+  }),
+};
+
+export const insertBlogPostSchema = createInsertSchema(blogPosts).pick({
+  title: true,
+  slug: true,
+  content: true,
+  excerpt: true,
+  featuredImage: true,
+  authorId: true,
+  status: true,
+  tags: true,
+  metaTitle: true,
+  metaDescription: true,
+  publishedAt: true,
+});
+
+export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
+export type BlogPost = typeof blogPosts.$inferSelect;

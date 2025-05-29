@@ -4,7 +4,8 @@ import {
   lessons, type Lesson, type InsertLesson,
   userProgress, type UserProgress, type InsertUserProgress,
   chatHistory, type ChatHistory, type InsertChatHistory,
-  contactSubmissions, type ContactSubmission, type InsertContactSubmission
+  contactSubmissions, type ContactSubmission, type InsertContactSubmission,
+  blogPosts, type BlogPost, type InsertBlogPost
 } from "@shared/schema";
 import session from "express-session";
 import { Pool } from "@neondatabase/serverless";
@@ -65,6 +66,16 @@ export interface IStorage {
   getContactSubmissionById(id: number): Promise<ContactSubmission | undefined>;
   markContactSubmissionAsResolved(id: number, notes?: string): Promise<ContactSubmission | undefined>;
   
+  // Blog Post methods
+  createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
+  getBlogPost(id: number): Promise<BlogPost | undefined>;
+  getBlogPostBySlug(slug: string): Promise<BlogPost | undefined>;
+  getAllBlogPosts(status?: string): Promise<BlogPost[]>;
+  getPublishedBlogPosts(): Promise<BlogPost[]>;
+  updateBlogPost(id: number, data: Partial<Omit<BlogPost, 'id'>>): Promise<BlogPost | undefined>;
+  deleteBlogPost(id: number): Promise<boolean>;
+  incrementBlogPostViews(id: number): Promise<boolean>;
+  
   // Session store
   sessionStore: session.Store;
 }
@@ -76,12 +87,14 @@ export class MemStorage implements IStorage {
   private progressRecords: Map<string, UserProgress>;
   private chatHistories: Map<string, ChatHistory>;
   private contactSubmissions: Map<number, ContactSubmission>;
+  private blogPosts: Map<number, BlogPost>;
   private userCurrentId: number;
   private languageCurrentId: number;
   private lessonCurrentId: number;
   private progressCurrentId: number;
   private chatHistoryCurrentId: number;
   private contactSubmissionCurrentId: number;
+  private blogPostCurrentId: number;
   public sessionStore: session.Store;
 
   constructor() {
@@ -91,12 +104,14 @@ export class MemStorage implements IStorage {
     this.progressRecords = new Map();
     this.chatHistories = new Map();
     this.contactSubmissions = new Map();
+    this.blogPosts = new Map();
     this.userCurrentId = 1;
     this.languageCurrentId = 1;
     this.lessonCurrentId = 1;
     this.progressCurrentId = 1;
     this.chatHistoryCurrentId = 1;
     this.contactSubmissionCurrentId = 1;
+    this.blogPostCurrentId = 1;
     
     // Initialize the session store
     if (process.env.DATABASE_URL) {
@@ -184,7 +199,9 @@ export class MemStorage implements IStorage {
       verificationToken: insertUser.verificationToken || null,
       verificationTokenExpiry: insertUser.verificationTokenExpiry || null,
       resetPasswordToken: insertUser.resetPasswordToken || null,
-      resetPasswordTokenExpiry: insertUser.resetPasswordTokenExpiry || null
+      resetPasswordTokenExpiry: insertUser.resetPasswordTokenExpiry || null,
+      ttsEnabled: true,
+      ttsAutoPlay: true
     };
     this.users.set(id, user);
     return user;
@@ -465,6 +482,82 @@ export class MemStorage implements IStorage {
     
     this.contactSubmissions.set(id, updatedSubmission);
     return updatedSubmission;
+  }
+
+  // Blog Post methods
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const id = this.blogPostCurrentId++;
+    const now = new Date();
+    const blogPost: BlogPost = {
+      id,
+      ...post,
+      viewCount: 0,
+      createdAt: now,
+      updatedAt: now,
+      tags: post.tags || [],
+      excerpt: post.excerpt || null,
+      featuredImage: post.featuredImage || null,
+      metaTitle: post.metaTitle || null,
+      metaDescription: post.metaDescription || null,
+      publishedAt: post.publishedAt || null,
+    };
+    
+    this.blogPosts.set(id, blogPost);
+    return blogPost;
+  }
+
+  async getBlogPost(id: number): Promise<BlogPost | undefined> {
+    return this.blogPosts.get(id);
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    return Array.from(this.blogPosts.values()).find(post => post.slug === slug);
+  }
+
+  async getAllBlogPosts(status?: string): Promise<BlogPost[]> {
+    const posts = Array.from(this.blogPosts.values());
+    if (status) {
+      return posts.filter(post => post.status === status)
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    }
+    return posts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getPublishedBlogPosts(): Promise<BlogPost[]> {
+    return Array.from(this.blogPosts.values())
+      .filter(post => post.status === 'published')
+      .sort((a, b) => (b.publishedAt?.getTime() || 0) - (a.publishedAt?.getTime() || 0));
+  }
+
+  async updateBlogPost(id: number, data: Partial<Omit<BlogPost, 'id'>>): Promise<BlogPost | undefined> {
+    const post = this.blogPosts.get(id);
+    if (!post) return undefined;
+
+    const updatedPost: BlogPost = {
+      ...post,
+      ...data,
+      updatedAt: new Date(),
+    };
+
+    this.blogPosts.set(id, updatedPost);
+    return updatedPost;
+  }
+
+  async deleteBlogPost(id: number): Promise<boolean> {
+    return this.blogPosts.delete(id);
+  }
+
+  async incrementBlogPostViews(id: number): Promise<boolean> {
+    const post = this.blogPosts.get(id);
+    if (!post) return false;
+
+    const updatedPost: BlogPost = {
+      ...post,
+      viewCount: post.viewCount + 1,
+    };
+
+    this.blogPosts.set(id, updatedPost);
+    return true;
   }
 }
 
@@ -849,6 +942,91 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return updatedSubmission;
+  }
+
+  // Blog Post methods
+  async createBlogPost(post: InsertBlogPost): Promise<BlogPost> {
+    const [newPost] = await db
+      .insert(blogPosts)
+      .values({
+        ...post,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    
+    return newPost;
+  }
+
+  async getBlogPost(id: number): Promise<BlogPost | undefined> {
+    const [post] = await db
+      .select()
+      .from(blogPosts)
+      .where(eq(blogPosts.id, id));
+    
+    return post;
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    const [post] = await db
+      .select()
+      .from(blogPosts)
+      .where(eq(blogPosts.slug, slug));
+    
+    return post;
+  }
+
+  async getAllBlogPosts(status?: string): Promise<BlogPost[]> {
+    const query = db.select().from(blogPosts);
+    
+    if (status) {
+      const posts = await query.where(eq(blogPosts.status, status));
+      return posts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    }
+    
+    const posts = await query;
+    return posts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async getPublishedBlogPosts(): Promise<BlogPost[]> {
+    const posts = await db
+      .select()
+      .from(blogPosts)
+      .where(eq(blogPosts.status, 'published'));
+    
+    return posts.sort((a, b) => (b.publishedAt?.getTime() || 0) - (a.publishedAt?.getTime() || 0));
+  }
+
+  async updateBlogPost(id: number, data: Partial<Omit<BlogPost, 'id'>>): Promise<BlogPost | undefined> {
+    const [updatedPost] = await db
+      .update(blogPosts)
+      .set({
+        ...data,
+        updatedAt: new Date(),
+      })
+      .where(eq(blogPosts.id, id))
+      .returning();
+    
+    return updatedPost;
+  }
+
+  async deleteBlogPost(id: number): Promise<boolean> {
+    const result = await db
+      .delete(blogPosts)
+      .where(eq(blogPosts.id, id));
+    
+    return result.rowCount > 0;
+  }
+
+  async incrementBlogPostViews(id: number): Promise<boolean> {
+    const result = await db
+      .update(blogPosts)
+      .set({
+        viewCount: sql`${blogPosts.viewCount} + 1`,
+      })
+      .where(eq(blogPosts.id, id));
+    
+    return result.rowCount > 0;
   }
 }
 
