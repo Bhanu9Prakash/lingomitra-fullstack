@@ -191,7 +191,16 @@ export default function ConversationPractice() {
               <label className="text-sm font-medium">Language</label>
               <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select language" />
+                  <SelectValue placeholder="Select language">
+                    {selectedLanguage && languages ? (
+                      <div className="flex items-center gap-2">
+                        <span className={`fi fi-${languages.find(l => l.code === selectedLanguage)?.flagCode.toLowerCase()}`}></span>
+                        {languages.find(l => l.code === selectedLanguage)?.name}
+                      </div>
+                    ) : (
+                      "Select language"
+                    )}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {languages?.map((language) => (
