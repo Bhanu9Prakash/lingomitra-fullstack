@@ -84,7 +84,7 @@ export default function LanguageDetail() {
   };
 
   const handleConversationPractice = () => {
-    navigate(`/conversation?language=${languageCode}`);
+    navigate(`/conversation-practice?language=${languageCode}`);
   };
 
   return (

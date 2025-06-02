@@ -155,12 +155,20 @@ export default function ConversationPractice() {
   const selectedTopicData = conversationTopics.find(t => t.id === selectedTopic);
   const selectedDifficultyData = difficultyLevels.find(d => d.value === selectedDifficulty);
 
+  const handleBackNavigation = () => {
+    if (selectedLanguage) {
+      navigate(`/language/${selectedLanguage}`);
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="p-2">
+          <Button variant="ghost" onClick={handleBackNavigation} className="p-2">
             <ArrowLeft className="h-4 w-4" />
           </Button>
           {selectedLanguageData && (
