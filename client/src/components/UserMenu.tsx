@@ -86,13 +86,7 @@ export default function UserMenu() {
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="cursor-pointer rounded-md my-0.5 focus:bg-accent/80" asChild>
-            <Link href="/conversation">
-              <MessageCircle className="mr-2 h-4 w-4 text-muted-foreground" />
-              <span>Conversation Practice</span>
-            </Link>
-          </DropdownMenuItem>
-          
+
           <DropdownMenuItem className="cursor-pointer rounded-md my-0.5 focus:bg-accent/80" asChild>
             <Link href="/settings">
               <Settings className="mr-2 h-4 w-4 text-muted-foreground" />

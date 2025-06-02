@@ -83,6 +83,10 @@ export default function LanguageDetail() {
     navigate(`/${languageCode}/lesson/1`);
   };
 
+  const handleConversationPractice = () => {
+    navigate(`/conversation?language=${languageCode}`);
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Language Header */}
@@ -149,8 +153,8 @@ export default function LanguageDetail() {
           </CardContent>
         </Card>
 
-        {/* Conversation Practice Card (Coming Soon) */}
-        <Card className="relative overflow-hidden opacity-75">
+        {/* Conversation Practice Card */}
+        <Card className="relative overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onClick={handleConversationPractice}>
           <CardHeader className="pb-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-orange-100 rounded-lg">
@@ -172,14 +176,12 @@ export default function LanguageDetail() {
                 • Business meetings<br/>
                 • Daily interactions
               </div>
-              <Button className="w-full" size="lg" disabled>
-                Coming Soon
+              <Button className="w-full" size="lg">
+                Start Practicing
+                <ChevronRight className="h-4 w-4 ml-2" />
               </Button>
             </div>
           </CardContent>
-          <div className="absolute top-4 right-4 bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium">
-            Soon
-          </div>
         </Card>
 
         {/* Cultural Insights Card (Coming Soon) */}

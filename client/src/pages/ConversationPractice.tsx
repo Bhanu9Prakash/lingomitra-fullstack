@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Mic, Send, Play, Square, MessageCircle, Trophy, ArrowLeft } from "lucide-react";
 import { useSimpleToast } from "@/hooks/use-simple-toast";
+import { useLocation } from "wouter";
 // import { ConversationSession } from "./ConversationSession";
 
 interface ConversationTopic {
@@ -41,12 +42,22 @@ interface Language {
 }
 
 export default function ConversationPractice() {
+  const [location] = useLocation();
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [selectedTopic, setSelectedTopic] = useState<string>("");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("beginner");
   const [activeSession, setActiveSession] = useState<ConversationSession | null>(null);
   const { toast } = useSimpleToast();
   const queryClient = useQueryClient();
+
+  // Extract language from URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.split('?')[1] || '');
+    const languageParam = urlParams.get('language');
+    if (languageParam) {
+      setSelectedLanguage(languageParam);
+    }
+  }, [location]);
 
   // Fetch available languages
   const { data: languages } = useQuery<Language[]>({
