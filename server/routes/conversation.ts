@@ -4,6 +4,7 @@ import { insertConversationSessionSchema, insertConversationTranscriptionSchema 
 import { z } from "zod";
 import { ttsService } from "../tts-service";
 import { transcribeAudioWithGemini, generateGeminiResponse } from "../services/genai";
+import { isAuthenticated } from "../auth";
 
 export const conversationRouter = express.Router();
 
@@ -37,9 +38,9 @@ const conversationScenarios = {
 };
 
 // Create a new conversation session
-conversationRouter.post("/sessions", async (req, res) => {
+conversationRouter.post("/sessions", isAuthenticated, async (req, res) => {
   try {
-    const userId = req.session?.user?.id;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(401).json({ error: "Please log in to start a conversation practice" });
     }
@@ -80,9 +81,9 @@ conversationRouter.post("/sessions", async (req, res) => {
 });
 
 // Get user's conversation sessions
-conversationRouter.get("/sessions", async (req, res) => {
+conversationRouter.get("/sessions", isAuthenticated, async (req, res) => {
   try {
-    const userId = req.session?.user?.id;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(401).json({ error: "Please log in to view conversation sessions" });
     }
@@ -98,9 +99,9 @@ conversationRouter.get("/sessions", async (req, res) => {
 });
 
 // Get a specific conversation session
-conversationRouter.get("/sessions/:id", async (req, res) => {
+conversationRouter.get("/sessions/:id", isAuthenticated, async (req, res) => {
   try {
-    const userId = req.session?.user?.id;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(401).json({ error: "Please log in to view conversation session" });
     }
@@ -122,7 +123,7 @@ conversationRouter.get("/sessions/:id", async (req, res) => {
 // Process conversation message (text or audio)
 conversationRouter.post("/sessions/:id/message", async (req, res) => {
   try {
-    const userId = req.session?.user?.id;
+    const userId = (req.session as any)?.userId;
     if (!userId) {
       return res.status(401).json({ error: "Please log in to send messages" });
     }
@@ -138,24 +139,31 @@ conversationRouter.post("/sessions/:id/message", async (req, res) => {
       return res.status(400).json({ error: "Conversation session is not active" });
     }
 
-    const { message, audioData } = req.body;
+    const { message, audioData: inputAudioData } = req.body;
     let userMessage = message;
 
     // If audio data is provided, transcribe it first
-    if (audioData && !message) {
+    if (inputAudioData && !message) {
       try {
-        const audioBuffer = Buffer.from(audioData, 'base64');
+        const audioBuffer = Buffer.from(inputAudioData, 'base64');
         const transcriptionResult = await transcribeAudioWithGemini(audioBuffer, 'audio/webm');
-        userMessage = transcriptionResult.transcription;
-
-        // Save transcription to database
-        await storage.createConversationTranscription({
-          sessionId,
-          audioData,
-          transcription: userMessage,
-          languageCode: session.languageCode,
-          confidence: transcriptionResult.confidence
-        });
+        
+        if (typeof transcriptionResult === 'string') {
+          userMessage = transcriptionResult;
+        } else if (transcriptionResult && typeof transcriptionResult === 'object' && 'transcription' in transcriptionResult) {
+          userMessage = (transcriptionResult as any).transcription;
+          
+          // Save transcription to database
+          await storage.createConversationTranscription({
+            sessionId,
+            audioData: inputAudioData,
+            transcription: userMessage,
+            languageCode: session.languageCode,
+            confidence: (transcriptionResult as any).confidence || null
+          });
+        } else {
+          throw new Error('Invalid transcription result format');
+        }
       } catch (transcriptionError) {
         console.error('Transcription error:', transcriptionError);
         return res.status(400).json({ error: 'Failed to transcribe audio' });
@@ -185,7 +193,7 @@ Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode ==
 
     let aiResponse;
     try {
-      aiResponse = await generateGeminiResponse(conversationContext);
+      aiResponse = await generateGeminiResponse(conversationContext, []);
     } catch (aiError) {
       console.error('AI response generation error:', aiError);
       return res.status(500).json({ error: 'Failed to generate AI response' });
@@ -201,7 +209,7 @@ Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode ==
     });
 
     // Generate TTS for AI response
-    let audioData = null;
+    let responseAudioData = null;
     try {
       const ttsResult = await ttsService.generateSpeech({
         text: aiResponse,
@@ -209,7 +217,7 @@ Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode ==
       });
       
       if (ttsResult.success) {
-        audioData = ttsResult.audioData;
+        responseAudioData = ttsResult.audioData;
       }
     } catch (ttsError) {
       console.error('TTS error:', ttsError);
@@ -219,7 +227,7 @@ Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode ==
     res.json({
       userMessage,
       aiResponse,
-      audioData,
+      audioData: responseAudioData,
       messages: updatedMessages
     });
   } catch (error) {
@@ -231,7 +239,7 @@ Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode ==
 // Complete a conversation session with feedback
 conversationRouter.post("/sessions/:id/complete", async (req, res) => {
   try {
-    const userId = req.session?.user?.id;
+    const userId = (req.session as any)?.userId;
     if (!userId) {
       return res.status(401).json({ error: "Please log in to complete conversation session" });
     }
