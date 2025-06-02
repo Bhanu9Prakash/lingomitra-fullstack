@@ -3,30 +3,18 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Mic, Send, Play, Square, MessageCircle, Trophy, ArrowLeft } from "lucide-react";
+import { MessageCircle, Trophy, Mic, ArrowLeft } from "lucide-react";
 import { useSimpleToast } from "@/hooks/use-simple-toast";
 import { useLocation } from "wouter";
-// import { ConversationSession } from "./ConversationSession";
-
-interface ConversationTopic {
-  id: string;
-  name: string;
-  scenarios: number;
-}
 
 interface ConversationSession {
   id: number;
   languageCode: string;
   topic: string;
   difficultyLevel: string;
-  scenario: string;
-  messages: Array<{ role: string; content: string }>;
-  feedback?: string;
-  score?: number;
-  duration: number;
   status: string;
+  score?: number;
   createdAt: string;
   updatedAt: string;
   completedAt?: string;
@@ -41,8 +29,59 @@ interface Language {
   isAvailable: boolean;
 }
 
+const conversationTopics = [
+  { 
+    id: 'restaurant', 
+    name: 'Restaurant & Dining', 
+    icon: '🍽️', 
+    description: 'Order food, make reservations, discuss menu items',
+    scenarios: ['Ordering at a restaurant', 'Making a reservation', 'Complaining about food', 'Asking for the bill']
+  },
+  { 
+    id: 'travel', 
+    name: 'Travel & Tourism', 
+    icon: '✈️', 
+    description: 'Book tickets, ask directions, hotel interactions',
+    scenarios: ['Booking flights', 'Hotel check-in', 'Asking for directions', 'Immigration questions']
+  },
+  { 
+    id: 'business', 
+    name: 'Business & Work', 
+    icon: '💼', 
+    description: 'Meetings, negotiations, workplace conversations',
+    scenarios: ['Job interviews', 'Business meetings', 'Email discussions', 'Presentations']
+  },
+  { 
+    id: 'shopping', 
+    name: 'Shopping & Services', 
+    icon: '🛍️', 
+    description: 'Buying items, comparing prices, customer service',
+    scenarios: ['Buying clothes', 'Returning items', 'Price negotiations', 'Bank services']
+  },
+  { 
+    id: 'daily', 
+    name: 'Daily Life', 
+    icon: '🏠', 
+    description: 'Casual conversations, weather, family topics',
+    scenarios: ['Weather talk', 'Family discussions', 'Weekend plans', 'Hobbies']
+  },
+  { 
+    id: 'medical', 
+    name: 'Medical & Health', 
+    icon: '🏥', 
+    description: 'Doctor visits, symptoms, health discussions',
+    scenarios: ['Doctor appointments', 'Pharmacy visits', 'Health symptoms', 'Emergency situations']
+  },
+];
+
+const difficultyLevels = [
+  { value: 'beginner', label: 'Beginner', color: 'bg-green-500', description: 'Simple phrases and basic vocabulary' },
+  { value: 'intermediate', label: 'Intermediate', color: 'bg-yellow-500', description: 'Complex sentences and varied vocabulary' },
+  { value: 'advanced', label: 'Advanced', color: 'bg-red-500', description: 'Fluent conversation with idioms and nuances' },
+];
+
 export default function ConversationPractice() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
   const [selectedTopic, setSelectedTopic] = useState<string>("");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("beginner");
@@ -62,11 +101,6 @@ export default function ConversationPractice() {
   // Fetch available languages
   const { data: languages } = useQuery<Language[]>({
     queryKey: ["/api/languages"],
-  });
-
-  // Fetch available conversation topics
-  const { data: topicsData } = useQuery<{ topics: ConversationTopic[] }>({
-    queryKey: ["/api/conversation/topics"],
   });
 
   // Fetch user's conversation sessions
@@ -90,33 +124,26 @@ export default function ConversationPractice() {
       }
       return response.json();
     },
-    onSuccess: (data: any) => {
+    onSuccess: (data) => {
       setActiveSession(data.session);
-      refetchSessions();
       toast({
-        title: "Conversation Started",
-        description: "Your conversation practice session has begun!",
+        title: "Conversation Started!",
+        description: `Your ${selectedTopic} conversation is ready.`,
       });
+      refetchSessions();
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
-        description: error.message || "Failed to start conversation session",
+        description: "Failed to start conversation. Please try again.",
         variant: "destructive",
       });
     },
   });
 
   const handleStartConversation = () => {
-    if (!selectedLanguage || !selectedTopic) {
-      toast({
-        title: "Missing Information",
-        description: "Please select a language and topic",
-        variant: "destructive",
-      });
-      return;
-    }
-
+    if (!selectedLanguage || !selectedTopic) return;
+    
     createSessionMutation.mutate({
       languageCode: selectedLanguage,
       topic: selectedTopic,
@@ -124,237 +151,188 @@ export default function ConversationPractice() {
     });
   };
 
-  const handleSessionComplete = () => {
-    setActiveSession(null);
-    refetchSessions();
-  };
-
-  const handleResumeSession = (session: ConversationSession) => {
-    setActiveSession(session);
-  };
-
-  const difficultyLevels = [
-    { value: "beginner", label: "Beginner", description: "Simple vocabulary and phrases" },
-    { value: "intermediate", label: "Intermediate", description: "More complex conversations" },
-    { value: "advanced", label: "Advanced", description: "Natural, fluent conversations" },
-  ];
-
-  if (activeSession) {
-    return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="flex items-center gap-4 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => setActiveSession(null)}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold capitalize">{activeSession.topic} Conversation</h1>
-            <p className="text-muted-foreground">{activeSession.scenario}</p>
-          </div>
-        </div>
-        <Card>
-          <CardContent className="p-6">
-            <p className="text-center text-muted-foreground">
-              Conversation session is active. The full conversation interface will be available soon.
-            </p>
-            <div className="flex justify-center mt-4">
-              <Button onClick={() => setActiveSession(null)}>
-                Back to Practice Menu
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const selectedLanguageData = languages?.find(l => l.code === selectedLanguage);
+  const selectedTopicData = conversationTopics.find(t => t.id === selectedTopic);
+  const selectedDifficultyData = difficultyLevels.find(d => d.value === selectedDifficulty);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto px-4 py-8">
+      {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Conversation Practice</h1>
+        <div className="flex items-center gap-4 mb-4">
+          <Button variant="ghost" onClick={() => navigate(-1)} className="p-2">
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          {selectedLanguageData && (
+            <div className="flex items-center gap-3 px-4 py-2 bg-primary/10 rounded-lg">
+              <span className={`fi fi-${selectedLanguageData.flagCode.toLowerCase()} text-xl`}></span>
+              <div>
+                <div className="font-semibold">{selectedLanguageData.name}</div>
+                <div className="text-sm text-muted-foreground">Conversation Practice</div>
+              </div>
+            </div>
+          )}
+        </div>
+        <h1 className="text-3xl font-bold mb-2">Choose Your Conversation</h1>
         <p className="text-muted-foreground">
-          Practice real-world conversations with AI in your target language
+          Practice real-world scenarios with AI-powered conversations
         </p>
       </div>
 
-      {/* Session Setup */}
+      {/* Topic Selection */}
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4">Select a Conversation Topic</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {conversationTopics.map((topic) => (
+            <Card 
+              key={topic.id} 
+              className={`cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] ${
+                selectedTopic === topic.id ? 'ring-2 ring-primary bg-primary/5' : ''
+              }`}
+              onClick={() => setSelectedTopic(topic.id)}
+            >
+              <CardContent className="p-6">
+                <div className="text-3xl mb-3">{topic.icon}</div>
+                <h3 className="font-semibold text-lg mb-2">{topic.name}</h3>
+                <p className="text-sm text-muted-foreground mb-4">{topic.description}</p>
+                <div className="space-y-1">
+                  {topic.scenarios.slice(0, 2).map((scenario, idx) => (
+                    <div key={idx} className="text-xs text-muted-foreground flex items-center gap-1">
+                      <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
+                      {scenario}
+                    </div>
+                  ))}
+                  {topic.scenarios.length > 2 && (
+                    <div className="text-xs text-muted-foreground">
+                      +{topic.scenarios.length - 2} more scenarios
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Difficulty Selection */}
+      {selectedTopic && (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Choose Difficulty Level</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {difficultyLevels.map((difficulty) => (
+              <Card 
+                key={difficulty.value}
+                className={`cursor-pointer transition-all hover:shadow-lg ${
+                  selectedDifficulty === difficulty.value ? 'ring-2 ring-primary bg-primary/5' : ''
+                }`}
+                onClick={() => setSelectedDifficulty(difficulty.value)}
+              >
+                <CardContent className="p-4 text-center">
+                  <div className={`w-4 h-4 rounded-full ${difficulty.color} mx-auto mb-2`}></div>
+                  <h3 className="font-semibold mb-1">{difficulty.label}</h3>
+                  <p className="text-sm text-muted-foreground">{difficulty.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Start Button */}
+      {selectedTopic && selectedDifficulty && (
+        <div className="mb-8 text-center">
+          <Card className="p-6 bg-gradient-to-r from-primary/5 to-primary/10">
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold mb-2">Ready to Start?</h3>
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-4">
+                <span>{selectedTopicData?.name}</span>
+                <span>•</span>
+                <span>{selectedDifficultyData?.label}</span>
+                <span>•</span>
+                <span>{selectedLanguageData?.name}</span>
+              </div>
+            </div>
+            <Button 
+              onClick={handleStartConversation}
+              disabled={!selectedLanguage || !selectedTopic || createSessionMutation.isPending}
+              size="lg"
+              className="px-8"
+            >
+              {createSessionMutation.isPending ? "Starting..." : "Start Conversation"}
+              <MessageCircle className="ml-2 h-4 w-4" />
+            </Button>
+          </Card>
+        </div>
+      )}
+
+      {/* How It Works */}
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MessageCircle className="h-5 w-5" />
-            Start New Conversation
-          </CardTitle>
+          <CardTitle>How Conversation Practice Works</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Language Selection */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Language</label>
-              <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select language">
-                    {selectedLanguage && languages ? (
-                      <div className="flex items-center gap-2">
-                        <span className={`fi fi-${languages.find(l => l.code === selectedLanguage)?.flagCode.toLowerCase()}`}></span>
-                        {languages.find(l => l.code === selectedLanguage)?.name}
-                      </div>
-                    ) : (
-                      "Select language"
-                    )}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {languages?.map((language) => (
-                    <SelectItem key={language.code} value={language.code}>
-                      <div className="flex items-center gap-2">
-                        <span className={`fi fi-${language.flagCode.toLowerCase()}`}></span>
-                        {language.name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center space-y-3">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
+                <Trophy className="h-6 w-6 text-orange-600" />
+              </div>
+              <h3 className="font-semibold">Choose Your Scenario</h3>
+              <p className="text-sm text-muted-foreground">
+                Select from realistic conversation scenarios based on your interests and needs
+              </p>
             </div>
 
-            {/* Topic Selection */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Topic</label>
-              <Select value={selectedTopic} onValueChange={setSelectedTopic}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select topic" />
-                </SelectTrigger>
-                <SelectContent>
-                  {topicsData?.topics.map((topic) => (
-                    <SelectItem key={topic.id} value={topic.id}>
-                      <div className="flex items-center justify-between w-full">
-                        <span>{topic.name}</span>
-                        <Badge variant="secondary" className="ml-2">
-                          {topic.scenarios} scenarios
-                        </Badge>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="text-center space-y-3">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
+                <Mic className="h-6 w-6 text-orange-600" />
+              </div>
+              <h3 className="font-semibold">Practice Speaking</h3>
+              <p className="text-sm text-muted-foreground">
+                Engage in natural conversations using voice input or text responses
+              </p>
             </div>
 
-            {/* Difficulty Selection */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Difficulty</label>
-              <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select difficulty" />
-                </SelectTrigger>
-                <SelectContent>
-                  {difficultyLevels.map((level) => (
-                    <SelectItem key={level.value} value={level.value}>
-                      <div>
-                        <div className="font-medium">{level.label}</div>
-                        <div className="text-xs text-muted-foreground">{level.description}</div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="text-center space-y-3">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
+                <Trophy className="h-6 w-6 text-orange-600" />
+              </div>
+              <h3 className="font-semibold">Get Feedback</h3>
+              <p className="text-sm text-muted-foreground">
+                Receive detailed feedback on pronunciation, grammar, and conversation skills
+              </p>
             </div>
           </div>
-
-          <Button
-            onClick={handleStartConversation}
-            disabled={!selectedLanguage || !selectedTopic || createSessionMutation.isPending}
-            className="w-full md:w-auto"
-          >
-            {createSessionMutation.isPending ? "Starting..." : "Start Conversation"}
-          </Button>
         </CardContent>
       </Card>
 
       {/* Recent Sessions */}
-      {selectedLanguage && sessionsData?.sessions && sessionsData.sessions.length > 0 && (
+      {sessionsData?.sessions && sessionsData.sessions.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Recent Sessions</CardTitle>
+            <CardTitle>Your Recent Practice Sessions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {sessionsData.sessions.slice(0, 5).map((session) => (
-                <div
-                  key={session.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 cursor-pointer"
-                  onClick={() => session.status === 'active' ? handleResumeSession(session) : undefined}
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <Badge variant={session.status === 'completed' ? 'default' : 'secondary'}>
-                        {session.topic}
-                      </Badge>
-                      <Badge variant="outline">{session.difficultyLevel}</Badge>
-                      {session.status === 'completed' && session.score && (
-                        <Badge variant="default" className="flex items-center gap-1">
-                          <Trophy className="h-3 w-3" />
-                          {session.score}%
-                        </Badge>
+                <div key={session.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50">
+                  <div>
+                    <div className="font-medium">{session.topic}</div>
+                    <div className="text-sm text-muted-foreground">
+                      {session.difficultyLevel} level
+                      {session.completedAt && session.score && (
+                        <span className="ml-2">• Score: {session.score}/100</span>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground">{session.scenario}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {session.messages.length} messages • {new Date(session.createdAt).toLocaleDateString()}
-                    </p>
-                    {session.feedback && (
-                      <p className="text-sm mt-2 text-green-600">{session.feedback}</p>
-                    )}
                   </div>
                   <div className="flex items-center gap-2">
-                    {session.status === 'active' && (
-                      <Button variant="outline" size="sm">
-                        Resume
-                      </Button>
+                    {session.completedAt ? (
+                      <Badge variant="secondary">Completed</Badge>
+                    ) : (
+                      <Badge variant="outline">In Progress</Badge>
                     )}
-                    <Badge variant={session.status === 'completed' ? 'default' : 'secondary'}>
-                      {session.status}
-                    </Badge>
                   </div>
                 </div>
               ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Getting Started Guide */}
-      {(!selectedLanguage || !topicsData?.topics) && (
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>How It Works</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <MessageCircle className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-medium mb-2">Choose Your Topic</h3>
-                <p className="text-sm text-muted-foreground">
-                  Select from restaurant, travel, business, shopping, or daily conversation scenarios
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Mic className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-medium mb-2">Speak or Type</h3>
-                <p className="text-sm text-muted-foreground">
-                  Communicate using voice input or text, just like a real conversation
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Trophy className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-medium mb-2">Get Feedback</h3>
-                <p className="text-sm text-muted-foreground">
-                  Receive AI-powered feedback and scoring to track your progress
-                </p>
-              </div>
             </div>
           </CardContent>
         </Card>
