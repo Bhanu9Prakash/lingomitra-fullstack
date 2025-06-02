@@ -63,7 +63,7 @@ export default function LanguageDetail() {
 
   // Calculate progress
   const totalLessons = lessons?.length || 0;
-  const completedLessons = progress?.filter((p: any) => p.isCompleted)?.length || 0;
+  const completedLessons = progress?.filter((p: any) => p.completed)?.length || 0;
   const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
 
   const handleStartLessons = () => {
@@ -73,7 +73,7 @@ export default function LanguageDetail() {
   const handleContinueLearning = () => {
     // Find the next incomplete lesson or go to lesson 1
     if (progress && progress.length > 0) {
-      const incompleteLesson = progress.find((p: any) => !p.isCompleted);
+      const incompleteLesson = progress.find((p: any) => !p.completed);
       if (incompleteLesson) {
         const lessonNumber = incompleteLesson.lessonId.split('-lesson')[1];
         navigate(`/${languageCode}/lesson/${lessonNumber}`);
