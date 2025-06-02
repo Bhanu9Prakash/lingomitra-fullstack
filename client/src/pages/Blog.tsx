@@ -55,8 +55,13 @@ export default function Blog() {
         </div>
       </div>
 
+      {/* Visual Separator */}
+      <div className="h-24 relative">
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-px" style={{ backgroundColor: '#333333' }}></div>
+      </div>
+
       {/* Blog Posts Section */}
-      <div className="container mx-auto px-4 py-20">
+      <div className="container mx-auto px-4 pt-16 pb-20">
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
