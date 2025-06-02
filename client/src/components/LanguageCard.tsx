@@ -9,8 +9,8 @@ export default function LanguageCard({ language }: LanguageCardProps) {
   const [_, navigate] = useLocation();
 
   const handleClick = () => {
-    // Navigate to the first lesson using the new URL format
-    navigate(`/${language.code}/lesson/1`);
+    // Navigate to the language detail page
+    navigate(`/language/${language.code}`);
   };
 
   // Map of languages to their approximate number of speakers (in millions)

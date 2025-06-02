@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import LanguageSelection from "@/pages/LanguageSelection";
+import LanguageDetail from "@/pages/LanguageDetail";
 import LessonView from "@/pages/LessonView";
 import AuthPage from "@/pages/auth-page";
 import Settings from "@/pages/Settings";
@@ -38,8 +39,9 @@ function Router() {
         {/* Protected routes requiring authentication */}
         <ProtectedRoute path="/dashboard" component={Home} />
         <ProtectedRoute path="/languages" component={LanguageSelection} />
-        {/* Legacy routes - keep for compatibility but will redirect */}
-        <ProtectedRoute path="/language/:code" component={LessonView} />
+        {/* Language detail page */}
+        <ProtectedRoute path="/language/:code" component={LanguageDetail} />
+        {/* Legacy lesson routes - keep for compatibility but will redirect */}
         <ProtectedRoute path="/lesson/:id" component={LessonView} />
         {/* New standard route format */}
         <ProtectedRoute path="/:language/lesson/:lessonNumber" component={LessonView} />
