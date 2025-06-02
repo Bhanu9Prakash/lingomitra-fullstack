@@ -40,7 +40,7 @@ export default function Blog() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#1a1a1a' }}>
       {/* Hero Section */}
       <div style={{ backgroundColor: '#1a1a1a', borderBottomColor: '#333333' }} className="text-white border-b">
         <div className="container mx-auto px-4 py-16">
@@ -55,13 +55,8 @@ export default function Blog() {
         </div>
       </div>
 
-      {/* Visual Separator */}
-      <div className="h-24 relative">
-        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-px" style={{ backgroundColor: '#333333' }}></div>
-      </div>
-
       {/* Blog Posts Section */}
-      <div className="container mx-auto px-4 pt-16 pb-20">
+      <div className="flex-1 container mx-auto px-4 py-24">
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
