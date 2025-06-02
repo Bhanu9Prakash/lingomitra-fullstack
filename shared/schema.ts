@@ -266,3 +266,76 @@ export const insertBlogPostSchema = createInsertSchema(blogPosts).pick({
 
 export type InsertBlogPost = z.infer<typeof insertBlogPostSchema>;
 export type BlogPost = typeof blogPosts.$inferSelect;
+
+// Conversation Practice Sessions Table
+export const conversationSessions = pgTable("conversation_sessions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  languageCode: text("language_code").notNull(),
+  topic: text("topic").notNull(), // e.g., "restaurant", "travel", "business"
+  difficultyLevel: text("difficulty_level").notNull().default("beginner"), // beginner, intermediate, advanced
+  scenario: text("scenario").notNull(), // Specific scenario description
+  messages: jsonb("messages").notNull().default([]), // Array of conversation messages
+  feedback: text("feedback"), // AI feedback on conversation
+  score: integer("score"), // Overall conversation score (0-100)
+  duration: integer("duration").notNull().default(0), // Duration in seconds
+  status: text("status").notNull().default("active"), // active, completed, paused
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+export const conversationSessionsRelations = {
+  user: () => ({
+    relation: "n:1",
+    fields: [conversationSessions.userId],
+    references: [users.id],
+  }),
+};
+
+export const insertConversationSessionSchema = createInsertSchema(conversationSessions).pick({
+  userId: true,
+  languageCode: true,
+  topic: true,
+  difficultyLevel: true,
+  scenario: true,
+  messages: true,
+  feedback: true,
+  score: true,
+  duration: true,
+  status: true,
+  completedAt: true,
+});
+
+export type InsertConversationSession = z.infer<typeof insertConversationSessionSchema>;
+export type ConversationSession = typeof conversationSessions.$inferSelect;
+
+// Conversation Transcriptions Table
+export const conversationTranscriptions = pgTable("conversation_transcriptions", {
+  id: serial("id").primaryKey(),
+  sessionId: integer("session_id").notNull().references(() => conversationSessions.id),
+  audioData: text("audio_data").notNull(), // Base64 encoded audio
+  transcription: text("transcription").notNull(),
+  languageCode: text("language_code").notNull(),
+  confidence: integer("confidence"), // Transcription confidence (0-100)
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const conversationTranscriptionsRelations = {
+  session: () => ({
+    relation: "n:1",
+    fields: [conversationTranscriptions.sessionId],
+    references: [conversationSessions.id],
+  }),
+};
+
+export const insertConversationTranscriptionSchema = createInsertSchema(conversationTranscriptions).pick({
+  sessionId: true,
+  audioData: true,
+  transcription: true,
+  languageCode: true,
+  confidence: true,
+});
+
+export type InsertConversationTranscription = z.infer<typeof insertConversationTranscriptionSchema>;
+export type ConversationTranscription = typeof conversationTranscriptions.$inferSelect;

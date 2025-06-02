@@ -5,7 +5,9 @@ import {
   userProgress, type UserProgress, type InsertUserProgress,
   chatHistory, type ChatHistory, type InsertChatHistory,
   contactSubmissions, type ContactSubmission, type InsertContactSubmission,
-  blogPosts, type BlogPost, type InsertBlogPost
+  blogPosts, type BlogPost, type InsertBlogPost,
+  conversationSessions, type ConversationSession, type InsertConversationSession,
+  conversationTranscriptions, type ConversationTranscription, type InsertConversationTranscription
 } from "@shared/schema";
 import session from "express-session";
 import { Pool } from "@neondatabase/serverless";
@@ -76,6 +78,17 @@ export interface IStorage {
   deleteBlogPost(id: number): Promise<boolean>;
   incrementBlogPostViews(id: number): Promise<boolean>;
   
+  // Conversation Practice methods
+  createConversationSession(session: InsertConversationSession): Promise<ConversationSession>;
+  getConversationSession(id: number): Promise<ConversationSession | undefined>;
+  getUserConversationSessions(userId: number, languageCode?: string): Promise<ConversationSession[]>;
+  updateConversationSession(id: number, data: Partial<Omit<ConversationSession, 'id'>>): Promise<ConversationSession | undefined>;
+  completeConversationSession(id: number, feedback: string, score: number): Promise<ConversationSession | undefined>;
+  
+  // Conversation Transcription methods
+  createConversationTranscription(transcription: InsertConversationTranscription): Promise<ConversationTranscription>;
+  getSessionTranscriptions(sessionId: number): Promise<ConversationTranscription[]>;
+  
   // Session store
   sessionStore: session.Store;
 }
@@ -88,6 +101,8 @@ export class MemStorage implements IStorage {
   private chatHistories: Map<string, ChatHistory>;
   private contactSubmissions: Map<number, ContactSubmission>;
   private blogPosts: Map<number, BlogPost>;
+  private conversationSessions: Map<number, ConversationSession>;
+  private conversationTranscriptions: Map<number, ConversationTranscription>;
   private userCurrentId: number;
   private languageCurrentId: number;
   private lessonCurrentId: number;
@@ -95,6 +110,8 @@ export class MemStorage implements IStorage {
   private chatHistoryCurrentId: number;
   private contactSubmissionCurrentId: number;
   private blogPostCurrentId: number;
+  private conversationSessionCurrentId: number;
+  private conversationTranscriptionCurrentId: number;
   public sessionStore: session.Store;
 
   constructor() {
@@ -105,6 +122,8 @@ export class MemStorage implements IStorage {
     this.chatHistories = new Map();
     this.contactSubmissions = new Map();
     this.blogPosts = new Map();
+    this.conversationSessions = new Map();
+    this.conversationTranscriptions = new Map();
     this.userCurrentId = 1;
     this.languageCurrentId = 1;
     this.lessonCurrentId = 1;
@@ -112,6 +131,8 @@ export class MemStorage implements IStorage {
     this.chatHistoryCurrentId = 1;
     this.contactSubmissionCurrentId = 1;
     this.blogPostCurrentId = 1;
+    this.conversationSessionCurrentId = 1;
+    this.conversationTranscriptionCurrentId = 1;
     
     // Initialize the session store
     if (process.env.DATABASE_URL) {
@@ -559,6 +580,80 @@ export class MemStorage implements IStorage {
 
     this.blogPosts.set(id, updatedPost);
     return true;
+  }
+
+  // Conversation Practice methods
+  async createConversationSession(insertSession: InsertConversationSession): Promise<ConversationSession> {
+    const id = this.conversationSessionCurrentId++;
+    const now = new Date();
+    const session: ConversationSession = {
+      id,
+      ...insertSession,
+      createdAt: now,
+      updatedAt: now,
+      completedAt: insertSession.completedAt || null,
+      feedback: insertSession.feedback || null,
+      score: insertSession.score || null
+    };
+    
+    this.conversationSessions.set(id, session);
+    return session;
+  }
+
+  async getConversationSession(id: number): Promise<ConversationSession | undefined> {
+    return this.conversationSessions.get(id);
+  }
+
+  async getUserConversationSessions(userId: number, languageCode?: string): Promise<ConversationSession[]> {
+    return Array.from(this.conversationSessions.values())
+      .filter(session => 
+        session.userId === userId && 
+        (!languageCode || session.languageCode === languageCode)
+      )
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async updateConversationSession(id: number, data: Partial<Omit<ConversationSession, 'id'>>): Promise<ConversationSession | undefined> {
+    const session = this.conversationSessions.get(id);
+    if (!session) return undefined;
+
+    const updatedSession: ConversationSession = {
+      ...session,
+      ...data,
+      updatedAt: new Date()
+    };
+
+    this.conversationSessions.set(id, updatedSession);
+    return updatedSession;
+  }
+
+  async completeConversationSession(id: number, feedback: string, score: number): Promise<ConversationSession | undefined> {
+    return this.updateConversationSession(id, {
+      status: 'completed',
+      feedback,
+      score,
+      completedAt: new Date()
+    });
+  }
+
+  // Conversation Transcription methods
+  async createConversationTranscription(insertTranscription: InsertConversationTranscription): Promise<ConversationTranscription> {
+    const id = this.conversationTranscriptionCurrentId++;
+    const transcription: ConversationTranscription = {
+      id,
+      ...insertTranscription,
+      createdAt: new Date(),
+      confidence: insertTranscription.confidence || null
+    };
+    
+    this.conversationTranscriptions.set(id, transcription);
+    return transcription;
+  }
+
+  async getSessionTranscriptions(sessionId: number): Promise<ConversationTranscription[]> {
+    return Array.from(this.conversationTranscriptions.values())
+      .filter(transcription => transcription.sessionId === sessionId)
+      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
   }
 }
 
@@ -1028,6 +1123,74 @@ export class DatabaseStorage implements IStorage {
       .where(eq(blogPosts.id, id));
     
     return (result.rowCount || 0) > 0;
+  }
+
+  // Conversation Practice methods
+  async createConversationSession(insertSession: InsertConversationSession): Promise<ConversationSession> {
+    const [session] = await db
+      .insert(conversationSessions)
+      .values(insertSession)
+      .returning();
+    return session;
+  }
+
+  async getConversationSession(id: number): Promise<ConversationSession | undefined> {
+    const [session] = await db
+      .select()
+      .from(conversationSessions)
+      .where(eq(conversationSessions.id, id));
+    return session || undefined;
+  }
+
+  async getUserConversationSessions(userId: number, languageCode?: string): Promise<ConversationSession[]> {
+    const conditions = [eq(conversationSessions.userId, userId)];
+    if (languageCode) {
+      conditions.push(eq(conversationSessions.languageCode, languageCode));
+    }
+
+    return await db
+      .select()
+      .from(conversationSessions)
+      .where(and(...conditions))
+      .orderBy(sql`${conversationSessions.createdAt} DESC`);
+  }
+
+  async updateConversationSession(id: number, data: Partial<Omit<ConversationSession, 'id'>>): Promise<ConversationSession | undefined> {
+    const [session] = await db
+      .update(conversationSessions)
+      .set({
+        ...data,
+        updatedAt: new Date()
+      })
+      .where(eq(conversationSessions.id, id))
+      .returning();
+    return session || undefined;
+  }
+
+  async completeConversationSession(id: number, feedback: string, score: number): Promise<ConversationSession | undefined> {
+    return this.updateConversationSession(id, {
+      status: 'completed',
+      feedback,
+      score,
+      completedAt: new Date()
+    });
+  }
+
+  // Conversation Transcription methods
+  async createConversationTranscription(insertTranscription: InsertConversationTranscription): Promise<ConversationTranscription> {
+    const [transcription] = await db
+      .insert(conversationTranscriptions)
+      .values(insertTranscription)
+      .returning();
+    return transcription;
+  }
+
+  async getSessionTranscriptions(sessionId: number): Promise<ConversationTranscription[]> {
+    return await db
+      .select()
+      .from(conversationTranscriptions)
+      .where(eq(conversationTranscriptions.sessionId, sessionId))
+      .orderBy(sql`${conversationTranscriptions.createdAt} ASC`);
   }
 }
 
