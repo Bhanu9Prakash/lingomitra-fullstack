@@ -56,7 +56,7 @@ export default function Blog() {
       </div>
 
       {/* Blog Posts Section */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-20">
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
