@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Mic, Send, Play, Square, MessageCircle, Trophy } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { ConversationSession } from "./ConversationSession";
+import { Mic, Send, Play, Square, MessageCircle, Trophy, ArrowLeft } from "lucide-react";
+import { useSimpleToast } from "@/hooks/use-simple-toast";
+// import { ConversationSession } from "./ConversationSession";
 
 interface ConversationTopic {
   id: string;
@@ -45,7 +45,7 @@ export default function ConversationPractice() {
   const [selectedTopic, setSelectedTopic] = useState<string>("");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("beginner");
   const [activeSession, setActiveSession] = useState<ConversationSession | null>(null);
-  const { toast } = useToast();
+  const { toast } = useSimpleToast();
   const queryClient = useQueryClient();
 
   // Fetch available languages
@@ -67,12 +67,19 @@ export default function ConversationPractice() {
   // Create new conversation session
   const createSessionMutation = useMutation({
     mutationFn: async (data: { languageCode: string; topic: string; difficultyLevel: string }) => {
-      return apiRequest("/api/conversation/sessions", {
+      const response = await fetch("/api/conversation/sessions", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
+      if (!response.ok) {
+        throw new Error("Failed to create conversation session");
+      }
+      return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       setActiveSession(data.session);
       refetchSessions();
       toast({
@@ -123,11 +130,29 @@ export default function ConversationPractice() {
 
   if (activeSession) {
     return (
-      <ConversationSession
-        session={activeSession}
-        onComplete={handleSessionComplete}
-        onBack={() => setActiveSession(null)}
-      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="flex items-center gap-4 mb-6">
+          <Button variant="ghost" size="icon" onClick={() => setActiveSession(null)}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold capitalize">{activeSession.topic} Conversation</h1>
+            <p className="text-muted-foreground">{activeSession.scenario}</p>
+          </div>
+        </div>
+        <Card>
+          <CardContent className="p-6">
+            <p className="text-center text-muted-foreground">
+              Conversation session is active. The full conversation interface will be available soon.
+            </p>
+            <div className="flex justify-center mt-4">
+              <Button onClick={() => setActiveSession(null)}>
+                Back to Practice Menu
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
