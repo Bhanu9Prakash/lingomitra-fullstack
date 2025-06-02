@@ -32,7 +32,7 @@ export default function LanguageDetail() {
 
   // Fetch user progress if authenticated
   const { data: progress } = useQuery({
-    queryKey: [`/api/progress/${languageCode}`],
+    queryKey: [`/api/progress/language/${languageCode}`],
     queryFn: getQueryFn(),
     enabled: !!languageCode && !!user,
   });
