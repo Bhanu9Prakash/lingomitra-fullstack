@@ -15,6 +15,7 @@ import chatAudioRouter from "./routes/chat-audio";
 import progressRouter from "./routes/progress";
 import contactRouter from "./routes/contact";
 import ttsRouter from "./routes/tts";
+import { conversationRouter } from "./routes/conversation";
 import { setupAuth, isAuthenticated, isAdmin } from "./auth";
 import { WebSocketServer, WebSocket } from 'ws';
 

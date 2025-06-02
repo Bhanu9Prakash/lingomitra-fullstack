@@ -588,12 +588,19 @@ export class MemStorage implements IStorage {
     const now = new Date();
     const session: ConversationSession = {
       id,
-      ...insertSession,
+      userId: insertSession.userId,
+      languageCode: insertSession.languageCode,
+      topic: insertSession.topic,
+      difficultyLevel: insertSession.difficultyLevel || 'beginner',
+      scenario: insertSession.scenario,
+      messages: insertSession.messages || [],
+      feedback: insertSession.feedback || null,
+      score: insertSession.score || null,
+      duration: insertSession.duration || 0,
+      status: insertSession.status || 'active',
       createdAt: now,
       updatedAt: now,
-      completedAt: insertSession.completedAt || null,
-      feedback: insertSession.feedback || null,
-      score: insertSession.score || null
+      completedAt: insertSession.completedAt || null
     };
     
     this.conversationSessions.set(id, session);

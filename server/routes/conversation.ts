@@ -1,0 +1,289 @@
+import express from "express";
+import { storage } from "../storage";
+import { insertConversationSessionSchema, insertConversationTranscriptionSchema } from "@shared/schema";
+import { z } from "zod";
+import { ttsService } from "../tts-service";
+import { transcribeAudioWithGemini, generateGeminiResponse } from "../services/genai";
+
+export const conversationRouter = express.Router();
+
+// Define conversation topics and scenarios
+const conversationScenarios = {
+  restaurant: [
+    "You are at a restaurant ordering food. The AI will play the role of a waiter.",
+    "You are a waiter taking an order from a customer at a restaurant.",
+    "You are at a cafe ordering drinks and pastries."
+  ],
+  travel: [
+    "You are at the airport checking in for your flight. The AI will play the role of airport staff.",
+    "You are booking a hotel room. The AI will play the role of hotel reception.",
+    "You are asking for directions in a foreign city. The AI will play the role of a local."
+  ],
+  shopping: [
+    "You are at a clothing store looking for specific items. The AI will play the role of a sales assistant.",
+    "You are at a grocery store asking about products. The AI will play the role of a store employee.",
+    "You are returning an item to a store. The AI will play the role of customer service."
+  ],
+  business: [
+    "You are in a job interview. The AI will play the role of the interviewer.",
+    "You are presenting a project to colleagues. The AI will play the role of your team.",
+    "You are negotiating a business deal. The AI will play the role of a client."
+  ],
+  daily: [
+    "You are making small talk with a neighbor. The AI will play the role of your neighbor.",
+    "You are at the doctor's office describing symptoms. The AI will play the role of a doctor.",
+    "You are talking to a friend about your weekend plans."
+  ]
+};
+
+// Create a new conversation session
+conversationRouter.post("/sessions", async (req, res) => {
+  try {
+    const userId = req.session?.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Please log in to start a conversation practice" });
+    }
+
+    const { languageCode, topic, difficultyLevel } = req.body;
+
+    if (!languageCode || !topic) {
+      return res.status(400).json({ error: "Language code and topic are required" });
+    }
+
+    // Validate topic
+    if (!conversationScenarios[topic as keyof typeof conversationScenarios]) {
+      return res.status(400).json({ error: "Invalid topic" });
+    }
+
+    // Select a random scenario for the topic
+    const scenarios = conversationScenarios[topic as keyof typeof conversationScenarios];
+    const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+
+    const sessionData = insertConversationSessionSchema.parse({
+      userId,
+      languageCode,
+      topic,
+      difficultyLevel: difficultyLevel || 'beginner',
+      scenario,
+      messages: [],
+      duration: 0,
+      status: 'active'
+    });
+
+    const session = await storage.createConversationSession(sessionData);
+
+    res.json({ session });
+  } catch (error) {
+    console.error('Error creating conversation session:', error);
+    res.status(500).json({ error: 'Failed to create conversation session' });
+  }
+});
+
+// Get user's conversation sessions
+conversationRouter.get("/sessions", async (req, res) => {
+  try {
+    const userId = req.session?.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Please log in to view conversation sessions" });
+    }
+
+    const { languageCode } = req.query;
+    const sessions = await storage.getUserConversationSessions(userId, languageCode as string);
+
+    res.json({ sessions });
+  } catch (error) {
+    console.error('Error fetching conversation sessions:', error);
+    res.status(500).json({ error: 'Failed to fetch conversation sessions' });
+  }
+});
+
+// Get a specific conversation session
+conversationRouter.get("/sessions/:id", async (req, res) => {
+  try {
+    const userId = req.session?.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Please log in to view conversation session" });
+    }
+
+    const sessionId = parseInt(req.params.id);
+    const session = await storage.getConversationSession(sessionId);
+
+    if (!session || session.userId !== userId) {
+      return res.status(404).json({ error: "Conversation session not found" });
+    }
+
+    res.json({ session });
+  } catch (error) {
+    console.error('Error fetching conversation session:', error);
+    res.status(500).json({ error: 'Failed to fetch conversation session' });
+  }
+});
+
+// Process conversation message (text or audio)
+conversationRouter.post("/sessions/:id/message", async (req, res) => {
+  try {
+    const userId = req.session?.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Please log in to send messages" });
+    }
+
+    const sessionId = parseInt(req.params.id);
+    const session = await storage.getConversationSession(sessionId);
+
+    if (!session || session.userId !== userId) {
+      return res.status(404).json({ error: "Conversation session not found" });
+    }
+
+    if (session.status !== 'active') {
+      return res.status(400).json({ error: "Conversation session is not active" });
+    }
+
+    const { message, audioData } = req.body;
+    let userMessage = message;
+
+    // If audio data is provided, transcribe it first
+    if (audioData && !message) {
+      try {
+        const audioBuffer = Buffer.from(audioData, 'base64');
+        const transcriptionResult = await transcribeAudioWithGemini(audioBuffer, 'audio/webm');
+        userMessage = transcriptionResult.transcription;
+
+        // Save transcription to database
+        await storage.createConversationTranscription({
+          sessionId,
+          audioData,
+          transcription: userMessage,
+          languageCode: session.languageCode,
+          confidence: transcriptionResult.confidence
+        });
+      } catch (transcriptionError) {
+        console.error('Transcription error:', transcriptionError);
+        return res.status(400).json({ error: 'Failed to transcribe audio' });
+      }
+    }
+
+    if (!userMessage) {
+      return res.status(400).json({ error: "Message or audio data is required" });
+    }
+
+    // Add user message to conversation
+    const messages = [...(session.messages as any[]), { role: 'user', content: userMessage }];
+
+    // Generate AI response based on the conversation context
+    const conversationContext = `
+You are participating in a ${session.topic} conversation practice session in ${session.languageCode}. 
+Difficulty level: ${session.difficultyLevel}
+Scenario: ${session.scenario}
+
+Previous conversation:
+${messages.map((msg: any) => `${msg.role}: ${msg.content}`).join('\n')}
+
+Please respond naturally as your role in this scenario. Keep responses appropriate for the ${session.difficultyLevel} level.
+If this is the beginning of the conversation, start the roleplay according to the scenario.
+Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode === 'es' ? 'Spanish' : session.languageCode === 'fr' ? 'French' : session.languageCode === 'de' ? 'German' : session.languageCode === 'it' ? 'Italian' : session.languageCode === 'pt' ? 'Portuguese' : session.languageCode === 'ja' ? 'Japanese' : session.languageCode === 'ko' ? 'Korean' : session.languageCode === 'zh' ? 'Chinese' : session.languageCode === 'hi' ? 'Hindi' : session.languageCode === 'ar' ? 'Arabic' : session.languageCode === 'kn' ? 'Kannada' : 'the target language'}.
+`;
+
+    let aiResponse;
+    try {
+      aiResponse = await generateGeminiResponse(conversationContext);
+    } catch (aiError) {
+      console.error('AI response generation error:', aiError);
+      return res.status(500).json({ error: 'Failed to generate AI response' });
+    }
+
+    // Add AI response to conversation
+    const updatedMessages = [...messages, { role: 'assistant', content: aiResponse }];
+
+    // Update session with new messages
+    await storage.updateConversationSession(sessionId, {
+      messages: updatedMessages,
+      duration: session.duration + 1 // Increment turn count
+    });
+
+    // Generate TTS for AI response
+    let audioData = null;
+    try {
+      const ttsResult = await ttsService.generateSpeech({
+        text: aiResponse,
+        languageCode: session.languageCode
+      });
+      
+      if (ttsResult.success) {
+        audioData = ttsResult.audioData;
+      }
+    } catch (ttsError) {
+      console.error('TTS error:', ttsError);
+      // Continue without audio
+    }
+
+    res.json({
+      userMessage,
+      aiResponse,
+      audioData,
+      messages: updatedMessages
+    });
+  } catch (error) {
+    console.error('Error processing conversation message:', error);
+    res.status(500).json({ error: 'Failed to process message' });
+  }
+});
+
+// Complete a conversation session with feedback
+conversationRouter.post("/sessions/:id/complete", async (req, res) => {
+  try {
+    const userId = req.session?.user?.id;
+    if (!userId) {
+      return res.status(401).json({ error: "Please log in to complete conversation session" });
+    }
+
+    const sessionId = parseInt(req.params.id);
+    const session = await storage.getConversationSession(sessionId);
+
+    if (!session || session.userId !== userId) {
+      return res.status(404).json({ error: "Conversation session not found" });
+    }
+
+    // Generate feedback based on the conversation
+    const messages = session.messages as any[];
+    const conversationLength = messages.length;
+    
+    let feedback = "Great job practicing! ";
+    let score = 75; // Base score
+
+    if (conversationLength >= 10) {
+      feedback += "You had a good length conversation. ";
+      score += 10;
+    } else if (conversationLength >= 6) {
+      feedback += "You maintained the conversation well. ";
+      score += 5;
+    }
+
+    if (session.difficultyLevel === 'advanced') {
+      score += 10;
+      feedback += "Excellent work at the advanced level! ";
+    } else if (session.difficultyLevel === 'intermediate') {
+      score += 5;
+      feedback += "Good progress at the intermediate level. ";
+    }
+
+    feedback += "Keep practicing to improve your fluency!";
+
+    const completedSession = await storage.completeConversationSession(sessionId, feedback, Math.min(score, 100));
+
+    res.json({ session: completedSession });
+  } catch (error) {
+    console.error('Error completing conversation session:', error);
+    res.status(500).json({ error: 'Failed to complete conversation session' });
+  }
+});
+
+// Get available conversation topics
+conversationRouter.get("/topics", (req, res) => {
+  const topics = Object.keys(conversationScenarios).map(topic => ({
+    id: topic,
+    name: topic.charAt(0).toUpperCase() + topic.slice(1),
+    scenarios: conversationScenarios[topic as keyof typeof conversationScenarios].length
+  }));
+
+  res.json({ topics });
+});
