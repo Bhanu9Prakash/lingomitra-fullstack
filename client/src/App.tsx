@@ -19,6 +19,7 @@ import ContactPage from "@/pages/ContactPage";
 import FAQPage from "@/pages/FAQPage";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
+import ConversationPractice from "@/pages/ConversationPractice";
 import VerifyEmailPage from "@/pages/VerifyEmailPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
@@ -45,6 +46,9 @@ function Router() {
         <ProtectedRoute path="/lesson/:id" component={LessonView} />
         {/* New standard route format */}
         <ProtectedRoute path="/:language/lesson/:lessonNumber" component={LessonView} />
+        
+        {/* Conversation Practice page */}
+        <ProtectedRoute path="/conversation" component={ConversationPractice} />
         
         {/* Profile and Settings pages */}
         <ProtectedRoute path="/profile" component={Profile} />
