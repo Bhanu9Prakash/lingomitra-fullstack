@@ -121,9 +121,9 @@ conversationRouter.get("/sessions/:id", isAuthenticated, async (req, res) => {
 });
 
 // Process conversation message (text or audio)
-conversationRouter.post("/sessions/:id/message", async (req, res) => {
+conversationRouter.post("/sessions/:id/message", isAuthenticated, async (req, res) => {
   try {
-    const userId = (req.session as any)?.userId;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(401).json({ error: "Please log in to send messages" });
     }
@@ -193,7 +193,16 @@ Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode ==
 
     let aiResponse;
     try {
-      aiResponse = await generateGeminiResponse(conversationContext, []);
+      // Create a mock lesson object for the conversation context
+      const conversationLesson = {
+        id: 0,
+        lessonId: `conversation-${session.topic}`,
+        languageCode: session.languageCode,
+        title: `${session.topic} conversation practice`,
+        content: conversationContext,
+        orderIndex: 0
+      };
+      aiResponse = await generateGeminiResponse(conversationLesson, userMessage);
     } catch (aiError) {
       console.error('AI response generation error:', aiError);
       return res.status(500).json({ error: 'Failed to generate AI response' });
@@ -237,9 +246,9 @@ Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode ==
 });
 
 // Complete a conversation session with feedback
-conversationRouter.post("/sessions/:id/complete", async (req, res) => {
+conversationRouter.post("/sessions/:id/complete", isAuthenticated, async (req, res) => {
   try {
-    const userId = (req.session as any)?.userId;
+    const userId = (req as any).user?.id;
     if (!userId) {
       return res.status(401).json({ error: "Please log in to complete conversation session" });
     }
