@@ -1,263 +1,200 @@
-import { useRoute, useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
-import { Language, Lesson } from "@shared/schema";
+import { useMemo, useState } from "react";
+import { useLocation, useRoute } from "wouter";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { BookOpen, CheckCircle2, ChevronRight, MessageCircle, RotateCcw } from "lucide-react";
+import { Language, Lesson, UserProgress } from "@shared/schema";
 import { getQueryFn } from "@/lib/queryClient";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { BookOpen, MessageCircle, Users, Globe, ChevronRight, Clock, Award } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
+import { Textarea } from "@/components/ui/textarea";
 import FlagIcon from "@/components/FlagIcon";
+import MascotMoment from "@/components/MascotMoment";
+
+interface ReviewItem {
+  lessonId: string;
+  concept: string;
+  prompt: string;
+  cue: string;
+  dueAt: string;
+  confidence: "again" | "soon" | "got-it";
+}
+
+function lessonNumber(lesson: Lesson) {
+  return lesson.orderIndex || Number(lesson.lessonId.match(/(\d+)/)?.[1] || 1);
+}
 
 export default function LanguageDetail() {
-  const [match, params] = useRoute("/language/:code");
-  const [_, navigate] = useLocation();
-  const { user } = useAuth();
-  
-  const languageCode = params?.code;
+  const [, parameters] = useRoute("/language/:code");
+  const [, navigate] = useLocation();
+  const queryClient = useQueryClient();
+  const languageCode = parameters?.code || "";
+  const [reviewResponse, setReviewResponse] = useState("");
+  const [activeReview, setActiveReview] = useState<ReviewItem | null>(null);
+  const [reviewMessage, setReviewMessage] = useState<string | null>(null);
 
-  // Fetch language data
-  const { data: language, isLoading: languageLoading } = useQuery<Language>({
+  const { data: language, isLoading: isLanguageLoading } = useQuery<Language>({
     queryKey: [`/api/languages/${languageCode}`],
     queryFn: getQueryFn(),
-    enabled: !!languageCode,
+    enabled: Boolean(languageCode),
   });
-
-  // Fetch lessons for progress calculation
-  const { data: lessons, isLoading: lessonsLoading } = useQuery<Lesson[]>({
+  const { data: lessons = [], isLoading: isLessonLoading } = useQuery<Lesson[]>({
     queryKey: [`/api/languages/${languageCode}/lessons`],
     queryFn: getQueryFn(),
-    enabled: !!languageCode,
+    enabled: Boolean(languageCode),
   });
-
-  // Fetch user progress if authenticated
-  const { data: progress } = useQuery({
+  const { data: progress = [] } = useQuery<UserProgress[]>({
     queryKey: [`/api/progress/language/${languageCode}`],
     queryFn: getQueryFn(),
-    enabled: !!languageCode && !!user,
+    enabled: Boolean(languageCode),
+  });
+  const { data: reviewData } = useQuery<{ items: ReviewItem[] }>({
+    queryKey: [`/api/progress/review/due?language=${languageCode}`],
+    queryFn: getQueryFn(),
+    enabled: Boolean(languageCode),
   });
 
-  if (!match || !languageCode) {
-    return <div>Language not found</div>;
-  }
-
-  if (languageLoading || lessonsLoading) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-64 bg-gray-200 rounded-lg"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!language) {
-    return <div>Language not found</div>;
-  }
-
-  // Calculate progress
-  const totalLessons = lessons?.length || 0;
-  const completedLessons = progress?.filter((p: any) => p.completed)?.length || 0;
-  const progressPercentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
-
-  const handleStartLessons = () => {
-    navigate(`/${languageCode}/lesson/1`);
-  };
-
-  const handleContinueLearning = () => {
-    // Find the next incomplete lesson or go to lesson 1
-    if (progress && progress.length > 0) {
-      const incompleteLesson = progress.find((p: any) => !p.completed);
-      if (incompleteLesson) {
-        const lessonNumber = incompleteLesson.lessonId.split('-lesson')[1];
-        navigate(`/${languageCode}/lesson/${lessonNumber}`);
-        return;
+  const saveReviewMutation = useMutation({
+    mutationFn: async ({ item, rating }: { item: ReviewItem; rating: "again" | "soon" | "got-it" }) => {
+      const response = await fetch(`/api/progress/review/lesson/${item.lessonId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ rating }),
+      });
+      if (!response.ok) {
+        const result = await response.json().catch(() => null);
+        throw new Error(result?.message || "We could not save that review.");
       }
-    }
-    navigate(`/${languageCode}/lesson/1`);
-  };
+      return response.json() as Promise<{ nextReviewAt: string }>;
+    },
+    onSuccess: ({ nextReviewAt }) => {
+      setReviewMessage(`Saved. This idea will return ${new Date(nextReviewAt).toLocaleDateString()}.`);
+      setReviewResponse("");
+      setActiveReview(null);
+      queryClient.invalidateQueries({ queryKey: [`/api/progress/review/due?language=${languageCode}`] });
+    },
+    onError: (error: Error) => setReviewMessage(error.message),
+  });
 
-  const handleConversationPractice = () => {
-    navigate(`/conversation-practice?language=${languageCode}`);
-  };
+  const sortedLessons = useMemo(() => [...lessons].sort((a, b) => a.orderIndex - b.orderIndex), [lessons]);
+  const completedLessonIds = new Set(progress.filter((record) => record.completed).map((record) => record.lessonId));
+  const nextLesson = sortedLessons.find((lesson) => !completedLessonIds.has(lesson.lessonId)) || sortedLessons.at(-1);
+  const percent = sortedLessons.length ? Math.round((completedLessonIds.size / sortedLessons.length) * 100) : 0;
+  const reviewItems = reviewData?.items || [];
+
+  if (isLanguageLoading || isLessonLoading) {
+    return <main className="studio-page"><div className="studio-shell"><p aria-live="polite">Preparing your learning space…</p></div></main>;
+  }
+  if (!language) {
+    return <main className="studio-page"><div className="studio-shell"><h1>Language not found</h1><Button onClick={() => navigate("/languages")}>Choose a language</Button></div></main>;
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Language Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-16 h-16">
-            <FlagIcon code={language.flagCode} size={64} />
-          </div>
-          <div>
-            <h1 className="text-4xl font-bold">{language.name}</h1>
-            <p className="text-lg text-muted-foreground">
-              Start your {language.name} learning journey
-            </p>
-          </div>
-        </div>
-
-        {/* Progress Bar (if user has progress) */}
-        {user && totalLessons > 0 && (
-          <div className="bg-card rounded-lg p-4 border">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium">Your Progress</span>
-              <span className="text-sm text-muted-foreground">
-                {completedLessons}/{totalLessons} lessons completed
-              </span>
+    <main className="studio-page">
+      <div className="studio-shell space-y-8">
+        <header className="today-header">
+          <div className="today-language">
+            <FlagIcon code={language.flagCode} size={42} />
+            <div>
+              <p className="eyebrow">Your {language.name} workspace</p>
+              <h1>Today, build one useful sentence.</h1>
+              <p>Progress only changes when you complete a learning activity—never when you simply open a page.</p>
             </div>
-            <Progress value={progressPercentage} className="h-2" />
           </div>
-        )}
+          <MascotMoment state="neutral" className="today-mascot" alt="The LingoMitra fox ready to learn" />
+        </header>
+
+        <section className="today-grid" aria-label="Today’s learning actions">
+          <Card className="today-primary">
+            <CardContent>
+              <div>
+                <p className="eyebrow">Continue learning</p>
+                <h2>{nextLesson ? nextLesson.title : "Your course is ready"}</h2>
+                <p>{nextLesson ? "One focused pattern, then practice it in context." : "Choose a course to begin your first activity."}</p>
+              </div>
+              {nextLesson ? (
+                <Button size="lg" onClick={() => navigate(`/${languageCode}/lesson/${lessonNumber(nextLesson)}`)}>
+                  Open lesson <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              ) : null}
+            </CardContent>
+          </Card>
+
+          <Card className="today-action">
+            <CardContent>
+              <RotateCcw aria-hidden="true" />
+              <div>
+                <p className="eyebrow">Due review</p>
+                <h2>{reviewItems.length ? `${reviewItems.length} idea${reviewItems.length === 1 ? "" : "s"} due` : "Nothing due yet"}</h2>
+                <p>{reviewItems.length ? "Recall one process in a fresh context." : "Complete a lesson and choose a review state to build your queue."}</p>
+              </div>
+              {reviewItems.length ? <Button variant="outline" onClick={() => setActiveReview(reviewItems[0])}>Start review</Button> : null}
+            </CardContent>
+          </Card>
+
+          <Card className="today-action">
+            <CardContent>
+              <MessageCircle aria-hidden="true" />
+              <div>
+                <p className="eyebrow">Conversation practice</p>
+                <h2>Use a sentence in context</h2>
+                <p>Choose a situation, then speak or type your way through it.</p>
+              </div>
+              <Button variant="outline" onClick={() => navigate(`/conversation?language=${encodeURIComponent(languageCode)}`)}>Practice speaking</Button>
+            </CardContent>
+          </Card>
+        </section>
+
+        {activeReview ? (
+          <section className="review-workbench" aria-labelledby="review-title">
+            <div>
+              <p className="eyebrow">Productive recall</p>
+              <h2 id="review-title">{activeReview.concept}</h2>
+              <p>{activeReview.prompt}</p>
+            </div>
+            <Textarea value={reviewResponse} onChange={(event) => setReviewResponse(event.target.value)} placeholder="Write or say your new sentence, then jot down what you said…" />
+            <details><summary>Need a cue?</summary><p>{activeReview.cue}</p></details>
+            <div className="review-ratings">
+              {(["again", "soon", "got-it"] as const).map((rating) => (
+                <Button
+                  key={rating}
+                  variant={rating === "got-it" ? "default" : "outline"}
+                  disabled={!reviewResponse.trim() || saveReviewMutation.isPending}
+                  onClick={() => saveReviewMutation.mutate({ item: activeReview, rating })}
+                >
+                  {rating === "got-it" ? "Got it · 14 days" : rating === "soon" ? "Soon · 3 days" : "Again · tomorrow"}
+                </Button>
+              ))}
+            </div>
+            <Button variant="ghost" onClick={() => setActiveReview(null)}>Not now</Button>
+          </section>
+        ) : null}
+        {reviewMessage ? <p className="form-success" role="status">{reviewMessage}</p> : null}
+
+        <section className="course-outline">
+          <div className="outline-heading">
+            <div>
+              <p className="eyebrow">Course outline</p>
+              <h2>{completedLessonIds.size} of {sortedLessons.length} learning activities completed</h2>
+            </div>
+            <span>{percent}%</span>
+          </div>
+          <Progress value={percent} />
+          <div className="lesson-outline-list">
+            {sortedLessons.map((lesson) => {
+              const completed = completedLessonIds.has(lesson.lessonId);
+              return (
+                <button key={lesson.lessonId} className="outline-lesson" onClick={() => navigate(`/${languageCode}/lesson/${lessonNumber(lesson)}`)}>
+                  {completed ? <CheckCircle2 aria-label="Completed" /> : <BookOpen aria-hidden="true" />}
+                  <span><strong>{lesson.title}</strong><small>{completed ? "Completed through practice" : "Open learning activity"}</small></span>
+                  <ChevronRight aria-hidden="true" />
+                </button>
+              );
+            })}
+          </div>
+        </section>
       </div>
-
-      {/* Learning Options Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
-        {/* Main Lessons Card */}
-        <Card className="relative overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onClick={user ? handleContinueLearning : handleStartLessons}>
-          <CardHeader className="pb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <BookOpen className="h-6 w-6 text-primary" />
-              </div>
-              <div>
-                <CardTitle className="text-xl">Interactive Lessons</CardTitle>
-                <CardDescription>
-                  Structured learning path with {totalLessons} lessons
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Clock className="h-4 w-4" />
-                <span>~{Math.ceil(totalLessons * 15)} minutes total</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Award className="h-4 w-4" />
-                <span>Progressive difficulty</span>
-              </div>
-              <Button className="w-full" size="lg">
-                {user && completedLessons > 0 ? 'Continue Learning' : 'Start Learning'}
-                <ChevronRight className="h-4 w-4 ml-2" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Conversation Practice Card */}
-        <Card className="relative overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onClick={handleConversationPractice}>
-          <CardHeader className="pb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <MessageCircle className="h-6 w-6 text-orange-600" />
-              </div>
-              <div>
-                <CardTitle className="text-xl">Conversation Practice</CardTitle>
-                <CardDescription>
-                  Practice real-world scenarios
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="text-sm text-muted-foreground">
-                • Restaurant conversations<br/>
-                • Travel scenarios<br/>
-                • Business meetings<br/>
-                • Daily interactions
-              </div>
-              <Button className="w-full" size="lg">
-                Start Practicing
-                <ChevronRight className="h-4 w-4 ml-2" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Cultural Insights Card (Coming Soon) */}
-        <Card className="relative overflow-hidden opacity-75">
-          <CardHeader className="pb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Globe className="h-6 w-6 text-blue-600" />
-              </div>
-              <div>
-                <CardTitle className="text-xl">Cultural Insights</CardTitle>
-                <CardDescription>
-                  Learn culture and context
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="text-sm text-muted-foreground">
-                • Cultural traditions<br/>
-                • Social etiquette<br/>
-                • Historical context<br/>
-                • Modern customs
-              </div>
-              <Button className="w-full" size="lg" disabled>
-                Coming Soon
-              </Button>
-            </div>
-          </CardContent>
-          <div className="absolute top-4 right-4 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-            Soon
-          </div>
-        </Card>
-
-        {/* Community Features Card (Coming Soon) */}
-        <Card className="relative overflow-hidden opacity-75">
-          <CardHeader className="pb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <Users className="h-6 w-6 text-green-600" />
-              </div>
-              <div>
-                <CardTitle className="text-xl">Community Hub</CardTitle>
-                <CardDescription>
-                  Connect with other learners
-                </CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="text-sm text-muted-foreground">
-                • Language exchange<br/>
-                • Study groups<br/>
-                • Discussion forums<br/>
-                • Native speaker chat
-              </div>
-              <Button className="w-full" size="lg" disabled>
-                Coming Soon
-              </Button>
-            </div>
-          </CardContent>
-          <div className="absolute top-4 right-4 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-            Soon
-          </div>
-        </Card>
-
-      </div>
-
-      {/* Back to Languages Button */}
-      <div className="mt-8 flex justify-center">
-        <Button variant="outline" onClick={() => navigate('/languages')}>
-          ← Back to All Languages
-        </Button>
-      </div>
-    </div>
+    </main>
   );
 }

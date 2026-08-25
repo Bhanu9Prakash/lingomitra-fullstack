@@ -49,6 +49,8 @@ function Router() {
         
         {/* Conversation Practice page */}
         <ProtectedRoute path="/conversation" component={ConversationPractice} />
+        {/* Keep the original learner-facing path working as a compatibility alias. */}
+        <ProtectedRoute path="/conversation-practice" component={ConversationPractice} />
         
         {/* Profile and Settings pages */}
         <ProtectedRoute path="/profile" component={Profile} />

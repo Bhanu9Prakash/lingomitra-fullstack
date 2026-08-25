@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, primaryKey, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, primaryKey, jsonb, uniqueIndex } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -79,12 +79,14 @@ export const userProgress = pgTable("user_progress", {
   lessonId: text("lesson_id").notNull().references(() => lessons.lessonId),
   completed: boolean("completed").notNull().default(false),
   completedAt: timestamp("completed_at"),
-  progress: integer("progress").notNull().default(0), // Progress as percentage (0-100)
-  score: integer("score"), // Optional score for assessments or quizzes
+  progress: integer("progress").notNull().default(0), // Percentage, always 0–100.
+  score: integer("score"), // Self-checked reasoning coverage, always 0–100.
   lastAccessedAt: timestamp("last_accessed_at").notNull().defaultNow(),
-  timeSpent: integer("time_spent").notNull().default(0), // Time spent in seconds
-  notes: text("notes"), // Optional notes or flashcards
-});
+  timeSpent: integer("time_spent").notNull().default(0), // Seconds.
+  notes: text("notes"), // Validated learning evidence and review state.
+}, (table) => [
+  uniqueIndex("user_progress_user_lesson_unique").on(table.userId, table.lessonId),
+]);
 
 // Relations
 export const usersRelations = {

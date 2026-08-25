@@ -1,19 +1,38 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getQueryFn } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, Trophy, Mic, ArrowLeft } from "lucide-react";
+import {
+  ArrowLeft,
+  BriefcaseBusiness,
+  HeartPulse,
+  House,
+  MessageCircle,
+  MessageSquareText,
+  Mic,
+  Play,
+  Plane,
+  RotateCcw,
+  ShoppingBag,
+  Sparkles,
+  Utensils,
+} from "lucide-react";
 import { useSimpleToast } from "@/hooks/use-simple-toast";
 import { useLocation } from "wouter";
+import { ConversationSession as ConversationSessionView } from "./ConversationSession";
 
 interface ConversationSession {
   id: number;
   languageCode: string;
   topic: string;
   difficultyLevel: string;
+  scenario: string;
+  messages: Array<{ role: string; content: string }>;
+  duration: number;
   status: string;
+  feedback?: string;
   score?: number;
   createdAt: string;
   updatedAt: string;
@@ -30,321 +49,226 @@ interface Language {
 }
 
 const conversationTopics = [
-  { 
-    id: 'restaurant', 
-    name: 'Restaurant & Dining', 
-    icon: '🍽️', 
-    description: 'Order food, make reservations, discuss menu items',
-    scenarios: ['Ordering at a restaurant', 'Making a reservation', 'Complaining about food', 'Asking for the bill']
-  },
-  { 
-    id: 'travel', 
-    name: 'Travel & Tourism', 
-    icon: '✈️', 
-    description: 'Book tickets, ask directions, hotel interactions',
-    scenarios: ['Booking flights', 'Hotel check-in', 'Asking for directions', 'Immigration questions']
-  },
-  { 
-    id: 'business', 
-    name: 'Business & Work', 
-    icon: '💼', 
-    description: 'Meetings, negotiations, workplace conversations',
-    scenarios: ['Job interviews', 'Business meetings', 'Email discussions', 'Presentations']
-  },
-  { 
-    id: 'shopping', 
-    name: 'Shopping & Services', 
-    icon: '🛍️', 
-    description: 'Buying items, comparing prices, customer service',
-    scenarios: ['Buying clothes', 'Returning items', 'Price negotiations', 'Bank services']
-  },
-  { 
-    id: 'daily', 
-    name: 'Daily Life', 
-    icon: '🏠', 
-    description: 'Casual conversations, weather, family topics',
-    scenarios: ['Weather talk', 'Family discussions', 'Weekend plans', 'Hobbies']
-  },
-  { 
-    id: 'medical', 
-    name: 'Medical & Health', 
-    icon: '🏥', 
-    description: 'Doctor visits, symptoms, health discussions',
-    scenarios: ['Doctor appointments', 'Pharmacy visits', 'Health symptoms', 'Emergency situations']
-  },
+  { id: "restaurant", name: "Restaurant", Icon: Utensils, description: "Order with a preference and ask one useful follow-up." },
+  { id: "travel", name: "Travel", Icon: Plane, description: "Ask for help while navigating a new place." },
+  { id: "business", name: "Work", Icon: BriefcaseBusiness, description: "Introduce an idea or ask a clear question." },
+  { id: "shopping", name: "Shopping", Icon: ShoppingBag, description: "Compare options and make a practical choice." },
+  { id: "daily", name: "Daily life", Icon: House, description: "Have a simple, natural exchange with a neighbour." },
+  { id: "medical", name: "Medical visit", Icon: HeartPulse, description: "Describe a need and ask for the next step." },
 ];
 
 const difficultyLevels = [
-  { value: 'beginner', label: 'Beginner', color: 'bg-green-500', description: 'Simple phrases and basic vocabulary' },
-  { value: 'intermediate', label: 'Intermediate', color: 'bg-yellow-500', description: 'Complex sentences and varied vocabulary' },
-  { value: 'advanced', label: 'Advanced', color: 'bg-red-500', description: 'Fluent conversation with idioms and nuances' },
+  { value: "beginner", label: "Beginner", description: "Short phrases with time to pause." },
+  { value: "intermediate", label: "Intermediate", description: "Link ideas and respond to follow-ups." },
+  { value: "advanced", label: "Advanced", description: "Adapt your phrasing to a changing situation." },
 ];
 
 export default function ConversationPractice() {
   const [location, navigate] = useLocation();
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
-  const [selectedTopic, setSelectedTopic] = useState<string>("");
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("beginner");
-  const [activeSession, setActiveSession] = useState<ConversationSession | null>(null);
   const { toast } = useSimpleToast();
   const queryClient = useQueryClient();
+  const parameters = useMemo(() => new URLSearchParams(location.split("?")[1] || ""), [location]);
+  const languageFromUrl = parameters.get("language") || "";
+  const activeSessionId = Number(parameters.get("session")) || null;
+  const [selectedLanguage, setSelectedLanguage] = useState(languageFromUrl);
+  const [selectedTopic, setSelectedTopic] = useState("");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("beginner");
 
-  // Extract language from URL parameters
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.split('?')[1] || '');
-    const languageParam = urlParams.get('language');
-    if (languageParam) {
-      setSelectedLanguage(languageParam);
-    }
-  }, [location]);
+    setSelectedLanguage(languageFromUrl);
+  }, [languageFromUrl]);
 
-  // Fetch available languages
-  const { data: languages } = useQuery<Language[]>({
+  const { data: languages = [] } = useQuery<Language[]>({
     queryKey: ["/api/languages"],
+    queryFn: getQueryFn(),
   });
 
-  // Fetch user's conversation sessions
   const { data: sessionsData, refetch: refetchSessions } = useQuery<{ sessions: ConversationSession[] }>({
     queryKey: ["/api/conversation/sessions", selectedLanguage],
-    enabled: !!selectedLanguage,
+    queryFn: getQueryFn(),
+    enabled: Boolean(selectedLanguage),
   });
 
-  // Create new conversation session
+  const { data: activeSessionData, isLoading: isLoadingSession } = useQuery<{ session: ConversationSession }>({
+    queryKey: [`/api/conversation/sessions/${activeSessionId}`],
+    queryFn: getQueryFn(),
+    enabled: Boolean(activeSessionId),
+  });
+
   const createSessionMutation = useMutation({
-    mutationFn: async (data: { languageCode: string; topic: string; difficultyLevel: string }) => {
+    mutationFn: async () => {
       const response = await fetch("/api/conversation/sessions", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          languageCode: selectedLanguage,
+          topic: selectedTopic,
+          difficultyLevel: selectedDifficulty,
+        }),
       });
       if (!response.ok) {
-        throw new Error("Failed to create conversation session");
+        const result = await response.json().catch(() => null);
+        throw new Error(result?.error || "We could not start that practice.");
       }
-      return response.json();
+      return response.json() as Promise<{ session: ConversationSession }>;
     },
-    onSuccess: (data) => {
-      setActiveSession(data.session);
-      toast({
-        title: "Conversation Started!",
-        description: `Your ${selectedTopic} conversation is ready.`,
-      });
+    onSuccess: ({ session }) => {
+      toast({ title: "Conversation ready", description: "Start with one sentence. You can speak or type." });
       refetchSessions();
+      navigate(`/conversation?language=${encodeURIComponent(session.languageCode)}&session=${session.id}`);
     },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to start conversation. Please try again.",
-        variant: "destructive",
-      });
+    onError: (error: Error) => {
+      toast({ title: "Could not start practice", description: error.message, variant: "destructive" });
     },
   });
 
-  const handleStartConversation = () => {
-    if (!selectedLanguage || !selectedTopic) return;
-    
-    createSessionMutation.mutate({
-      languageCode: selectedLanguage,
-      topic: selectedTopic,
-      difficultyLevel: selectedDifficulty,
-    });
-  };
+  const selectedLanguageData = languages.find((language) => language.code === selectedLanguage);
 
-  const selectedLanguageData = languages?.find(l => l.code === selectedLanguage);
-  const selectedTopicData = conversationTopics.find(t => t.id === selectedTopic);
-  const selectedDifficultyData = difficultyLevels.find(d => d.value === selectedDifficulty);
+  if (activeSessionId && isLoadingSession) {
+    return (
+      <main className="studio-page flex min-h-[55vh] items-center justify-center" aria-live="polite">
+        <p className="text-muted-foreground">Opening your conversation practice…</p>
+      </main>
+    );
+  }
 
-  const handleBackNavigation = () => {
-    if (selectedLanguage) {
-      navigate(`/language/${selectedLanguage}`);
-    } else {
-      navigate('/dashboard');
-    }
-  };
+  if (activeSessionData?.session) {
+    return (
+      <ConversationSessionView
+        session={activeSessionData.session}
+        onBack={() => navigate(`/conversation?language=${encodeURIComponent(activeSessionData.session.languageCode)}`)}
+        onComplete={() => {
+          queryClient.invalidateQueries({ queryKey: ["/api/conversation/sessions"] });
+          navigate(`/conversation?language=${encodeURIComponent(activeSessionData.session.languageCode)}&completed=${activeSessionData.session.id}`);
+        }}
+      />
+    );
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-4 mb-4">
-          <Button variant="ghost" onClick={handleBackNavigation} className="p-2">
-            <ArrowLeft className="h-4 w-4" />
+    <main className="studio-page">
+      <section className="studio-shell space-y-8">
+        <header className="studio-heading">
+          <Button
+            variant="ghost"
+            className="mb-3 -ml-3"
+            onClick={() => navigate(selectedLanguage ? `/language/${selectedLanguage}` : "/languages")}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to learning
           </Button>
-          {selectedLanguageData && (
-            <div className="flex items-center gap-3 px-4 py-2 bg-primary/10 rounded-lg">
-              <span className={`fi fi-${selectedLanguageData.flagCode.toLowerCase()} text-xl`}></span>
-              <div>
-                <div className="font-semibold">{selectedLanguageData.name}</div>
-                <div className="text-sm text-muted-foreground">Conversation Practice</div>
-              </div>
-            </div>
-          )}
-        </div>
-        <h1 className="text-3xl font-bold mb-2">Choose Your Conversation</h1>
-        <p className="text-muted-foreground">
-          Practice real-world scenarios with AI-powered conversations
-        </p>
-      </div>
+          <p className="eyebrow">Conversation practice</p>
+          <h1>Build your next sentence in context.</h1>
+          <p>Choose a situation, pause to plan what you want to express, then speak or type it. The goal is a useful exchange—not a score.</p>
+        </header>
 
-      {/* Topic Selection */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">Select a Conversation Topic</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {conversationTopics.map((topic) => (
-            <Card 
-              key={topic.id} 
-              className={`cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] ${
-                selectedTopic === topic.id ? 'ring-2 ring-primary bg-primary/5' : ''
-              }`}
-              onClick={() => setSelectedTopic(topic.id)}
-            >
-              <CardContent className="p-6">
-                <div className="text-3xl mb-3">{topic.icon}</div>
-                <h3 className="font-semibold text-lg mb-2">{topic.name}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{topic.description}</p>
-                <div className="space-y-1">
-                  {topic.scenarios.slice(0, 2).map((scenario, idx) => (
-                    <div key={idx} className="text-xs text-muted-foreground flex items-center gap-1">
-                      <div className="w-1 h-1 bg-muted-foreground rounded-full"></div>
-                      {scenario}
-                    </div>
-                  ))}
-                  {topic.scenarios.length > 2 && (
-                    <div className="text-xs text-muted-foreground">
-                      +{topic.scenarios.length - 2} more scenarios
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-
-      {/* Difficulty Selection */}
-      {selectedTopic && (
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Choose Difficulty Level</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {difficultyLevels.map((difficulty) => (
-              <Card 
-                key={difficulty.value}
-                className={`cursor-pointer transition-all hover:shadow-lg ${
-                  selectedDifficulty === difficulty.value ? 'ring-2 ring-primary bg-primary/5' : ''
-                }`}
-                onClick={() => setSelectedDifficulty(difficulty.value)}
+        <section className="studio-panel" aria-labelledby="language-choice">
+          <h2 id="language-choice" className="studio-section-title">1. Choose a language</h2>
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Language">
+            {languages.map((language) => (
+              <button
+                key={language.code}
+                type="button"
+                role="radio"
+                aria-checked={selectedLanguage === language.code}
+                className={`choice-chip ${selectedLanguage === language.code ? "is-selected" : ""}`}
+                onClick={() => setSelectedLanguage(language.code)}
               >
-                <CardContent className="p-4 text-center">
-                  <div className={`w-4 h-4 rounded-full ${difficulty.color} mx-auto mb-2`}></div>
-                  <h3 className="font-semibold mb-1">{difficulty.label}</h3>
-                  <p className="text-sm text-muted-foreground">{difficulty.description}</p>
-                </CardContent>
-              </Card>
+                {language.name}
+              </button>
             ))}
           </div>
-        </div>
-      )}
+        </section>
 
-      {/* Start Button */}
-      {selectedTopic && selectedDifficulty && (
-        <div className="mb-8 text-center">
-          <Card className="p-6 bg-gradient-to-r from-primary/5 to-primary/10">
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">Ready to Start?</h3>
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-4">
-                <span>{selectedTopicData?.name}</span>
-                <span>•</span>
-                <span>{selectedDifficultyData?.label}</span>
-                <span>•</span>
-                <span>{selectedLanguageData?.name}</span>
-              </div>
+        {selectedLanguage && (
+          <section className="studio-panel" aria-labelledby="topic-choice">
+            <h2 id="topic-choice" className="studio-section-title">2. Choose a situation</h2>
+            <div className="conversation-topic-grid" role="radiogroup" aria-label="Conversation situation">
+              {conversationTopics.map(({ id, name, Icon, description }) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="radio"
+                  aria-checked={selectedTopic === id}
+                  className={`conversation-topic ${selectedTopic === id ? "is-selected" : ""}`}
+                  onClick={() => setSelectedTopic(id)}
+                >
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                  <span>{name}</span>
+                  <small>{description}</small>
+                </button>
+              ))}
             </div>
-            <Button 
-              onClick={handleStartConversation}
-              disabled={!selectedLanguage || !selectedTopic || createSessionMutation.isPending}
-              size="lg"
-              className="px-8"
-            >
-              {createSessionMutation.isPending ? "Starting..." : "Start Conversation"}
-              <MessageCircle className="ml-2 h-4 w-4" />
+          </section>
+        )}
+
+        {selectedTopic && (
+          <section className="studio-panel" aria-labelledby="difficulty-choice">
+            <h2 id="difficulty-choice" className="studio-section-title">3. Set the challenge</h2>
+            <div className="difficulty-options" role="radiogroup" aria-label="Conversation difficulty">
+              {difficultyLevels.map((level) => (
+                <button
+                  key={level.value}
+                  type="button"
+                  role="radio"
+                  aria-checked={selectedDifficulty === level.value}
+                  className={`difficulty-option ${selectedDifficulty === level.value ? "is-selected" : ""}`}
+                  onClick={() => setSelectedDifficulty(level.value)}
+                >
+                  <strong>{level.label}</strong>
+                  <span>{level.description}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {selectedLanguage && selectedTopic && (
+          <section className="studio-callout">
+            <div>
+              <p className="eyebrow">Ready when you are</p>
+              <h2>{selectedLanguageData?.name} · {conversationTopics.find((topic) => topic.id === selectedTopic)?.name}</h2>
+              <p>Say your first sentence aloud before you press send. Typed practice is always available.</p>
+            </div>
+            <Button size="lg" onClick={() => createSessionMutation.mutate()} disabled={createSessionMutation.isPending}>
+              <MessageCircle className="mr-2 h-5 w-5" />
+              {createSessionMutation.isPending ? "Opening practice…" : "Start practice"}
             </Button>
-          </Card>
-        </div>
-      )}
+          </section>
+        )}
 
-      {/* How It Works */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>How Conversation Practice Works</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center space-y-3">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
-                <Trophy className="h-6 w-6 text-orange-600" />
+        <section className="method-strip" aria-label="How conversation practice works">
+          <div><MessageSquareText aria-hidden="true" /><strong>Choose one context</strong><span>A clear context makes your first sentence easier to build.</span></div>
+          <div><Mic aria-hidden="true" /><strong>Pause, then express</strong><span>Speak or type. You can retry without losing the thread.</span></div>
+          <div><Sparkles aria-hidden="true" /><strong>Reflect on a process</strong><span>Finish with one thing that worked and one idea to revisit.</span></div>
+        </section>
+
+        {sessionsData?.sessions?.length ? (
+          <section className="studio-panel" aria-labelledby="recent-practice">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="eyebrow">Continue or revisit</p>
+                <h2 id="recent-practice" className="studio-section-title">Recent practice</h2>
               </div>
-              <h3 className="font-semibold">Choose Your Scenario</h3>
-              <p className="text-sm text-muted-foreground">
-                Select from realistic conversation scenarios based on your interests and needs
-              </p>
+              <Badge variant="outline">{sessionsData.sessions.length} saved</Badge>
             </div>
-
-            <div className="text-center space-y-3">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
-                <Mic className="h-6 w-6 text-orange-600" />
-              </div>
-              <h3 className="font-semibold">Practice Speaking</h3>
-              <p className="text-sm text-muted-foreground">
-                Engage in natural conversations using voice input or text responses
-              </p>
-            </div>
-
-            <div className="text-center space-y-3">
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
-                <Trophy className="h-6 w-6 text-orange-600" />
-              </div>
-              <h3 className="font-semibold">Get Feedback</h3>
-              <p className="text-sm text-muted-foreground">
-                Receive detailed feedback on pronunciation, grammar, and conversation skills
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Recent Sessions */}
-      {sessionsData?.sessions && sessionsData.sessions.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Your Recent Practice Sessions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
+            <div className="recent-session-list">
               {sessionsData.sessions.slice(0, 5).map((session) => (
-                <div key={session.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50">
+                <div key={session.id} className="recent-session">
                   <div>
-                    <div className="font-medium">{session.topic}</div>
-                    <div className="text-sm text-muted-foreground">
-                      {session.difficultyLevel} level
-                      {session.completedAt && session.score && (
-                        <span className="ml-2">• Score: {session.score}/100</span>
-                      )}
-                    </div>
+                    <strong className="capitalize">{session.topic}</strong>
+                    <span>{session.difficultyLevel} · {session.completedAt ? "Reflection saved" : "In progress"}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {session.completedAt ? (
-                      <Badge variant="secondary">Completed</Badge>
-                    ) : (
-                      <Badge variant="outline">In Progress</Badge>
-                    )}
-                  </div>
+                  <Button variant="outline" size="sm" onClick={() => navigate(`/conversation?language=${encodeURIComponent(session.languageCode)}&session=${session.id}`)}>
+                    {session.completedAt ? <RotateCcw className="mr-1 h-4 w-4" /> : <Play className="mr-1 h-4 w-4" />}
+                    {session.completedAt ? "View" : "Resume"}
+                  </Button>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+          </section>
+        ) : null}
+      </section>
+    </main>
   );
 }

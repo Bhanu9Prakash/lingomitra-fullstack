@@ -34,6 +34,10 @@ const conversationScenarios = {
     "You are making small talk with a neighbor. The AI will play the role of your neighbor.",
     "You are at the doctor's office describing symptoms. The AI will play the role of a doctor.",
     "You are talking to a friend about your weekend plans."
+  ],
+  medical: [
+    "You are at a clinic describing a simple symptom. The AI will play the role of a clinician.",
+    "You are at a pharmacy asking for help. The AI will play the role of a pharmacist."
   ]
 };
 
@@ -95,6 +99,25 @@ conversationRouter.get("/sessions", isAuthenticated, async (req, res) => {
   } catch (error) {
     console.error('Error fetching conversation sessions:', error);
     res.status(500).json({ error: 'Failed to fetch conversation sessions' });
+  }
+});
+
+// Load one session only when it belongs to the signed-in learner.
+conversationRouter.get("/sessions/:id", isAuthenticated, async (req, res) => {
+  const sessionId = Number(req.params.id);
+  if (!Number.isInteger(sessionId) || sessionId < 1) {
+    return res.status(400).json({ error: "Invalid session" });
+  }
+
+  try {
+    const session = await storage.getConversationSession(sessionId);
+    if (!session || session.userId !== (req as any).user?.id) {
+      return res.status(404).json({ error: "Conversation session not found" });
+    }
+    res.json({ session });
+  } catch (error) {
+    console.error("Error loading conversation session:", error);
+    res.status(500).json({ error: "Failed to load conversation session" });
   }
 });
 
@@ -260,32 +283,14 @@ conversationRouter.post("/sessions/:id/complete", isAuthenticated, async (req, r
       return res.status(404).json({ error: "Conversation session not found" });
     }
 
-    // Generate feedback based on the conversation
+    // Reflect observable activity without presenting a made-up fluency score.
     const messages = session.messages as any[];
-    const conversationLength = messages.length;
-    
-    let feedback = "Great job practicing! ";
-    let score = 75; // Base score
+    const learnerTurns = messages.filter((message) => message.role === "user").length;
+    const feedback = learnerTurns
+      ? `You expressed ${learnerTurns} idea${learnerTurns === 1 ? "" : "s"} in this ${session.topic} context. Revisit how you connect your first request to one follow-up question next time.`
+      : `You opened a ${session.topic} practice space. Next time, try one short opening sentence, then add a follow-up question.`;
 
-    if (conversationLength >= 10) {
-      feedback += "You had a good length conversation. ";
-      score += 10;
-    } else if (conversationLength >= 6) {
-      feedback += "You maintained the conversation well. ";
-      score += 5;
-    }
-
-    if (session.difficultyLevel === 'advanced') {
-      score += 10;
-      feedback += "Excellent work at the advanced level! ";
-    } else if (session.difficultyLevel === 'intermediate') {
-      score += 5;
-      feedback += "Good progress at the intermediate level. ";
-    }
-
-    feedback += "Keep practicing to improve your fluency!";
-
-    const completedSession = await storage.completeConversationSession(sessionId, feedback, Math.min(score, 100));
+    const completedSession = await storage.completeConversationSession(sessionId, feedback, null);
 
     res.json({ session: completedSession });
   } catch (error) {

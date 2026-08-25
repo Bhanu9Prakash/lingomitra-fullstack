@@ -396,14 +396,13 @@ export default function AdminDashboard() {
       });
       
       // Refresh users data
-      const updatedUsers = await fetchUsers();
+      await fetchUsers();
       
       // Close the dialog
       setSelectedUser(null);
       setShowSubscriptionDialog(false);
       
-      // If this causes a refresh of the users data, we'll get an updated list
-      return updatedUsers;
+      // The caller only needs completion or a thrown error.
     } catch (error: any) {
       toast({
         title: "Error",

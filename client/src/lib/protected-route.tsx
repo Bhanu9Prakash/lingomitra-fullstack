@@ -26,7 +26,7 @@ export function ProtectedRoute({
   if (!user) {
     return (
       <Route path={path}>
-        <Redirect to="/auth" />
+        <Redirect to={`/auth?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`} />
       </Route>
     );
   }

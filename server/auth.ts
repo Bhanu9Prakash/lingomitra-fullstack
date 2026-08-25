@@ -50,7 +50,7 @@ function generateVerificationToken(): string {
  */
 async function sendVerificationEmailToUser(email: string, username: string, token: string) {
   try {
-    const emailOptions = generateVerificationEmail(email, token, process.env.BASE_URL);
+    const emailOptions = generateVerificationEmail(email, token, process.env.BASE_URL || "");
     
     const result = await sendEmail(emailOptions);
     if (result) {
@@ -71,7 +71,7 @@ async function sendVerificationEmailToUser(email: string, username: string, toke
 async function sendPasswordResetEmailToUser(email: string, token: string) {
   try {
     // Use the email service which has the correct URL fallback
-    const emailOptions = generatePasswordResetEmail(email, token, process.env.BASE_URL);
+    const emailOptions = generatePasswordResetEmail(email, token, process.env.BASE_URL || "");
     
     const result = await sendEmail(emailOptions);
     if (result) {
@@ -147,7 +147,7 @@ export function setupAuth(app: Express) {
           user = await storage.getUserByEmail(usernameOrEmail);
         }
         
-        if (!user || !(await comparePasswords(password, user.password))) {
+        if (!user || !user.password || !(await comparePasswords(password, user.password))) {
           return done(null, false);
         } else {
           return done(null, user);
@@ -394,11 +394,13 @@ export function setupAuth(app: Express) {
       // Update the user's session if they're already logged in
       if (req.isAuthenticated() && req.user && (req.user as SelectUser).id === user.id) {
         // Update the session with the verified user
-        req.login(updatedUser, (err) => {
+        if (updatedUser) {
+          req.login(updatedUser, (err) => {
           if (err) {
             console.error('Error updating session:', err);
           }
-        });
+          });
+        }
       }
       
       // If this is an API call, return JSON
@@ -754,7 +756,7 @@ export function setupAuth(app: Express) {
       }
       
       // Verify current password
-      if (!(await comparePasswords(currentPassword, user.password))) {
+      if (!user.password || !(await comparePasswords(currentPassword, user.password))) {
         return res.status(400).json({ 
           success: false, 
           message: "Current password is incorrect" 

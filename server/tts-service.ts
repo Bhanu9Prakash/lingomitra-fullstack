@@ -19,11 +19,13 @@ interface TTSResponse {
 
 class TTSService {
   private openai: OpenAI;
+  private apiKey: string;
 
   constructor() {
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY
     });
+    this.apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY || process.env.GOOGLE_API_KEY || "";
   }
 
   /**

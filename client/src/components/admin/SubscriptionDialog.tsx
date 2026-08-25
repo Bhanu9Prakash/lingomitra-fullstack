@@ -8,12 +8,15 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
-import type { User } from '@shared/schema';
-
 interface SubscriptionDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  user: User;
+  user: {
+    id: number;
+    username: string;
+    subscriptionTier: string | null;
+    subscriptionExpiry: Date | string | null;
+  };
   onSave: (userId: number, subscriptionTier: string, subscriptionExpiry?: Date) => Promise<void>;
 }
 

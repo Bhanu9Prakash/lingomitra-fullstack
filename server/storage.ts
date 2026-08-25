@@ -83,7 +83,7 @@ export interface IStorage {
   getConversationSession(id: number): Promise<ConversationSession | undefined>;
   getUserConversationSessions(userId: number, languageCode?: string): Promise<ConversationSession[]>;
   updateConversationSession(id: number, data: Partial<Omit<ConversationSession, 'id'>>): Promise<ConversationSession | undefined>;
-  completeConversationSession(id: number, feedback: string, score: number): Promise<ConversationSession | undefined>;
+  completeConversationSession(id: number, feedback: string, score: number | null): Promise<ConversationSession | undefined>;
   
   // Conversation Transcription methods
   createConversationTranscription(transcription: InsertConversationTranscription): Promise<ConversationTranscription>;
@@ -634,7 +634,7 @@ export class MemStorage implements IStorage {
     return updatedSession;
   }
 
-  async completeConversationSession(id: number, feedback: string, score: number): Promise<ConversationSession | undefined> {
+  async completeConversationSession(id: number, feedback: string, score: number | null): Promise<ConversationSession | undefined> {
     return this.updateConversationSession(id, {
       status: 'completed',
       feedback,
@@ -869,50 +869,41 @@ export class DatabaseStorage implements IStorage {
     lessonId: string,
     progressData: Partial<Omit<InsertUserProgress, 'userId' | 'lessonId'>>
   ): Promise<UserProgress> {
-    // First check if a record already exists
     const existingProgress = await this.getUserProgress(userId, lessonId);
+    const now = progressData.lastAccessedAt || new Date();
 
     if (existingProgress) {
-      // Update existing record
-      const updateValues: Partial<UserProgress> = {};
-      
-      if (progressData.completed !== undefined) updateValues.completed = progressData.completed;
-      if (progressData.completedAt !== undefined) updateValues.completedAt = progressData.completedAt;
-      if (progressData.progress !== undefined) updateValues.progress = progressData.progress;
-      if (progressData.score !== undefined) updateValues.score = progressData.score;
-      if (progressData.timeSpent !== undefined) updateValues.timeSpent = progressData.timeSpent;
-      if (progressData.notes !== undefined) updateValues.notes = progressData.notes;
-      updateValues.lastAccessedAt = progressData.lastAccessedAt || new Date();
-      
-      const [updatedProgress] = await db
+      const [progress] = await db
         .update(userProgress)
-        .set(updateValues)
-        .where(
-          and(
-            eq(userProgress.userId, userId),
-            eq(userProgress.lessonId, lessonId)
-          )
-        )
-        .returning();
-      return updatedProgress;
-    } else {
-      // Create new record
-      const [newProgress] = await db
-        .insert(userProgress)
-        .values({
-          userId,
-          lessonId,
-          completed: progressData.completed ?? false,
-          completedAt: progressData.completedAt || null,
-          progress: progressData.progress ?? 0,
-          score: progressData.score || null,
-          lastAccessedAt: progressData.lastAccessedAt || new Date(),
-          timeSpent: progressData.timeSpent ?? 0,
-          notes: progressData.notes || null
+        .set({
+          ...(progressData.completed !== undefined ? { completed: progressData.completed } : {}),
+          ...(progressData.completedAt !== undefined ? { completedAt: progressData.completedAt } : {}),
+          ...(progressData.progress !== undefined ? { progress: progressData.progress } : {}),
+          ...(progressData.score !== undefined ? { score: progressData.score } : {}),
+          ...(progressData.timeSpent !== undefined ? { timeSpent: progressData.timeSpent } : {}),
+          ...(progressData.notes !== undefined ? { notes: progressData.notes } : {}),
+          lastAccessedAt: now,
         })
+        .where(and(eq(userProgress.userId, userId), eq(userProgress.lessonId, lessonId)))
         .returning();
-      return newProgress;
+      return progress;
     }
+
+    const [progress] = await db
+      .insert(userProgress)
+      .values({
+        userId,
+        lessonId,
+        completed: progressData.completed ?? false,
+        completedAt: progressData.completedAt || null,
+        progress: progressData.progress ?? 0,
+        score: progressData.score ?? null,
+        lastAccessedAt: now,
+        timeSpent: progressData.timeSpent ?? 0,
+        notes: progressData.notes ?? null,
+      })
+      .returning();
+    return progress;
   }
 
   async markLessonComplete(userId: number, lessonId: string): Promise<UserProgress> {
@@ -1174,7 +1165,7 @@ export class DatabaseStorage implements IStorage {
     return session || undefined;
   }
 
-  async completeConversationSession(id: number, feedback: string, score: number): Promise<ConversationSession | undefined> {
+  async completeConversationSession(id: number, feedback: string, score: number | null): Promise<ConversationSession | undefined> {
     return this.updateConversationSession(id, {
       status: 'completed',
       feedback,

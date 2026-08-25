@@ -34,7 +34,7 @@ export default function Profile() {
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
-      navigate('/login');
+      navigate('/auth');
     }
   }, [user, authLoading, navigate]);
 
@@ -264,16 +264,7 @@ export default function Profile() {
             // Populate the maps
             languages.forEach((language: Language, index: number) => {
               if (progressQueries[index]?.data) {
-                // Transform progress data and convert Date objects to strings
-                progressByLanguage[language.code] = (progressQueries[index].data || []).map(progress => ({
-                  ...progress,
-                  lastAccessedAt: typeof progress.lastAccessedAt === 'object' 
-                    ? progress.lastAccessedAt.toISOString() 
-                    : progress.lastAccessedAt,
-                  completedAt: progress.completedAt && typeof progress.completedAt === 'object'
-                    ? progress.completedAt.toISOString()
-                    : progress.completedAt,
-                }));
+                progressByLanguage[language.code] = progressQueries[index].data || [];
               }
               
               if (lessonQueries[index]?.data) {
@@ -304,16 +295,7 @@ export default function Profile() {
             {activeLanguages.map((language: Language) => {
               // Find the correct language index in the original arrays
               const languageIndex = languages.findIndex(lang => lang.code === language.code);
-              // Transform progress data and convert Date objects to strings
-              const progressData = languageIndex >= 0 ? (progressQueries[languageIndex]?.data || []).map(progress => ({
-                ...progress,
-                lastAccessedAt: typeof progress.lastAccessedAt === 'object' 
-                  ? progress.lastAccessedAt.toISOString() 
-                  : progress.lastAccessedAt,
-                completedAt: progress.completedAt && typeof progress.completedAt === 'object'
-                  ? progress.completedAt.toISOString()
-                  : progress.completedAt,
-              })) : [];
+              const progressData = languageIndex >= 0 ? (progressQueries[languageIndex]?.data || []) : [];
               const lessons = languageIndex >= 0 ? (lessonQueries[languageIndex]?.data || []) : [];
               
               // Skip if no progress
@@ -433,7 +415,7 @@ export default function Profile() {
                       <CardFooter className="px-4 py-3 border-t dark:border-gray-800 light:border-gray-200 flex justify-between">
                         <Button 
                           variant="outline" 
-                          onClick={() => navigate(`/languages/${language.code}`)}
+                          onClick={() => navigate(`/language/${language.code}`)}
                         >
                           Continue Learning
                         </Button>

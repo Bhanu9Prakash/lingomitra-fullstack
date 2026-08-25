@@ -674,10 +674,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Add languages
   for (const language of languages) {
     try {
-      const validatedLanguage = insertLanguageSchema.parse(language);
-      await storage.createLanguage(validatedLanguage);
+      const existingLanguage = await storage.getLanguageByCode(language.code);
+      if (!existingLanguage) {
+        const validatedLanguage = insertLanguageSchema.parse(language);
+        await storage.createLanguage(validatedLanguage);
+      }
     } catch (error) {
-      console.error("Error adding language:", error);
+      console.error(`Error initializing language ${language.code}:`, error);
     }
   }
 

@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Mic, MicOff, Send, Play, Square, Trophy, MessageCircle } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { ArrowLeft, Mic, Send, Square, MessageCircle, Volume2 } from "lucide-react";
+import { useSimpleToast } from "@/hooks/use-simple-toast";
 
 interface ConversationSession {
   id: number;
@@ -30,20 +30,26 @@ interface ConversationSessionProps {
   onBack: () => void;
 }
 
+interface ConversationMessageResult {
+  messages: Array<{ role: string; content: string }>;
+  audioData?: string | null;
+}
+
+interface ConversationCompletionResult {
+  session: ConversationSession;
+}
+
 export function ConversationSession({ session, onComplete, onBack }: ConversationSessionProps) {
   const [message, setMessage] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentMessages, setCurrentMessages] = useState(session.messages);
-  const [isListening, setIsListening] = useState(false);
-  
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const { toast } = useSimpleToast();
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -53,10 +59,11 @@ export function ConversationSession({ session, onComplete, onBack }: Conversatio
   // Send message mutation
   const sendMessageMutation = useMutation({
     mutationFn: async (data: { message?: string; audioData?: string }) => {
-      return apiRequest(`/api/conversation/sessions/${session.id}/message`, {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      const response = await apiRequest("POST", `/api/conversation/sessions/${session.id}/message`, data);
+      if (!response.ok) {
+        throw new Error((await response.json().catch(() => null))?.error || "We could not send that message.");
+      }
+      return response.json() as Promise<ConversationMessageResult>;
     },
     onSuccess: (data) => {
       setCurrentMessages(data.messages);
@@ -84,14 +91,16 @@ export function ConversationSession({ session, onComplete, onBack }: Conversatio
   // Complete session mutation
   const completeSessionMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest(`/api/conversation/sessions/${session.id}/complete`, {
-        method: "POST",
-      });
+      const response = await apiRequest("POST", `/api/conversation/sessions/${session.id}/complete`);
+      if (!response.ok) {
+        throw new Error((await response.json().catch(() => null))?.error || "We could not finish this practice.");
+      }
+      return response.json() as Promise<ConversationCompletionResult>;
     },
     onSuccess: (data) => {
       toast({
-        title: "Conversation Completed!",
-        description: `Score: ${data.session.score}% - ${data.session.feedback}`,
+        title: "Practice saved",
+        description: data.session.feedback || "Your conversation is ready for a short reflection.",
       });
       onComplete();
     },
@@ -135,10 +144,7 @@ export function ConversationSession({ session, onComplete, onBack }: Conversatio
       mediaRecorder.start();
       setIsRecording(true);
       
-      toast({
-        title: "Recording Started",
-        description: "Speak your message...",
-      });
+      toast({ title: "Listening", description: "Speak when you are ready. You can stop recording at any time." });
     } catch (error) {
       toast({
         title: "Microphone Error",
@@ -153,10 +159,7 @@ export function ConversationSession({ session, onComplete, onBack }: Conversatio
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       
-      toast({
-        title: "Recording Stopped",
-        description: "Processing your message...",
-      });
+      toast({ title: "Processing speech", description: "Turning your recording into a message…" });
     }
   };
 
@@ -304,8 +307,8 @@ export function ConversationSession({ session, onComplete, onBack }: Conversatio
                 )}
                 
                 {isPlaying && (
-                  <span className="text-sm text-blue-600 animate-pulse">
-                    Playing response...
+                  <span className="text-sm text-muted-foreground inline-flex items-center gap-1" aria-live="polite">
+                    <Volume2 className="h-4 w-4" /> Speaking response…
                   </span>
                 )}
               </div>

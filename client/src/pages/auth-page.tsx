@@ -106,7 +106,11 @@ export default function AuthPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate("/");
+      const returnTo = new URLSearchParams(window.location.search).get("returnTo");
+      const safeReturnTo = returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//")
+        ? returnTo
+        : "/languages";
+      navigate(safeReturnTo);
     }
   }, [user, navigate]);
 

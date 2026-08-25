@@ -25,13 +25,17 @@ export function calculateLessonAccuracy(progressRecord: UserProgress | undefined
     return 0;
   }
   
-  return Math.round(progressRecord.score * 100);
+  return Math.round(progressRecord.score);
 }
 
 /**
  * Format time spent in minutes into a human-readable string
  */
-export function formatTimeSpent(minutes: number): string {
+export function formatTimeSpent(seconds: number): string {
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 1) {
+    return `${Math.max(1, seconds)} sec`;
+  }
   if (minutes < 60) {
     return `${minutes} min`;
   }

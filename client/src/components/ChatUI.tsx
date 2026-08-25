@@ -167,7 +167,7 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({
                             text: message.content,
-                            languageCode: lesson.language.code
+                            languageCode: lesson.languageCode
                           }),
                         });
                         
