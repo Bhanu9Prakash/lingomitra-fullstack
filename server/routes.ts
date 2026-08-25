@@ -13,6 +13,7 @@ import { readAllLessons } from "./utils";
 import chatRouter from "./routes/chat";
 import chatAudioRouter from "./routes/chat-audio";
 import progressRouter from "./routes/progress";
+import { assertLessonAccess, hasPaidAccess } from "./routes/progress";
 import contactRouter from "./routes/contact";
 import ttsRouter from "./routes/tts";
 import { conversationRouter } from "./routes/conversation";
@@ -1167,23 +1168,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/languages/:code/lessons", async (req, res) => {
+  app.get("/api/languages/:code/lessons", isAuthenticated, async (req, res) => {
     try {
       const lessons = await storage.getLessonsByLanguage(req.params.code);
-      res.json(lessons);
+      const visibleLessons = hasPaidAccess(req.user!)
+        ? lessons
+        : lessons.filter((lesson) => {
+            const match = lesson.lessonId.match(/lesson[-_]?0*(\d+)/i);
+            return !match || Number(match[1]) <= 2;
+          });
+      res.json(visibleLessons);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch lessons" });
     }
   });
 
-  app.get("/api/lessons/:id", async (req, res) => {
+  app.get("/api/lessons/:id", isAuthenticated, async (req, res) => {
     try {
-      const lesson = await storage.getLessonById(req.params.id);
-      if (!lesson) {
-        return res.status(404).json({ message: "Lesson not found" });
-      }
+      const lesson = await assertLessonAccess(req, req.params.id);
       res.json(lesson);
     } catch (error) {
+      if (error instanceof Error && "status" in error) {
+        return res.status((error as Error & { status: number }).status).json({ message: error.message });
+      }
       res.status(500).json({ message: "Failed to fetch lesson" });
     }
   });

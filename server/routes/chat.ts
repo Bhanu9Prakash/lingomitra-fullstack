@@ -2,6 +2,8 @@ import { Router, Request, Response } from 'express';
 import { storage } from '../storage';
 import { generateGeminiResponse } from '../services/genai';
 import { isAuthenticated } from '../auth';
+import { assertLessonAccess } from "./progress";
+import { z } from "zod";
 
 const router = Router();
 
@@ -19,6 +21,18 @@ interface Message {
   content: string;
 }
 
+const scratchPadSchema = z.object({
+  knownVocabulary: z.array(z.string().trim().min(1).max(100)).max(50),
+  knownStructures: z.array(z.string().trim().min(1).max(100)).max(50),
+  struggles: z.array(z.string().trim().min(1).max(100)).max(50),
+  nextFocus: z.string().trim().min(1).max(200).nullable(),
+});
+
+const messageSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string().trim().min(1).max(2_000),
+});
+
 // Initialize a default ScratchPad
 const getDefaultScratchPad = (): ScratchPad => ({
   knownVocabulary: [],
@@ -26,6 +40,11 @@ const getDefaultScratchPad = (): ScratchPad => ({
   struggles: [],
   nextFocus: null
 });
+
+const parseScratchPad = (value: unknown, fallback = getDefaultScratchPad()): ScratchPad => {
+  const parsed = scratchPadSchema.safeParse(value);
+  return parsed.success ? parsed.data : fallback;
+};
 
 /**
  * Clean AI responses of any ScratchPad content and markdown artifacts
@@ -67,9 +86,10 @@ const cleanResponse = (text: string): string => {
  * POST /api/chat/init
  * Initialize a chat session with a greeting based on the lesson
  */
-router.post('/init', async (req: Request, res: Response) => {
+router.post('/init', isAuthenticated, async (req: Request, res: Response) => {
   try {
-    const { lessonId } = req.body;
+    const lessonIdResult = z.string().trim().min(1).max(120).safeParse(req.body.lessonId);
+    const lessonId = lessonIdResult.success ? lessonIdResult.data : "";
     const userId = req.user?.id; // Get the user ID from the authenticated session
     
     if (!lessonId) {
@@ -79,13 +99,7 @@ router.post('/init', async (req: Request, res: Response) => {
     }
     
     // Get the lesson content from storage
-    const lesson = await storage.getLessonById(lessonId);
-    
-    if (!lesson) {
-      return res.status(404).json({ 
-        error: `Lesson not found with ID: ${lessonId}` 
-      });
-    }
+    const lesson = await assertLessonAccess(req, lessonId);
     
     // Check if we have existing chat history for this user and lesson
     let existingHistory;
@@ -165,7 +179,9 @@ IMPORTANT:
     
   } catch (error) {
     console.error('Error in chat init endpoint:', error);
-    
+    if (error instanceof Error && "status" in error) {
+      return res.status((error as Error & { status: number }).status).json({ error: error.message });
+    }
     return res.status(500).json({ 
       error: 'Failed to initialize chat. Please try again later.' 
     });
@@ -176,25 +192,22 @@ IMPORTANT:
  * POST /api/chat
  * Generate a chat response based on lesson content, conversation history, and user message
  */
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', isAuthenticated, async (req: Request, res: Response) => {
   try {
-    const { lessonId, conversation, scratchPad } = req.body;
+    const body = z.object({
+      lessonId: z.string().trim().min(1).max(120),
+      conversation: z.array(messageSchema).min(1).max(40),
+      scratchPad: z.unknown().optional(),
+    }).safeParse(req.body);
+    if (!body.success) {
+      return res.status(400).json({ error: "Send a short message and valid tutor context." });
+    }
+    const { lessonId, conversation } = body.data;
+    const scratchPad = parseScratchPad(body.data.scratchPad);
     const userId = req.user?.id; // Get the user ID from the authenticated session
     
-    if (!lessonId || !conversation || !Array.isArray(conversation) || conversation.length === 0) {
-      return res.status(400).json({ 
-        error: 'Missing required fields. Please provide lessonId and conversation history.' 
-      });
-    }
-    
     // Get the lesson content from storage
-    const lesson = await storage.getLessonById(lessonId);
-    
-    if (!lesson) {
-      return res.status(404).json({ 
-        error: `Lesson not found with ID: ${lessonId}` 
-      });
-    }
+    const lesson = await assertLessonAccess(req, lessonId);
     
     // Extract the latest user message
     const latestUserMessage = conversation[conversation.length - 1];
@@ -243,7 +256,7 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     let fullResponse = await generateGeminiResponse(lesson, fullPrompt);
     
     // Extract the updated ScratchPad if it exists
-    let updatedScratchPad = scratchPad || getDefaultScratchPad();
+    let updatedScratchPad = scratchPad;
     let responseText = fullResponse;
     
     // Check if the response contains a ScratchPad section
@@ -251,7 +264,7 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     if (scratchPadMatch && scratchPadMatch[1]) {
       try {
         // Parse the JSON ScratchPad
-        updatedScratchPad = JSON.parse(scratchPadMatch[1].trim());
+        updatedScratchPad = parseScratchPad(JSON.parse(scratchPadMatch[1].trim()), scratchPad);
         
         // Remove the ScratchPad section from the response
         responseText = fullResponse.replace(/\[SCRATCHPAD\]\s*```[\s\S]*?```/, '').trim();
@@ -390,7 +403,9 @@ Include an updated ScratchPad as a JSON object at the end of your response, pref
     
   } catch (error) {
     console.error('Error in chat endpoint:', error);
-    
+    if (error instanceof Error && "status" in error) {
+      return res.status((error as Error & { status: number }).status).json({ error: error.message });
+    }
     return res.status(500).json({ 
       error: 'Failed to generate response. Please try again later.' 
     });

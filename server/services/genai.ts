@@ -1,226 +1,132 @@
-import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from '@google/genai';
-import { Lesson } from '../../shared/schema';
+import { GoogleGenAI } from "@google/genai";
+import OpenAI, { toFile } from "openai";
+import { Lesson } from "../../shared/schema";
+import { ProviderRequestError, toSafeProviderError, withProviderRetry } from "./provider-utils";
 
-// Initialize the Gemini API client
-const initializeGenAI = () => {
-  const apiKey = process.env.GOOGLE_API_KEY;
-  
-  if (!apiKey) {
-    throw new Error('GOOGLE_API_KEY environment variable is required');
+const GEMINI_MODEL = "gemini-3.7-flash";
+const TRANSCRIPTION_MODEL = "gpt-transcribe";
+const REQUEST_TIMEOUT_MS = 30_000;
+
+let geminiClient: GoogleGenAI | null = null;
+let openAIClient: OpenAI | null = null;
+
+function getGeminiClient() {
+  if (!geminiClient) {
+    const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY;
+    if (!apiKey) throw new Error("Google AI is not configured");
+    geminiClient = new GoogleGenAI({ apiKey });
   }
-  
-  return new GoogleGenAI({ apiKey });
-};
+  return geminiClient;
+}
 
-/**
- * Format lesson content as a context message for the AI using the Thinking Method
- */
-const formatLessonContext = (lesson: Lesson): string => {
-  return `
-You are **LingoMitra**, an energetic language coach who teaches with the **Thinking Method** (see guidebook extract below).  
-Your role is not to lecture but to *perform* a guided discovery class in which the learner does most of the thinking.
+function getOpenAIClient() {
+  if (!openAIClient) {
+    if (!process.env.OPENAI_API_KEY) throw new Error("OpenAI is not configured");
+    openAIClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 0, timeout: REQUEST_TIMEOUT_MS });
+  }
+  return openAIClient;
+}
 
-────────────────────────────────────────
-🗒️  LESSON METADATA
-• Title …… ${lesson.title}
-• Lesson ID … ${lesson.lessonId}
-• Language … ${lesson.languageCode}
-────────────────────────────────────────
-📚  LESSON CONTENT (reference only – do NOT recite verbatim)
+function formatLessonContext(lesson: Lesson): string {
+  return `You are LingoMitra, a concise and encouraging language coach.
+
+Lesson: ${lesson.title}
+Target language: ${lesson.languageCode}
+Lesson reference:
 ${lesson.content}
-────────────────────────────────────────
-🎭  TEACHING FRAMEWORK (Thinking Method essentials)
 
-1. **Inhabit the learner's mental theatre** – imagine what the learner knows *so far* and never assume hidden knowledge.
-2. **Teach one thought at a time** – break every target sentence into the *single* new idea you're training, then pause for the learner to apply it.
-3. **Manage cognitive-load contours** – alternate short bursts of challenge with low-load digestion moments; sprinkle "artificial friction" only to keep the student engaged.
-4. **Socratic loop** – elicit, wait, evaluate, nudge. Never reveal the answer until the learner has tried (or asked).
-5. **Correct correctly** – diagnose the *thought* that mis-fired, then cue the learner to self-repair whenever possible; use masked positive feedback so remote learners feel you're "in the room".
-6. **Weave, cue & mask repetition** – recycle old elements unobtrusively, build anticipatory cues, and reinforce without boring repetition.
-7. **Transcribe thought, not words** – always focus on the underlying idea, not literal translation forms.
-
-────────────────────────────────────────
-🗂️  PRIVATE SCRATCH-PAD  (never show this to the learner)
-The assistant keeps an internal JSON object called **ScratchPad**.  
-Schema:
-{
-  "knownVocabulary": string[],      // words the learner has produced correctly
-  "knownStructures": string[],      // grammar / patterns mastered
-  "struggles": string[],            // recurring pain-points
-  "nextFocus": string               // micro-concept you plan to teach next
+Teach through a reasoning-first loop: introduce one small idea, invite a learner attempt, diagnose the underlying thought if needed, and ask one focused follow-up. Keep replies to 50–150 words, never reveal internal planning, and never invent lesson facts.`;
 }
-• Update ScratchPad after every turn.  
-• Use it to choose the *next* micro-thought and to craft prompts that build seamlessly on prior success.
 
-────────────────────────────────────────
-🔄  INTERACTION LOOP
+export async function generateGeminiResponse(
+  lesson: Lesson,
+  userMessage: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<string> {
+  const abortSignal = options.signal ?? AbortSignal.timeout(REQUEST_TIMEOUT_MS);
+  const request = {
+    model: GEMINI_MODEL,
+    contents: [{ role: "user" as const, parts: [{ text: userMessage }] }],
+    config: {
+      systemInstruction: formatLessonContext(lesson),
+      maxOutputTokens: 350,
+      temperature: 0.6,
+      topP: 0.8,
+      abortSignal,
+    },
+  };
 
-For each assistant turn:
-1. Consult ScratchPad → decide the *single* next thought.
-2. **TEACH FIRST**: Always introduce and clearly explain new vocabulary, grammar, or concepts before testing the student on them.
-3. **KEEP RESPONSES SHORT**: Keep each message focused on only one concept, using 2-3 short paragraphs at most (50-150 words total). 
-4. **Elicit**: Only after teaching, pose a brief cue/question or ask the learner to build a sentence; *explicitly tell them to think before answering*.
-5. **Wait**: Do **not** provide the answer in the same turn.
-6. When the learner replies, *evaluate*:
-   • If correct → praise + masked repetition.  
-   • If partly correct → cue self-correction; ask guiding sub-questions.  
-   • If off-track → pinpoint the idea that mis-fired, explain succinctly, then have them try again.
-7. Update ScratchPad.
-8. After all micro-thoughts in this lesson are mastered, send a **Lesson Wrap-Up**:
-   • 3-5 sentence summary of what was learned  
-   • mini self-check quiz (2–3 items)  
-   • preview of the next lesson focus.
+  try {
+    const stream = await withProviderRetry(() => getGeminiClient().models.generateContentStream(request));
+    let response = "";
+    for await (const chunk of stream) response += chunk.text ?? "";
+    if (response.trim()) return response.trim();
+  } catch (streamError) {
+    if (streamError instanceof Error && (streamError.name === "AbortError" || streamError.name === "TimeoutError")) {
+      throw toSafeProviderError(streamError);
+    }
+  }
 
-Remember: be encouraging, patient, and extremely concise; keep explanations in learner-friendly language and break down complex concepts into multiple shorter messages rather than one long explanation. If the answer is not in the lesson or you're unsure, say so honestly.
+  try {
+    const result = await withProviderRetry(() => getGeminiClient().models.generateContent(request));
+    if (!result.text?.trim()) throw new Error("The coach returned an empty response");
+    return result.text.trim();
+  } catch (error) {
+    throw toSafeProviderError(error);
+  }
+}
 
-Happy teaching!
-`;
+export type TranscriptionResult = {
+  transcription: string;
+  confidence: null;
+  detectedLanguages: string[];
 };
 
-/**
- * Generate a response from Gemini based on the lesson content and user input
- */
-export async function generateGeminiResponse(lesson: Lesson, userMessage: string) {
-  try {
-    const genAI = initializeGenAI();
-    
-    // Format the system instructions with lesson content as context
-    const systemInstruction = formatLessonContext(lesson);
-    
-    // Generate the response using the Gemini model
-    const result = await genAI.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { text: systemInstruction },
-            { text: `User question: ${userMessage}` }
-          ]
-        }
-      ],
-      config: {
-        maxOutputTokens: 300,
-        temperature: 0.7,
-        topP: 0.8,
-        topK: 40,
-        safetySettings: [
-          {
-            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
-          }
-        ]
-      }
-    });
-    
-    // Extract the text from the response
-    const responseText = result.text;
-    
-    if (!responseText) {
-      throw new Error('Empty response text from Gemini API');
-    }
-    
-    return responseText;
-  } catch (error) {
-    console.error('Error generating Gemini response:', error);
-    throw error;
-  }
-}
+const mimeExtensions: Record<string, string> = {
+  "audio/webm": "webm",
+  "audio/wav": "wav",
+  "audio/x-wav": "wav",
+  "audio/mp4": "m4a",
+  "audio/mpeg": "mp3",
+  "audio/ogg": "ogg",
+};
 
-/**
- * Transcribe audio using Gemini
- */
-export async function transcribeAudioWithGemini(audioBuffer: Buffer, mimeType: string) {
-  try {
-    const genAI = initializeGenAI();
-    
-    console.log(`Attempting transcription with MIME type: ${mimeType}, buffer size: ${audioBuffer.length}`);
-    
-    // First, just get the transcription
-    const transcriptionResult = await genAI.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { text: "Please provide only the transcription of this audio. Return just the text that was spoken, nothing else." },
-            {
-              inlineData: {
-                mimeType: mimeType,
-                data: audioBuffer.toString('base64')
-              }
-            }
-          ]
-        }
-      ],
-      config: {
-        maxOutputTokens: 200,
-        temperature: 0.1,
-        topP: 0.8,
-        topK: 40,
-        safetySettings: [
-          {
-            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE
-          }
-        ]
-      }
-    });
-    
-    const transcription = transcriptionResult.text?.trim();
-    
-    if (!transcription) {
-      throw new Error('Could not transcribe audio');
-    }
-    
-    return transcription;
-  } catch (error) {
-    console.error('Error transcribing audio with Gemini:', error);
-    throw error;
-  }
-}
+export async function transcribeAudio(
+  audioBuffer: Buffer,
+  mimeType: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<TranscriptionResult> {
+  if (!audioBuffer.length) throw new ProviderRequestError("The recording was empty.");
+  if (audioBuffer.length > 10 * 1024 * 1024) throw new ProviderRequestError("The recording is too large.");
+  if (!mimeExtensions[mimeType]) throw new ProviderRequestError("That recording format is not supported.");
 
-/**
- * Generate a response from Gemini based on audio input
- */
-export async function generateGeminiAudioResponse(lesson: Lesson, audioBuffer: Buffer, mimeType: string) {
   try {
-    // First transcribe the audio
-    const transcription = await transcribeAudioWithGemini(audioBuffer, mimeType);
-    
-    // Then generate a response based on the transcription
-    const response = await generateGeminiResponse(lesson, transcription);
-    
+    const file = await toFile(audioBuffer, `recording.${mimeExtensions[mimeType]}`, { type: mimeType });
+    const result = await withProviderRetry(() =>
+      getOpenAIClient().audio.transcriptions.create(
+        { file, model: TRANSCRIPTION_MODEL, response_format: "json" },
+        { signal: options.signal ?? AbortSignal.timeout(REQUEST_TIMEOUT_MS) },
+      ),
+    );
+    const transcription = result.text?.trim();
+    if (!transcription) throw new Error("The recording did not contain understandable speech");
+
     return {
-      response,
-      transcription
+      transcription,
+      confidence: null,
+      detectedLanguages: (result.languages ?? []).map((language) => String(language)),
     };
   } catch (error) {
-    console.error('Error generating Gemini audio response:', error);
-    throw error;
+    throw toSafeProviderError(error, "We could not transcribe that recording. Please try again.");
   }
+}
+
+export async function generateGeminiAudioResponse(
+  lesson: Lesson,
+  audioBuffer: Buffer,
+  mimeType: string,
+) {
+  const transcriptionResult = await transcribeAudio(audioBuffer, mimeType);
+  const response = await generateGeminiResponse(lesson, transcriptionResult.transcription);
+  return { response, ...transcriptionResult };
 }

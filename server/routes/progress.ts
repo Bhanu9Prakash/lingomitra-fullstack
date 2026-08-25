@@ -40,12 +40,12 @@ function lessonNumber(lessonId: string) {
   return match ? Number(match[1]) : 1;
 }
 
-function hasPaidAccess(user: Express.User) {
+export function hasPaidAccess(user: Express.User) {
   const tier = user.subscriptionTier;
   return Boolean(tier && ["basic", "premium", "pro"].includes(tier) && (!user.subscriptionExpiry || user.subscriptionExpiry > new Date()));
 }
 
-async function assertLessonAccess(req: Request, lessonId: string) {
+export async function assertLessonAccess(req: Request, lessonId: string) {
   const lesson = await storage.getLessonById(lessonId);
   if (!lesson) {
     const error = new Error("Lesson not found");

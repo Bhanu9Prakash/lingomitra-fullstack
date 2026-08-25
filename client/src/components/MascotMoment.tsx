@@ -1,5 +1,3 @@
-import { Lightbulb, MessageCircleMore, RotateCcw, Sparkles } from "lucide-react";
-
 type MascotState = "neutral" | "thinking" | "coach" | "celebrate" | "retry";
 
 interface MascotMomentProps {
@@ -8,18 +6,14 @@ interface MascotMomentProps {
   alt?: string;
 }
 
-const accents = {
-  neutral: null,
-  thinking: <Lightbulb aria-hidden="true" />,
-  coach: <MessageCircleMore aria-hidden="true" />,
-  celebrate: <Sparkles aria-hidden="true" />,
-  retry: <RotateCcw aria-hidden="true" />,
+const poseAsset: Record<MascotState, string> = {
+  neutral: "/mascot-neutral.png",
+  thinking: "/mascot-thinking.png",
+  coach: "/mascot-coaching.png",
+  celebrate: "/mascot-celebration.png",
+  retry: "/mascot-retry.png",
 };
 
-/**
- * The original fox remains the visual source of every learning state. Small,
- * non-character accents provide state context without introducing a second avatar.
- */
 export default function MascotMoment({
   state = "neutral",
   className = "",
@@ -27,8 +21,7 @@ export default function MascotMoment({
 }: MascotMomentProps) {
   return (
     <div className={`mascot-moment mascot-${state} ${className}`}>
-      <img src="/mascot.svg" alt={alt} />
-      {accents[state] ? <span className="mascot-accent">{accents[state]}</span> : null}
+      <img src={poseAsset[state]} alt={alt} />
     </div>
   );
 }

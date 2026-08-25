@@ -5,7 +5,8 @@ import Footer from "./Footer";
 import ScrollToTop from "./ScrollToTop";
 import NetworkStatus from "./NetworkStatus";
 import InstallPrompt from "./InstallPrompt";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
+import { BookOpen, House, MessageCircle, UserRound } from "lucide-react";
 import { Language } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import LanguageDropdown from "./LanguageDropdown";
@@ -24,6 +25,22 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
+
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const updateViewport = () => {
+      const height = viewport?.height ?? window.innerHeight;
+      document.documentElement.style.setProperty("--app-visual-height", `${Math.round(height)}px`);
+      document.documentElement.dataset.keyboardOpen = String(height < window.innerHeight - 120);
+    };
+    updateViewport();
+    viewport?.addEventListener("resize", updateViewport);
+    window.addEventListener("resize", updateViewport);
+    return () => {
+      viewport?.removeEventListener("resize", updateViewport);
+      window.removeEventListener("resize", updateViewport);
+    };
+  }, []);
   
   // Extract language code from URL path
   let languageCode = null;
@@ -74,7 +91,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className={`${theme === 'dark' ? 'dark-theme dark' : ''}`}>
-      <div id="app-wrapper" className="app-wrapper overflow-x-hidden w-full">
+      <div id="app-wrapper" className={`app-wrapper w-full overflow-x-hidden ${isUserLoggedIn && !isLessonPage ? "pb-20 md:pb-0" : ""}`}>
         <header className="fixed top-0 left-0 right-0 w-full z-50 bg-background shadow-sm">
           <div className="container">
             <div className="logo">
@@ -110,6 +127,27 @@ export default function Layout({ children }: LayoutProps) {
         <NetworkStatus />
         <InstallPrompt />
       </div>
+
+      {isUserLoggedIn && !isLessonPage && !isAuthPage && (
+        <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-amber-200/80 bg-[#fffdf8]/95 px-2 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_25px_rgba(87,45,20,.08)] backdrop-blur md:hidden dark:border-stone-800 dark:bg-stone-950/95" aria-label="Primary navigation">
+          <div className="mx-auto grid max-w-md grid-cols-4">
+            {[
+              { href: "/dashboard", label: "Home", icon: House },
+              { href: "/languages", label: "Learn", icon: BookOpen },
+              { href: "/conversation", label: "Practice", icon: MessageCircle },
+              { href: "/profile", label: "Account", icon: UserRound },
+            ].map(({ href, label, icon: Icon }) => {
+              const active = location === href || (href === "/conversation" && location.startsWith("/conversation"));
+              return (
+                <Link key={href} href={href} className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl text-xs font-extrabold ${active ? "bg-orange-100 text-orange-700 dark:bg-orange-950/60 dark:text-orange-300" : "text-stone-600 dark:text-stone-300"}`} aria-current={active ? "page" : undefined}>
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                  {label}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+      )}
       
       {/* Portal container for dropdowns - positioned outside the main layout flow */}
       <div id="portal-container" className="portal-container"></div>

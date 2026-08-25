@@ -2,8 +2,8 @@ import express from "express";
 import { storage } from "../storage";
 import { insertConversationSessionSchema, insertConversationTranscriptionSchema } from "@shared/schema";
 import { z } from "zod";
-import { ttsService } from "../tts-service";
-import { transcribeAudioWithGemini, generateGeminiResponse } from "../services/genai";
+import { openaiTTSService } from "../openai-tts-service";
+import { transcribeAudio, generateGeminiResponse } from "../services/genai";
 import { isAuthenticated } from "../auth";
 
 export const conversationRouter = express.Router();
@@ -121,28 +121,6 @@ conversationRouter.get("/sessions/:id", isAuthenticated, async (req, res) => {
   }
 });
 
-// Get a specific conversation session
-conversationRouter.get("/sessions/:id", isAuthenticated, async (req, res) => {
-  try {
-    const userId = (req as any).user?.id;
-    if (!userId) {
-      return res.status(401).json({ error: "Please log in to view conversation session" });
-    }
-
-    const sessionId = parseInt(req.params.id);
-    const session = await storage.getConversationSession(sessionId);
-
-    if (!session || session.userId !== userId) {
-      return res.status(404).json({ error: "Conversation session not found" });
-    }
-
-    res.json({ session });
-  } catch (error) {
-    console.error('Error fetching conversation session:', error);
-    res.status(500).json({ error: 'Failed to fetch conversation session' });
-  }
-});
-
 // Process conversation message (text or audio)
 conversationRouter.post("/sessions/:id/message", isAuthenticated, async (req, res) => {
   try {
@@ -162,34 +140,35 @@ conversationRouter.post("/sessions/:id/message", isAuthenticated, async (req, re
       return res.status(400).json({ error: "Conversation session is not active" });
     }
 
-    const { message, audioData: inputAudioData } = req.body;
+    const bodySchema = z.object({
+      message: z.string().trim().min(1).max(2_000).optional(),
+      audioData: z.string().min(1).max(14_000_000).optional(),
+      audioMimeType: z.string().max(80).optional(),
+    }).refine((body) => Boolean(body.message || body.audioData), {
+      message: "Message or audio data is required",
+    });
+    const body = bodySchema.safeParse(req.body);
+    if (!body.success) return res.status(400).json({ error: "Send a short message or a recording." });
+
+    const { message, audioData: inputAudioData, audioMimeType } = body.data;
     let userMessage = message;
 
     // If audio data is provided, transcribe it first
     if (inputAudioData && !message) {
       try {
-        const audioBuffer = Buffer.from(inputAudioData, 'base64');
-        const transcriptionResult = await transcribeAudioWithGemini(audioBuffer, 'audio/webm');
-        
-        if (typeof transcriptionResult === 'string') {
-          userMessage = transcriptionResult;
-        } else if (transcriptionResult && typeof transcriptionResult === 'object' && 'transcription' in transcriptionResult) {
-          userMessage = (transcriptionResult as any).transcription;
-          
-          // Save transcription to database
-          await storage.createConversationTranscription({
-            sessionId,
-            audioData: inputAudioData,
-            transcription: userMessage,
-            languageCode: session.languageCode,
-            confidence: (transcriptionResult as any).confidence || null
-          });
-        } else {
-          throw new Error('Invalid transcription result format');
-        }
+        const audioBuffer = Buffer.from(inputAudioData, "base64");
+        const transcriptionResult = await transcribeAudio(audioBuffer, audioMimeType || "audio/webm");
+        userMessage = transcriptionResult.transcription;
+        await storage.createConversationTranscription(insertConversationTranscriptionSchema.parse({
+          sessionId,
+          audioData: inputAudioData,
+          transcription: userMessage,
+          languageCode: session.languageCode,
+          confidence: transcriptionResult.confidence,
+        }));
       } catch (transcriptionError) {
-        console.error('Transcription error:', transcriptionError);
-        return res.status(400).json({ error: 'Failed to transcribe audio' });
+        console.error("Conversation transcription failed", transcriptionError);
+        return res.status(422).json({ error: "We could not transcribe that recording. Please try again." });
       }
     }
 
@@ -226,6 +205,7 @@ Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode ==
         orderIndex: 0
       };
       aiResponse = await generateGeminiResponse(conversationLesson, userMessage);
+      aiResponse = z.string().trim().min(1).max(2_000).parse(aiResponse);
     } catch (aiError) {
       console.error('AI response generation error:', aiError);
       return res.status(500).json({ error: 'Failed to generate AI response' });
@@ -243,7 +223,7 @@ Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode ==
     // Generate TTS for AI response
     let responseAudioData = null;
     try {
-      const ttsResult = await ttsService.generateSpeech({
+      const ttsResult = await openaiTTSService.generateSpeech({
         text: aiResponse,
         languageCode: session.languageCode
       });
@@ -252,7 +232,7 @@ Respond in ${session.languageCode === 'en' ? 'English' : session.languageCode ==
         responseAudioData = ttsResult.audioData;
       }
     } catch (ttsError) {
-      console.error('TTS error:', ttsError);
+      console.error("Conversation speech generation failed", ttsError);
       // Continue without audio
     }
 

@@ -3286,11 +3286,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 
 .mascot-moment { position: relative; display: inline-block; }
 .mascot-moment img { display: block; width: 100%; height: auto; }
-.mascot-accent { position: absolute; top: 6%; right: 5%; display: grid; width: 2.35rem; height: 2.35rem; place-items: center; border: 2px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--fox-dark); transform: rotate(-8deg); }
-.mascot-thinking img { transform: rotate(-3deg); }
-.mascot-coach img { transform: rotate(2deg); }
-.mascot-celebrate img { transform: translateY(-4px) rotate(-2deg); }
-.mascot-retry img { transform: rotate(4deg); }
 
 .learning-loop { max-width: 810px; margin: 0 auto; padding: 1rem 0 4rem; }
 .learning-progress { display: flex; gap: .6rem; margin: 0 0 1rem; overflow-x: auto; padding-bottom: .3rem; }
@@ -3383,4 +3378,22 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   font: inherit;
   font-weight: 700;
   padding: .45rem 2rem .45rem .7rem;
+}
+
+html, body, #root {
+  min-height: 100%;
+}
+
+body {
+  min-height: var(--app-visual-height, 100dvh);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+#app-wrapper {
+  min-height: var(--app-visual-height, 100dvh);
+}
+
+html[data-keyboard-open="true"] .fixed.bottom-0 {
+  transform: translateY(100%);
 }

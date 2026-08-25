@@ -1,188 +1,79 @@
 import { Router } from "express";
 import multer from "multer";
+import { z } from "zod";
 import { generateGeminiAudioResponse } from "../services/genai";
+import { openaiTTSService } from "../openai-tts-service";
 import { storage } from "../storage";
 import { isAuthenticated } from "../auth";
+import { assertLessonAccess } from "./progress";
 
 const router = Router();
-
-// Configure multer for audio file uploads
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
-  },
-  fileFilter: (req, file, cb) => {
-    // Accept audio files
-    if (file.mimetype.startsWith("audio/")) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-    }
-  },
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, callback) => callback(null, file.mimetype.startsWith("audio/")),
 });
 
-// Handle audio chat messages
-router.post("/", upload.single("audio"), async (req, res) => {
+const scratchPadSchema = z.object({
+  knownVocabulary: z.array(z.string().max(100)).max(50),
+  knownStructures: z.array(z.string().max(100)).max(50),
+  struggles: z.array(z.string().max(100)).max(50),
+  nextFocus: z.string().max(200).nullable(),
+});
+const messageSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string().trim().min(1).max(2_000),
+});
+
+router.post("/", isAuthenticated, upload.single("audio"), async (req, res) => {
   try {
-    const { lessonId, conversation, scratchPad } = req.body;
-    const audioFile = req.file;
+    const lessonId = z.string().min(1).max(120).safeParse(req.body.lessonId);
+    if (!lessonId.success) return res.status(400).json({ error: "A lesson is required." });
+    if (!req.file?.size) return res.status(400).json({ error: "Record a short message first." });
 
-    if (!audioFile) {
-      return res.status(400).json({ error: "No audio file provided" });
-    }
+    const lesson = await assertLessonAccess(req, lessonId.data);
 
-    if (!lessonId) {
-      return res.status(400).json({ error: "Lesson ID is required" });
-    }
-
-    // Get the lesson from storage
-    const lessons = await storage.getAllLessons();
-    const lesson = lessons.find((l) => l.lessonId === lessonId);
-    if (!lesson) {
-      return res.status(404).json({ error: "Lesson not found" });
-    }
-
-    // Parse conversation and scratchPad from form data
-    let parsedConversation = [];
-    let parsedScratchPad = {
+    let conversation: Array<z.infer<typeof messageSchema>> = [];
+    let scratchPad: z.infer<typeof scratchPadSchema> = {
       knownVocabulary: [],
       knownStructures: [],
       struggles: [],
       nextFocus: null,
     };
-
     try {
-      if (conversation) {
-        parsedConversation = JSON.parse(conversation);
-      }
-      if (scratchPad) {
-        parsedScratchPad = JSON.parse(scratchPad);
-      }
-    } catch (parseError) {
-      console.error("Error parsing form data:", parseError);
+      if (req.body.conversation) conversation = z.array(messageSchema).max(40).parse(JSON.parse(req.body.conversation));
+      if (req.body.scratchPad) scratchPad = scratchPadSchema.parse(JSON.parse(req.body.scratchPad));
+    } catch {
+      return res.status(400).json({ error: "The conversation data was invalid. Please refresh and try again." });
     }
 
-    console.log(
-      `Processing audio file: ${audioFile.originalname}, size: ${audioFile.size} bytes, type: ${audioFile.mimetype}`,
-    );
-
-    if (audioFile.size === 0) {
-      return res.status(400).json({ error: "Audio file is empty" });
+    const { response, transcription } = await generateGeminiAudioResponse(lesson, req.file.buffer, req.file.mimetype);
+    const userId = Number(req.user?.id);
+    if (Number.isInteger(userId) && userId > 0) {
+      await storage.saveChatHistory(userId, lessonId.data, [
+        ...conversation.filter((message) => message.content !== "🎤 Processing audio..."),
+        { role: "user", content: transcription },
+        { role: "assistant", content: response },
+      ]);
     }
 
-    if (audioFile.size > 10 * 1024 * 1024) {
-      return res.status(400).json({ error: "Audio file too large" });
-    }
+    const speech = await openaiTTSService.generateSpeech({
+      text: response,
+      languageCode: lesson.languageCode,
+    });
 
-    console.log("Starting Gemini audio processing...");
-    const startTime = Date.now();
-
-    // Generate response using Gemini with audio input
-    const { response, transcription } = await generateGeminiAudioResponse(
-      lesson,
-      audioFile.buffer,
-      audioFile.mimetype,
-    );
-
-    const processingTime = Date.now() - startTime;
-    console.log(`Audio processing completed in ${processingTime}ms`);
-    console.log("Transcription result:", transcription);
-    console.log("Response preview:", response.substring(0, 100) + "...");
-
-    // Save the conversation to chat history if user is authenticated
-    const user = (req as any).user;
-
-    if (user?.id) {
-      // Ensure userId is a number - handle both string and number cases
-      let userId: number;
-      if (typeof user.id === "string") {
-        userId = parseInt(user.id, 10);
-        if (isNaN(userId)) {
-          console.error("Invalid user ID format:", user.id);
-          // Don't save to history if ID is invalid, but continue with response
-        } else {
-          // Valid numeric string converted to number
-          const userMessage = {
-            role: "user" as const,
-            content: transcription || "🎤 Audio message",
-          };
-          const assistantMessage = {
-            role: "assistant" as const,
-            content: response,
-          };
-          const updatedMessages = [
-            ...parsedConversation.slice(0, -1),
-            userMessage,
-            assistantMessage,
-          ];
-
-          await storage.saveChatHistory(userId, lessonId, updatedMessages);
-        }
-      } else if (typeof user.id === "number") {
-        userId = user.id;
-
-        // Build the updated conversation
-        const userMessage = {
-          role: "user" as const,
-          content: transcription || "🎤 Audio message",
-        };
-        const assistantMessage = {
-          role: "assistant" as const,
-          content: response,
-        };
-        const updatedMessages = [
-          ...parsedConversation.slice(0, -1),
-          userMessage,
-          assistantMessage,
-        ];
-
-        // Save to storage
-        await storage.saveChatHistory(userId, lessonId, updatedMessages);
-      } else {
-        console.error(
-          "User ID is neither string nor number:",
-          user.id,
-          "Type:",
-          typeof user.id,
-        );
-      }
-    }
-
-    // Generate TTS audio for the response
-    let audioData = null;
-    try {
-      const { openaiTTSService } = await import('../openai-tts-service.js');
-      const ttsResult = await openaiTTSService.generateSpeech({
-        text: response,
-        languageCode: lesson.languageCode
-      });
-      
-      if (ttsResult.success) {
-        audioData = ttsResult.audioData;
-      } else {
-        console.warn('TTS generation failed:', ttsResult.error);
-      }
-    } catch (ttsError) {
-      console.warn('TTS service error:', ttsError);
-    }
-
-    res.json({
+    return res.json({
       response,
       transcription,
-      audioData,
-      scratchPad: parsedScratchPad, // For now, return the same scratchPad
+      audioData: speech.success ? speech.audioData : null,
+      scratchPad,
     });
   } catch (error) {
-    console.error("Error processing audio chat:", error);
-    console.error(
-      "Error details:",
-      error instanceof Error ? error.message : String(error),
-    );
-    res.status(500).json({
-      error: "Failed to process audio message. Please try again.",
-      details: error instanceof Error ? error.message : String(error),
-    });
+    console.error("Audio chat processing failed", error);
+    if (error instanceof Error && "status" in error) {
+      return res.status((error as Error & { status: number }).status).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "We could not process that recording. Please try again." });
   }
 });
 

@@ -5,15 +5,15 @@ const router = Router();
 
 /**
  * POST /api/tts/generate
- * Generate speech audio from text using Gemini TTS
+ * Generate cached speech audio with OpenAI TTS.
  */
 router.post('/generate', async (req: Request, res: Response) => {
   try {
     const { text, languageCode } = req.body;
     
-    if (!text || typeof text !== 'string') {
+    if (!text || typeof text !== 'string' || text.length > 4_000) {
       return res.status(400).json({ 
-        error: 'Text is required and must be a string' 
+        error: 'Send up to 4,000 characters to read aloud.'
       });
     }
 
