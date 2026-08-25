@@ -19,13 +19,22 @@ export function AudioPlayer({ text, languageCode = "en", audioData, className = 
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const objectUrlRef = useRef<string | null>(null);
+
+  function installAudioUrl(url: string) {
+    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+    objectUrlRef.current = url;
+    setAudioUrl(url);
+  }
 
   useEffect(() => {
-    if (!audioData) return;
-    const url = base64ToWavUrl(audioData);
-    setAudioUrl(url);
-    return () => URL.revokeObjectURL(url);
+    if (audioData) installAudioUrl(base64ToWavUrl(audioData));
+    return () => {
+      if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = null;
+    };
   }, [audioData]);
 
   async function play(url: string) {
@@ -36,13 +45,17 @@ export function AudioPlayer({ text, languageCode = "en", audioData, className = 
   }
 
   async function togglePlayback() {
+    setError(null);
     if (isPlaying) {
       audioRef.current?.pause();
       return;
     }
 
     if (audioUrl) {
-      await play(audioUrl).catch(() => setIsPlaying(false));
+      await play(audioUrl).catch(() => {
+        setIsPlaying(false);
+        setError("Audio could not be played.");
+      });
       return;
     }
 
@@ -53,13 +66,14 @@ export function AudioPlayer({ text, languageCode = "en", audioData, className = 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, languageCode }),
       });
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.success || !result.audioData) throw new Error("Speech unavailable");
       const url = base64ToWavUrl(result.audioData);
-      setAudioUrl(url);
+      installAudioUrl(url);
       await play(url);
     } catch {
       setIsPlaying(false);
+      setError("Speech is unavailable right now.");
     } finally {
       setIsLoading(false);
     }
@@ -86,8 +100,9 @@ export function AudioPlayer({ text, languageCode = "en", audioData, className = 
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)}
-        onError={() => setIsPlaying(false)}
+        onError={() => { setIsPlaying(false); setError("Audio could not be played."); }}
       />
+      {error && <span className="sr-only" role="alert">{error}</span>}
     </span>
   );
 }

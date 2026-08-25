@@ -433,6 +433,8 @@ router.delete('/history/:lessonId/reset', isAuthenticated, async (req: Request, 
       });
     }
     
+    await assertLessonAccess(req, lessonId);
+
     // Get existing chat history
     const existingHistory = await storage.getChatHistory(userId, lessonId);
     
@@ -481,6 +483,8 @@ router.get('/history/:lessonId', isAuthenticated, async (req: Request, res: Resp
       });
     }
     
+    await assertLessonAccess(req, lessonId);
+
     // Get the chat history from storage
     const chatHistory = await storage.getChatHistory(userId, lessonId);
     

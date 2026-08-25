@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import OpenAI from "openai";
 import { googleCloudAudioCache } from "./google-cloud-audio-cache";
-import { toSafeProviderError, withProviderRetry } from "./services/provider-utils";
+import { ProviderRequestError, toSafeProviderError, withProviderRetry } from "./services/provider-utils";
 
 export interface TTSOptions {
   text: string;
@@ -18,11 +18,15 @@ const TTS_MODEL = "gpt-4o-mini-tts";
 const MAX_TTS_CHARS = 4_000;
 
 class OpenAITTSService {
-  private readonly openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    maxRetries: 0,
-    timeout: 30_000,
-  });
+  private openai: OpenAI | null = null;
+
+  private getClient() {
+    if (!this.openai) {
+      if (!process.env.OPENAI_API_KEY) throw new ProviderRequestError("Speech is not configured.", 503);
+      this.openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 0, timeout: 30_000 });
+    }
+    return this.openai;
+  }
 
   private cleanText(text: string) {
     return text
@@ -33,7 +37,6 @@ class OpenAITTSService {
   }
 
   private getVoice(languageCode: string): "coral" {
-    // Coral provides the warm, clear tutoring voice used across the product.
     void languageCode;
     return "coral";
   }
@@ -42,26 +45,22 @@ class OpenAITTSService {
     const languageCode = options.languageCode ?? "en";
     const text = this.cleanText(options.text);
     if (!text) return { success: false, audioData: "", error: "Text is required for speech." };
-    if (text.length > MAX_TTS_CHARS) {
-      return { success: false, audioData: "", error: "This response is too long to read aloud." };
-    }
+    if (text.length > MAX_TTS_CHARS) return { success: false, audioData: "", error: "This response is too long to read aloud." };
 
     try {
       const cached = await googleCloudAudioCache.get(text, languageCode);
       if (cached) return { success: true, audioData: cached };
     } catch {
-      // Audio caching is an optimization; it must never block the response.
+      // Caching is optional.
     }
 
     try {
-      const response = await withProviderRetry(() =>
-        this.openai.audio.speech.create({
-          model: TTS_MODEL,
-          voice: this.getVoice(languageCode),
-          input: text,
-          response_format: "wav",
-        }),
-      );
+      const response = await withProviderRetry(() => this.getClient().audio.speech.create({
+        model: TTS_MODEL,
+        voice: this.getVoice(languageCode),
+        input: text,
+        response_format: "wav",
+      }));
       const audioData = Buffer.from(await response.arrayBuffer()).toString("base64");
       if (!audioData) throw new Error("Speech returned no audio");
 

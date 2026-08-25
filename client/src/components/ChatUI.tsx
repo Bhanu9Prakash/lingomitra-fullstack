@@ -103,6 +103,11 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
       if (!response.ok) throw new Error("We could not reset this conversation.");
       setMessages([]);
       setScratchPad(emptyScratchPad);
+      try {
+        sessionStorage.removeItem(scratchPadKey(lesson.lessonId));
+      } catch {
+        // Storage is optional.
+      }
       await initialize();
     } catch (resetError) {
       setError(resetError instanceof Error ? resetError.message : "We could not reset this conversation.");
@@ -153,7 +158,8 @@ const ChatUI = forwardRef(({ lesson }: ChatUIProps, ref) => {
     abortRef.current = new AbortController();
     try {
       const formData = new FormData();
-      formData.append("audio", audioBlob, `learner-recording.${audioBlob.type.includes("ogg") ? "ogg" : "webm"}`);
+      const recordingExtension = audioBlob.type.includes("mp4") ? "m4a" : audioBlob.type.includes("ogg") ? "ogg" : audioBlob.type.includes("wav") ? "wav" : "webm";
+      formData.append("audio", audioBlob, `learner-recording.${recordingExtension}`);
       formData.append("lessonId", lesson.lessonId);
       formData.append("conversation", JSON.stringify(messages));
       formData.append("scratchPad", JSON.stringify(scratchPad));

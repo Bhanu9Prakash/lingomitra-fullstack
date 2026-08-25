@@ -1,50 +1,25 @@
-import { Router, Request, Response } from 'express';
-import { openaiTTSService } from '../openai-tts-service.js';
+import { Router } from "express";
+import { z } from "zod";
+import { isAuthenticated } from "../auth";
+import { openaiTTSService } from "../openai-tts-service.js";
 
 const router = Router();
+const requestSchema = z.object({
+  text: z.string().trim().min(1).max(4_000),
+  languageCode: z.string().trim().regex(/^[a-z]{2,5}(?:-[A-Z]{2})?$/).default("en"),
+}).strict();
 
-/**
- * POST /api/tts/generate
- * Generate cached speech audio with OpenAI TTS.
- */
-router.post('/generate', async (req: Request, res: Response) => {
+router.post("/generate", isAuthenticated, async (req, res) => {
+  const parsed = requestSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: "Send up to 4,000 characters and a valid language code." });
+
   try {
-    const { text, languageCode } = req.body;
-    
-    if (!text || typeof text !== 'string' || text.length > 4_000) {
-      return res.status(400).json({ 
-        error: 'Send up to 4,000 characters to read aloud.'
-      });
-    }
-
-    if (text.trim().length === 0) {
-      return res.status(400).json({ 
-        error: 'Text cannot be empty' 
-      });
-    }
-
-    const result = await openaiTTSService.generateSpeech({
-      text: text.trim(),
-      languageCode: languageCode || 'en'
-    });
-
-    if (!result.success) {
-      return res.status(500).json({ 
-        error: result.error || 'Failed to generate speech' 
-      });
-    }
-
-    // Return the audio data as base64
-    res.json({
-      audioData: result.audioData,
-      success: true
-    });
-
+    const result = await openaiTTSService.generateSpeech(parsed.data);
+    if (!result.success) return res.status(503).json({ error: result.error || "Speech is unavailable right now." });
+    return res.json({ audioData: result.audioData, success: true });
   } catch (error) {
-    console.error('TTS endpoint error:', error);
-    res.status(500).json({ 
-      error: 'Internal server error while generating speech' 
-    });
+    console.error("TTS endpoint failed", error);
+    return res.status(500).json({ error: "Speech is unavailable right now." });
   }
 });
 

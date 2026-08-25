@@ -1,0 +1,137 @@
+/* Final compatibility layer for legacy pages. Core learning screens already use
+   the paper/ink/fox tokens in index.css; these aliases bring older surfaces into
+   the same visual system without changing the mascot or brand palette. */
+:root {
+  color-scheme: light;
+  --primary-color: #e85d1f;
+  --primary-light: #ffb184;
+  --primary-dark: #a93f18;
+  --secondary-color: #7c5247;
+  --secondary-light: #a77d70;
+  --secondary-dark: #5e3b33;
+  --text-color: #3b211c;
+  --text-light: #7c5247;
+  --bg-color: #fffaf3;
+  --bg-light: #f9eedf;
+  --bg-dark: #f1ddc7;
+  --border-color: #ead8c7;
+  --shadow: 0 12px 36px rgba(94, 33, 29, 0.09);
+  --transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  --border-radius: 12px;
+
+  --background: 34 100% 98%;
+  --foreground: 12 36% 17%;
+  --card: 40 100% 99%;
+  --card-foreground: 12 36% 17%;
+  --popover: 40 100% 99%;
+  --popover-foreground: 12 36% 17%;
+  --primary: 18 81% 52%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 35 68% 93%;
+  --secondary-foreground: 12 36% 17%;
+  --muted: 35 68% 93%;
+  --muted-foreground: 14 28% 38%;
+  --accent: 28 100% 94%;
+  --accent-foreground: 12 36% 17%;
+  --border: 29 43% 85%;
+  --input: 29 43% 85%;
+  --ring: 18 81% 52%;
+  --radius: 0.75rem;
+}
+
+html.dark,
+.dark-theme {
+  color-scheme: dark;
+  --primary-color: #ff985f;
+  --primary-light: #ffb88d;
+  --primary-dark: #e86d31;
+  --secondary-color: #d2aa98;
+  --secondary-light: #efd1c0;
+  --secondary-dark: #a47767;
+  --text-color: #feeeda;
+  --text-light: #e9c9b6;
+  --bg-color: #241917;
+  --bg-light: #33211d;
+  --bg-dark: #452c25;
+  --border-color: #69453a;
+  --shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
+
+  --background: 10 22% 12%;
+  --foreground: 31 92% 93%;
+  --card: 12 28% 16%;
+  --card-foreground: 31 92% 93%;
+  --popover: 12 28% 16%;
+  --popover-foreground: 31 92% 93%;
+  --primary: 22 100% 69%;
+  --primary-foreground: 12 36% 12%;
+  --secondary: 12 25% 21%;
+  --secondary-foreground: 31 72% 89%;
+  --muted: 12 25% 21%;
+  --muted-foreground: 22 45% 77%;
+  --accent: 14 35% 25%;
+  --accent-foreground: 31 92% 93%;
+  --border: 14 29% 32%;
+  --input: 14 29% 32%;
+  --ring: 22 100% 69%;
+}
+
+body {
+  background: var(--paper, var(--bg-color));
+  color: var(--ink, var(--text-color));
+}
+
+.app-wrapper > header {
+  padding: env(safe-area-inset-top) 0 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
+  background: color-mix(in srgb, var(--bg-color) 92%, transparent) !important;
+  box-shadow: 0 8px 28px rgba(94, 33, 29, 0.06) !important;
+  backdrop-filter: blur(18px) saturate(1.15);
+}
+
+.app-wrapper > header .container {
+  min-height: 4rem;
+  padding-inline: max(1rem, env(safe-area-inset-left));
+}
+
+.app-header-spacer {
+  height: calc(4rem + env(safe-area-inset-top));
+}
+
+.logo h1 { color: var(--fox-dark, var(--primary-dark)); }
+.selected-language,
+.user-menu-button,
+.language-selector-btn {
+  min-height: 44px;
+  border-color: var(--border-color);
+  background: color-mix(in srgb, var(--bg-light) 84%, transparent);
+}
+
+.auth-page { background: var(--paper, var(--bg-color)); }
+.auth-container {
+  border: 1px solid var(--border-color);
+  border-radius: 1.5rem;
+  background: var(--bg-color);
+  box-shadow: var(--shadow);
+}
+.auth-hero-section { background: var(--ink, var(--primary-dark)); }
+.auth-card-light { border-color: var(--border-color) !important; box-shadow: var(--shadow) !important; }
+
+.page-container { width: min(100% - 1.5rem, 1120px); padding-top: clamp(1.25rem, 4vw, 3rem); }
+
+@media (max-width: 480px) {
+  .app-wrapper > header .container { gap: 0.5rem; }
+  .logo { gap: 0.45rem; }
+  .logo h1 { font-size: 1.05rem; }
+  .mascot-logo { width: 36px; height: 36px; }
+  .header-controls { gap: 0.35rem; }
+  .auth-page { align-items: flex-start; padding: 0.75rem; }
+  .auth-form-section { padding: 1.25rem; }
+}
+
+@media (display-mode: standalone) {
+  .app-wrapper > main { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --transition: none; }
+}

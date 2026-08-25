@@ -1,225 +1,177 @@
-import { useState, useRef, useEffect } from 'react';
-import { Mic, MicOff, X, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useEffect, useRef, useState } from "react";
+import { Check, Mic, MicOff, X } from "lucide-react";
 
 interface ModernVoiceRecorderProps {
   onAudioSubmit: (audioBlob: Blob) => void;
   disabled?: boolean;
 }
 
+const MIME_CANDIDATES = [
+  "audio/webm;codecs=opus",
+  "audio/webm",
+  "audio/mp4",
+  "audio/ogg;codecs=opus",
+];
+
 export function ModernVoiceRecorder({ onAudioSubmit, disabled = false }: ModernVoiceRecorderProps) {
-  const [isRecording, setIsRecording] = useState(false);
+  const [state, setState] = useState<"idle" | "recording" | "preview">("idle");
   const [audioLevel, setAudioLevel] = useState(0);
-  const [hasRecording, setHasRecording] = useState(false);
-  const [showControls, setShowControls] = useState(false);
-  
+  const [error, setError] = useState<string | null>(null);
+  const [isStopping, setIsStopping] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const animationFrameRef = useRef<number | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const recordingRef = useRef(false);
+  const mimeTypeRef = useRef("audio/webm");
+  const startedAtRef = useRef(0);
 
-  // Generate waveform bars spanning full width
-  const generateWaveform = () => {
-    const bars = [];
-    const barCount = 35; // More bars to fill the entire space
-    
-    for (let i = 0; i < barCount; i++) {
-      const height = isRecording 
-        ? Math.random() * audioLevel * 20 + 4 
-        : 4;
-      
-      bars.push(
-        <div
-          key={i}
-          className="bg-orange-400 rounded-full transition-all duration-75 flex-shrink-0"
-          style={{
-            width: '2px',
-            height: `${height}px`,
-            opacity: isRecording ? 0.8 + Math.random() * 0.2 : 0.4
-          }}
-        />
-      );
+  function releaseCapture() {
+    recordingRef.current = false;
+    if (animationFrameRef.current !== null) cancelAnimationFrame(animationFrameRef.current);
+    animationFrameRef.current = null;
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    void audioContextRef.current?.close().catch(() => undefined);
+    audioContextRef.current = null;
+    analyserRef.current = null;
+  }
+
+  function monitorAudioLevel() {
+    const analyser = analyserRef.current;
+    if (!analyser || !recordingRef.current) return;
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteTimeDomainData(data);
+    const energy = data.reduce((sum, sample) => sum + Math.abs(sample - 128), 0) / data.length;
+    setAudioLevel(Math.min(1, energy / 38));
+    animationFrameRef.current = requestAnimationFrame(monitorAudioLevel);
+  }
+
+  async function startRecording() {
+    if (disabled || state !== "idle") return;
+    setError(null);
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setError("Voice recording is not supported in this browser.");
+      return;
     }
-    return bars;
-  };
 
-  // Monitor audio levels during recording
-  const monitorAudioLevel = () => {
-    if (!analyserRef.current) return;
-    
-    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
-    analyserRef.current.getByteFrequencyData(dataArray);
-    
-    const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-    setAudioLevel(average / 255);
-    
-    if (isRecording) {
-      animationFrameRef.current = requestAnimationFrame(monitorAudioLevel);
-    }
-  };
-
-  // Start recording
-  const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: 44100
-        } 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
       });
-      
       streamRef.current = stream;
-      
-      // Set up audio analysis
-      audioContextRef.current = new AudioContext();
-      analyserRef.current = audioContextRef.current.createAnalyser();
-      const source = audioContextRef.current.createMediaStreamSource(stream);
-      source.connect(analyserRef.current);
-      analyserRef.current.fftSize = 256;
-      
-      // Set up media recorder
-      mediaRecorderRef.current = new MediaRecorder(stream, {
-        mimeType: 'audio/webm;codecs=opus'
-      });
-      
+
+      const selectedMime = MIME_CANDIDATES.find((type) => MediaRecorder.isTypeSupported(type));
+      const recorder = selectedMime ? new MediaRecorder(stream, { mimeType: selectedMime }) : new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      mimeTypeRef.current = recorder.mimeType || selectedMime || "audio/webm";
       audioChunksRef.current = [];
-      
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
+      startedAtRef.current = Date.now();
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
+      };
+      recorder.onerror = () => {
+        releaseCapture();
+        setIsStopping(false);
+        setState("idle");
+        setError("The recording stopped unexpectedly. Please try again.");
+      };
+      recorder.onstop = () => {
+        const duration = Date.now() - startedAtRef.current;
+        mimeTypeRef.current = recorder.mimeType || audioChunksRef.current[0]?.type || mimeTypeRef.current;
+        releaseCapture();
+        setIsStopping(false);
+        setAudioLevel(0);
+        if (duration < 350 || audioChunksRef.current.length === 0) {
+          audioChunksRef.current = [];
+          setState("idle");
+          setError("That recording was too short. Hold for a moment and try again.");
+          return;
         }
+        setState("preview");
       };
-      
-      mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        setHasRecording(true);
-        setShowControls(true);
-      };
-      
-      mediaRecorderRef.current.start();
-      setIsRecording(true);
+
+      const AudioContextConstructor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (AudioContextConstructor) {
+        const context = new AudioContextConstructor();
+        audioContextRef.current = context;
+        const analyser = context.createAnalyser();
+        analyser.fftSize = 256;
+        context.createMediaStreamSource(stream).connect(analyser);
+        analyserRef.current = analyser;
+      }
+
+      recordingRef.current = true;
+      recorder.start(250);
+      setState("recording");
       monitorAudioLevel();
-      
-    } catch (error) {
-      console.error('Error starting recording:', error);
-      alert('Could not access microphone. Please check permissions.');
+    } catch (captureError) {
+      releaseCapture();
+      const denied = captureError instanceof DOMException && captureError.name === "NotAllowedError";
+      setError(denied ? "Allow microphone access, then tap the microphone again." : "We could not start the microphone. Please try again.");
     }
-  };
+  }
 
-  // Stop recording
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
-      
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-    }
-  };
+  function stopRecording() {
+    const recorder = mediaRecorderRef.current;
+    if (!recorder || recorder.state === "inactive" || isStopping) return;
+    recordingRef.current = false;
+    setIsStopping(true);
+    recorder.stop();
+  }
 
-  // Submit recording
-  const submitRecording = () => {
-    if (audioChunksRef.current.length > 0) {
-      const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-      onAudioSubmit(audioBlob);
-      resetRecorder();
-    }
-  };
-
-  // Cancel recording
-  const cancelRecording = () => {
-    resetRecorder();
-  };
-
-  // Reset recorder state
-  const resetRecorder = () => {
-    setHasRecording(false);
-    setShowControls(false);
-    setAudioLevel(0);
+  function resetRecorder() {
     audioChunksRef.current = [];
-  };
+    setAudioLevel(0);
+    setError(null);
+    setState("idle");
+  }
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-    };
-  }, []);
+  function submitRecording() {
+    if (!audioChunksRef.current.length) return;
+    const blob = new Blob(audioChunksRef.current, { type: mimeTypeRef.current });
+    onAudioSubmit(blob);
+    resetRecorder();
+  }
+
+  useEffect(() => () => releaseCapture(), []);
 
   return (
-    <>
-      {/* Main Recording Button - circular */}
-      <button
-        type="button"
-        onClick={isRecording ? stopRecording : startRecording}
-        disabled={disabled}
-        className={`
-          w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 relative
-          ${isRecording ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-600 hover:bg-gray-500'}
-          ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-        `}
-      >
-        {isRecording ? (
-          <MicOff className="w-5 h-5 text-white" />
-        ) : (
-          <Mic className="w-5 h-5 text-white" />
-        )}
-        
-        {/* Recording indicator */}
-        {isRecording && (
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-400 rounded-full animate-pulse" />
-        )}
-      </button>
+    <div className="relative flex shrink-0 items-center">
+      {state !== "preview" && (
+        <button
+          type="button"
+          onClick={state === "recording" ? stopRecording : startRecording}
+          disabled={disabled || isStopping}
+          className={`grid min-h-11 min-w-11 place-items-center rounded-2xl border transition-colors ${state === "recording" ? "border-red-600 bg-red-600 text-white" : "border-amber-200 bg-amber-50 text-amber-900 hover:bg-amber-100 dark:border-stone-700 dark:bg-stone-900 dark:text-amber-100"}`}
+          aria-label={state === "recording" ? "Stop recording" : "Record an answer"}
+          aria-pressed={state === "recording"}
+        >
+          {state === "recording" ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+          {state === "recording" && <span className="absolute -right-1 -top-1 h-3 w-3 animate-pulse rounded-full bg-red-400" />}
+        </button>
+      )}
 
-      {/* Waveform spanning full horizontal space as shown */}
-      {isRecording && (
-        <div className="absolute left-4 right-20 bottom-full mb-3 flex items-center h-6 px-4 bg-gray-800 rounded-lg">
-          <div className="flex items-center justify-evenly w-full">
-            {generateWaveform()}
-          </div>
+      {state === "recording" && (
+        <div className="absolute bottom-full right-0 mb-3 flex h-10 w-52 items-center gap-1 rounded-2xl border border-amber-200 bg-[#fffaf3] px-3 shadow-lg dark:border-stone-700 dark:bg-stone-900" aria-live="polite">
+          {Array.from({ length: 18 }, (_, index) => (
+            <span key={index} className="w-1 rounded-full bg-orange-500 transition-[height] duration-75" style={{ height: `${Math.max(4, 5 + audioLevel * (8 + (index % 5) * 4))}px` }} />
+          ))}
+          <span className="sr-only">Recording</span>
         </div>
       )}
 
-      {/* Action Controls - positioned like in your image */}
-      {showControls && hasRecording && (
-        <div className="absolute right-4 bottom-full mb-3 flex items-center space-x-2 bg-gray-800 rounded-lg px-3 py-2">
-          <button
-            type="button"
-            onClick={cancelRecording}
-            className="w-8 h-8 rounded-full bg-gray-700 text-red-400 hover:bg-red-600 hover:text-white flex items-center justify-center transition-all"
-          >
-            <X className="w-4 h-4" />
-          </button>
-          
-          <button
-            type="button"
-            onClick={submitRecording}
-            className="w-8 h-8 rounded-full bg-gray-700 text-green-400 hover:bg-green-600 hover:text-white flex items-center justify-center transition-all"
-          >
-            <Check className="w-4 h-4" />
-          </button>
+      {state === "preview" && (
+        <div className="flex items-center gap-1 rounded-2xl border border-amber-200 bg-amber-50 p-1 dark:border-stone-700 dark:bg-stone-900">
+          <button type="button" onClick={resetRecorder} className="grid min-h-9 min-w-9 place-items-center rounded-xl text-red-700 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-950/40" aria-label="Discard recording"><X className="h-4 w-4" /></button>
+          <button type="button" onClick={submitRecording} className="grid min-h-9 min-w-9 place-items-center rounded-xl bg-orange-500 text-white hover:bg-orange-600" aria-label="Send recording"><Check className="h-4 w-4" /></button>
         </div>
       )}
-    </>
+
+      {error && <p role="alert" className="absolute bottom-full right-0 mb-3 w-64 rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 shadow-lg dark:bg-red-950/80 dark:text-red-200">{error}</p>}
+    </div>
   );
 }

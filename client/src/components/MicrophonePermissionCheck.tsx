@@ -1,49 +1,25 @@
-import React, { useEffect } from 'react';
-import { useMicrophonePermission } from '@/hooks/use-microphone-permission';
-import { Mic, MicOff, Settings } from 'lucide-react';
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert";
-import { Button } from '@/components/ui/button';
+import { MicOff, Settings } from "lucide-react";
+import { useMicrophonePermission } from "@/hooks/use-microphone-permission";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 export default function MicrophonePermissionCheck() {
-  const { permissionState, requestPermission, showPermissionInstructions } = useMicrophonePermission();
-  
-  // Check permission after the component mounts
-  useEffect(() => {
-    // If permission state is unknown or prompt, request it after a short delay
-    // This ensures we don't immediately prompt on page load
-    if (permissionState === 'unknown' || permissionState === 'prompt') {
-      const timer = setTimeout(() => {
-        requestPermission();
-      }, 3000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [permissionState, requestPermission]);
-  
-  // Only show alert if permission is denied
-  if (permissionState !== 'denied') {
-    return null;
-  }
-  
+  const { permissionState, isSupported, requestPermission, showPermissionInstructions } = useMicrophonePermission();
+
+  if (isSupported && permissionState !== "denied") return null;
+
   return (
-    <Alert className="mb-4 border-red-400 bg-red-50 dark:bg-red-900/20">
-      <MicOff className="h-5 w-5 text-red-500" />
-      <AlertTitle className="text-red-500">Microphone access denied</AlertTitle>
+    <Alert className="mb-3 border-red-200 bg-red-50 text-red-800 dark:border-red-900 dark:bg-red-950/30 dark:text-red-200">
+      <MicOff className="h-5 w-5" />
+      <AlertTitle>{isSupported ? "Microphone access is blocked" : "Voice recording is unavailable"}</AlertTitle>
       <AlertDescription className="text-sm">
-        <p className="mb-2">To use voice features, please enable microphone access in your browser settings.</p>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="text-xs border-red-200 hover:bg-red-100 hover:text-red-700"
-          onClick={showPermissionInstructions}
-        >
-          <Settings className="mr-1 h-3 w-3" />
-          How to enable
-        </Button>
+        <p className="mb-2">{isSupported ? "Allow microphone access in this site's browser permissions. Lingomitra only records after you tap the microphone." : "This browser does not expose microphone recording to the app."}</p>
+        {isSupported && (
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" size="sm" onClick={() => void requestPermission()}>Try again</Button>
+            <Button type="button" variant="ghost" size="sm" onClick={showPermissionInstructions}><Settings className="mr-1 h-3 w-3" /> Instructions</Button>
+          </div>
+        )}
       </AlertDescription>
     </Alert>
   );

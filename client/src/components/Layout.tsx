@@ -20,8 +20,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const { theme } = useTheme();
   const [location] = useLocation();
-  
-  // Scroll to top when location changes
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location]);
@@ -35,93 +34,58 @@ export default function Layout({ children }: LayoutProps) {
     };
     updateViewport();
     viewport?.addEventListener("resize", updateViewport);
+    viewport?.addEventListener("scroll", updateViewport);
     window.addEventListener("resize", updateViewport);
     return () => {
       viewport?.removeEventListener("resize", updateViewport);
+      viewport?.removeEventListener("scroll", updateViewport);
       window.removeEventListener("resize", updateViewport);
     };
   }, []);
-  
-  // Extract language code from URL path
-  let languageCode = null;
-  const pathParts = location.split('/').filter(Boolean); // Split and remove empty strings
-  
-  if (pathParts.length > 0) {
-    // The first part of the path might be the language code
-    const possibleCode = pathParts[0];
-    // If it's a 2-letter code, it's likely a language code
-    if (possibleCode.length === 2) {
-      languageCode = possibleCode;
-    }
-  }
-  
-  // Handle old format: /language/xx/...
-  if (location.startsWith("/language/")) {
-    languageCode = location.split("/language/")[1].split("/")[0];
-  }
-  
-  // Fetch all languages
+
+  let languageCode: string | null = null;
+  const pathParts = location.split("/").filter(Boolean);
+  if (pathParts[0]?.length === 2) languageCode = pathParts[0];
+  if (location.startsWith("/language/")) languageCode = location.split("/language/")[1].split("/")[0];
+
   const { data: languages = [] } = useQuery<Language[]>({
     queryKey: ["/api/languages"],
     queryFn: getQueryFn(),
   });
-  
-  // Find the selected language
-  const selectedLanguage = languageCode 
-    ? languages.find(lang => lang.code === languageCode) || null 
-    : null;
-  
-  const isLanguageSelectionPage = location === "/languages";
+  const selectedLanguage = languageCode ? languages.find((language) => language.code === languageCode) || null : null;
   const isHomePage = location === "/";
   const isAuthPage = location === "/auth" || location.startsWith("/auth?");
-  
-  // Check user authentication status by querying the user API
+
   const { data: user } = useQuery({
     queryKey: ["/api/user"],
-    queryFn: getQueryFn(),
-    // Don't retry on failure (401 when not logged in)
+    queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
-    // Disable error display in UI
-    gcTime: 0
+    gcTime: 0,
   });
-  
-  // Hide footer on lesson pages and when user is logged in to create an app-like experience
+
   const isLessonPage = location.includes("/lesson/");
-  const isUserLoggedIn = !!user;
+  const isUserLoggedIn = Boolean(user);
 
   return (
-    <div className={`${theme === 'dark' ? 'dark-theme dark' : ''}`}>
+    <div className={theme === "dark" ? "dark-theme dark" : ""}>
       <div id="app-wrapper" className={`app-wrapper w-full overflow-x-hidden ${isUserLoggedIn && !isLessonPage ? "pb-20 md:pb-0" : ""}`}>
-        <header className="fixed top-0 left-0 right-0 w-full z-50 bg-background shadow-sm">
+        <header className="fixed inset-x-0 top-0 z-50 w-full bg-background">
           <div className="container">
-            <div className="logo">
+            <Link href={isUserLoggedIn ? "/dashboard" : "/"} className="logo" aria-label="LingoMitra home">
               <MascotLogo className="mascot-logo" />
               <h1>LingoMitra</h1>
-            </div>
-            
+            </Link>
+
             <div className="header-controls">
-              {/* Shows flag + name dropdown in the header - hide on homepage and auth pages */}
-              {!isHomePage && !isAuthPage && (
-                <LanguageDropdown
-                  selectedLanguage={selectedLanguage}
-                  languages={languages}
-                />
-              )}
-              
-              {/* User menu dropdown with theme toggle - hide on homepage and auth pages */}
+              {!isHomePage && !isAuthPage && <LanguageDropdown selectedLanguage={selectedLanguage} languages={languages} />}
               {!isHomePage && !isAuthPage && <UserMenu />}
             </div>
           </div>
         </header>
-        
-        {/* Add a spacer to account for the fixed header */}
-        <div className="h-16"></div>
-        
-        <main className="mt-6">
-          {children}
-        </main>
-        
-        {/* Only show footer when user is not logged in and not on lesson page */}
+
+        <div className="app-header-spacer" aria-hidden="true" />
+        <main className="mt-6">{children}</main>
+
         {!isLessonPage && !isUserLoggedIn && <Footer />}
         <ScrollToTop />
         <NetworkStatus />
@@ -132,10 +96,10 @@ export default function Layout({ children }: LayoutProps) {
         <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-amber-200/80 bg-[#fffdf8]/95 px-2 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_25px_rgba(87,45,20,.08)] backdrop-blur md:hidden dark:border-stone-800 dark:bg-stone-950/95" aria-label="Primary navigation">
           <div className="mx-auto grid max-w-md grid-cols-4">
             {[
-              { href: "/dashboard", label: "Home", icon: House },
+              { href: "/dashboard", label: "Today", icon: House },
               { href: "/languages", label: "Learn", icon: BookOpen },
-              { href: "/conversation", label: "Practice", icon: MessageCircle },
-              { href: "/profile", label: "Account", icon: UserRound },
+              { href: "/conversation", label: "Talk", icon: MessageCircle },
+              { href: "/profile", label: "Profile", icon: UserRound },
             ].map(({ href, label, icon: Icon }) => {
               const active = location === href || (href === "/conversation" && location.startsWith("/conversation"));
               return (
@@ -148,9 +112,8 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </nav>
       )}
-      
-      {/* Portal container for dropdowns - positioned outside the main layout flow */}
-      <div id="portal-container" className="portal-container"></div>
+
+      <div id="portal-container" className="portal-container" />
     </div>
   );
 }

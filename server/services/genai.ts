@@ -13,7 +13,7 @@ let openAIClient: OpenAI | null = null;
 function getGeminiClient() {
   if (!geminiClient) {
     const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY;
-    if (!apiKey) throw new Error("Google AI is not configured");
+    if (!apiKey) throw new ProviderRequestError("The language coach is not configured.", 503);
     geminiClient = new GoogleGenAI({ apiKey });
   }
   return geminiClient;
@@ -21,7 +21,7 @@ function getGeminiClient() {
 
 function getOpenAIClient() {
   if (!openAIClient) {
-    if (!process.env.OPENAI_API_KEY) throw new Error("OpenAI is not configured");
+    if (!process.env.OPENAI_API_KEY) throw new ProviderRequestError("Voice features are not configured.", 503);
     openAIClient = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, maxRetries: 0, timeout: REQUEST_TIMEOUT_MS });
   }
   return openAIClient;
@@ -96,12 +96,13 @@ export async function transcribeAudio(
   mimeType: string,
   options: { signal?: AbortSignal } = {},
 ): Promise<TranscriptionResult> {
-  if (!audioBuffer.length) throw new ProviderRequestError("The recording was empty.");
-  if (audioBuffer.length > 10 * 1024 * 1024) throw new ProviderRequestError("The recording is too large.");
-  if (!mimeExtensions[mimeType]) throw new ProviderRequestError("That recording format is not supported.");
+  const normalizedMimeType = mimeType.split(";")[0].trim().toLowerCase();
+  if (!audioBuffer.length) throw new ProviderRequestError("The recording was empty.", 400);
+  if (audioBuffer.length > 10 * 1024 * 1024) throw new ProviderRequestError("The recording is too large.", 400);
+  if (!mimeExtensions[normalizedMimeType]) throw new ProviderRequestError("That recording format is not supported.", 400);
 
   try {
-    const file = await toFile(audioBuffer, `recording.${mimeExtensions[mimeType]}`, { type: mimeType });
+    const file = await toFile(audioBuffer, `recording.${mimeExtensions[normalizedMimeType]}`, { type: normalizedMimeType });
     const result = await withProviderRetry(() =>
       getOpenAIClient().audio.transcriptions.create(
         { file, model: TRANSCRIPTION_MODEL, response_format: "json" },
@@ -109,7 +110,7 @@ export async function transcribeAudio(
       ),
     );
     const transcription = result.text?.trim();
-    if (!transcription) throw new Error("The recording did not contain understandable speech");
+    if (!transcription) throw new ProviderRequestError("The recording did not contain understandable speech.", 422);
 
     return {
       transcription,
@@ -121,11 +122,7 @@ export async function transcribeAudio(
   }
 }
 
-export async function generateGeminiAudioResponse(
-  lesson: Lesson,
-  audioBuffer: Buffer,
-  mimeType: string,
-) {
+export async function generateGeminiAudioResponse(lesson: Lesson, audioBuffer: Buffer, mimeType: string) {
   const transcriptionResult = await transcribeAudio(audioBuffer, mimeType);
   const response = await generateGeminiResponse(lesson, transcriptionResult.transcription);
   return { response, ...transcriptionResult };
