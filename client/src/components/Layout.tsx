@@ -72,7 +72,7 @@ export default function Layout({ children }: LayoutProps) {
         <header className="fixed inset-x-0 top-0 z-50 w-full bg-background">
           <div className="container">
             <Link href={isUserLoggedIn ? "/dashboard" : "/"} className="logo" aria-label="LingoMitra home">
-              <MascotLogo className="mascot-logo" />
+              <MascotLogo className="mascot-logo" linked={false} />
               <h1>LingoMitra</h1>
             </Link>
 
