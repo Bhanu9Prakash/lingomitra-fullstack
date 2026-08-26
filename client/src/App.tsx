@@ -1,39 +1,51 @@
+import { lazy, Suspense } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toast";
 import { ToastProvider } from "@/components/ui/toast-context";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
-import LanguageSelection from "@/pages/LanguageSelection";
-import LanguageDetail from "@/pages/LanguageDetail";
-import LessonView from "@/pages/LessonView";
-import AuthPage from "@/pages/auth-page";
-import Settings from "@/pages/Settings";
-import Profile from "@/pages/Profile";
-import SubscribePage from "@/pages/SubscribePage";
-import AdminDashboard from "@/pages/AdminDashboard";
-import AboutPage from "@/pages/AboutPage";
-import ContactPage from "@/pages/ContactPage";
-import FAQPage from "@/pages/FAQPage";
-import Blog from "@/pages/Blog";
-import BlogPost from "@/pages/BlogPost";
-import ConversationPractice from "@/pages/ConversationPractice";
-import VerifyEmailPage from "@/pages/VerifyEmailPage";
-import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
-import ResetPasswordPage from "@/pages/ResetPasswordPage";
-import Healthcheck from "./pages/Healthcheck";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Layout from "@/components/Layout";
 // Import the AuthProvider from the hooks directory
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 
+const NotFound = lazy(() => import("@/pages/not-found"));
+const LanguageSelection = lazy(() => import("@/pages/LanguageSelection"));
+const LanguageDetail = lazy(() => import("@/pages/LanguageDetail"));
+const LessonView = lazy(() => import("@/pages/LessonView"));
+const AuthPage = lazy(() => import("@/pages/auth-page"));
+const Settings = lazy(() => import("@/pages/Settings"));
+const Profile = lazy(() => import("@/pages/Profile"));
+const SubscribePage = lazy(() => import("@/pages/SubscribePage"));
+const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
+const AboutPage = lazy(() => import("@/pages/AboutPage"));
+const ContactPage = lazy(() => import("@/pages/ContactPage"));
+const FAQPage = lazy(() => import("@/pages/FAQPage"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
+const ConversationPractice = lazy(() => import("@/pages/ConversationPractice"));
+const VerifyEmailPage = lazy(() => import("@/pages/VerifyEmailPage"));
+const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
+const Healthcheck = lazy(() => import("./pages/Healthcheck"));
+
+function RouteFallback() {
+  return (
+    <div className="route-loader" role="status" aria-live="polite">
+      <span aria-hidden="true" />
+      <p>Opening your learning studio…</p>
+    </div>
+  );
+}
+
 function Router() {
   return (
     <Layout>
-      <Switch>
+      <Suspense fallback={<RouteFallback />}>
+        <Switch>
         {/* Home page is public to show marketing content */}
         <Route path="/" component={Home} />
         
@@ -86,7 +98,8 @@ function Router() {
         
         {/* 404 page */}
         <Route component={NotFound} />
-      </Switch>
+        </Switch>
+      </Suspense>
     </Layout>
   );
 }

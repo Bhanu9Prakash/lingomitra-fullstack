@@ -1230,6 +1230,32 @@ html[data-keyboard-open="true"] .mobile-tabbar {
   transform: translateY(110%);
 }
 
+/* Route loading */
+
+.route-loader {
+  min-height: min(34rem, calc(100svh - var(--studio-header-height)));
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.8rem;
+  color: var(--ink-muted);
+}
+
+.route-loader > span {
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 3px solid var(--paper-deep);
+  border-top-color: var(--fox);
+  border-radius: 50%;
+  animation: route-loader-spin 700ms linear infinite;
+}
+
+.route-loader p {
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 720;
+}
+
 /* Purposeful entrance motion */
 
 @keyframes studio-rise {
@@ -1245,6 +1271,10 @@ html[data-keyboard-open="true"] .mobile-tabbar {
 @keyframes studio-shimmer {
   from { background-position: 100% 0; }
   to { background-position: -100% 0; }
+}
+
+@keyframes route-loader-spin {
+  to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -1664,6 +1694,11 @@ html[data-keyboard-open="true"] .mobile-tabbar {
   .skeleton-copy span,
   .skeleton-action {
     animation: none !important;
+  }
+
+  .route-loader > span {
+    animation: none;
+    border-color: var(--fox);
   }
 
   .learning-progress-track span {
