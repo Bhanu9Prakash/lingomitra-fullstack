@@ -1,7 +1,11 @@
 import { useMemo, useRef, useState } from "react";
-import { CheckCircle2, ChevronRight, CircleHelp, Ear, Lightbulb, RotateCcw, Sparkles } from "lucide-react";
+import { CheckCircle2, ChevronRight, CircleHelp, Ear, Lightbulb, RotateCcw } from "lucide-react";
 import { Lesson } from "@shared/schema";
+import { SlideTextButton } from "@/components/kokonut/slide-text-button";
+import { AnimatedBackground } from "@/components/motion-primitives/animated-background";
+import { TransitionPanel } from "@/components/motion-primitives/transition-panel";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import MascotMoment from "./MascotMoment";
 
@@ -103,22 +107,17 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
 
   return (
     <section className="learning-loop" aria-labelledby="lesson-outcome">
-      <div
-        className="learning-progress-shell"
-        role="progressbar"
-        aria-label="Lesson progress"
-        aria-valuemin={1}
-        aria-valuemax={stepLabels.length}
-        aria-valuenow={Math.min(step, 6) + 1}
-        aria-valuetext={stepLabels[Math.min(step, 6)]}
-      >
+      <div className="learning-progress-shell">
         <div className="learning-progress-meta">
           <span>Step {Math.min(step, 6) + 1} of {stepLabels.length}</span>
           <strong>{stepLabels[Math.min(step, 6)]}</strong>
         </div>
-        <div className="learning-progress-track" aria-hidden="true">
-          <span style={{ width: `${((Math.min(step, 6) + 1) / stepLabels.length) * 100}%` }} />
-        </div>
+        <Progress
+          className="learning-progress-track"
+          value={((Math.min(step, 6) + 1) / stepLabels.length) * 100}
+          aria-label="Lesson progress"
+          aria-valuetext={`${stepLabels[Math.min(step, 6)]}, step ${Math.min(step, 6) + 1} of ${stepLabels.length}`}
+        />
         <div className="learning-progress" aria-hidden="true">
           {stepLabels.map((label, index) => (
             <span key={label} className={index === step ? "is-current" : index < step ? "is-complete" : ""}>{label}</span>
@@ -126,7 +125,7 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
         </div>
       </div>
 
-      {step === 0 && (
+      <TransitionPanel activeIndex={step} className="learning-stage">
         <div className="learning-card learning-orient">
           <MascotMoment state="neutral" alt="The LingoMitra fox ready to learn" />
           <div>
@@ -134,12 +133,15 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
             <h1 id="lesson-outcome">{outcome}</h1>
             <p className="learning-lede">By the end, you will build one useful sentence pattern, then adapt it in a new context.</p>
             <div className="learning-cue"><Ear aria-hidden="true" /> Pause for ten seconds. Say the outcome aloud in your own words.</div>
-            <Button size="lg" onClick={() => setStep(1)}>Start with the pattern <ChevronRight className="ml-2 h-4 w-4" /></Button>
+            <SlideTextButton
+              text="Start with the pattern"
+              hoverText="Begin the lesson"
+              icon={<ChevronRight className="h-4 w-4" />}
+              onClick={() => setStep(1)}
+            />
           </div>
         </div>
-      )}
 
-      {step === 1 && (
         <div className="learning-card">
           <p className="eyebrow">Notice</p>
           <h2>Look for the move, not a list.</h2>
@@ -147,9 +149,7 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
           <div className="learning-cue"><Lightbulb aria-hidden="true" /> What stays the same when the subject or context changes?</div>
           <Button onClick={() => setStep(2)}>I see the pattern <ChevronRight className="ml-2 h-4 w-4" /></Button>
         </div>
-      )}
 
-      {step === 2 && (
         <div className="learning-card">
           <MascotMoment state="thinking" alt="The LingoMitra fox thinking through a sentence" />
           <p className="eyebrow">Predict</p>
@@ -166,9 +166,7 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
             <Button disabled={!predict.trim()} onClick={() => setPredictionAttempted(true)}>Check my reasoning</Button>
           )}
         </div>
-      )}
 
-      {step === 3 && (
         <div className="learning-card coach-card">
           <MascotMoment state="coach" alt="The LingoMitra fox offering coaching" />
           <p className="eyebrow">Coach</p>
@@ -181,9 +179,7 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
           <div className="learning-cue"><CircleHelp aria-hidden="true" /> Need a hint? Re-read the Notice card and identify the one part that changes.</div>
           <Button onClick={() => setStep(4)}>Practice the same move differently <ChevronRight className="ml-2 h-4 w-4" /></Button>
         </div>
-      )}
 
-      {step === 4 && (
         <div className="learning-card">
           <p className="eyebrow">Practice</p>
           <h2>Three small transformations.</h2>
@@ -211,9 +207,7 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
           </div>
           <Button disabled={!canContinuePractice} onClick={() => setStep(5)}>Use it in a new context <ChevronRight className="ml-2 h-4 w-4" /></Button>
         </div>
-      )}
 
-      {step === 5 && (
         <div className="learning-card">
           <p className="eyebrow">Transfer</p>
           <h2>One new-context challenge.</h2>
@@ -229,9 +223,7 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
             </div>
           )}
         </div>
-      )}
 
-      {step === 6 && (
         <div className="learning-card">
           {saved ? <MascotMoment state="celebrate" alt="The LingoMitra fox celebrating a completed learning activity" /> : <MascotMoment state="retry" alt="The LingoMitra fox inviting another try" />}
           <p className="eyebrow">Reflect</p>
@@ -247,24 +239,30 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
           ) : (
             <>
               <p>Choose the state that honestly describes what you would like to do next. This controls when the review returns.</p>
-              <div className="confidence-grid" role="radiogroup" aria-label="How difficult was this lesson?">
+              <AnimatedBackground
+                className="confidence-grid"
+                defaultValue={confidence ?? undefined}
+                onValueChange={(value) => setConfidence(value as Confidence)}
+                role="radiogroup"
+                aria-label="How difficult was this lesson?"
+              >
                 {([
                   ["again", "Again", "Bring this idea back soon with extra support."],
                   ["soon", "Soon", "A short revisit will help the pattern settle."],
                   ["got-it", "Got it", "Keep it in rotation, with more space before the next review."],
                 ] as const).map(([value, label, description]) => (
-                  <button key={value} type="button" role="radio" aria-checked={confidence === value} className={`confidence-option ${confidence === value ? "is-selected" : ""}`} onClick={() => setConfidence(value)}>
+                  <button key={value} data-id={value} type="button" role="radio" aria-checked={confidence === value} className={`confidence-option ${confidence === value ? "is-selected" : ""}`}>
                     <strong>{label}</strong><span>{description}</span>
                   </button>
                 ))}
-              </div>
+              </AnimatedBackground>
               <label className="weak-concept-toggle"><input type="checkbox" checked={weakConcept} onChange={(event) => setWeakConcept(event.target.checked)} /> Save this idea as one to revisit</label>
               {saveError ? <p className="form-error" role="alert">{saveError}</p> : null}
               <Button size="lg" disabled={!confidence || saving} onClick={saveLearning}>{saving ? "Saving your learning…" : "Save reflection"}</Button>
             </>
           )}
         </div>
-      )}
+      </TransitionPanel>
     </section>
   );
 }

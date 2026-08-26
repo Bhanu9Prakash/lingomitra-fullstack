@@ -750,6 +750,15 @@ a:active {
   margin-top: 0;
 }
 
+.language-grid > div {
+  min-width: 0;
+  height: 100%;
+}
+
+.language-grid > div > .language-card {
+  height: 100%;
+}
+
 .language-card {
   width: 100%;
   min-height: 146px;
@@ -980,18 +989,16 @@ a:active {
 }
 
 .learning-progress-track {
-  height: 0.32rem;
+  height: 0.38rem;
   overflow: hidden;
   border-radius: 999px;
   background: var(--paper-deep);
 }
 
-.learning-progress-track span {
-  display: block;
+.learning-progress-track [data-slot="progress-indicator"] {
   height: 100%;
   border-radius: inherit;
   background: var(--fox);
-  transition: width 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .learning-progress {
@@ -1014,6 +1021,15 @@ a:active {
 
 .learning-progress .is-current {
   color: var(--fox-dark);
+}
+
+.learning-stage {
+  position: relative;
+  min-width: 0;
+}
+
+.learning-stage > div {
+  min-width: 0;
 }
 
 .learning-card {
@@ -1057,7 +1073,101 @@ a:active {
 }
 
 .confidence-option {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   background: color-mix(in srgb, var(--paper-deep) 30%, transparent);
+}
+
+.confidence-option.is-selected {
+  background: transparent;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--fox) 18%, transparent);
+}
+
+.confidence-option > strong,
+.confidence-option > span:not(.animated-background-selection) {
+  position: relative;
+  z-index: 1;
+}
+
+.animated-background-selection {
+  position: absolute;
+  inset: 0.28rem;
+  z-index: 0;
+  border: 1px solid color-mix(in srgb, var(--fox) 36%, var(--line));
+  border-radius: 0.72rem;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--fox) 15%, var(--studio-surface)), color-mix(in srgb, var(--paper-deep) 76%, var(--studio-surface)));
+  box-shadow: 0 8px 18px rgba(130, 57, 28, 0.08);
+  pointer-events: none;
+}
+
+.kokonut-slide-button-shell {
+  width: fit-content;
+}
+
+.kokonut-slide-button {
+  min-height: 2.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.72rem 1.12rem;
+  border: 1px solid color-mix(in srgb, var(--fox-dark) 32%, transparent);
+  border-radius: 0.78rem;
+  color: #fffaf4;
+  background: linear-gradient(135deg, var(--fox), color-mix(in srgb, var(--fox) 76%, var(--fox-dark)));
+  box-shadow: 0 9px 20px rgba(130, 57, 28, 0.17);
+  font: inherit;
+  font-weight: 780;
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.kokonut-slide-button-copy {
+  height: 1.35em;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  line-height: 1.35;
+}
+
+.kokonut-slide-button-copy > span {
+  height: 1.35em;
+  flex: 0 0 1.35em;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kokonut-slide-button-icon {
+  display: inline-flex;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kokonut-slide-button:hover {
+  box-shadow: 0 12px 24px rgba(130, 57, 28, 0.23);
+  filter: saturate(1.04);
+  transform: translateY(-1px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .kokonut-slide-button:hover .kokonut-slide-button-copy > span {
+    transform: translateY(-100%);
+  }
+
+  .kokonut-slide-button:hover .kokonut-slide-button-icon {
+    transform: translateX(0.18rem);
+  }
+}
+
+.kokonut-slide-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--focus) 48%, transparent);
+  outline-offset: 3px;
+}
+
+.kokonut-slide-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: grayscale(0.18);
+  transform: none;
 }
 
 /* Footer */
@@ -1296,9 +1406,6 @@ html[data-keyboard-open="true"] .mobile-tabbar {
     animation-range: entry 5% cover 28%;
   }
 
-  .learning-card {
-    animation: studio-rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
 }
 
 @media (max-width: 980px) {
@@ -1666,6 +1773,11 @@ html[data-keyboard-open="true"] .mobile-tabbar {
     width: 104px;
   }
 
+  .kokonut-slide-button-shell,
+  .kokonut-slide-button {
+    width: 100%;
+  }
+
   .learning-orient > .mascot-moment {
     width: auto;
   }
@@ -1701,7 +1813,9 @@ html[data-keyboard-open="true"] .mobile-tabbar {
     border-color: var(--fox);
   }
 
-  .learning-progress-track span {
+  .kokonut-slide-button,
+  .kokonut-slide-button-copy > span,
+  .kokonut-slide-button-icon {
     transition: none;
   }
 }

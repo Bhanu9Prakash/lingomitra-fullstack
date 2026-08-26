@@ -1,4 +1,5 @@
 import { Language } from "@shared/schema";
+import { AnimatedGroup } from "@/components/motion-primitives/animated-group";
 import LanguageCard from "./LanguageCard";
 import { Languages } from "lucide-react";
 
@@ -37,10 +38,10 @@ export default function LanguageGrid({ languages, isLoading }: LanguageGridProps
   }
 
   return (
-    <div className="language-grid">
+    <AnimatedGroup className="language-grid" preset="slide" staggerChildren={0.06}>
       {languages.map((language) => (
         <LanguageCard key={language.code} language={language} />
       ))}
-    </div>
+    </AnimatedGroup>
   );
 }
