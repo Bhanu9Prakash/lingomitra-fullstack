@@ -65,18 +65,29 @@ export default function Layout({ children }: LayoutProps) {
 
   const isLessonPage = location.includes("/lesson/");
   const isUserLoggedIn = Boolean(user);
+  const homeStartHref = isUserLoggedIn ? "/languages" : "/auth?tab=register&returnTo=%2Flanguages";
 
   return (
     <div className={theme === "dark" ? "dark-theme dark" : ""}>
       <div id="app-wrapper" className={`app-wrapper w-full overflow-x-hidden ${isUserLoggedIn && !isLessonPage ? "pb-20 md:pb-0" : ""}`}>
-        <header className="fixed inset-x-0 top-0 z-50 w-full bg-background">
-          <div className="container">
+        <header className="site-header fixed inset-x-0 top-0 z-50 w-full">
+          <div className="header-shell">
             <Link href={isUserLoggedIn ? "/dashboard" : "/"} className="logo" aria-label="LingoMitra home">
               <MascotLogo className="mascot-logo" linked={false} />
               <h1>LingoMitra</h1>
             </Link>
 
             <div className="header-controls">
+              {isHomePage && (
+                <nav className="landing-header-nav" aria-label="Landing page navigation">
+                  <a href="#how-it-works" className="header-nav-link">Method</a>
+                  <Link href="/about" className="header-nav-link">About</Link>
+                  {!isUserLoggedIn && <Link href="/auth" className="header-sign-in">Sign in</Link>}
+                  <Link href={homeStartHref} className="header-start-link">
+                    {isUserLoggedIn ? "Continue learning" : "Start learning"}
+                  </Link>
+                </nav>
+              )}
               {!isHomePage && !isAuthPage && <LanguageDropdown selectedLanguage={selectedLanguage} languages={languages} />}
               {!isHomePage && !isAuthPage && <UserMenu />}
             </div>
@@ -84,7 +95,7 @@ export default function Layout({ children }: LayoutProps) {
         </header>
 
         <div className="app-header-spacer" aria-hidden="true" />
-        <main className="mt-6">{children}</main>
+        <div className={isHomePage ? "app-content app-content-home" : "app-content"}>{children}</div>
 
         {!isLessonPage && !isUserLoggedIn && <Footer />}
         <ScrollToTop />
@@ -93,8 +104,8 @@ export default function Layout({ children }: LayoutProps) {
       </div>
 
       {isUserLoggedIn && !isLessonPage && !isAuthPage && (
-        <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-amber-200/80 bg-[#fffdf8]/95 px-2 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_25px_rgba(87,45,20,.08)] backdrop-blur md:hidden dark:border-stone-800 dark:bg-stone-950/95" aria-label="Primary navigation">
-          <div className="mx-auto grid max-w-md grid-cols-4">
+        <nav className="mobile-tabbar" aria-label="Primary navigation">
+          <div className="mobile-tabbar-inner">
             {[
               { href: "/dashboard", label: "Today", icon: House },
               { href: "/languages", label: "Learn", icon: BookOpen },
@@ -103,7 +114,7 @@ export default function Layout({ children }: LayoutProps) {
             ].map(({ href, label, icon: Icon }) => {
               const active = location === href || (href === "/conversation" && location.startsWith("/conversation"));
               return (
-                <Link key={href} href={href} className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-xl text-xs font-extrabold ${active ? "bg-orange-100 text-orange-700 dark:bg-orange-950/60 dark:text-orange-300" : "text-stone-600 dark:text-stone-300"}`} aria-current={active ? "page" : undefined}>
+                <Link key={href} href={href} className={`mobile-tab ${active ? "is-active" : ""}`} aria-current={active ? "page" : undefined}>
                   <Icon className="h-5 w-5" aria-hidden="true" />
                   {label}
                 </Link>

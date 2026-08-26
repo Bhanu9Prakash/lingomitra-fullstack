@@ -1,51 +1,48 @@
 import { Language } from "@shared/schema";
 import { useLocation } from "wouter";
+import { ArrowUpRight, UsersRound } from "lucide-react";
 
 interface LanguageCardProps {
   language: Language;
 }
 
 export default function LanguageCard({ language }: LanguageCardProps) {
-  const [_, navigate] = useLocation();
+  const [, navigate] = useLocation();
 
   const handleClick = () => {
-    // Navigate to the language detail page
+    if (!language.isAvailable) return;
     navigate(`/language/${language.code}`);
   };
 
-  // Map of languages to their approximate number of speakers (in millions)
-  const speakerNumbers: Record<string, number> = {
-    de: 130,     // German - native + non-native speakers
-    fr: 267,     // French - native + non-native speakers
-    es: 543,     // Spanish - native + non-native speakers
-    hi: 602,     // Hindi
-    zh: 1117,    // Chinese (mostly Mandarin)
-    jp: 122,     // Japanese
-  };
-
-  // Get the speaker count for this language
-  const speakerCount = speakerNumbers[language.code] || language.speakers || 0;
-
-  // Format the speaker count for display
-  const formattedSpeakerCount = speakerCount > 999 
-    ? `${(speakerCount / 1000).toFixed(1)}B` 
+  const speakerCount = Number(language.speakers) || 0;
+  const formattedSpeakerCount = speakerCount > 999
+    ? `${(speakerCount / 1000).toFixed(1)}B`
     : `${speakerCount}M`;
 
   return (
-    <div className="language-card" onClick={handleClick}>
+    <button
+      type="button"
+      className="language-card"
+      onClick={handleClick}
+      disabled={!language.isAvailable}
+      aria-label={language.isAvailable ? `Start learning ${language.name}` : `${language.name} is coming soon`}
+    >
       <div className="language-card-flag">
         <img
           src={`/flags/${language.flagCode}.svg`}
-          alt={`${language.name} Flag`}
+          alt=""
+          aria-hidden="true"
         />
       </div>
-      <h3>{language.name}</h3>
-      <p className="speakers">
-        <i className="fas fa-users"></i> {formattedSpeakerCount} speakers worldwide
-      </p>
-      <button className="language-btn">
-        Start Learning
-      </button>
-    </div>
+      <div className="language-card-copy">
+        <span className="language-code">{language.code.toUpperCase()}</span>
+        <h3>{language.name}</h3>
+        <p className="speakers"><UsersRound aria-hidden="true" /> {formattedSpeakerCount} speakers worldwide</p>
+      </div>
+      <span className="language-card-action">
+        {language.isAvailable ? "Open course" : "Coming soon"}
+        {language.isAvailable && <ArrowUpRight aria-hidden="true" />}
+      </span>
+    </button>
   );
 }

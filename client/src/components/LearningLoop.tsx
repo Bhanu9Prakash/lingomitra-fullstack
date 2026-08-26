@@ -17,7 +17,7 @@ interface LearningLoopProps {
 function extractNotice(content: string, fallback: string) {
   const match = content.match(/>\s*\*\*Thinking Point:?\s*([^*]+)\*\*\s*([\s\S]{0,420}?)(?=\n\n|###|$)/i);
   if (!match) {
-    return `Notice the relationship in “${fallback}.” Do not try to memorize every word yet—look for the one move the sentence makes.`;
+    return `Notice the relationship in “${fallback}.” Do not try to memorize every word yet. Look for the one move the sentence makes.`;
   }
   return `${match[1].trim()}: ${match[2].replace(/[*_`>#]/g, "").replace(/\s+/g, " ").trim()}`;
 }
@@ -41,6 +41,7 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
   const [confidence, setConfidence] = useState<Confidence | null>(null);
   const [weakConcept, setWeakConcept] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const practicePrompts = [
@@ -90,7 +91,7 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
         const result = await response.json().catch(() => null);
         throw new Error(result?.message || "Your learning activity could not be saved.");
       }
-      setStep(6);
+      setSaved(true);
     } catch (error) {
       setSaveError(error instanceof Error ? error.message : "Your learning activity could not be saved.");
     } finally {
@@ -102,10 +103,27 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
 
   return (
     <section className="learning-loop" aria-labelledby="lesson-outcome">
-      <div className="learning-progress" aria-label={`Lesson step: ${stepLabels[Math.min(step, 6)]}`}>
-        {stepLabels.map((label, index) => (
-          <span key={label} className={index <= step ? "is-current" : ""}>{label}</span>
-        ))}
+      <div
+        className="learning-progress-shell"
+        role="progressbar"
+        aria-label="Lesson progress"
+        aria-valuemin={1}
+        aria-valuemax={stepLabels.length}
+        aria-valuenow={Math.min(step, 6) + 1}
+        aria-valuetext={stepLabels[Math.min(step, 6)]}
+      >
+        <div className="learning-progress-meta">
+          <span>Step {Math.min(step, 6) + 1} of {stepLabels.length}</span>
+          <strong>{stepLabels[Math.min(step, 6)]}</strong>
+        </div>
+        <div className="learning-progress-track" aria-hidden="true">
+          <span style={{ width: `${((Math.min(step, 6) + 1) / stepLabels.length) * 100}%` }} />
+        </div>
+        <div className="learning-progress" aria-hidden="true">
+          {stepLabels.map((label, index) => (
+            <span key={label} className={index === step ? "is-current" : index < step ? "is-complete" : ""}>{label}</span>
+          ))}
+        </div>
       </div>
 
       {step === 0 && (
@@ -136,7 +154,7 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
           <MascotMoment state="thinking" alt="The LingoMitra fox thinking through a sentence" />
           <p className="eyebrow">Predict</p>
           <h2>Build it before you see the coaching.</h2>
-          <p>Write or say one sentence that uses the idea. It can be imperfect—the point is to make your reasoning visible.</p>
+          <p>Write or say one sentence that uses the idea. It can be imperfect. The point is to make your reasoning visible.</p>
           <Textarea value={predict} onChange={(event) => setPredict(event.target.value)} placeholder="Write the sentence you would try…" className="learning-textarea" />
           <div className="learning-cue"><Ear aria-hidden="true" /> Pause. Say your answer aloud once before continuing.</div>
           {predictionAttempted ? (
@@ -206,7 +224,7 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
           ) : (
             <div className="transfer-feedback">
               <CheckCircle2 aria-hidden="true" />
-              <div><strong>You transferred the process.</strong><p>If it felt slow, that is useful information—not a failure. Choose a review state below.</p></div>
+              <div><strong>You transferred the process.</strong><p>If it felt slow, that is useful information, not a failure. Choose a review state below.</p></div>
               <Button onClick={() => setStep(6)}>Reflect and save <ChevronRight className="ml-2 h-4 w-4" /></Button>
             </div>
           )}
@@ -215,10 +233,10 @@ export default function LearningLoop({ lesson, nextLesson, prevLesson, onNavigat
 
       {step === 6 && (
         <div className="learning-card">
-          {confidence ? <MascotMoment state="celebrate" alt="The LingoMitra fox celebrating a completed learning activity" /> : <MascotMoment state="retry" alt="The LingoMitra fox inviting another try" />}
+          {saved ? <MascotMoment state="celebrate" alt="The LingoMitra fox celebrating a completed learning activity" /> : <MascotMoment state="retry" alt="The LingoMitra fox inviting another try" />}
           <p className="eyebrow">Reflect</p>
-          <h2>{confidence ? "Your learning activity is saved." : "How did that pattern feel?"}</h2>
-          {confidence ? (
+          <h2>{saved ? "Your learning activity is saved." : "How did that pattern feel?"}</h2>
+          {saved ? (
             <>
               <p>We saved your real activity time, {accuracy}% self-checked reasoning coverage, and a review cue. No perfect score was invented.</p>
               <div className="lesson-next-actions">

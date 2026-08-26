@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import "./theme-harmony.css";
+import "./taste-refresh.css";
 import { registerServiceWorker } from "./pwa-config";
 
 registerServiceWorker();

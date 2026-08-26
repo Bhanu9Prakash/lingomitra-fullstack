@@ -10,31 +10,37 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="mt-20 bg-[#222222] text-white">
-      <div className="container px-4 mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between py-4 gap-4">
-          <div className="flex items-center">
-            <MascotLogo className="w-10 h-10 mr-3" />
-            <h3 className="text-xl font-bold text-[#ff6600]">LingoMitra</h3>
+    <footer className="site-footer">
+      <div className="landing-shell">
+        <div className="footer-grid">
+          <div className="footer-brand">
+            <div className="footer-logo">
+              <MascotLogo className="footer-mascot" />
+              <strong>{APP_NAME}</strong>
+            </div>
+            <p>A calm place to notice patterns, build sentences, and make a language your own.</p>
           </div>
-          
-          <div className="flex gap-6">
-            <Link href="/about" className="text-gray-300 hover:text-white transition-colors">About</Link>
-            <Link href="/blog" className="text-gray-300 hover:text-white transition-colors">Blog</Link>
-            <Link href="#" className="text-gray-300 hover:text-white transition-colors">Privacy</Link>
-            <Link href="#" className="text-gray-300 hover:text-white transition-colors">Terms</Link>
-            <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">Contact</Link>
-          </div>
-          
-          <div className="flex gap-4">
-            <a href="https://www.instagram.com/lingomitra" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors rounded-full p-2" aria-label="Instagram">
-              <Instagram size={20} />
+
+          <nav className="footer-links" aria-label="Footer navigation">
+            <span>Explore</span>
+            <Link href="/about">About</Link>
+            <Link href="/blog">Blog</Link>
+            <Link href="/contact">Contact</Link>
+          </nav>
+
+          <div className="footer-method">
+            <span>Our method</span>
+            <strong>Notice. Predict. Reuse.</strong>
+            <p>Language learning built around active thinking.</p>
+            <a href="https://www.instagram.com/lingomitra" target="_blank" rel="noopener noreferrer" className="footer-social" aria-label="LingoMitra on Instagram">
+              <Instagram size={18} aria-hidden="true" /> Instagram
             </a>
           </div>
         </div>
-        
-        <div className="border-t border-gray-700 py-4 text-center text-sm text-gray-400">
-          <p>© {currentYear} LingoMitra. Master languages naturally through pattern recognition.</p>
+
+        <div className="footer-bottom">
+          <p>© {currentYear} {APP_NAME}</p>
+          <p>Think first. Then speak.</p>
         </div>
       </div>
     </footer>
