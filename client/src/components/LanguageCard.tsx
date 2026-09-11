@@ -1,6 +1,8 @@
 import { Language } from "@shared/schema";
 import { useLocation } from "wouter";
 import { ArrowUpRight, UsersRound } from "lucide-react";
+import { Card, CardFooter } from "./ui/card";
+import { Button } from "./ui/button";
 
 interface LanguageCardProps {
   language: Language;
@@ -20,12 +22,10 @@ export default function LanguageCard({ language }: LanguageCardProps) {
     : `${speakerCount}M`;
 
   return (
-    <button
-      type="button"
+    <Card
       className="language-card"
-      onClick={handleClick}
-      disabled={!language.isAvailable}
-      aria-label={language.isAvailable ? `Start learning ${language.name}` : `${language.name} is coming soon`}
+      role="article"
+      aria-label={language.name}
     >
       <div className="language-card-flag">
         <img
@@ -39,10 +39,10 @@ export default function LanguageCard({ language }: LanguageCardProps) {
         <h3>{language.name}</h3>
         <p className="speakers"><UsersRound aria-hidden="true" /> {formattedSpeakerCount} speakers worldwide</p>
       </div>
-      <span className="language-card-action">
+      <CardFooter><Button variant="outline" onClick={handleClick} disabled={!language.isAvailable} className="language-card-action">
         {language.isAvailable ? "Open course" : "Coming soon"}
         {language.isAvailable && <ArrowUpRight aria-hidden="true" />}
-      </span>
-    </button>
+      </Button></CardFooter>
+    </Card>
   );
 }

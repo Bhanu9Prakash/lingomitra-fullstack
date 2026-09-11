@@ -1,6 +1,6 @@
 ## Lesson 1: Building Your First Kannada Sentences - Verbs, Pronouns & Pronunciation
 
-Welcome! In this foundational lesson, we'll unlock the basics of forming simple Kannada sentences. We'll learn how to say *who* is doing something and how the *action word* (verb) works. Plus, we'll get comfortable with some essential Kannada sounds. Forget rote memorization; we're focusing on patterns and connections to English.
+Welcome! In this foundational lesson, we'll unlock the basics of forming simple Kannada sentences. We'll learn how to say *who* is doing something and how the *action word* (verb) works. Plus, we'll get comfortable with some essential Kannada sounds. Understanding a pattern helps, and memory, retrieval and practice still matter. We focus on patterns and connections to English.
 
 ### The Building Blocks: Who is Who? (Pronouns)
 
@@ -83,7 +83,7 @@ Let's try making sentences with our new pronouns and verbs:
   * Verb: `ಹೋಗುತ್ತೀಯೆ` (hoogutteeye - go)
   * Meaning: You go to Bangalore.
 
-> **Language Transfer Intuition:** Whenever you want to make a sentence in Kannada, think of putting the verb at the end. This is one of the biggest structural differences from English!
+> **Learning connection:** Whenever you want to make a sentence in Kannada, think of putting the verb at the end. This is one of the biggest structural differences from English!
 
 ### Your Kannada Verb Toolkit (The First 20!)
 

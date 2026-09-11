@@ -21,19 +21,7 @@ export default function UserMenu() {
   const [_, navigate] = useLocation();
   const { theme, toggleTheme } = useTheme();
 
-  const handleLogout = async () => {
-    try {
-      await logoutMutation.mutateAsync();
-      toast({
-        title: "Logged out",
-        description: "You have been successfully logged out.",
-        variant: "default",
-      });
-      navigate("/auth");
-    } catch (error) {
-      // Error handling is done in the mutation
-    }
-  };
+  const handleLogout = () => logoutMutation.mutate();
 
   // If no user, show login button
   if (!user) {
@@ -57,10 +45,11 @@ export default function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button 
           variant="ghost" 
-          className="relative h-10 w-10 rounded-full hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary active:scale-95 p-0"
+          className="account-menu-trigger relative h-11 w-11 rounded-full hover:bg-primary/10 focus:bg-primary/10 focus:ring-2 focus:ring-primary p-0"
+          aria-label="Open account menu"
         >
-          <Avatar className="h-10 w-10 transition-transform duration-200 hover:scale-105">
-            <AvatarFallback className="bg-primary text-white font-semibold text-sm">{getInitials(user.username)}</AvatarFallback>
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-sm">{getInitials(user.username)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -111,8 +100,8 @@ export default function UserMenu() {
             <div className="flex items-center">
               {/* Show the icon for what will happen when clicked, not the current state */}
               {theme === 'dark' 
-                ? <Sun className="mr-2 h-4 w-4 text-yellow-500" /> 
-                : <Moon className="mr-2 h-4 w-4 text-blue-300" />
+                ? <Sun className="mr-2 h-4 w-4 text-muted-foreground" />
+                : <Moon className="mr-2 h-4 w-4 text-muted-foreground" />
               }
               <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
             </div>

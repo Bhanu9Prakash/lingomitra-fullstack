@@ -15,53 +15,46 @@ const faqs = [
     items: [
       {
         q: "What is LingoMitra?",
-        a: "LingoMitra is a chat-based tutor that uses large language models to teach you how to think in a new language. It follows the Thinking Method, which means you answer first, then the AI helps you correct yourself."
+        a: "LingoMitra combines explanations, sentence practice and later review. All seven languages have authored opening checks; the full courses also offer notes and self-practice. Optional AI coaching is separate from assessment. Language Transfer is an inspiration for guided thinking; LingoMitra is independent and is not affiliated with it."
       },
       {
         q: "Which languages are available today?",
-        a: "German, Spanish, French, Hindi, Kannada, Japanese and Chinese. More languages are on the roadmap and you can vote inside the app."
+        a: "German, Spanish, French, Hindi, Kannada, Japanese and Chinese."
       },
       {
         q: "Do I need to know English?",
-        a: "Lessons are written in English for now. We plan to add full Telugu and Hindi interfaces soon."
+        a: "The current teaching language is English. Your native language may be different from your strongest language for explanations. You can record languages you know in Settings. Hindi and Telugu teaching versions are not available yet."
       }
     ]
   },
   {
-    category: "Pricing",
+    category: "Accounts and access",
     items: [
-      {
-        q: "Is it free?",
-        a: "The first two lessons in every language are free forever. After that you can unlock the full course with the Pro plan."
-      },
-      {
-        q: "How much is Pro?",
-        a: "Pro is ₹799 per year. That gives you unlimited lessons, offline caching and priority support."
-      },
-      {
-        q: "Can I cancel any time?",
-        a: "Yes. Go to Settings → Subscription → Cancel. You keep access until the renewal date."
-      }
+      { q: "Why can optional AI have a daily limit?", a: "All lessons stay open. To keep the site free, AI coaching has a daily request allowance and voice has a separate clip allowance. A limit affects optional assistance; authored hints, typed practice and saved learning remain available. No upgrade is needed." },
+      { q: "Is it free?", a: "All 209 lessons across seven languages are available without a LingoMitra subscription or payment." },
+      { q: "How do I sign in?", a: "Use Continue with ChatGPT. LingoMitra does not need a separate password." },
+      { q: "Will my progress sync?", a: "Yes. Sign in with the same ChatGPT account on another device to see your saved lesson progress, review queue and conversations." },
+      { q: "Where is my old account history?", a: "Accounts from the previous hosting service are not automatically merged. Historical progress needs to be imported from the previous database after the account owner is verified." }
     ]
   },
   {
     category: "Features",
     items: [
       {
-        q: "How is LingoMitra different from Duolingo or Memrise?",
-        a: "We focus on guided discovery not flashcards. Every lesson is a live conversation where the tutor adapts after each sentence you produce."
+        q: "What do the guided opening lessons assess?",
+        a: "Our focus is understanding a pattern well enough to make a new sentence and retrieve it later. We have not established that LingoMitra produces better learning than other products."
       },
       {
         q: "Can I speak instead of type?",
-        a: "Yes. Tap the mic icon to enable speech. The app transcribes locally, sends only the text to the AI, then speaks the reply back."
+        a: "You can always type, listen when audio is available, or practice aloud privately. Optional submitted recordings are sent for transcription; check and edit the transcript before sending it. Speech-recognition uncertainty is not a language error, and transcription matching is not a pronunciation score."
       },
       {
         q: "Will it work offline?",
-        a: "If you install the app as a PWA you can cache favourite lessons and review them without a connection. Speaking features need internet."
+        a: "An internet connection is required to sign in, load lessons and sync learning. The installed app shows an offline notice when disconnected."
       },
       {
         q: "Does it support streaks and progress tracking?",
-        a: "A streak calendar and per-language progress bars motivate you. You can also reset or hide streaks if you prefer zero-pressure learning."
+        a: "Your profile separates course completion from assessed starter attempts. Streaks and time describe activity, not mastery. You can reset a language from Settings."
       }
     ]
   },
@@ -70,15 +63,15 @@ const faqs = [
     items: [
       {
         q: "Are my chats private?",
-        a: "Chats are encrypted in transit and at rest. We never sell or share your data."
+        a: "Your drafts, attempts and chats are account-scoped. Optional AI messages and submitted recordings are processed by the configured provider. LingoMitra does not store raw voice recordings; provider processing follows its own data terms."
       },
       {
         q: "How do I delete my data?",
-        a: "Open Settings → Privacy → Delete account. This wipes all messages, streaks and subscription info within 24 hours."
+        a: "Open Settings and choose Delete LingoMitra Data. This removes your account-linked progress, drafts, attempts, chats, contact messages and settings. Your ChatGPT account remains active."
       },
       {
         q: "Who can I contact for support?",
-        a: "Use the in-app chat or email product@lingomitra.com. We reply within one business day."
+        a: "Use the Contact page to leave a message for the LingoMitra team."
       }
     ]
   }
@@ -143,7 +136,7 @@ export default function FAQPage() {
       <div className="mt-16 flex flex-col items-center gap-4 bg-muted/30 p-8 rounded-xl">
         <p className="text-center text-lg font-medium">Still need help?</p>
         <Button asChild>
-          <a href="mailto:product@lingomitra.com">Chat with support</a>
+          <a href="/contact">Leave a support message</a>
         </Button>
       </div>
     </div>

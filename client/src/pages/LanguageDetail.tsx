@@ -1,5 +1,8 @@
-import { useMemo, useState } from "react";
-import { useLocation, useRoute } from "wouter";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
+import { pathway } from '@shared/pathways';
+import { learningApi } from '@/lib/learning-api';
+import { useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useRoute } from "wouter";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BookOpen, CheckCircle2, ChevronRight, MessageCircle, RotateCcw } from "lucide-react";
 import { Language, Lesson, UserProgress } from "@shared/schema";
@@ -29,26 +32,28 @@ export default function LanguageDetail() {
   const [, navigate] = useLocation();
   const queryClient = useQueryClient();
   const languageCode = parameters?.code || "";
+  const selected=pathway(languageCode);
+  useEffect(()=>{setActiveReview(null);setReviewResponse('');if(selected)void learningApi('/api/user/preferences',{selectedTarget:languageCode},'PATCH').catch(()=>{});},[languageCode]);
   const [reviewResponse, setReviewResponse] = useState("");
   const [activeReview, setActiveReview] = useState<ReviewItem | null>(null);
   const [reviewMessage, setReviewMessage] = useState<string | null>(null);
 
-  const { data: language, isLoading: isLanguageLoading } = useQuery<Language>({
+  const { data: language, isLoading: isLanguageLoading, error: languageError, refetch: reloadLanguage } = useQuery<Language>({
     queryKey: [`/api/languages/${languageCode}`],
     queryFn: getQueryFn(),
     enabled: Boolean(languageCode),
   });
-  const { data: lessons = [], isLoading: isLessonLoading } = useQuery<Lesson[]>({
+  const { data: lessons = [], isLoading: isLessonLoading, error: lessonError, refetch: reloadLessons } = useQuery<Lesson[]>({
     queryKey: [`/api/languages/${languageCode}/lessons`],
     queryFn: getQueryFn(),
     enabled: Boolean(languageCode),
   });
-  const { data: progress = [] } = useQuery<UserProgress[]>({
+  const { data: progress = [], error: progressError, refetch: reloadProgress, isLoading: progressLoading } = useQuery<UserProgress[]>({
     queryKey: [`/api/progress/language/${languageCode}`],
     queryFn: getQueryFn(),
     enabled: Boolean(languageCode),
   });
-  const { data: reviewData } = useQuery<{ items: ReviewItem[] }>({
+  const { data: reviewData, error: reviewError, refetch: reloadReview } = useQuery<{ items: ReviewItem[] }>({
     queryKey: [`/api/progress/review/due?language=${languageCode}`],
     queryFn: getQueryFn(),
     enabled: Boolean(languageCode),
@@ -60,7 +65,7 @@ export default function LanguageDetail() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ rating }),
+        body: JSON.stringify({ rating, answer: reviewResponse }),
       });
       if (!response.ok) {
         const result = await response.json().catch(() => null);
@@ -83,9 +88,10 @@ export default function LanguageDetail() {
   const percent = sortedLessons.length ? Math.round((completedLessonIds.size / sortedLessons.length) * 100) : 0;
   const reviewItems = reviewData?.items || [];
 
-  if (isLanguageLoading || isLessonLoading) {
+  if (isLanguageLoading || isLessonLoading || progressLoading) {
     return <main className="studio-page"><div className="studio-shell"><p aria-live="polite">Preparing your learning space…</p></div></main>;
   }
+  if(languageError||lessonError)return <main className="guided-shell"><h1>Course temporarily unavailable</h1><p role="alert">We could not load this course. Your saved learning has not been reset.</p><Button onClick={()=>{reloadLanguage();reloadLessons();}}>Try again</Button><Link href="/languages">All languages</Link></main>;
   if (!language) {
     return <main className="studio-page"><div className="studio-shell"><h1>Language not found</h1><Button onClick={() => navigate("/languages")}>Choose a language</Button></div></main>;
   }
@@ -99,19 +105,21 @@ export default function LanguageDetail() {
             <div>
               <p className="eyebrow">Your {language.name} workspace</p>
               <h1>Today, build one useful sentence.</h1>
-              <p>Progress only changes when you complete a learning activity—never when you simply open a page.</p>
+              <p>Your original course completion is preserved. Assessed starter skills and saved drafts appear on Today.</p>
             </div>
           </div>
           <MascotMoment state="neutral" className="today-mascot" alt="The LingoMitra fox ready to learn" />
         </header>
 
+        {progressError&&<div role="alert"><p>Your saved completion could not load. The course remains open.</p><Button onClick={()=>reloadProgress()}>Retry completion history</Button></div>}
+        {selected&&<section className="starter-path"><p className="eyebrow">{selected.name} starter · English explanations</p><h2>Build your first useful sentences</h2><ol>{selected.starters.map((id,i)=><li key={id}><span>{String(i+1).padStart(2,'0')}</span><Link href={`/learn/${id}`}>{selected.titles[i]}</Link></li>)}</ol><p>Optional hints, language-specific checks, and a saved return path. Original course notes stay below.</p><Link href="/dashboard">See your saved evidence and reviews</Link></section>}
         <section className="today-grid" aria-label="Today’s learning actions">
           <Card className="today-primary">
             <CardContent>
               <div>
                 <p className="eyebrow">Continue learning</p>
                 <h2>{nextLesson ? nextLesson.title : "Your course is ready"}</h2>
-                <p>{nextLesson ? "One focused pattern, then practice it in context." : "Choose a course to begin your first activity."}</p>
+                <p>{nextLesson ? "Open the notes and choose one taught pattern to practice." : "Choose a course to begin your first activity."}</p>
               </div>
               {nextLesson ? (
                 <Button size="lg" onClick={() => navigate(`/${languageCode}/lesson/${lessonNumber(nextLesson)}`)}>
@@ -126,10 +134,10 @@ export default function LanguageDetail() {
               <RotateCcw aria-hidden="true" />
               <div>
                 <p className="eyebrow">Due review</p>
-                <h2>{reviewItems.length ? `${reviewItems.length} idea${reviewItems.length === 1 ? "" : "s"} due` : "Nothing due yet"}</h2>
+                <h2>{reviewError?"Review unavailable":reviewItems.length ? `${reviewItems.length} idea${reviewItems.length === 1 ? "" : "s"} due` : "Nothing due yet"}</h2>
                 <p>{reviewItems.length ? "Recall one process in a fresh context." : "Complete a lesson and choose a review state to build your queue."}</p>
               </div>
-              {reviewItems.length ? <Button variant="outline" onClick={() => setActiveReview(reviewItems[0])}>Start review</Button> : null}
+              {reviewError&&<Button variant="outline" onClick={()=>reloadReview()}>Retry review queue</Button>}{reviewItems.length ? <Button variant="outline" onClick={() => setActiveReview(reviewItems[0])}>Start review</Button> : null}
             </CardContent>
           </Card>
 
@@ -141,7 +149,7 @@ export default function LanguageDetail() {
                 <h2>Use a sentence in context</h2>
                 <p>Choose a situation, then speak or type your way through it.</p>
               </div>
-              <Button variant="outline" onClick={() => navigate(`/conversation?language=${encodeURIComponent(languageCode)}`)}>Practice speaking</Button>
+              <Button variant="outline" onClick={() => navigate(`/conversation?language=${encodeURIComponent(languageCode)}`)}>Speak or type</Button>
             </CardContent>
           </Card>
         </section>
@@ -149,12 +157,12 @@ export default function LanguageDetail() {
         {activeReview ? (
           <section className="review-workbench" aria-labelledby="review-title">
             <div>
-              <p className="eyebrow">Productive recall</p>
+              <p className="eyebrow">Self-practice review</p><p>This response is saved as practice. Your rating sets the next reminder; it is not a correctness or mastery score.</p>
               <h2 id="review-title">{activeReview.concept}</h2>
               <p>{activeReview.prompt}</p>
             </div>
-            <Textarea value={reviewResponse} onChange={(event) => setReviewResponse(event.target.value)} placeholder="Write or say your new sentence, then jot down what you said…" />
-            <details><summary>Need a cue?</summary><p>{activeReview.cue}</p></details>
+            <label htmlFor="review-response">Your recalled sentence</label><Textarea id="review-response" lang={languageCode} value={reviewResponse} onChange={(event) => setReviewResponse(event.target.value)} placeholder="Write or say your new sentence, then jot down what you said…" />
+            <Accordion type="single" collapsible className="review-cue"><AccordionItem value="cue"><AccordionTrigger>Need a cue?</AccordionTrigger><AccordionContent><p>{activeReview.cue}</p></AccordionContent></AccordionItem></Accordion>
             <div className="review-ratings">
               {(["again", "soon", "got-it"] as const).map((rating) => (
                 <Button
@@ -176,20 +184,20 @@ export default function LanguageDetail() {
           <div className="outline-heading">
             <div>
               <p className="eyebrow">Course outline</p>
-              <h2>{completedLessonIds.size} of {sortedLessons.length} learning activities completed</h2>
+              <h2>{progressError?"Completion history unavailable":`${completedLessonIds.size} of ${sortedLessons.length} course activities completed`}</h2>
             </div>
-            <span>{percent}%</span>
+            {!progressError&&<span>{percent}% completed</span>}
           </div>
-          <Progress value={percent} />
+          {!progressError&&<Progress value={percent} aria-label="Course completion, not mastery" />}
           <div className="lesson-outline-list">
             {sortedLessons.map((lesson) => {
               const completed = completedLessonIds.has(lesson.lessonId);
               return (
-                <button key={lesson.lessonId} className="outline-lesson" onClick={() => navigate(`/${languageCode}/lesson/${lessonNumber(lesson)}`)}>
+                <Button variant="ghost" key={lesson.lessonId} className="outline-lesson" onClick={() => navigate(`/${languageCode}/lesson/${lessonNumber(lesson)}`)}>
                   {completed ? <CheckCircle2 aria-label="Completed" /> : <BookOpen aria-hidden="true" />}
-                  <span><strong>{lesson.title}</strong><small>{completed ? "Completed through practice" : "Open learning activity"}</small></span>
+                  <span><strong>{lesson.title}</strong><small>{progressError?"Open course notes":completed ? "Practice completed" : "Open course notes and self-practice"}</small></span>
                   <ChevronRight aria-hidden="true" />
-                </button>
+                </Button>
               );
             })}
           </div>

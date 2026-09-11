@@ -29,7 +29,7 @@ This is the most common way to talk about the future in everyday conversation, e
 *   Nous **allons acheter** une nouvelle voiture. (We **are going to buy** a new car.)
 *   Ils **vont se marier** en juin. (They **are going to get married** in June.)
 
-> **Language Transfer Intuition:** This structure is very similar to English "going to + verb" future. It's easy to grasp and feels quite natural.
+> **Learning connection:** This structure is very similar to English "going to + verb" future. It's easy to grasp and feels quite natural.
 
 ### Method 2: The Simple Future (Le Futur Simple)
 

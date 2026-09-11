@@ -44,7 +44,7 @@ Basically, you're saying "ten and six" for 16, "ten and seven" for 17, etc.
 | 18     | **dieciocho**  | diez + y + ocho   | *dee-eh-see-oh-cho* |
 | 19     | **diecinueve** | diez + y + nueve  | *dee-eh-see-nweh-veh* |
 
-> **Language Transfer Intuition:** Unlike English "-teen", Spanish forms teens as "ten and [number]". This pattern will continue with other combinations.
+> **Learning connection:** Unlike English "-teen", Spanish forms teens as "ten and [number]". This pattern will continue with other combinations.
 
 ### The Tens: Numbers 20-90
 

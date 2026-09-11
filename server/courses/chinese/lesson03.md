@@ -40,7 +40,7 @@ Chinese numbers are remarkably logical! Once you know 1-10, you can easily form 
 * 35 = 三十五 (sān shí wǔ) - literally "three ten five"
 * 99 = 九十九 (jiǔ shí jiǔ) - literally "nine ten nine"
 
-> **Language Transfer Intuition:** Compare this to English, which has irregular forms like "eleven," "twelve," "twenty," "thirty." Chinese simply uses the base numbers combined consistently. For example, 35 is literally "three ten five" (三十五), very logical!
+> **Learning connection:** Compare this to English, which has irregular forms like "eleven," "twelve," "twenty," "thirty." Chinese simply uses the base numbers combined consistently. For example, 35 is literally "three ten five" (三十五), very logical!
 
 ### Larger Numbers: Hundreds, Thousands, & Beyond
 

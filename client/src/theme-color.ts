@@ -1,6 +1,6 @@
 const themeColors = {
-  light: { chrome: "#fffaf3", statusBar: "default", manifest: "/manifest.webmanifest" },
-  dark: { chrome: "#241917", statusBar: "black", manifest: "/manifest-dark.webmanifest" },
+  light: { chrome: "#f7f8fa", statusBar: "default", manifest: "/manifest.webmanifest" },
+  dark: { chrome: "#15181d", statusBar: "black", manifest: "/manifest-dark.webmanifest" },
 } as const;
 
 export function updateThemeColor(theme: "light" | "dark"): void {

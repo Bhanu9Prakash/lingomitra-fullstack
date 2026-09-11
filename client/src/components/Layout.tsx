@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/use-auth";
 import { ReactNode, useEffect } from "react";
 import MascotLogo from "./MascotLogo";
 import { useTheme } from "./ThemeProvider";
@@ -6,12 +7,15 @@ import ScrollToTop from "./ScrollToTop";
 import NetworkStatus from "./NetworkStatus";
 import InstallPrompt from "./InstallPrompt";
 import { Link, useLocation } from "wouter";
-import { BookOpen, House, MessageCircle, UserRound } from "lucide-react";
 import { Language } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import LanguageDropdown from "./LanguageDropdown";
 import UserMenu from "./UserMenu";
 import { getQueryFn } from "@/lib/queryClient";
+import { arrivalTime } from '@/lib/learning-api';
+import { pathwayForActivity } from '@shared/pathways';
+import PrimaryNavigation from './PrimaryNavigation';
+import SwitchButton from './kokonut/switch-button';
 
 interface LayoutProps {
   children: ReactNode;
@@ -20,8 +24,10 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const { theme } = useTheme();
   const [location] = useLocation();
+  const { user } = useAuth();
 
   useEffect(() => {
+    arrivalTime();
     window.scrollTo(0, 0);
   }, [location]);
 
@@ -47,6 +53,9 @@ export default function Layout({ children }: LayoutProps) {
   const pathParts = location.split("/").filter(Boolean);
   if (pathParts[0]?.length === 2) languageCode = pathParts[0];
   if (location.startsWith("/language/")) languageCode = location.split("/language/")[1].split("/")[0];
+  if (pathParts[0] === 'try') languageCode = pathParts[1];
+  if (pathParts[0] === 'learn') languageCode = pathwayForActivity(pathParts[1])?.code || null;
+  if (['dashboard','practice','words'].includes(pathParts[0])) languageCode = pathParts[1] || user?.preferences?.selectedTarget || null;
 
   const { data: languages = [] } = useQuery<Language[]>({
     queryKey: ["/api/languages"],
@@ -56,31 +65,27 @@ export default function Layout({ children }: LayoutProps) {
   const isHomePage = location === "/";
   const isAuthPage = location === "/auth" || location.startsWith("/auth?");
 
-  const { data: user } = useQuery({
-    queryKey: ["/api/user"],
-    queryFn: getQueryFn({ on401: "returnNull" }),
-    retry: false,
-    gcTime: 0,
-  });
-
-  const isLessonPage = location.includes("/lesson/");
+  const isLessonPage = location.includes("/lesson/") || location.startsWith('/learn/') || location.startsWith('/try/');
   const isUserLoggedIn = Boolean(user);
-  const homeStartHref = isUserLoggedIn ? "/languages" : "/auth?tab=register&returnTo=%2Flanguages";
+  const homeStartHref = isUserLoggedIn ? "/dashboard" : "/languages";
 
   return (
     <div className={theme === "dark" ? "dark-theme dark" : ""}>
-      <div id="app-wrapper" className={`app-wrapper w-full overflow-x-hidden ${isUserLoggedIn && !isLessonPage ? "pb-20 md:pb-0" : ""}`}>
+      <div id="app-wrapper" className={`app-wrapper w-full overflow-x-hidden ${isLessonPage ? 'has-lesson' : ''} ${isUserLoggedIn && !isLessonPage ? "pb-20 md:pb-0" : ""}`}>
+        <a className="skip-link" href="#main-content">Skip to learning content</a>
         <header className="site-header fixed inset-x-0 top-0 z-50 w-full">
           <div className="header-shell">
             <Link href={isUserLoggedIn ? "/dashboard" : "/"} className="logo" aria-label="LingoMitra home">
               <MascotLogo className="mascot-logo" linked={false} />
-              <h1>LingoMitra</h1>
+              <span className="brand-name">LingoMitra</span>
             </Link>
+
+            {isUserLoggedIn && !isHomePage && !isLessonPage && !isAuthPage && <PrimaryNavigation />}
 
             <div className="header-controls">
               {isHomePage && (
                 <nav className="landing-header-nav" aria-label="Landing page navigation">
-                  <a href="#how-it-works" className="header-nav-link">Method</a>
+                  <a href="#how-it-works" className="header-nav-link">How it works</a>
                   <Link href="/about" className="header-nav-link">About</Link>
                   {!isUserLoggedIn && <Link href="/auth" className="header-sign-in">Sign in</Link>}
                   <Link href={homeStartHref} className="header-start-link">
@@ -88,14 +93,15 @@ export default function Layout({ children }: LayoutProps) {
                   </Link>
                 </nav>
               )}
-              {!isHomePage && !isAuthPage && <LanguageDropdown selectedLanguage={selectedLanguage} languages={languages} />}
+              {!isHomePage && !isAuthPage && <LanguageDropdown selectedLanguage={selectedLanguage} languages={languages} publicEntry={!isUserLoggedIn} />}
+              <SwitchButton className="header-theme-toggle" showLabel={false} aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'} title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'} />
               {!isHomePage && !isAuthPage && <UserMenu />}
             </div>
           </div>
         </header>
 
         <div className="app-header-spacer" aria-hidden="true" />
-        <div className={isHomePage ? "app-content app-content-home" : "app-content"}>{children}</div>
+        <div id="main-content" tabIndex={-1} className={isHomePage ? "app-content app-content-home" : "app-content"}>{children}</div>
 
         {!isLessonPage && !isUserLoggedIn && <Footer />}
         <ScrollToTop />
@@ -104,24 +110,7 @@ export default function Layout({ children }: LayoutProps) {
       </div>
 
       {isUserLoggedIn && !isLessonPage && !isAuthPage && (
-        <nav className="mobile-tabbar" aria-label="Primary navigation">
-          <div className="mobile-tabbar-inner">
-            {[
-              { href: "/dashboard", label: "Today", icon: House },
-              { href: "/languages", label: "Learn", icon: BookOpen },
-              { href: "/conversation", label: "Talk", icon: MessageCircle },
-              { href: "/profile", label: "Profile", icon: UserRound },
-            ].map(({ href, label, icon: Icon }) => {
-              const active = location === href || (href === "/conversation" && location.startsWith("/conversation"));
-              return (
-                <Link key={href} href={href} className={`mobile-tab ${active ? "is-active" : ""}`} aria-current={active ? "page" : undefined}>
-                  <Icon className="h-5 w-5" aria-hidden="true" />
-                  {label}
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
+        <PrimaryNavigation mobile />
       )}
 
       <div id="portal-container" className="portal-container" />

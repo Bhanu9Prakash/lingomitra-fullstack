@@ -70,7 +70,7 @@ The conjugation of `पड़ना` agrees with the infinitive verb, not the su
 * `हमें देर तक इंतज़ार करना पड़ा।` - `Hamein der tak intezaar karna para.` (We had to wait for a long time.)
 * `क्या तुम्हें कल जाना पड़ेगा?` - `Kya tumhein kal jana parega?` (Will you have to go tomorrow?)
 
-> **Language Transfer Intuition:** While English uses "must" or "have to," Hindi's construction with `पड़ना` is closer to saying "It falls upon me to do this."
+> **Learning connection:** While English uses "must" or "have to," Hindi's construction with `पड़ना` is closer to saying "It falls upon me to do this."
 
 ### Expressing "Would Like to" / "Want to" - चाहना (Chahna)
 

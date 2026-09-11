@@ -1,6 +1,6 @@
 ## Lesson 1: Building Your First Chinese Sentences - Pronouns, Verbs & Tones
 
-Welcome! In this foundational lesson, we'll unlock the basics of forming simple Chinese sentences. We'll learn how to say *who* is doing something and how *action words* (verbs) work. Plus, we'll get comfortable with Chinese tones. Forget rote memorization; we're focusing on patterns and connections to English.
+Welcome! In this foundational lesson, we'll unlock the basics of forming simple Chinese sentences. We'll learn how to say *who* is doing something and how *action words* (verbs) work. Plus, we'll get comfortable with Chinese tones. Understanding a pattern helps, and memory, retrieval and practice still matter. We focus on patterns and connections to English.
 
 ### The Building Blocks: Who is Who? (Pronouns)
 
@@ -84,9 +84,11 @@ Chinese is a tonal language, and tones are critical for being understood. The sa
 **The Four Main Tones:**
 
 1. **First Tone (ˉ):** High and level. Like singing a high note. Example: `māma` (妈妈) - mother
-2. **Second Tone (ˊ):** Rising tone. Like asking a question in English. Example: `méimei` (妹妹) - younger sister
+2. **Second Tone (ˊ):** Rising tone. Like asking a question in English. Example: `lái` (来) - to come
 3. **Third Tone (ˇ):** Falls then rises. Dips down in the middle. Example: `wǒ` (我) - I
 4. **Fourth Tone (ˋ):** Sharp falling tone. Like giving a command. Example: `bà` (爸) - father
+
+These tone shapes describe isolated syllables. In connected speech, a third tone is often low without a full rise; tone combinations can also change its realization. Use audio examples when available, rather than treating an English spelling approximation as the sound.
 
 **Plus the Neutral Tone:** Short and light, without emphasis. Often found in the second syllable of some words. Example: the "men" in "wǒmen" (我们) - we
 

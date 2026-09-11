@@ -1,91 +1,97 @@
-"use client";
+// Upstream: https://github.com/ibelick/motion-primitives/blob/92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d/components/core/animated-background.tsx
+// MIT. Controlled route selection and reduced-motion compatibility are recorded in component-sources.json.
+'use client';
+import { cn } from '@/lib/utils';
+import { AnimatePresence, Transition, motion, useReducedMotion } from 'motion/react';
+import {
+  Children,
+  cloneElement,
+  ReactElement,
+  useEffect,
+  useState,
+  useId,
+} from 'react';
 
-// Adapted from Motion Primitives' AnimatedBackground (MIT).
-// Source: https://motion-primitives.com/docs/animated-background
-
-import * as React from "react";
-import { motion, useReducedMotion, type Transition } from "motion/react";
-import { cn } from "@/lib/utils";
-
-type SelectableChildProps = {
-  "data-id": string;
-  className?: string;
-  children?: React.ReactNode;
-  onClick?: React.MouseEventHandler<HTMLElement>;
-  onMouseEnter?: React.MouseEventHandler<HTMLElement>;
-};
-
-interface AnimatedBackgroundProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> {
-  children: React.ReactNode;
+export type AnimatedBackgroundProps = {
+  children:
+    | ReactElement<{ 'data-id': string }>[]
+    | ReactElement<{ 'data-id': string }>;
   defaultValue?: string;
-  onValueChange?: (value: string) => void;
-  enableHover?: boolean;
-  backgroundClassName?: string;
+  value?: string;
+  onValueChange?: (newActiveId: string | null) => void;
+  className?: string;
   transition?: Transition;
-}
+  enableHover?: boolean;
+};
 
 export function AnimatedBackground({
   children,
   defaultValue,
+  value,
   onValueChange,
-  enableHover = false,
-  backgroundClassName,
-  transition = { type: "spring", stiffness: 360, damping: 34, mass: 0.65 },
   className,
-  ...props
+  transition,
+  enableHover = false,
 }: AnimatedBackgroundProps) {
-  const [activeId, setActiveId] = React.useState<string | null>(defaultValue ?? null);
-  const layoutId = `animated-background-${React.useId()}`;
-  const shouldReduceMotion = useReducedMotion();
+  const [activeId, setActiveId] = useState<string | null>(defaultValue ?? null);
+  const uniqueId = useId();
+  const reducedMotion = useReducedMotion() !== false;
+  const selectedId = value !== undefined ? value : activeId;
 
-  React.useEffect(() => {
-    setActiveId(defaultValue ?? null);
+  const handleSetActiveId = (id: string | null) => {
+    if (value === undefined) setActiveId(id);
+
+    if (onValueChange) {
+      onValueChange(id);
+    }
+  };
+
+  useEffect(() => {
+    if (defaultValue !== undefined) {
+      setActiveId(defaultValue);
+    }
   }, [defaultValue]);
 
-  const choose = React.useCallback((id: string) => {
-    setActiveId(id);
-    onValueChange?.(id);
-  }, [onValueChange]);
+  return Children.map(children, (child: any, index) => {
+    const id = child.props['data-id'];
 
-  return (
-    <div className={cn("animated-background", className)} {...props}>
-      {React.Children.map(children, (child) => {
-        if (!React.isValidElement<SelectableChildProps>(child)) return child;
+    const interactionProps = enableHover
+      ? {
+          onMouseEnter: () => handleSetActiveId(id),
+          onMouseLeave: () => handleSetActiveId(null),
+        }
+      : {
+          onClick: () => handleSetActiveId(id),
+        };
 
-        const id = child.props["data-id"];
-        if (!id) return child;
-
-        const interactionProps = enableHover
-          ? {
-              onMouseEnter: (event: React.MouseEvent<HTMLElement>) => {
-                child.props.onMouseEnter?.(event);
-                choose(id);
-              },
-            }
-          : {
-              onClick: (event: React.MouseEvent<HTMLElement>) => {
-                child.props.onClick?.(event);
-                choose(id);
-              },
-            };
-
-        return React.cloneElement(child, {
-          ...interactionProps,
-          children: (
-            <>
-              {activeId === id ? (
-                <motion.span
-                  layoutId={layoutId}
-                  className={cn("animated-background-selection", backgroundClassName)}
-                  transition={shouldReduceMotion ? { duration: 0 } : transition}
-                  aria-hidden="true"
-                />
-              ) : null}
-              {child.props.children}
-            </>
-          ),
-        });
-      })}
-    </div>
-  );
+    return cloneElement(
+      child,
+      {
+        key: index,
+        className: cn('relative inline-flex', child.props.className),
+        'data-checked': selectedId === id ? 'true' : 'false',
+        ...interactionProps,
+      },
+      <>
+        <AnimatePresence initial={false}>
+          {selectedId === id && (
+            <motion.div
+              layoutId={reducedMotion ? undefined : `background-${uniqueId}`}
+              aria-hidden="true"
+              className={cn('absolute inset-0', className)}
+              transition={reducedMotion ? { duration: 0 } : transition}
+              initial={{ opacity: defaultValue ? 1 : 0 }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
+            />
+          )}
+        </AnimatePresence>
+        <div className='z-10'>{child.props.children}</div>
+      </>
+    );
+  });
 }

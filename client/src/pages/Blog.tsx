@@ -5,7 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'wouter';
 import { format } from 'date-fns';
 import { Eye } from 'lucide-react';
-import Footer from '@/components/Footer';
+
 
 interface BlogPost {
   id: number;
@@ -40,16 +40,16 @@ export default function Blog() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#1a1a1a' }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--paper)' }}>
       {/* Hero Section */}
-      <div style={{ backgroundColor: '#1a1a1a', borderBottomColor: '#333333' }} className="text-white border-b">
+      <div style={{ backgroundColor: 'var(--paper)', borderBottomColor: 'var(--line)' }} className="text-foreground border-b">
         <div className="container mx-auto px-4 py-16">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
               LingoMitra Blog
             </h1>
             <p className="text-lg leading-relaxed" style={{ color: 'var(--text-light)' }}>
-              Discover language learning tips, cultural insights, and expert guidance to accelerate your multilingual journey.
+              Discover language learning tips, cultural insights, and ideas for thoughtful practice.
             </p>
           </div>
         </div>
@@ -60,12 +60,12 @@ export default function Blog() {
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="rounded-lg overflow-hidden border" style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
-                <Skeleton className="h-48 w-full" style={{ backgroundColor: '#404040' }} />
+              <div key={i} className="rounded-lg overflow-hidden border" style={{ backgroundColor: 'var(--studio-surface)', borderColor: 'var(--line)' }}>
+                <Skeleton className="h-48 w-full" style={{ backgroundColor: 'var(--line)' }} />
                 <div className="p-6 space-y-3">
-                  <Skeleton className="h-6 w-full" style={{ backgroundColor: '#404040' }} />
-                  <Skeleton className="h-4 w-3/4" style={{ backgroundColor: '#404040' }} />
-                  <Skeleton className="h-4 w-1/2" style={{ backgroundColor: '#404040' }} />
+                  <Skeleton className="h-6 w-full" style={{ backgroundColor: 'var(--line)' }} />
+                  <Skeleton className="h-4 w-3/4" style={{ backgroundColor: 'var(--line)' }} />
+                  <Skeleton className="h-4 w-1/2" style={{ backgroundColor: 'var(--line)' }} />
                 </div>
               </div>
             ))}
@@ -74,11 +74,11 @@ export default function Blog() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {posts.map((post) => (
               <Link key={post.id} href={`/blog/${post.slug}`}>
-                <Card 
+                <Card
                   className="h-full transition-all duration-200 cursor-pointer hover:shadow-lg border"
-                  style={{ 
-                    backgroundColor: '#2a2a2a', 
-                    borderColor: '#404040'
+                  style={{
+                    backgroundColor: 'var(--studio-surface)',
+                    borderColor: 'var(--line)'
                   }}
                 >
                   {post.featuredImage && (
@@ -91,9 +91,9 @@ export default function Blog() {
                     </div>
                   )}
                   <CardHeader>
-                    <CardTitle className="line-clamp-2 text-white">{post.title}</CardTitle>
+                    <CardTitle className="line-clamp-2 text-foreground">{post.title}</CardTitle>
                     {post.excerpt && (
-                      <CardDescription className="line-clamp-3" style={{ color: '#cccccc' }}>
+                      <CardDescription className="line-clamp-3" style={{ color: 'var(--ink-muted)' }}>
                         {post.excerpt}
                       </CardDescription>
                     )}
@@ -101,14 +101,14 @@ export default function Blog() {
                   <CardContent>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {post.tags.slice(0, 3).map((tag) => (
-                        <Badge 
-                          key={tag} 
-                          variant="secondary" 
+                        <Badge
+                          key={tag}
+                          variant="secondary"
                           className="text-xs"
-                          style={{ 
-                            backgroundColor: '#404040', 
-                            color: '#cccccc', 
-                            borderColor: '#555555' 
+                          style={{
+                            backgroundColor: 'var(--line)',
+                            color: 'var(--ink-muted)',
+                            borderColor: '#555555'
                           }}
                         >
                           {tag}
@@ -136,7 +136,7 @@ export default function Blog() {
           </div>
         )}
       </div>
-      <Footer />
+
     </div>
   );
 }

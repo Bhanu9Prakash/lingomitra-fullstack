@@ -25,7 +25,7 @@ To express an action happening *right now*, German simply uses the **Simple Pres
 *   `Ich lese **gerade** ein Buch.` (I **am reading** a book **right now**.)
 *   `Er spielt **jetzt** Fußball.` (He **is playing** football **now**.)
 
-> **Language Transfer Intuition:** Instead of changing the verb form (like adding "-ing"), German often just adds a time word if clarification is absolutely needed. Often, the context makes it clear enough without any extra words.
+> **Learning connection:** Instead of changing the verb form (like adding "-ing"), German often just adds a time word if clarification is absolutely needed. Often, the context makes it clear enough without any extra words.
 
 ### Past Ongoing Actions (English Past Continuous)
 

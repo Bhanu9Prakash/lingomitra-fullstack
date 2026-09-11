@@ -21,7 +21,7 @@ This table shows the endings you add to the adjective stem (e.g., `rot-`, `kalt-
 | **Dativ**    | **-em**       | **-er**      | **-em**    | **-en**    | d**em**, d**er**, d**em**, d**en**   |
 | **Genitiv**  | **-en**       | **-er**      | **-en**    | **-er**    | d**es** (+s), d**er**, d**es** (+s), d**er** | *(Note: Genitive endings are slightly different from article forms)* |
 
-> **Language Transfer Intuition:** Think of the adjective ending as a "ghost" of the definite article. `rot**er** Ball` is like `d**er** Ball`. `rot**e** Uhr` is like `di**e** Uhr`. `rot**es** Auto` is like `da**s** Auto`. This works well for Nominative and parts of Accusative/Dative. The adjective "absorbs" the ending sound/letter of the missing article.
+> **Learning connection:** Think of the adjective ending as a "ghost" of the definite article. `rot**er** Ball` is like `d**er** Ball`. `rot**e** Uhr` is like `di**e** Uhr`. `rot**es** Auto` is like `da**s** Auto`. This works well for Nominative and parts of Accusative/Dative. The adjective "absorbs" the ending sound/letter of the missing article.
 
 ### Examples Explained (using `rot` - red)
 
@@ -32,24 +32,24 @@ Let's see how this works in different cases, assuming no article (`der`, `ein` e
        *   *Thinking:* Subject. `Ball` is Masc. No article. Ending mimics `d**er**` -> `-er`.
    *   `Das ist **rote** Uhr.` (This is **red** watch.)
        *   *Thinking:* Subject. `Uhr` is Fem. No article. Ending mimics `di**e**` -> `-e`.
-   *   `Das ist **rotes** Auto.` (This is **red** car.)
-       *   *Thinking:* Subject. `Auto` is Neut. No article. Ending mimics `da**s**` -> `-es`.
+   *   `Das ist **frisches** Wasser.` (This is **fresh** water.)
+       *   *Thinking:* Subject. `Wasser` is neuter and a mass noun here. No article. Ending mimics `da**s**` -> `-es`.
 
 **2. Accusative (Direct Object)**
    *   `Ich habe **roten** Ball.` (I have **red** ball.)
        *   *Thinking:* Direct Object. `Ball` is Masc. No article. Ending mimics `d**en**` -> `-en`.
    *   `Ich habe **rote** Uhr.` (I have **red** watch.)
        *   *Thinking:* Direct Object. `Uhr` is Fem. No article. Ending mimics `di**e**` -> `-e`. (No change from Nom!)
-   *   `Ich habe **rotes** Auto.` (I have **red** car.)
-       *   *Thinking:* Direct Object. `Auto` is Neut. No article. Ending mimics `da**s**` -> `-es`. (No change from Nom!)
+   *   `Ich habe **frisches** Wasser.` (I have **fresh** water.)
+       *   *Thinking:* Direct Object. `Wasser` is neuter and a mass noun here. No article. Ending mimics `da**s**` -> `-es`. (No change from Nom!)
 
 **3. Dative (e.g., after `mit`)**
    *   `Ich spiele mit **rotem** Ball.` (I play with **red** ball.)
        *   *Thinking:* After `mit` (Dative). `Ball` is Masc. No article. Ending mimics `d**em**` -> `-em`.
    *   `Ich spiele mit **roter** Uhr.` (I play with **red** watch.)
        *   *Thinking:* After `mit` (Dative). `Uhr` is Fem. No article. Ending mimics `d**er**` -> `-er`.
-   *   `Ich spiele mit **rotem** Auto.` (I play with **red** car.)
-       *   *Thinking:* After `mit` (Dative). `Auto` is Neut. No article. Ending mimics `d**em**` -> `-em`.
+   *   `Ich arbeite mit **kaltem** Wasser.` (I work with **cold** water.)
+       *   *Thinking:* After `mit` (Dative). `Wasser` is neuter and a mass noun here. No article. Ending mimics `d**em**` -> `-em`.
 
 **(Note:** While grammatically possible, using adjectives without *any* article like this often sounds slightly unnatural or poetic for concrete singular nouns. It's more common with plurals or abstract concepts, e.g., `Ich trinke **kalte** Milch.` (I drink cold milk - Fem/Akk), `Wir essen **frisches** Brot.` (We eat fresh bread - Neut/Akk). However, understanding this "strong" pattern is crucial as it forms the basis for other declension types.)
 

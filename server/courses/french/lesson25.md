@@ -33,7 +33,7 @@ When converting direct speech to indirect speech, pronouns must change to mainta
 
 **Examples:**
 * Direct: Jean dit : « **Je** viendrai ». (Jean says: "**I** will come.")
-* Indirect: Jean dit que **il** viendra. (Jean says that **he** will come.)
+* Indirect: Jean dit **qu’il** viendra. (Jean says that **he** will come.)
 
 * Direct: Marie m'a dit : « **Tu** as raison ». (Marie told me: "**You** are right.")
 * Indirect: Marie m'a dit que **j'**avais raison. (Marie told me that **I** was right.)

@@ -129,7 +129,7 @@ Try pronouncing these French words aloud, using the rules and hints you've just 
 6.  `beaucoup` (a lot) - *Think: "o" sound followed by "u" sound*
 7.  `merci` (thank you) - *Think: throaty 'r', soft 'c'*
 8.  `les amis` (the friends) - *Think: liaison connecting 's' to "amis"*
-9.  `je m'appelle` (my name is) - *Think: elision of "je" + "appelle"*
+9.  `je m'appelle` (my name is) - *Think: elision of me before appelle: je m’appelle*
 10. `au revoir` (goodbye) - *Think: "o" sound for "au", throaty 'r'*
 
 *(Listen to native speakers pronounce these words online if you can to compare!)*

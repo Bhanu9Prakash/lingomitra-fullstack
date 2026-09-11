@@ -45,7 +45,7 @@ Think of `kein` as **"not ein"** or **"no"**.
 | **Akkusativ**| **keinen**              | **keine**              | **kein**             | **keine**              | Direct Object                       |
 | **Dativ**    | **keinem**              | **keiner**             | **keinem**           | **keinen (+n)**        | Indirect Object / After Dat. Prep. |
 
-> **Language Transfer Intuition:** `kein` is literally the negative version of `ein`. It declines just like it (and like `mein`, `dein`, `sein`...). If you would use `ein` or no article in the positive sentence, use `kein` (with the correct ending!) in the negative.
+> **Learning connection:** `kein` is literally the negative version of `ein`. It declines just like it (and like `mein`, `dein`, `sein`...). If you would use `ein` or no article in the positive sentence, use `kein` (with the correct ending!) in the negative.
 
 **Examples:**
 

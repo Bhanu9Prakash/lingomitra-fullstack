@@ -63,7 +63,7 @@ This is how most people talk about time casually. It uses a 12-hour clock and te
 5.  **Minutes To:** `Es ist [Minutes] vor [NEXT Hour]`
     *   4:50 -> **(Es ist) 10 vor 5.** (10 to 5) - *zehn vor fünf*
 
-> **Language Transfer Intuition:**
+> **Learning connection:**
 > *   `nach` = past (like English)
 > *   `vor` = to/before (like English "minutes *to* the hour")
 > *   `Viertel` = quarter (like English)

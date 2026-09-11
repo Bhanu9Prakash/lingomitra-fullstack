@@ -1,6 +1,8 @@
+import { useAuth } from "@/hooks/use-auth";
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import LessonAudio from './LessonAudio';
 
 interface AudioPlayerProps {
   text: string;
@@ -16,6 +18,8 @@ function base64ToWavUrl(audioData: string) {
 }
 
 export function AudioPlayer({ text, languageCode = "en", audioData, className = "" }: AudioPlayerProps) {
+  const { user } = useAuth();
+  const [deviceVoice, setDeviceVoice] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -34,6 +38,7 @@ export function AudioPlayer({ text, languageCode = "en", audioData, className = 
     return () => {
       if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
       objectUrlRef.current = null;
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     };
   }, [audioData]);
 
@@ -48,6 +53,8 @@ export function AudioPlayer({ text, languageCode = "en", audioData, className = 
     setError(null);
     if (isPlaying) {
       audioRef.current?.pause();
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      setIsPlaying(false);
       return;
     }
 
@@ -67,6 +74,19 @@ export function AudioPlayer({ text, languageCode = "en", audioData, className = 
         body: JSON.stringify({ text, languageCode }),
       });
       const result = await response.json().catch(() => ({}));
+      if (response.ok && result.provider === "device") {
+        if (!("speechSynthesis" in window)) throw new Error("No device voice available");
+        const utterance = new SpeechSynthesisUtterance(text.replace(/[*#_`]/g, ""));
+        utterance.lang = languageCode;
+        const voices = window.speechSynthesis.getVoices();
+        const voice = voices.find(item => item.lang.toLowerCase().startsWith(languageCode.toLowerCase()));
+        if (voice) utterance.voice = voice;
+        utterance.onend = () => setIsPlaying(false);
+        utterance.onerror = () => { setIsPlaying(false); setError("A voice for this language is unavailable on your device."); };
+        setDeviceVoice(true); setIsPlaying(true);
+        window.speechSynthesis.speak(utterance);
+        return;
+      }
       if (!response.ok || !result.success || !result.audioData) throw new Error("Speech unavailable");
       const url = base64ToWavUrl(result.audioData);
       installAudioUrl(url);
@@ -79,7 +99,7 @@ export function AudioPlayer({ text, languageCode = "en", audioData, className = 
     }
   }
 
-  if (!text.trim()) return null;
+  if (!text.trim() || user?.ttsEnabled === false) return null;
 
   return (
     <span className={`inline-flex items-center ${className}`}>
@@ -89,7 +109,7 @@ export function AudioPlayer({ text, languageCode = "en", audioData, className = 
         size="icon"
         onClick={togglePlayback}
         disabled={isLoading}
-        className="min-h-11 min-w-11 rounded-full text-amber-800 hover:bg-amber-100 dark:text-amber-200 dark:hover:bg-amber-950"
+        className="min-h-11 min-w-11 rounded-full text-foreground hover:bg-muted"
         aria-label={isPlaying ? "Pause coach audio" : "Play coach audio"}
       >
         {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : isPlaying ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
@@ -102,7 +122,8 @@ export function AudioPlayer({ text, languageCode = "en", audioData, className = 
         onEnded={() => setIsPlaying(false)}
         onError={() => { setIsPlaying(false); setError("Audio could not be played."); }}
       />
-      {error && <span className="sr-only" role="alert">{error}</span>}
+      {deviceVoice && <span className="text-xs text-muted-foreground">Device voice</span>}
+      {error && <span className="text-sm" role="status">{error} You can try the device voice or continue reading.<LessonAudio text={text} language={languageCode}/></span>}
     </span>
   );
 }

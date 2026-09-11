@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
 export default function ScrollToTop() {
@@ -12,7 +13,7 @@ export default function ScrollToTop() {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   };
 
   useEffect(() => {
@@ -23,13 +24,13 @@ export default function ScrollToTop() {
   }, [showScrollTop]);
 
   return (
-    <button
+    <Button variant="ghost"
       id="scrollToTop"
       className={`scroll-to-top ${showScrollTop ? 'visible' : ''}`}
       onClick={scrollToTop}
       aria-label="Scroll to top"
     >
       <i className="fas fa-arrow-up"></i>
-    </button>
+    </Button>
   );
 }

@@ -14,8 +14,10 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 
 function getInitialTheme(): Theme {
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
+  try {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light" || savedTheme === "dark") return savedTheme;
+  } catch { /* The theme remains usable when this browser blocks storage. */ }
   return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
@@ -27,7 +29,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.body.classList.toggle("dark-theme", dark);
     document.documentElement.classList.toggle("dark", dark);
     updateThemeColor(theme);
-    localStorage.setItem("theme", theme);
+    try { localStorage.setItem("theme", theme); } catch { /* Keep the chosen theme for this visit. */ }
   }, [theme]);
 
   return (

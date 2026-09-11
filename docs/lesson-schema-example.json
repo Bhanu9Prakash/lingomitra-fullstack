@@ -1,0 +1,339 @@
+{
+  "schemaVersion": "1.0",
+  "purpose": "Documentation of the populated pilot authoring contract. Worker module is canonical; this file is not a client assessment endpoint.",
+  "id": "de-starter-01",
+  "linkedLessonId": "de-lesson01",
+  "targetLanguage": "de",
+  "explanationLanguage": "en",
+  "version": "1.0.0",
+  "reviewStatus": "awaiting-human-review",
+  "reviewer": null,
+  "prerequisites": [],
+  "outcome": "Build a request with “I would like …”.",
+  "newVocabulary": [
+    "ich",
+    "möchte",
+    "Tee",
+    "Wasser",
+    "Kaffee",
+    "bitte"
+  ],
+  "newStructures": [
+    "ich + möchte + drink",
+    "optional bitte after möchte or at end"
+  ],
+  "teachingSteps": [
+    {
+      "id": "prior",
+      "kind": "prior",
+      "title": "A quick starting point",
+      "text": "Have you learned German before? This helps us avoid crediting the lesson for something you already know. You can choose “I don’t know yet”.",
+      "prompt": "If you already can, ask for water in a full German sentence. Otherwise leave this blank.",
+      "companion": "We can start from the beginning."
+    },
+    {
+      "id": "idea",
+      "kind": "teach",
+      "title": "One useful request",
+      "text": "ich means I. möchte means would like. Tee means tea. Put them together in that order: Ich möchte Tee. You are making a request, not saying that you already have tea. German writes Tee with a capital letter because it is a noun. We will change just the drink first.",
+      "examples": [
+        {
+          "sentence": "Ich möchte Tee.",
+          "meaning": "I would like tea."
+        }
+      ],
+      "words": [
+        {
+          "word": "ich",
+          "meaning": "I"
+        },
+        {
+          "word": "möchte",
+          "meaning": "would like"
+        },
+        {
+          "word": "Tee",
+          "meaning": "tea"
+        }
+      ],
+      "companion": "Let’s work out one small pattern.",
+      "exposures": [
+        "ich:Tee::statement:plain"
+      ]
+    },
+    {
+      "id": "meaning",
+      "kind": "understand",
+      "title": "Check the meaning",
+      "text": "What is the speaker doing with “Ich möchte Tee”?",
+      "options": [
+        "Requesting tea",
+        "Saying they already have tea"
+      ],
+      "correctOption": "Requesting tea",
+      "hints": [
+        "möchte describes what the person would like."
+      ],
+      "answer": "Requesting tea"
+    },
+    {
+      "id": "water-word",
+      "kind": "teach",
+      "title": "Change just the drink",
+      "text": "Wasser means water. Keep the first two pieces of the request. You will choose the final piece yourself.",
+      "words": [
+        {
+          "word": "Wasser",
+          "meaning": "water"
+        }
+      ]
+    },
+    {
+      "id": "water",
+      "kind": "construct",
+      "title": "Make your own request",
+      "text": "The examples are put away. Take the time you need.",
+      "prompt": "At a café, ask for water in a full German sentence.",
+      "companion": "You have the pieces. Try putting them together.",
+      "target": {
+        "subject": "ich",
+        "drink": "Wasser",
+        "please": false
+      },
+      "answer": "Ich möchte Wasser.",
+      "hints": [
+        "Start with the person making the request. What comes after “I”?",
+        "Use “would like” before the drink in this pattern.",
+        "Ich möchte …"
+      ]
+    },
+    {
+      "id": "coffee-word",
+      "kind": "teach",
+      "title": "One more useful word",
+      "text": "Kaffee means coffee. Use the same request pattern with this new drink.",
+      "words": [
+        {
+          "word": "Kaffee",
+          "meaning": "coffee"
+        }
+      ]
+    },
+    {
+      "id": "coffee",
+      "kind": "construct",
+      "title": "Make your own request",
+      "text": "The examples are put away. Take the time you need.",
+      "prompt": "At a café, ask for coffee in a full German sentence.",
+      "companion": "You have the pieces. Try putting them together.",
+      "target": {
+        "subject": "ich",
+        "drink": "Kaffee",
+        "please": false
+      },
+      "answer": "Ich möchte Kaffee.",
+      "hints": [
+        "Start with the person making the request. What comes after “I”?",
+        "Use “would like” before the drink in this pattern.",
+        "Ich möchte …"
+      ]
+    },
+    {
+      "id": "please",
+      "kind": "teach",
+      "title": "Add a polite touch",
+      "text": "bitte means please. You can put it at the end of this request. You may also put it after möchte: Ich möchte bitte Tee. Both positions work. The meaning stays the same.",
+      "examples": [
+        {
+          "sentence": "Ich möchte Tee, bitte.",
+          "meaning": "I would like tea, please."
+        }
+      ],
+      "words": [
+        {
+          "word": "bitte",
+          "meaning": "please"
+        }
+      ],
+      "exposures": [
+        "ich:Tee::statement:please"
+      ]
+    },
+    {
+      "id": "water-please",
+      "kind": "construct",
+      "title": "Make your own request",
+      "text": "The examples are put away. Take the time you need.",
+      "prompt": "At a café, ask for water in a full German sentence, including “please”.",
+      "companion": "You have the pieces. Try putting them together.",
+      "target": {
+        "subject": "ich",
+        "drink": "Wasser",
+        "please": true
+      },
+      "answer": "Ich möchte Wasser, bitte.",
+      "hints": [
+        "Start with the person making the request. What comes after “I”?",
+        "Use “would like” before the drink in this pattern.",
+        "Ich möchte …"
+      ]
+    },
+    {
+      "id": "coffee-please",
+      "kind": "construct",
+      "title": "Make your own request",
+      "text": "The examples are put away. Take the time you need.",
+      "prompt": "At a café, ask for coffee in a full German sentence, including “please”.",
+      "companion": "You have the pieces. Try putting them together.",
+      "target": {
+        "subject": "ich",
+        "drink": "Kaffee",
+        "please": true
+      },
+      "answer": "Ich möchte Kaffee, bitte.",
+      "hints": [
+        "Start with the person making the request. What comes after “I”?",
+        "Use “would like” before the drink in this pattern.",
+        "Ich möchte …"
+      ]
+    },
+    {
+      "id": "choice",
+      "kind": "context",
+      "title": "Choose what you want",
+      "text": "Imagine you are ordering for yourself. Choose tea, water or coffee and write your request. This is meaningful reuse; it may be a sentence you have already made.",
+      "prompt": "What would you like to drink?",
+      "target": {
+        "subject": "ich"
+      },
+      "hints": [
+        "Choose your drink first, then use the request pattern.",
+        "Ich möchte …"
+      ],
+      "answer": "For example: Ich möchte Tee."
+    },
+    {
+      "id": "finish",
+      "kind": "finish",
+      "title": "Bring this pattern back later",
+      "text": "Your attempts and the help you used are saved separately from lesson completion. A short return tomorrow will help you find out what you can retrieve. You can choose any lesson next."
+    }
+  ],
+  "acceptedVariants": {
+    "implementation": "worker/learning-validator.ts",
+    "examples": [
+      "Ich möchte Wasser.",
+      "ich moechte Wasser!",
+      "Ich möchte gern Wasser.",
+      "Ich möchte ein Wasser.",
+      "Ich möchte bitte Wasser.",
+      "Ich möchte Wasser, bitte."
+    ],
+    "rules": [
+      "Keep target subject, object, action and question meaning",
+      "When please is required, include bitte",
+      "Accept optional gern/gerne and natural drink articles without counting extra combinations",
+      "NFC normalize; do not remove umlaut distinction",
+      "Unknown alternatives remain unassessed"
+    ]
+  },
+  "misconceptions": [
+    {
+      "category": "meaning",
+      "example": "Ich möchte Tee. for a water prompt",
+      "cue": "Check which drink the listener should understand."
+    },
+    {
+      "category": "word-order",
+      "example": "Ich Wasser möchte.",
+      "cue": "Put möchte after Ich, and the drink after möchte."
+    },
+    {
+      "category": "verb-form",
+      "example": "Ich mochte Wasser.",
+      "cue": "The umlaut distinguishes would like from liked."
+    },
+    {
+      "category": "spelling",
+      "example": "Ich möchte Wassser.",
+      "cue": "Check Wasser; do not repeat an unrelated grammar lecture."
+    }
+  ],
+  "assessmentRules": {
+    "requiresNovelCombination": true,
+    "requiresTaughtIngredients": true,
+    "baselineExcluded": true,
+    "shownOrRevealedAnswerExcluded": true,
+    "optionalHintOrDiagnosticFeedbackMakesAssisted": true,
+    "notesOrTutorHelpMakesSessionAssisted": true,
+    "recognitionIsNotConstruction": true,
+    "voiceTranscriptIsNotPronunciationAssessment": true,
+    "unknownRemainsUnassessed": true,
+    "externalHelpDetection": "Not possible; research must observe/report outside assistance"
+  },
+  "reviewTags": [
+    "de:request",
+    "de:moechte",
+    "de:mass-drinks",
+    "de:bitte"
+  ],
+  "reviewSteps": [
+    {
+      "id": "return-water",
+      "kind": "construct",
+      "title": "Make your own request",
+      "text": "The examples are put away. Take the time you need.",
+      "prompt": "You are visiting an office. Your host asks what you would like. Request water in a full German sentence.",
+      "companion": "You have the pieces. Try putting them together.",
+      "target": {
+        "subject": "ich",
+        "drink": "Wasser",
+        "please": false
+      },
+      "answer": "Ich möchte Wasser.",
+      "hints": [
+        "Start with the person making the request. What comes after “I”?",
+        "Use “would like” before the drink in this pattern.",
+        "Ich möchte …"
+      ],
+      "newContext": true
+    },
+    {
+      "id": "return-coffee-please",
+      "kind": "construct",
+      "title": "Make your own request",
+      "text": "The examples are put away. Take the time you need.",
+      "prompt": "At a café, ask for coffee in a full German sentence, including “please”.",
+      "companion": "You have the pieces. Try putting them together.",
+      "target": {
+        "subject": "ich",
+        "drink": "Kaffee",
+        "please": true
+      },
+      "answer": "Ich möchte Kaffee, bitte.",
+      "hints": [
+        "Start with the person making the request. What comes after “I”?",
+        "Use “would like” before the drink in this pattern.",
+        "Ich möchte …"
+      ]
+    },
+    {
+      "id": "finish",
+      "kind": "finish",
+      "title": "Bring this pattern back later",
+      "text": "Your attempts and the help you used are saved separately from lesson completion. A short return tomorrow will help you find out what you can retrieve. You can choose any lesson next."
+    }
+  ],
+  "reviewDefaults": {
+    "afterCompletionDays": 1,
+    "afterUnassistedDelayedRoundDays": [
+      3,
+      7,
+      14
+    ],
+    "minimumDelayHours": 24,
+    "assistedRoundDays": 1,
+    "immediateReviewAllowed": true
+  },
+  "nextActivityId": "de-starter-02"
+}

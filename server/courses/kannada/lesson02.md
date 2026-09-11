@@ -22,7 +22,7 @@ There are also two diphthongs:
 
 > **Thinking Point: Vowel Length**
 > The difference between short and long vowels is important! For example:
-> - ಕಲಿ (kali) = learn, while ಕಾಲಿ (kaali) = leg
+> - ಕಲಿ (kali) = learn, while ಕಾಲು (kaalu) = leg
 > - ಹಲ (hala) = plow, while ಹಾಲು (haalu) = milk
 
 ### Consonants (ವ್ಯಂಜನಗಳು - vyanjanagaLu)

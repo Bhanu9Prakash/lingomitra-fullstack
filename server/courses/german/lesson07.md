@@ -46,7 +46,7 @@ Just like modal verbs, the conjugated form of `werden` takes the second position
 *   **Sie werden** nach Hause **fahren**. (They/You (formal) will drive home.)
     *   *Zee vayr-den nakh How-zuh fah-ren.*
 
-> **Language Transfer Intuition:** Think of `werden` as the direct equivalent of "will" in English sentences like "I **will** go." The structure Subject + "will" + ... + Verb mirrors Subject + `werden` + ... + Infinitive.
+> **Learning connection:** Think of `werden` as the direct equivalent of "will" in English sentences like "I **will** go." The structure Subject + "will" + ... + Verb mirrors Subject + `werden` + ... + Infinitive.
 
 ### Alternative: Present Tense for Future Events
 

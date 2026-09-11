@@ -55,7 +55,7 @@ There are also voiced consonants (g, z, d, b) and combinations that we'll cover 
 
 **2. Long vs. Short Vowels**: Vowel length can change meaning:
    * おばさん (*obasan* - aunt) vs. おばあさん (*obaasan* - grandmother)
-   * Long vowels are written with double vowels or vowel+う: ああ, おう (both pronounced as a long "o")
+   * Long vowels are written with double vowels or vowel+う: ああ (long a), おう (often long o). The vowel quality matters; these are not the same sound
 
 **3. Double Consonants**: Indicated by a small 'tsu' (っ) which creates a brief pause:
    * いった (*itta* - went) vs. いた (*ita* - was)

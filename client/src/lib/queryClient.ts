@@ -13,6 +13,11 @@ type FetcherOptions = {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      queryFn: async ({ queryKey }) => {
+        const response = await fetch(String(queryKey[0]), { credentials: "include", cache: "no-store" });
+        if (!response.ok) throw new Error("Could not load this data. Please try again.");
+        return response.json();
+      },
       staleTime: 60 * 1000, // 1 minute
       refetchOnWindowFocus: false,
     },

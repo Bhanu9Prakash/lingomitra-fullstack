@@ -10,7 +10,7 @@ import { ArrowLeft, Eye, Calendar } from 'lucide-react';
 import { Link } from 'wouter';
 import { format } from 'date-fns';
 import { useEffect } from 'react';
-import Footer from '@/components/Footer';
+
 
 interface BlogPost {
   id: number;
@@ -49,7 +49,7 @@ export default function BlogPost() {
   useEffect(() => {
     if (post) {
       document.title = post.metaTitle || post.title || 'LingoMitra Blog';
-      
+
       // Update meta description
       const metaDescription = document.querySelector('meta[name="description"]');
       if (metaDescription) {
@@ -70,11 +70,11 @@ export default function BlogPost() {
 
   if (error) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
+      <div className="min-h-screen" style={{ backgroundColor: 'var(--paper)' }}>
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
-            <h1 className="text-3xl font-bold mb-4 text-white">Blog Post Not Found</h1>
-            <p className="mb-6" style={{ color: '#cccccc' }}>
+            <h1 className="text-3xl font-bold mb-4 text-foreground">Blog Post Not Found</h1>
+            <p className="mb-6" style={{ color: 'var(--ink-muted)' }}>
               The blog post you're looking for doesn't exist or has been removed.
             </p>
             <Link href="/blog">
@@ -91,17 +91,17 @@ export default function BlogPost() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
+      <div className="min-h-screen" style={{ backgroundColor: 'var(--paper)' }}>
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto">
-            <Skeleton className="h-8 w-32 mb-6" style={{ backgroundColor: '#404040' }} />
-            <Skeleton className="h-12 w-3/4 mb-4" style={{ backgroundColor: '#404040' }} />
-            <Skeleton className="h-6 w-1/2 mb-8" style={{ backgroundColor: '#404040' }} />
-            <Skeleton className="h-64 w-full mb-8" style={{ backgroundColor: '#404040' }} />
+            <Skeleton className="h-8 w-32 mb-6" style={{ backgroundColor: 'var(--line)' }} />
+            <Skeleton className="h-12 w-3/4 mb-4" style={{ backgroundColor: 'var(--line)' }} />
+            <Skeleton className="h-6 w-1/2 mb-8" style={{ backgroundColor: 'var(--line)' }} />
+            <Skeleton className="h-64 w-full mb-8" style={{ backgroundColor: 'var(--line)' }} />
             <div className="space-y-4">
-              <Skeleton className="h-4 w-full" style={{ backgroundColor: '#404040' }} />
-              <Skeleton className="h-4 w-5/6" style={{ backgroundColor: '#404040' }} />
-              <Skeleton className="h-4 w-4/5" style={{ backgroundColor: '#404040' }} />
+              <Skeleton className="h-4 w-full" style={{ backgroundColor: 'var(--line)' }} />
+              <Skeleton className="h-4 w-5/6" style={{ backgroundColor: 'var(--line)' }} />
+              <Skeleton className="h-4 w-4/5" style={{ backgroundColor: 'var(--line)' }} />
             </div>
           </div>
         </div>
@@ -112,7 +112,7 @@ export default function BlogPost() {
   if (!post) return null;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--paper)' }}>
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
         {/* Back button */}
@@ -136,10 +136,10 @@ export default function BlogPost() {
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4 text-white">{post.title}</h1>
-          
+          <h1 className="text-4xl font-bold mb-4 text-foreground">{post.title}</h1>
+
           {/* Meta information */}
-          <div className="flex flex-wrap items-center gap-4 mb-6" style={{ color: '#cccccc' }}>
+          <div className="flex flex-wrap items-center gap-4 mb-6" style={{ color: 'var(--ink-muted)' }}>
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
               <span>{format(new Date(post.publishedAt), 'MMMM d, yyyy')}</span>
@@ -154,13 +154,13 @@ export default function BlogPost() {
           {post.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
               {post.tags.map((tag) => (
-                <Badge 
-                  key={tag} 
-                  variant="secondary" 
-                  style={{ 
-                    backgroundColor: '#404040', 
-                    color: '#cccccc', 
-                    borderColor: '#555555' 
+                <Badge
+                  key={tag}
+                  variant="secondary"
+                  style={{
+                    backgroundColor: 'var(--line)',
+                    color: 'var(--ink-muted)',
+                    borderColor: '#555555'
                   }}
                 >
                   {tag}
@@ -171,13 +171,13 @@ export default function BlogPost() {
         </div>
 
         {/* Content */}
-        <Card style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+        <Card style={{ backgroundColor: 'var(--studio-surface)', borderColor: 'var(--line)' }}>
           <CardContent className="pt-6">
-            <article className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-white prose-p:text-gray-300 prose-li:text-gray-300 prose-strong:text-orange-400 prose-em:text-orange-300">
+            <article className="prose prose-lg max-w-none dark:dark:prose-invert prose-headings:text-foreground prose-p:text-gray-300 prose-li:text-gray-300 prose-strong:text-orange-400 prose-em:text-orange-300">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  h1: ({ children }) => <h1 className="text-3xl font-bold mt-8 mb-4 text-white">{children}</h1>,
+                  h1: ({ children }) => <h1 className="text-3xl font-bold mt-8 mb-4 text-foreground">{children}</h1>,
                   h2: ({ children }) => <h2 className="text-2xl font-semibold mt-6 mb-3 text-orange-400">{children}</h2>,
                   h3: ({ children }) => <h3 className="text-xl font-medium mt-4 mb-2 text-orange-300">{children}</h3>,
                   p: ({ children }) => <p className="mb-4 leading-relaxed text-gray-300">{children}</p>,
@@ -197,15 +197,15 @@ export default function BlogPost() {
                     );
                   },
                   img: ({ src, alt }) => (
-                    <img 
-                      src={src} 
-                      alt={alt} 
+                    <img
+                      src={src}
+                      alt={alt}
                       className="max-w-full h-auto rounded-lg my-4 border border-gray-700"
                     />
                   ),
                   a: ({ href, children }) => (
-                    <a 
-                      href={href} 
+                    <a
+                      href={href}
                       className="text-orange-400 hover:text-orange-300 hover:underline transition-colors"
                       target={href?.startsWith('http') ? '_blank' : undefined}
                       rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
@@ -226,14 +226,14 @@ export default function BlogPost() {
 
         {/* Call to action */}
         <div className="mt-12 text-center">
-          <Card style={{ backgroundColor: '#2a2a2a', borderColor: '#404040' }}>
+          <Card style={{ backgroundColor: 'var(--studio-surface)', borderColor: 'var(--line)' }}>
             <CardContent className="pt-6">
-              <h3 className="text-2xl font-semibold mb-4 text-white">Ready to Start Learning?</h3>
-              <p className="mb-6" style={{ color: '#cccccc' }}>
-                Join thousands of learners using LingoMitra to master new languages with AI-powered conversations.
+              <h3 className="text-2xl font-semibold mb-4 text-foreground">Ready to Start Learning?</h3>
+              <p className="mb-6" style={{ color: 'var(--ink-muted)' }}>
+                Try a useful sentence pattern, practice a new combination, and revisit it later.
               </p>
               <Link href="/languages">
-                <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white">
+                <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-foreground">
                   Start Learning Now
                 </Button>
               </Link>
@@ -242,7 +242,7 @@ export default function BlogPost() {
         </div>
         </div>
       </div>
-      <Footer />
+
     </div>
   );
 }

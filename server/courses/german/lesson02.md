@@ -13,7 +13,7 @@ It uses the same 26 letters as English, plus four special characters. Let's look
 | A a    | *Ah*                  | Like 'a' in f**a**ther              | Consistent 'ah' sound, unlike English 'a' (cat, car, cake) |
 | B b    | *Bay*                 | Like 'b' in **b**all                | Same as English 'b'.                                   |
 | C c    | *Tsay*                | Like 'ts' before e, i, ä, ö, ü; Like 'k' otherwise | Often 'k' sound (`Cafe`), sometimes 'ts' (`Celsius`). Less common alone. |
-| D d    | *Day*                 | Like 'd' in **d**og                 | Same as English 'd', maybe slightly softer at word end. |
+| D d    | *Day*                 | Like 'd' in **d**og                 | Word-final d is usually devoiced to [t], as in Rad. |
 | E e    | *Ay*                  | Short 'e' like in b**e**d, or Long 'e' like 'ay' in s**ay** | Can be short or long, similar to English vowels.       |
 | F f    | *Eff*                 | Like 'f' in **f**ish                | Same as English 'f'.                                   |
 | G g    | *Gay*                 | Like 'g' in **g**o                  | Mostly hard 'g'. (But see '-ig' ending below!)           |
@@ -26,7 +26,7 @@ It uses the same 26 letters as English, plus four special characters. Let's look
 | N n    | *Enn*                 | Like 'n' in **n**o                  | Same as English 'n'.                                   |
 | O o    | *Oh*                  | Short 'o' like in h**o**t (Brit.), or Long 'o' like in g**o** | Can be short or long.                                  |
 | P p    | *Pay*                 | Like 'p' in **p**en                 | Same as English 'p'.                                   |
-| Q q    | *Koo*                 | Always followed by 'u', sounds like 'kv' | Like English 'qu' in **qu**een (`Quelle` sounds *Kvel-luh*)|
+| Q q    | *Koo*                 | Always followed by 'u', sounds like 'kv' | Unlike the English /kw/ in **qu**een (`Quelle` sounds *Kvel-luh*)|
 | R r    | *Err*                 | Can be rolled/trilled (back of throat) or softer | **Key Difference:** Often guttural/rolled, unlike standard English 'r'. Practice helps! |
 | S s    | *Ess*                 | Like 'z' before vowels (`singen`), like 's' otherwise (`hast`) | Often a 'z' sound at the start of words/syllables.     |
 | T t    | *Tay*                 | Like 't' in **t**op                 | Same as English 't'.                                   |
@@ -76,9 +76,9 @@ Certain letter pairs create specific, consistent sounds.
     *   **Hard 'ch' (Ach-Laut):** Like the 'ch' in Scottish "lo**ch**" or Welsh "Ba**ch**". Made at the back of the throat.
         *   **Rule:** Use this sound *after* the vowels **a, o, u,** and the diphthong **au**.
         *   *Examples:* `machen` (*makh-en* - to do), `kochen` (*kokh-en* - to cook), `Buch` (*Bookh* - book), `auch` (*owkh* - also).
-    *   **Soft 'ch' (Ich-Laut):** Like a hissing sound, similar to 'h' in "huge" or a very soft 'sh'. Made closer to the front of the mouth.
+    *   **Soft 'ch' (Ich-Laut):** A voiceless palatal fricative [ç], different from English sh. Some English speakers make a related sound at the start of huge. Made closer to the front of the mouth.
         *   **Rule:** Use this sound after **e, i, ä, ö, ü, ei, eu, äu,** and **consonants**.
-        *   *Examples:* `ich` (*ish* - I), `sprechen` (*shprech-en* - to speak), `Köche` (*Koe-shuh* - cooks), `durch` (*doorsh* - through), `Milch` (*Milsh* - milk).
+        *   *Examples:* `ich` ([ɪç] - I), `sprechen` (*shprech-en* - to speak), `Köche` (*Koe-shuh* - cooks), `durch` (*doorsh* - through), `Milch` (*Milsh* - milk).
 
 *   **-ig (at the end of a word):**
     *   **Rule:** When `-ig` comes at the very end of a word, it's usually pronounced like the **soft 'ch' (Ich-Laut)**, similar to *-ish*.

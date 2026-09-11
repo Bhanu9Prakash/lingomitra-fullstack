@@ -92,7 +92,7 @@ In Pinyin, tone marks are placed over vowels according to these rules:
 1. When there's only one vowel, the tone mark goes over that vowel: `mā` (妈)
 2. In vowel combinations, the tone mark goes over the main vowel:
    - For 'a' and 'e' combinations, the tone goes over 'a' or 'e': `tái` (台), `féi` (肥)
-   - For other combinations, the tone typically goes over the first vowel: `xiū` (修)
+   - For iu and ui, place the tone mark on the second vowel: `xiū` (修), `guì` (贵). First prefer a, then e; in ou the mark goes on o.
 
 ### Tone Change Rules
 

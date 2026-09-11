@@ -1,3 +1,4 @@
+import { useAuth } from '@/hooks/use-auth';
 type MascotState = "neutral" | "thinking" | "coach" | "celebrate" | "retry";
 
 interface MascotMomentProps {
@@ -19,9 +20,11 @@ export default function MascotMoment({
   className = "",
   alt = "The LingoMitra fox",
 }: MascotMomentProps) {
+  const {user}=useAuth();
+  if(user?.preferences?.minimizeCompanion)return null;
   return (
     <div className={`mascot-moment mascot-${state} ${className}`}>
-      <img src={poseAsset[state]} alt={alt} />
+      <img src={poseAsset[state]} alt={alt} width={1024} height={1024} decoding="async" />
     </div>
   );
 }

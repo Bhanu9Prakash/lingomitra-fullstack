@@ -76,7 +76,7 @@ Hindi doesn't have a direct equivalent of the verb "to have" for possession. Ins
 * `मेरे पास कल पैसे होंगे।` - `Mere paas kal paise honge.` (I will have money tomorrow.) - Money is masculine plural.
 * `उनके पास अगले महीने नई नौकरी होगी।` - `Unke paas agle mahine nayi naukri hogi.` (They will have a new job next month.) - Job is feminine.
 
-> **Language Transfer Intuition:** The structure "X के पास Y है" is closer to Spanish "Y está con X" (Y is with X) than English "X has Y".
+> **Learning connection:** The structure "X के पास Y है" is closer to Spanish "Y está con X" (Y is with X) than English "X has Y".
 
 ### Possessive Pronouns and 'पास'
 

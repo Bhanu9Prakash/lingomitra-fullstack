@@ -1,6 +1,6 @@
 ## Lesson 1: Building Your First French Sentences - Verbs, Pronouns & Pronunciation
 
-Welcome! In this foundational lesson, we'll unlock the basics of forming simple French sentences. We'll learn how to say *who* is doing something and how the *action word* (verb) changes. Plus, we'll get comfortable with some essential French sounds. Forget rote memorization; we're focusing on patterns and connections to English.
+Welcome! In this foundational lesson, we'll unlock the basics of forming simple French sentences. We'll learn how to say *who* is doing something and how the *action word* (verb) changes. Plus, we'll get comfortable with some essential French sounds. Understanding a pattern helps, and memory, retrieval and practice still matter. We focus on patterns and connections to English.
 
 ### The Building Blocks: Who is Who? (Pronouns)
 
@@ -148,6 +148,11 @@ Let's try making sentences with our new verbs and pronouns. Remember to match th
 *   **Forgetting Required Prepositions:** Saying `jouer tennis` instead of `jouer au tennis` or `jouer du piano` (to play the piano). French often needs specific prepositions with verbs.
 *   **Pronunciation Pitfalls:** Putting stress on the last syllable, not keeping a steady rhythm, or forgetting to nasalize sounds like "on", "an", "in".
 
+### Ingredients for this practice
+
+* **poser une question** means **to ask a question**. Use the regular -er verb **poser**: with **elle**, the form is **pose**. French does not normally use *demander une question* for this meaning.
+* **écrire** is irregular. For **I write**, use **j'écris**. **je** becomes **j'** before this vowel sound. This form is supplied here; it does not follow the regular -er rule.
+
 ### Quick Practice: Think it Through!
 
 Translate these sentences into French. Focus on choosing the right pronoun, finding the verb root, adding the correct ending, and keeping the SVO order. Use the vocabulary list and pronunciation hints.
@@ -166,7 +171,7 @@ Translate these sentences into French. Focus on choosing the right pronoun, find
 ***Practice Answers:***
 
 1.  *Nous habitons à Montréal.*
-2.  *Elle demande une question.*
+2.  *Elle pose une question.*
 3.  *Tu apportes le livre.*
 4.  *J'écris un email.* (Note: We use J' before words starting with vowels!)
 5.  *Vous chantez bien.*

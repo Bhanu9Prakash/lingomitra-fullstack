@@ -5,4 +5,4 @@ Disallow: /auth/
 Disallow: /ws/
 
 # Sitemap
-Sitemap: https://lingomitra.com/sitemap.xml
+Sitemap: https://lingomitra.bhanukonepalli.chatgpt.site/sitemap.xml
