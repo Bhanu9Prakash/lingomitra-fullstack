@@ -80,7 +80,7 @@ Let's take `spielen` (to play) -> Stem: `spiel`
 | ihr        | kochtet           | lerntet            |
 | sie/Sie    | kochten           | lernten            |
 
-> **Language Transfer Intuition:** Adding this `-te` is very similar to adding "-ed" in English for regular past verbs (play -> play**ed**). The endings then follow a standard German pattern.
+> **Learning connection:** Adding this `-te` is very similar to adding "-ed" in English for regular past verbs (play -> play**ed**). The endings then follow a standard German pattern.
 
 *   Example: Ich **lernte** Deutsch. (I **learned** German.)
 *   Example: Sie **kochte** Suppe. (She **cooked** soup.)

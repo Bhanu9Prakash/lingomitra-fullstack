@@ -59,9 +59,9 @@ The tens follow a more recognizable pattern:
 
 To make numbers between the tens, Hindi uses a different approach than English:
 
-**Formula for 21-99:** **Ten + Unit**
+**Numbers 21–99 use conventional forms that must be learned as words. There is no productive Ten + Unit concatenation rule.**
 
-Unlike English where we say "twenty-one" (20 + 1), in Hindi we simply join the ten with the unit without a connector:
+Compare the conventional forms below. Some share historical pieces, but do not try to construct every number by joining the modern word for a ten to a unit:
 
 | Number | Hindi | Transliteration | Formation | Pronunciation Hint |
 |--------|-------|----------------|-----------|-------------------|

@@ -56,7 +56,7 @@ Let's build a sentence piece by piece:
 *   **Short Before Long:** Short adverbs (like `heute`, `gern`, `hier`) often come before longer prepositional phrases, sometimes slightly bending TeKaMoLo.
 *   **Objects vs. Adverbials:** TeKaMoLo primarily orders *adverbial* information (when, why, how, where). The position of Dative and Accusative *objects* also matters:
     *   Pronoun objects (me, you, him...) usually come very early, often *before* TeKaMoLo elements. (`Ich gebe **dir** (Dat Obj) **heute** (Te) das Buch (Acc Obj).`)
-    *   Noun objects often come *after* TeKaMoLo, or sometimes Dative noun object before Mo/Lo. (`Ich fahre **heute** (Te) **mit dem Auto** (Mo) **zum Supermarkt** (Lo).`) Object placement interacts with TeKaMoLo and can be complex. For now, focus on the order of the Te-Ka-Mo-Lo elements themselves.
+    *   Noun objects often come *after* TeKaMoLo, or sometimes Dative noun object before Mo/Lo. The phrases in `Ich fahre heute mit dem Auto zum Supermarkt` are adverbials, not a direct object. Compare `Ich kaufe heute einen Apfel`: `einen Apfel` is the accusative object. Object placement interacts with TeKaMoLo and can be complex. For now, focus on the order of the Te-Ka-Mo-Lo elements themselves.
 *   **Clarity:** If strict TeKaMoLo makes a sentence awkward or confusing, native speakers will adjust the order for clarity.
 
 ### Common Mistakes

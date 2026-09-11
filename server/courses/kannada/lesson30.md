@@ -124,7 +124,7 @@ When visiting Kannada-speaking homes, these phrases will help navigate cultural 
 **Leaving:**
 * ನಾನು ಈಗ ಹೋಗಬೇಕು. (naanu eega hoogabeeku.) - I need to go now.
 * ಬಂದಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು. (bandiddakke dhanyavaadagaLu.) - Thank you for having me.
-* ಮುಂದೊಂದು ದಿನ ನಮ್ಮ ಮನೆಗೆ ಬನ್ニ. (mundonduu dina namma manege banni.) - Please come to our house sometime.
+* ಮುಂದೊಂದು ದಿನ ನಮ್ಮ ಮನೆಗೆ ಬನ್ನಿ. (mundonduu dina namma manege banni.) - Please come to our house sometime.
 * ನಿಮ್ಮ ಆತಿಥ್ಯಕ್ಕೆ ಧನ್ಯವಾದಗಳು. (nimma aatithyakke dhanyavaadagaLu.) - Thank you for your hospitality.
 
 **Cultural Tips:**

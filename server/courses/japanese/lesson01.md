@@ -1,6 +1,6 @@
 ## Lesson 1: Building Your First Japanese Sentences - Word Order, Particles & Basic Verbs
 
-Welcome! In this foundational lesson, we'll unlock the basics of forming simple Japanese sentences. We'll learn the core sentence structure, how to express *who* is doing something and how verbs work. Forget rote memorization; we're focusing on patterns and connections to English.
+Welcome! In this foundational lesson, we'll unlock the basics of forming simple Japanese sentences. We'll learn the core sentence structure, how to express *who* is doing something and how verbs work. Understanding a pattern helps, and memory, retrieval and practice still matter. We focus on patterns and connections to English.
 
 ### The Big Difference: Japanese Sentence Structure
 
@@ -44,7 +44,7 @@ Let's break this down:
 * を (*o*) = object marker
 * 食べます (*tabemasu*) = eat (polite form)
 
-### Introducing Verbs: The Dictionary Form
+### Introducing Verbs: Polite -masu Forms
 
 Unlike English verbs, Japanese verbs **don't change** based on who's doing the action. "I eat," "you eat," "he eats" all use the same verb form in Japanese.
 
@@ -89,7 +89,7 @@ Where です (*desu*) is the polite "to be" equivalent.
 * *Kore wa hon desu.*
 * "This is a book."
 
-> **Thinking Point:** です (*desu*) functions like "am/is/are" in English but technically isn't a verb in Japanese. It's called a "copula" and links a subject to a description.
+> **Thinking Point:** In the noun pattern taught here, です (*desu*) is a polite copula, loosely like "am/is/are". Do not add it mechanically after every Japanese verb.
 
 ### More Examples of Basic Sentences
 
@@ -117,6 +117,22 @@ Where です (*desu*) is the polite "to be" equivalent.
 * **Forgetting Particles:** Omitting は (wa) or を (o). These are essential connectors.
 * **Adding Unnecessary Words:** Adding words like "a" or "the" - Japanese doesn't use articles.
 * **Subject-Verb Agreement:** Trying to change the verb form based on the subject (like adding "s" in English third-person) - Japanese verbs don't work this way.
+
+### Supplied ingredients for the practice
+
+| Japanese | Reading | Meaning |
+| --- | --- | --- |
+| 私たち | watashitachi | we |
+| コーヒー | kōhī | coffee |
+| 英語 | eigo | English |
+| 先生 | sensei | teacher |
+| 学校 | gakkō | school |
+| 読みます | yomimasu | read, polite form |
+| 飲みます | nomimasu | drink, polite form |
+| 話します | hanashimasu | speak, polite form |
+| 行きます | ikimasu | go, polite form |
+
+For a destination, put **に (ni)** after the place: **学校に (gakkō ni)** means **to school** here. With **行きます (ikimasu)**, this marks where someone goes. This is a new supplied phrase, not something the earlier を examples taught.
 
 ### Quick Practice: Think it Through!
 

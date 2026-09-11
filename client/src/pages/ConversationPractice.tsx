@@ -4,6 +4,8 @@ import { getQueryFn } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import {
   ArrowLeft,
   BriefcaseBusiness,
@@ -20,7 +22,7 @@ import {
   Utensils,
 } from "lucide-react";
 import { useSimpleToast } from "@/hooks/use-simple-toast";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { ConversationSession as ConversationSessionView } from "./ConversationSession";
 
 interface ConversationSession {
@@ -64,10 +66,12 @@ const difficultyLevels = [
 ];
 
 export default function ConversationPractice() {
-  const [location, navigate] = useLocation();
+  const [, navigate] = useLocation();
+  const search = useSearch();
+  const { data: capability } = useQuery<{chat:boolean}>({queryKey:["/api/capabilities"],queryFn:getQueryFn()});
   const { toast } = useSimpleToast();
   const queryClient = useQueryClient();
-  const parameters = useMemo(() => new URLSearchParams(location.split("?")[1] || ""), [location]);
+  const parameters = useMemo(() => new URLSearchParams(search), [search]);
   const languageFromUrl = parameters.get("language") || "";
   const activeSessionId = Number(parameters.get("session")) || null;
   const [selectedLanguage, setSelectedLanguage] = useState(languageFromUrl);
@@ -84,7 +88,7 @@ export default function ConversationPractice() {
   });
 
   const { data: sessionsData, refetch: refetchSessions } = useQuery<{ sessions: ConversationSession[] }>({
-    queryKey: ["/api/conversation/sessions", selectedLanguage],
+    queryKey: [`/api/conversation/sessions?languageCode=${encodeURIComponent(selectedLanguage)}`],
     queryFn: getQueryFn(),
     enabled: Boolean(selectedLanguage),
   });
@@ -139,7 +143,7 @@ export default function ConversationPractice() {
         session={activeSessionData.session}
         onBack={() => navigate(`/conversation?language=${encodeURIComponent(activeSessionData.session.languageCode)}`)}
         onComplete={() => {
-          queryClient.invalidateQueries({ queryKey: ["/api/conversation/sessions"] });
+          queryClient.invalidateQueries({ predicate: query => String(query.queryKey[0]).startsWith('/api/conversation/sessions') });
           navigate(`/conversation?language=${encodeURIComponent(activeSessionData.session.languageCode)}&completed=${activeSessionData.session.id}`);
         }}
       />
@@ -159,67 +163,62 @@ export default function ConversationPractice() {
           </Button>
           <p className="eyebrow">Conversation practice</p>
           <h1>Build your next sentence in context.</h1>
-          <p>Choose a situation, pause to plan what you want to express, then speak or type it. The goal is a useful exchange—not a score.</p>
+          <p>Choose a situation, plan what you want to express, then speak or type it. This is optional AI practice, with no mastery or pronunciation score.</p>
+          <p><Button variant="outline" onClick={()=>navigate(selectedLanguage==='de'?'/learn/de-starter-01':selectedLanguage?`/language/${selectedLanguage}`:'/languages')}>Practice with authored lessons and hints</Button></p>
         </header>
 
         <section className="studio-panel" aria-labelledby="language-choice">
           <h2 id="language-choice" className="studio-section-title">1. Choose a language</h2>
-          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Language">
+          <RadioGroup className="conversation-languages" value={selectedLanguage} onValueChange={setSelectedLanguage} aria-labelledby="language-choice">
             {languages.map((language) => (
-              <button
+              <Label
                 key={language.code}
-                type="button"
-                role="radio"
-                aria-checked={selectedLanguage === language.code}
+                htmlFor={`conversation-language-${language.code}`}
                 className={`choice-chip ${selectedLanguage === language.code ? "is-selected" : ""}`}
-                onClick={() => setSelectedLanguage(language.code)}
               >
-                {language.name}
-              </button>
+                <RadioGroupItem id={`conversation-language-${language.code}`} value={language.code}/>
+                <span>{language.name}</span>
+              </Label>
             ))}
-          </div>
+          </RadioGroup>
         </section>
 
         {selectedLanguage && (
           <section className="studio-panel" aria-labelledby="topic-choice">
             <h2 id="topic-choice" className="studio-section-title">2. Choose a situation</h2>
-            <div className="conversation-topic-grid" role="radiogroup" aria-label="Conversation situation">
+            <RadioGroup className="conversation-topic-grid" value={selectedTopic} onValueChange={setSelectedTopic} aria-labelledby="topic-choice">
               {conversationTopics.map(({ id, name, Icon, description }) => (
-                <button
+                <Label
                   key={id}
-                  type="button"
-                  role="radio"
-                  aria-checked={selectedTopic === id}
+                  htmlFor={`conversation-topic-${id}`}
                   className={`conversation-topic ${selectedTopic === id ? "is-selected" : ""}`}
-                  onClick={() => setSelectedTopic(id)}
                 >
+                  <RadioGroupItem id={`conversation-topic-${id}`} value={id}/>
                   <Icon className="h-5 w-5" aria-hidden="true" />
                   <span>{name}</span>
                   <small>{description}</small>
-                </button>
+                </Label>
               ))}
-            </div>
+            </RadioGroup>
           </section>
         )}
 
         {selectedTopic && (
           <section className="studio-panel" aria-labelledby="difficulty-choice">
             <h2 id="difficulty-choice" className="studio-section-title">3. Set the challenge</h2>
-            <div className="difficulty-options" role="radiogroup" aria-label="Conversation difficulty">
+            <RadioGroup className="difficulty-options" value={selectedDifficulty} onValueChange={setSelectedDifficulty} aria-labelledby="difficulty-choice">
               {difficultyLevels.map((level) => (
-                <button
+                <Label
                   key={level.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={selectedDifficulty === level.value}
+                  htmlFor={`conversation-difficulty-${level.value}`}
                   className={`difficulty-option ${selectedDifficulty === level.value ? "is-selected" : ""}`}
-                  onClick={() => setSelectedDifficulty(level.value)}
                 >
+                  <RadioGroupItem id={`conversation-difficulty-${level.value}`} value={level.value}/>
                   <strong>{level.label}</strong>
                   <span>{level.description}</span>
-                </button>
+                </Label>
               ))}
-            </div>
+            </RadioGroup>
           </section>
         )}
 
@@ -230,7 +229,8 @@ export default function ConversationPractice() {
               <h2>{selectedLanguageData?.name} · {conversationTopics.find((topic) => topic.id === selectedTopic)?.name}</h2>
               <p>Say your first sentence aloud before you press send. Typed practice is always available.</p>
             </div>
-            <Button size="lg" onClick={() => createSessionMutation.mutate()} disabled={createSessionMutation.isPending}>
+            {capability && !capability.chat && <p role="status" className="mb-4 text-sm text-muted-foreground">AI conversation practice is awaiting setup. You can continue learning and reviewing lessons.</p>}
+            <Button size="lg" onClick={() => createSessionMutation.mutate()} disabled={createSessionMutation.isPending || !capability?.chat}>
               <MessageCircle className="mr-2 h-5 w-5" />
               {createSessionMutation.isPending ? "Opening practice…" : "Start practice"}
             </Button>

@@ -1,3 +1,7 @@
+import { pathway } from '@shared/pathways';
+import { Switch } from "@/components/ui/switch";
+import LearningPreferences from '@/components/LearningPreferences';
+import type {CourseOverview} from '@shared/learning';
 import { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -61,196 +65,35 @@ type Progress = {
   notes: string | null;
 };
 
-// Separate component for each language card to properly handle the state
-function EnrolledLanguageCard({ 
-  language, 
-  onResetProgress, 
-  resetMutation, 
-  calculateProgress 
-}: { 
-  language: Language; 
-  onResetProgress: (code: string) => void; 
-  resetMutation: any;
-  calculateProgress: (code: string) => Promise<{ completed: number; total: number; percent: number; }>;
-}) {
-  const [progressStats, setProgressStats] = useState({ completed: 0, total: 0, percent: 0 });
-  const [isLoading, setIsLoading] = useState(true);
-  
-  // Fetch progress stats
-  useEffect(() => {
-    setIsLoading(true);
-    calculateProgress(language.code).then((stats) => {
-      setProgressStats(stats);
-      setIsLoading(false);
-    });
-  }, [language.code, resetMutation.isSuccess, calculateProgress]);
-  
-  return (
-    <div className="rounded-lg p-5 bg-zinc-800/20">
-      <div className="flex justify-between items-center mb-5">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-6 overflow-hidden rounded">
-            <img
-              src={`/flags/${language.flagCode}.svg`}
-              alt={`${language.name} Flag`}
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div>
-            <h3 className="font-medium text-base">{language.name}</h3>
-          </div>
-        </div>
-        <Badge variant="outline" className="bg-zinc-800 text-white border-none font-medium uppercase text-xs px-2 py-1">{language.code}</Badge>
-      </div>
-      
-      <div className="mt-6 mb-3">
-        <p className="text-sm font-medium mb-2">Progress</p>
-        {isLoading ? (
-          <p className="text-sm text-muted-foreground flex items-center gap-1">
-            <Loader2 className="h-3 w-3 animate-spin" /> Loading...
-          </p>
-        ) : (
-          <p className="text-sm text-muted-foreground mb-3">
-            {progressStats.completed} of {progressStats.total} lessons completed ({progressStats.percent}%)
-          </p>
-        )}
-      
-        <div className="w-full bg-secondary/20 rounded-full h-2 mb-5">
-          <div 
-            className="bg-orange-500 h-2 rounded-full transition-all duration-500" 
-            style={{ width: `${progressStats.percent}%` }}
-          ></div>
-        </div>
-      </div>
-        
-      <div className="flex justify-end">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className="text-xs font-medium px-3 py-1 h-auto text-muted-foreground hover:text-orange-500"
-              disabled={resetMutation.isPending}
-            >
-              {resetMutation.isPending && resetMutation.variables === language.code ? (
-                <>
-                  <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                  Resetting...
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="mr-2 h-3 w-3" />
-                  Reset Progress
-                </>
-              )}
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This will reset all your progress for {language.name}. This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => onResetProgress(language.code)}
-                className="bg-orange-600 hover:bg-orange-700"
-              >
-                Reset Progress
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </div>
-  );
+function EnrolledLanguageCard({language,stats,onResetProgress,resetMutation}:{language:Language;stats:CourseOverview['courses'][number];onResetProgress:(code:string)=>void;resetMutation:any}){
+ return <div className="rounded-lg border border-border p-5"><h3 className="text-lg font-semibold">{language.name}</h3><p>{stats.completed} of {stats.total} course activities completed. This is completion, not mastery.</p><AlertDialog><AlertDialogTrigger asChild><Button variant="ghost" disabled={resetMutation.isPending}>Reset this language</Button></AlertDialogTrigger><AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Reset {language.name} learning?</AlertDialogTitle><AlertDialogDescription>This removes your course progress, lesson drafts, starter attempts and lesson chats for this language. It cannot be undone. Other languages and unlocked access are unchanged.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={()=>onResetProgress(language.code)}>Reset this language</AlertDialogAction></AlertDialogFooter></AlertDialogContent></AlertDialog></div>;
 }
-
-// Password change form schema
-const passwordChangeSchema = z.object({
-  currentPassword: z.string().min(1, "Current password is required"),
-  newPassword: z.string().min(8, "New password must be at least 8 characters"),
-  confirmPassword: z.string().min(1, "Please confirm your new password"),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
-
-type PasswordChangeFormValues = z.infer<typeof passwordChangeSchema>;
 
 export default function Settings() {
   const toast = useSimpleToast();
   const queryClient = useQueryClient();
   const [_, navigate] = useLocation();
-  const { logoutMutation } = useAuth();
-  const [enrolledLanguages, setEnrolledLanguages] = useState<Language[]>([]);
+  const { logoutMutation, user, isLoading: isLoadingUser } = useAuth();
   const [confirmDeleteText, setConfirmDeleteText] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
-  // Password change form
-  const passwordChangeForm = useForm<PasswordChangeFormValues>({
-    resolver: zodResolver(passwordChangeSchema),
-    defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    },
-  });
-  
-  // Password change mutation
-  const changePasswordMutation = useMutation({
-    mutationFn: async (values: PasswordChangeFormValues) => {
-      const response = await fetch('/api/change-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          currentPassword: values.currentPassword,
-          newPassword: values.newPassword,
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to change password');
-      }
-      
-      return await response.json();
-    },
-    onSuccess: () => {
-      toast.success(
-        "Password Changed",
-        "Your password has been changed successfully."
-      );
-      
-      // Reset the form
-      passwordChangeForm.reset();
-    },
-    onError: (error: Error) => {
-      toast.toast({
-        title: 'Error',
-        description: error.message || 'Failed to change your password. Please try again.',
-        variant: 'destructive',
-      });
-    },
-  });
-  
   // Fetch all languages
   const { data: languages, isLoading: isLoadingLanguages } = useQuery<Language[]>({
     queryKey: ['/api/languages'],
   });
   
-  // Fetch user data to check if the user is logged in
-  const { data: user, isLoading: isLoadingUser } = useQuery<User>({
-    queryKey: ['/api/user'],
+  const overview=useQuery<CourseOverview>({queryKey:['/api/progress/overview'],enabled:Boolean(user)});
+  const enrolledLanguages=(languages||[]).filter(l=>overview.data?.courses.find(c=>c.languageCode===l.code)?.hasStarted);
+
+  const preferencesMutation = useMutation({
+    mutationFn: async (ttsEnabled: boolean) => {
+      const response = await fetch('/api/user/preferences', {method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({ttsEnabled})});
+      if (!response.ok) throw new Error('Your preference could not be saved.');
+    },
+    // Re-read the active session; an older account's delayed save must never replace it.
+    onSuccess: () => queryClient.invalidateQueries({queryKey: ['/api/user'], exact: true}),
+    onError: (error: Error) => toast.error('Could not save', error.message),
   });
-  
+
   // Delete account mutation
   const deleteAccountMutation = useMutation({
     mutationFn: async (confirmation: string) => {
@@ -278,15 +121,12 @@ export default function Settings() {
     onSuccess: async () => {
       toast.toast({
         title: 'Account Deleted',
-        description: 'Your account has been successfully deleted.',
+        description: 'Your LingoMitra data has been deleted. Your ChatGPT account is unchanged.',
         variant: 'default',
       });
       
       // Log the user out
       await logoutMutation.mutateAsync();
-      
-      // Redirect to languages page
-      navigate('/languages');
     },
     onError: (error: Error) => {
       toast.toast({
@@ -330,8 +170,9 @@ export default function Settings() {
       return response.json();
     },
     onSuccess: (data, languageCode) => {
+      try{const ids=pathway(languageCode)?.starters||[];for(const key of Object.keys(sessionStorage)){if(key.startsWith(`lingomitra-practice:${user?.id}:${languageCode}-`)||key.startsWith(`lingomitra-draft:${user?.id}:`)&&ids.some(id=>key.includes(':'+id)))sessionStorage.removeItem(key);}}catch{}
       // Invalidate queries to refetch data
-      queryClient.invalidateQueries({ queryKey: [`/api/progress/language/${languageCode}`] });
+      queryClient.invalidateQueries();
       
       toast.toast({
         title: 'Progress Reset',
@@ -348,66 +189,12 @@ export default function Settings() {
     },
   });
   
-  // Determine which languages the user has progress in
-  useEffect(() => {
-    if (!languages || !user) return;
-
-    // For each language, check if the user has progress
-    const checkEnrollment = async () => {
-      const enrolledLangs: Language[] = [];
-      
-      const availableLanguages = Array.isArray(languages) ? languages : [];
-      
-      for (const language of availableLanguages) {
-        try {
-          const response = await fetch(`/api/progress/language/${language.code}`);
-          if (response.ok) {
-            const progressData = await response.json();
-            if (progressData && progressData.length > 0) {
-              enrolledLangs.push(language);
-            }
-          }
-        } catch (error) {
-          console.error(`Error checking progress for ${language.code}:`, error);
-        }
-      }
-      
-      setEnrolledLanguages(enrolledLangs);
-    };
-    
-    checkEnrollment();
-  }, [languages, user]);
-  
   // Handler for resetting progress
   const handleResetProgress = (languageCode: string) => {
     resetProgressMutation.mutate(languageCode);
   };
   
-  // Calculate progress statistics for a language
-  const calculateProgress = async (languageCode: string) => {
-    try {
-      const response = await fetch(`/api/progress/language/${languageCode}`);
-      if (!response.ok) return { completed: 0, total: 0, percent: 0 };
-      
-      const progressData = await response.json() as Progress[];
-      
-      // Get lessons for this language to determine total
-      const lessonsResponse = await fetch(`/api/languages/${languageCode}/lessons`);
-      if (!lessonsResponse.ok) return { completed: 0, total: 0, percent: 0 };
-      
-      const lessons = await lessonsResponse.json();
-      const total = lessons.length;
-      const completed = progressData.filter(p => p.completed).length;
-      const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
-      
-      return { completed, total, percent };
-    } catch (error) {
-      console.error(`Error calculating progress for ${languageCode}:`, error);
-      return { completed: 0, total: 0, percent: 0 };
-    }
-  };
-  
-  if (isLoadingUser || isLoadingLanguages) {
+  if (isLoadingUser || isLoadingLanguages || overview.isLoading) {
     return (
       <div className="flex justify-center items-center h-[calc(100vh-200px)]">
         <div className="flex flex-col items-center gap-2">
@@ -438,11 +225,11 @@ export default function Settings() {
       
       <div className="mb-10">
         <h2 className="text-2xl font-bold mb-2">Profile Information</h2>
-        <p className="text-muted-foreground mb-6">Your account details</p>
+        <p className="text-muted-foreground mb-6">Details from your ChatGPT account</p>
         
-        <div className="grid grid-cols-2 gap-x-8 gap-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 break-words">
           <div>
-            <p className="text-sm font-medium">Username</p>
+            <p className="text-sm font-medium">Display name</p>
             <p className="text-muted-foreground">{user.username}</p>
           </div>
           <div>
@@ -452,146 +239,23 @@ export default function Settings() {
         </div>
       </div>
       
-      {/* Password Change Section */}
-      <div className="border-t border-zinc-800 pt-10 mb-10">
-        <h2 className="text-2xl font-bold mb-2">Change Password</h2>
-        <p className="text-muted-foreground mb-6">Update your password to keep your account secure</p>
-        
-        <div className="rounded-lg p-6 bg-zinc-800/20 max-w-md">
-          <Form {...passwordChangeForm}>
-            <form 
-              onSubmit={passwordChangeForm.handleSubmit((values) => changePasswordMutation.mutate(values))} 
-              className="space-y-4"
-            >
-              <FormField
-                control={passwordChangeForm.control}
-                name="currentPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Current Password</FormLabel>
-                    <div className="relative">
-                      <FormControl>
-                        <Input
-                          type={showCurrentPassword ? "text" : "password"}
-                          placeholder="Enter your current password"
-                          {...field}
-                          className="pr-10"
-                        />
-                      </FormControl>
-                      <button
-                        type="button"
-                        className="absolute inset-y-0 right-0 flex items-center pr-3"
-                        onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                        tabIndex={-1}
-                      >
-                        {showCurrentPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </button>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={passwordChangeForm.control}
-                name="newPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>New Password</FormLabel>
-                    <div className="relative">
-                      <FormControl>
-                        <Input
-                          type={showNewPassword ? "text" : "password"}
-                          placeholder="Enter your new password"
-                          {...field}
-                          className="pr-10"
-                        />
-                      </FormControl>
-                      <button
-                        type="button"
-                        className="absolute inset-y-0 right-0 flex items-center pr-3"
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                        tabIndex={-1}
-                      >
-                        {showNewPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </button>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={passwordChangeForm.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm New Password</FormLabel>
-                    <div className="relative">
-                      <FormControl>
-                        <Input
-                          type={showConfirmPassword ? "text" : "password"}
-                          placeholder="Confirm your new password"
-                          {...field}
-                          className="pr-10"
-                        />
-                      </FormControl>
-                      <button
-                        type="button"
-                        className="absolute inset-y-0 right-0 flex items-center pr-3"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        tabIndex={-1}
-                      >
-                        {showConfirmPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
-                        ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </button>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <Button 
-                type="submit" 
-                className="bg-[#ff6600] hover:bg-[#cc5200] mt-2"
-                disabled={changePasswordMutation.isPending}
-              >
-                {changePasswordMutation.isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Updating...
-                  </>
-                ) : (
-                  <>
-                    <LockKeyhole className="mr-2 h-4 w-4" />
-                    Change Password
-                  </>
-                )}
-              </Button>
-            </form>
-          </Form>
-        </div>
+      <div className="border-t border-border py-8 mb-4">
+        <h2 className="text-2xl font-bold mb-2">Connected with ChatGPT</h2>
+        <p className="text-muted-foreground">Your lessons, reviews and conversations sync when you sign in with the same ChatGPT account on another device.</p>
       </div>
-      
+      <div className="flex items-center justify-between gap-6 border-t border-border py-8">
+        <div><h2 className="text-xl font-bold">Read-aloud controls</h2><p className="text-muted-foreground">Show audio playback for tutor replies. Saved to your ChatGPT-linked profile.</p></div>
+        <Switch checked={user.ttsEnabled} onCheckedChange={value => preferencesMutation.mutate(value)} disabled={preferencesMutation.isPending} aria-label="Show read-aloud controls" />
+      </div>
+      <LearningPreferences />
       <div className="border-t border-zinc-800 pt-10">
         <h2 className="text-2xl font-bold mb-2">Language Courses</h2>
-        <p className="text-muted-foreground mb-6">Your enrolled language courses and progress</p>
+        <p className="text-muted-foreground mb-6">Your started courses and saved learning</p>
         
-        {enrolledLanguages.length === 0 ? (
+        {overview.error ? <div role="alert"><p>Your course history could not load. It has not been reset.</p><Button onClick={()=>overview.refetch()}>Try again</Button></div> : enrolledLanguages.length === 0 ? (
           <div className="text-center py-6">
             <p className="text-muted-foreground">You haven't started any language courses yet.</p>
-            <p className="text-sm mt-2">Enroll in a course from the home page to get started.</p>
+            <p className="text-sm mt-2">Choose any unlocked course to get started.</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -601,7 +265,7 @@ export default function Settings() {
                 language={language} 
                 onResetProgress={handleResetProgress}
                 resetMutation={resetProgressMutation}
-                calculateProgress={calculateProgress}
+                stats={overview.data!.courses.find(c=>c.languageCode===language.code)!}
               />
             ))}
           </div>
@@ -614,15 +278,15 @@ export default function Settings() {
       
       {/* Danger Zone */}
       <div className="border-t border-zinc-800 pt-10 mt-10">
-        <h2 className="text-2xl font-bold mb-2 text-red-500">Danger Zone</h2>
+        <h2 className="text-2xl font-bold mb-2 text-red-700 dark:text-red-300">Danger Zone</h2>
         <p className="text-muted-foreground mb-6">Irreversible account actions</p>
         
         <div className="rounded-lg p-6 bg-red-950/20 border border-red-900">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h3 className="text-lg font-semibold text-red-400">Delete Account</h3>
+              <h3 className="text-lg font-semibold text-red-700 dark:text-red-300">Delete LingoMitra Data</h3>
               <p className="text-sm text-muted-foreground max-w-md">
-                Permanently delete your account and all associated data. This action cannot be undone.
+                Permanently delete your LingoMitra progress, chats and settings. Your ChatGPT account will remain active.
               </p>
             </div>
             
@@ -633,24 +297,24 @@ export default function Settings() {
                   className="whitespace-nowrap"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Delete Account
+                  Delete LingoMitra Data
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-red-500">
-                    Delete Account Permanently?
+                  <AlertDialogTitle className="text-red-700 dark:text-red-300">
+                    Delete LingoMitra Data?
                   </AlertDialogTitle>
                   <AlertDialogDescription>
                     <p className="mb-4">
-                      This will permanently delete your account, all your progress, and personal data.
+                      This will permanently delete your LingoMitra progress, conversations and settings. It will not delete your ChatGPT account.
                       This action <b>cannot be undone</b>.
                     </p>
                     <div className="bg-red-950/20 border border-red-900 rounded-md p-4 mb-4">
-                      <p className="font-semibold mb-2">To confirm, type your username: <b>{user.username}</b></p>
+                      <p className="font-semibold mb-2">To confirm, type your display name: <b>{user.username}</b></p>
                       <Input
                         type="text"
-                        placeholder="Enter your username"
+                        placeholder="Enter your display name"
                         value={confirmDeleteText}
                         onChange={(e) => setConfirmDeleteText(e.target.value)}
                         className="bg-red-950/30 border-red-900/50"
@@ -674,7 +338,7 @@ export default function Settings() {
                         Deleting Account...
                       </>
                     ) : (
-                      "Delete My Account"
+                      "Delete My LingoMitra Data"
                     )}
                   </AlertDialogAction>
                 </AlertDialogFooter>

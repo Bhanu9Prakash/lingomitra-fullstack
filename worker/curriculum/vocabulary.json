@@ -1,0 +1,4235 @@
+[
+  {
+    "lexemeId": "de.lex.001",
+    "senseId": "de.sense.001.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ich",
+    "meaning": {
+      "en": "I"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.001.f01",
+        "native": "ich",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson01"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.002",
+    "senseId": "de.sense.002.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "möchte",
+    "meaning": {
+      "en": "would like"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.002.f01",
+        "native": "möchte",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "de.lex.002.f02",
+        "native": "möchten",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson01",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.003",
+    "senseId": "de.sense.003.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "Tee",
+    "meaning": {
+      "en": "tea"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.003.f01",
+        "native": "Tee",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson01",
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.004",
+    "senseId": "de.sense.004.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "Kaffee",
+    "meaning": {
+      "en": "coffee"
+    },
+    "partOfSpeech": "noun",
+    "genderOrClass": "masculine",
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.004.f01",
+        "native": "Kaffee",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [
+      "einen Kaffee",
+      "Kaffee trinken"
+    ],
+    "originalExample": "Ich möchte Kaffee und Milch.",
+    "lessonIds": [
+      "de-lesson01",
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.005",
+    "senseId": "de.sense.005.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "Milch",
+    "meaning": {
+      "en": "milk"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.005.f01",
+        "native": "Milch",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson01",
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.006",
+    "senseId": "de.sense.006.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "bitte",
+    "meaning": {
+      "en": "please"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.006.f01",
+        "native": "bitte",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson01",
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.007",
+    "senseId": "de.sense.007.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "Wasser",
+    "meaning": {
+      "en": "water"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.007.f01",
+        "native": "Wasser",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson01",
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.008",
+    "senseId": "de.sense.008.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "Saft",
+    "meaning": {
+      "en": "juice"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.008.f01",
+        "native": "Saft",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson01",
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.009",
+    "senseId": "de.sense.009.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "und",
+    "meaning": {
+      "en": "and"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.009.f01",
+        "native": "und",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson01",
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.010",
+    "senseId": "de.sense.010.01",
+    "language": "de",
+    "kind": "phrase",
+    "lemmaOrPhrase": "Ich möchte",
+    "meaning": {
+      "en": "I would like"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.010.f01",
+        "native": "Ich möchte",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.011",
+    "senseId": "de.sense.011.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "trinken",
+    "meaning": {
+      "en": "to drink"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.011.f01",
+        "native": "trinken",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.012",
+    "senseId": "de.sense.012.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "lernen",
+    "meaning": {
+      "en": "to learn"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.012.f01",
+        "native": "lernen",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.013",
+    "senseId": "de.sense.013.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "Deutsch",
+    "meaning": {
+      "en": "German"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.013.f01",
+        "native": "Deutsch",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.014",
+    "senseId": "de.sense.014.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "Englisch",
+    "meaning": {
+      "en": "English"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.014.f01",
+        "native": "Englisch",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.015",
+    "senseId": "de.sense.015.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "Spanisch",
+    "meaning": {
+      "en": "Spanish"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.015.f01",
+        "native": "Spanisch",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson06",
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.016",
+    "senseId": "de.sense.016.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "Sie",
+    "meaning": {
+      "en": "you, polite/formal"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.016.f01",
+        "native": "Sie",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.017",
+    "senseId": "de.sense.017.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ja",
+    "meaning": {
+      "en": "yes"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.017.f01",
+        "native": "ja",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.018",
+    "senseId": "de.sense.018.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "nein",
+    "meaning": {
+      "en": "no"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.018.f01",
+        "native": "nein",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "de.lex.019",
+    "senseId": "de.sense.019.01",
+    "language": "de",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "danke",
+    "meaning": {
+      "en": "thank you"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "de.lex.019.f01",
+        "native": "danke",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "de-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "de-DE",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.001",
+    "senseId": "es.sense.001.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "necesito",
+    "meaning": {
+      "en": "I need"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.001.f01",
+        "native": "necesito",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "es.lex.001.f02",
+        "native": "necesitas",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson01",
+      "es-lesson08",
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.002",
+    "senseId": "es.sense.002.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "busco",
+    "meaning": {
+      "en": "I am looking for"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.002.f01",
+        "native": "busco",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "es.lex.002.f02",
+        "native": "buscas",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson01",
+      "es-lesson08",
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.003",
+    "senseId": "es.sense.003.01",
+    "language": "es",
+    "kind": "phrase",
+    "lemmaOrPhrase": "un taxi",
+    "meaning": {
+      "en": "a taxi"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.003.f01",
+        "native": "un taxi",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson01",
+      "es-lesson08",
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.004",
+    "senseId": "es.sense.004.01",
+    "language": "es",
+    "kind": "phrase",
+    "lemmaOrPhrase": "un mapa",
+    "meaning": {
+      "en": "a map"
+    },
+    "partOfSpeech": "noun group",
+    "genderOrClass": "masculine",
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.004.f01",
+        "native": "un mapa",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [
+      "un mapa",
+      "buscar un mapa"
+    ],
+    "originalExample": "No necesito un mapa.",
+    "lessonIds": [
+      "es-lesson01",
+      "es-lesson08",
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.005",
+    "senseId": "es.sense.005.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ayuda",
+    "meaning": {
+      "en": "help"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.005.f01",
+        "native": "ayuda",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson01",
+      "es-lesson08",
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.006",
+    "senseId": "es.sense.006.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "información",
+    "meaning": {
+      "en": "information"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.006.f01",
+        "native": "información",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson01",
+      "es-lesson08",
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.007",
+    "senseId": "es.sense.007.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "yo",
+    "meaning": {
+      "en": "I, optional here"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.007.f01",
+        "native": "yo",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson01",
+      "es-lesson08",
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.008",
+    "senseId": "es.sense.008.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "no",
+    "meaning": {
+      "en": "not; also no as a separate reply"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.008.f01",
+        "native": "no",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson08",
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.009",
+    "senseId": "es.sense.009.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "tú",
+    "meaning": {
+      "en": "you, familiar singular"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.009.f01",
+        "native": "tú",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson08"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.010",
+    "senseId": "es.sense.010.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "sí",
+    "meaning": {
+      "en": "yes"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.010.f01",
+        "native": "sí",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson08"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.011",
+    "senseId": "es.sense.011.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "tengo",
+    "meaning": {
+      "en": "I have"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.011.f01",
+        "native": "tengo",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "es.lex.011.f02",
+        "native": "tiene",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.012",
+    "senseId": "es.sense.012.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "usted",
+    "meaning": {
+      "en": "you, formal singular here"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.012.f01",
+        "native": "usted",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.013",
+    "senseId": "es.sense.013.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "hola",
+    "meaning": {
+      "en": "hello"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.013.f01",
+        "native": "hola",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.014",
+    "senseId": "es.sense.014.01",
+    "language": "es",
+    "kind": "phrase",
+    "lemmaOrPhrase": "por favor",
+    "meaning": {
+      "en": "please"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.014.f01",
+        "native": "por favor",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "es.lex.015",
+    "senseId": "es.sense.015.01",
+    "language": "es",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "gracias",
+    "meaning": {
+      "en": "thank you"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "es.lex.015.f01",
+        "native": "gracias",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "es-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "es-ES",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.001",
+    "senseId": "fr.sense.001.01",
+    "language": "fr",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "J’aime",
+    "meaning": {
+      "en": "I like"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.001.f01",
+        "native": "J’aime",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson01",
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.002",
+    "senseId": "fr.sense.002.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "le café",
+    "meaning": {
+      "en": "coffee"
+    },
+    "partOfSpeech": "noun",
+    "genderOrClass": "masculine",
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.002.f01",
+        "native": "le café",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "fr.lex.002.f02",
+        "native": "du café",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [
+      "le café",
+      "du café"
+    ],
+    "originalExample": "J’aime le café.",
+    "lessonIds": [
+      "fr-lesson01",
+      "fr-lesson06",
+      "fr-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.003",
+    "senseId": "fr.sense.003.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "le thé",
+    "meaning": {
+      "en": "tea"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.003.f01",
+        "native": "le thé",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "fr.lex.003.f02",
+        "native": "du thé",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson01",
+      "fr-lesson06",
+      "fr-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.004",
+    "senseId": "fr.sense.004.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "le chocolat",
+    "meaning": {
+      "en": "chocolate"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.004.f01",
+        "native": "le chocolat",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson01",
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.005",
+    "senseId": "fr.sense.005.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "le lait",
+    "meaning": {
+      "en": "milk"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.005.f01",
+        "native": "le lait",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "fr.lex.005.f02",
+        "native": "du lait",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson01",
+      "fr-lesson06",
+      "fr-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.006",
+    "senseId": "fr.sense.006.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "Je n’aime pas",
+    "meaning": {
+      "en": "I do not like"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.006.f01",
+        "native": "Je n’aime pas",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson01",
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.007",
+    "senseId": "fr.sense.007.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "Je voudrais",
+    "meaning": {
+      "en": "I would like"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.007.f01",
+        "native": "Je voudrais",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.002",
+    "senseId": "fr.sense.002.02",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "un café",
+    "meaning": {
+      "en": "one serving of coffee"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.002.serving01",
+        "native": "un café",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.003",
+    "senseId": "fr.sense.003.02",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "un thé",
+    "meaning": {
+      "en": "one serving of tea"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.003.serving01",
+        "native": "un thé",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.010",
+    "senseId": "fr.sense.010.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "sans sucre",
+    "meaning": {
+      "en": "without sugar"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.010.f01",
+        "native": "sans sucre",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.011",
+    "senseId": "fr.sense.011.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "avec du lait",
+    "meaning": {
+      "en": "with milk"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.011.f01",
+        "native": "avec du lait",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.012",
+    "senseId": "fr.sense.012.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "s’il vous plaît",
+    "meaning": {
+      "en": "please, addressing vous"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.012.f01",
+        "native": "s’il vous plaît",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.013",
+    "senseId": "fr.sense.013.01",
+    "language": "fr",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "bonjour",
+    "meaning": {
+      "en": "hello, daytime greeting"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.013.f01",
+        "native": "bonjour",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.014",
+    "senseId": "fr.sense.014.01",
+    "language": "fr",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "merci",
+    "meaning": {
+      "en": "thank you"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.014.f01",
+        "native": "merci",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.015",
+    "senseId": "fr.sense.015.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "vous avez",
+    "meaning": {
+      "en": "you have, addressing vous"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.015.f01",
+        "native": "vous avez",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.016",
+    "senseId": "fr.sense.016.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "on a",
+    "meaning": {
+      "en": "we have, in this scene"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.016.f01",
+        "native": "on a",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.017",
+    "senseId": "fr.sense.017.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "du sucre",
+    "meaning": {
+      "en": "some sugar"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.017.f01",
+        "native": "du sucre",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.018",
+    "senseId": "fr.sense.018.01",
+    "language": "fr",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "oui",
+    "meaning": {
+      "en": "yes"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.018.f01",
+        "native": "oui",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.019",
+    "senseId": "fr.sense.019.01",
+    "language": "fr",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "non",
+    "meaning": {
+      "en": "no"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.019.f01",
+        "native": "non",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "fr.lex.020",
+    "senseId": "fr.sense.020.01",
+    "language": "fr",
+    "kind": "phrase",
+    "lemmaOrPhrase": "On n’a pas de",
+    "meaning": {
+      "en": "we do not have any"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "fr.lex.020.f01",
+        "native": "On n’a pas de",
+        "reading": null,
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "fr-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "fr-FR",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.001",
+    "senseId": "hi.sense.001.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "नमस्ते",
+    "meaning": {
+      "en": "hello/greeting"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.001.f01",
+        "native": "नमस्ते",
+        "reading": "namaste",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson01"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.002",
+    "senseId": "hi.sense.002.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "मैं",
+    "meaning": {
+      "en": "I"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.002.f01",
+        "native": "मैं",
+        "reading": "main",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson01",
+      "hi-lesson08",
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.003",
+    "senseId": "hi.sense.003.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "हम",
+    "meaning": {
+      "en": "we"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.003.f01",
+        "native": "हम",
+        "reading": "ham",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson01",
+      "hi-lesson08",
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.004",
+    "senseId": "hi.sense.004.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "आप",
+    "meaning": {
+      "en": "you, respectful"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.004.f01",
+        "native": "आप",
+        "reading": "aap",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson01",
+      "hi-lesson08",
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.005",
+    "senseId": "hi.sense.005.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "यहाँ",
+    "meaning": {
+      "en": "here"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.005.f01",
+        "native": "यहाँ",
+        "reading": "yahaan",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson01",
+      "hi-lesson08",
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.006",
+    "senseId": "hi.sense.006.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ठीक",
+    "meaning": {
+      "en": "okay"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.006.f01",
+        "native": "ठीक",
+        "reading": "theek",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson01",
+      "hi-lesson08",
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.007",
+    "senseId": "hi.sense.007.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "तैयार",
+    "meaning": {
+      "en": "ready"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.007.f01",
+        "native": "तैयार",
+        "reading": "taiyaar",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson01",
+      "hi-lesson08",
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.008",
+    "senseId": "hi.sense.008.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "हूँ",
+    "meaning": {
+      "en": "am, with I"
+    },
+    "partOfSpeech": "copular verb form",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.008.f01",
+        "native": "हूँ",
+        "reading": "hoon",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "hi.lex.008.f02",
+        "native": "हैं",
+        "reading": "hain",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [
+      "मैं … हूँ",
+      "हम … हैं"
+    ],
+    "originalExample": "हम ठीक हैं।",
+    "lessonIds": [
+      "hi-lesson01",
+      "hi-lesson08",
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.009",
+    "senseId": "hi.sense.009.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "क्या",
+    "meaning": {
+      "en": "yes/no question marker here"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.009.f01",
+        "native": "क्या",
+        "reading": "kya",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson01",
+      "hi-lesson08",
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.010",
+    "senseId": "hi.sense.010.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "नहीं",
+    "meaning": {
+      "en": "not"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.010.f01",
+        "native": "नहीं",
+        "reading": "nahin",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson08"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.011",
+    "senseId": "hi.sense.011.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "थका",
+    "meaning": {
+      "en": "tired, masculine singular agreement"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.011.f01",
+        "native": "थका",
+        "reading": "thakaa",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "hi.lex.011.f02",
+        "native": "थकी",
+        "reading": "thakii",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson08"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.012",
+    "senseId": "hi.sense.012.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "पानी",
+    "meaning": {
+      "en": "water"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.012.f01",
+        "native": "पानी",
+        "reading": "paanii",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.013",
+    "senseId": "hi.sense.013.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "चाय",
+    "meaning": {
+      "en": "tea"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.013.f01",
+        "native": "चाय",
+        "reading": "chaay",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.014",
+    "senseId": "hi.sense.014.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "दूध",
+    "meaning": {
+      "en": "milk"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.014.f01",
+        "native": "दूध",
+        "reading": "duudh",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "hi.lex.015",
+    "senseId": "hi.sense.015.01",
+    "language": "hi",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "पीना",
+    "meaning": {
+      "en": "to drink"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "hi.lex.015.f01",
+        "native": "पीना",
+        "reading": "piinaa",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "hi.lex.015.f02",
+        "native": "पीता",
+        "reading": "piitaa",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "hi.lex.015.f03",
+        "native": "पीती",
+        "reading": "piitii",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "hi.lex.015.f04",
+        "native": "पीते",
+        "reading": "piite",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "hi-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "hi-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.001",
+    "senseId": "zh.sense.001.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "我",
+    "meaning": {
+      "en": "I"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.001.f01",
+        "native": "我",
+        "reading": "wǒ",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson01",
+      "zh-lesson09",
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.002",
+    "senseId": "zh.sense.002.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "你",
+    "meaning": {
+      "en": "you"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.002.f01",
+        "native": "你",
+        "reading": "nǐ",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson01",
+      "zh-lesson09",
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.003",
+    "senseId": "zh.sense.003.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "喝",
+    "meaning": {
+      "en": "drink"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.003.f01",
+        "native": "喝",
+        "reading": "hē",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson01",
+      "zh-lesson09",
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.004",
+    "senseId": "zh.sense.004.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "茶",
+    "meaning": {
+      "en": "tea"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.004.f01",
+        "native": "茶",
+        "reading": "chá",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson01",
+      "zh-lesson09",
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.005",
+    "senseId": "zh.sense.005.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "咖啡",
+    "meaning": {
+      "en": "coffee"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.005.f01",
+        "native": "咖啡",
+        "reading": "kāfēi",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson01",
+      "zh-lesson09",
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.006",
+    "senseId": "zh.sense.006.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "水",
+    "meaning": {
+      "en": "water"
+    },
+    "partOfSpeech": "noun",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.006.f01",
+        "native": "水",
+        "reading": "shuǐ",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [
+      "喝水",
+      "有水"
+    ],
+    "originalExample": "你有水吗？",
+    "lessonIds": [
+      "zh-lesson01",
+      "zh-lesson09",
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.007",
+    "senseId": "zh.sense.007.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "不",
+    "meaning": {
+      "en": "not in this pattern"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.007.f01",
+        "native": "不",
+        "reading": "bù",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson01",
+      "zh-lesson09",
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.008",
+    "senseId": "zh.sense.008.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "吗",
+    "meaning": {
+      "en": "yes/no question marker"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.008.f01",
+        "native": "吗",
+        "reading": "ma",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson09",
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.009",
+    "senseId": "zh.sense.009.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "不喝",
+    "meaning": {
+      "en": "no, I won’t, in a clear drink exchange"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.009.f01",
+        "native": "不喝",
+        "reading": "bù hē",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.010",
+    "senseId": "zh.sense.010.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "喜欢",
+    "meaning": {
+      "en": "like"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.010.f01",
+        "native": "喜欢",
+        "reading": "xǐhuan",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson09"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.011",
+    "senseId": "zh.sense.011.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "他",
+    "meaning": {
+      "en": "he"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.011.f01",
+        "native": "他",
+        "reading": "tā",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson09",
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.012",
+    "senseId": "zh.sense.012.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "有",
+    "meaning": {
+      "en": "have / available here"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.012.f01",
+        "native": "有",
+        "reading": "yǒu",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.013",
+    "senseId": "zh.sense.013.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "没有",
+    "meaning": {
+      "en": "do not have / unavailable"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.013.f01",
+        "native": "没有",
+        "reading": "méiyǒu",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.014",
+    "senseId": "zh.sense.014.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "牛奶",
+    "meaning": {
+      "en": "milk"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.014.f01",
+        "native": "牛奶",
+        "reading": "niúnǎi",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "zh.lex.015",
+    "senseId": "zh.sense.015.01",
+    "language": "zh",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "果汁",
+    "meaning": {
+      "en": "fruit juice"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "zh.lex.015.f01",
+        "native": "果汁",
+        "reading": "guǒzhī",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "zh-lesson04"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "zh-CN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.001",
+    "senseId": "ja.sense.001.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "水",
+    "meaning": {
+      "en": "water"
+    },
+    "partOfSpeech": "noun",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.001.f01",
+        "native": "水",
+        "reading": "みず · mizu",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [
+      "水です",
+      "水をください"
+    ],
+    "originalExample": "水ですか。",
+    "lessonIds": [
+      "ja-lesson01",
+      "ja-lesson08",
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.002",
+    "senseId": "ja.sense.002.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "お茶",
+    "meaning": {
+      "en": "tea"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.002.f01",
+        "native": "お茶",
+        "reading": "おちゃ · ocha",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson01",
+      "ja-lesson08",
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.003",
+    "senseId": "ja.sense.003.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "コーヒー",
+    "meaning": {
+      "en": "coffee"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.003.f01",
+        "native": "コーヒー",
+        "reading": "kōhī",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson01",
+      "ja-lesson08",
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.004",
+    "senseId": "ja.sense.004.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "パン",
+    "meaning": {
+      "en": "bread"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.004.f01",
+        "native": "パン",
+        "reading": "pan",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson01",
+      "ja-lesson08",
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.005",
+    "senseId": "ja.sense.005.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "これ",
+    "meaning": {
+      "en": "this near me"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.005.f01",
+        "native": "これ",
+        "reading": "kore",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson01",
+      "ja-lesson08",
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.006",
+    "senseId": "ja.sense.006.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "それ",
+    "meaning": {
+      "en": "that near you"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.006.f01",
+        "native": "それ",
+        "reading": "sore",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson01",
+      "ja-lesson08",
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.007",
+    "senseId": "ja.sense.007.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "は",
+    "meaning": {
+      "en": "topic marker, pronounced wa here"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.007.f01",
+        "native": "は",
+        "reading": "wa",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson01",
+      "ja-lesson08",
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.008",
+    "senseId": "ja.sense.008.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "です",
+    "meaning": {
+      "en": "polite noun-sentence ending"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.008.f01",
+        "native": "です",
+        "reading": "desu",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson01",
+      "ja-lesson08",
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.009",
+    "senseId": "ja.sense.009.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "か",
+    "meaning": {
+      "en": "question marker"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.009.f01",
+        "native": "か",
+        "reading": "ka",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson08"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.010",
+    "senseId": "ja.sense.010.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "はい",
+    "meaning": {
+      "en": "yes, confirming an affirmative question"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.010.f01",
+        "native": "はい",
+        "reading": "hai",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson08"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.011",
+    "senseId": "ja.sense.011.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "いいえ",
+    "meaning": {
+      "en": "no, disagreeing"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.011.f01",
+        "native": "いいえ",
+        "reading": "iie",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson08"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.012",
+    "senseId": "ja.sense.012.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "じゃないです",
+    "meaning": {
+      "en": "is not, in this noun pattern"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.012.f01",
+        "native": "じゃないです",
+        "reading": "ja nai desu",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson08"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.013",
+    "senseId": "ja.sense.013.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "すみません",
+    "meaning": {
+      "en": "excuse me, to get attention"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.013.f01",
+        "native": "すみません",
+        "reading": "sumimasen",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.014",
+    "senseId": "ja.sense.014.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "を",
+    "meaning": {
+      "en": "object marker, pronounced o here"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.014.f01",
+        "native": "を",
+        "reading": "o",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.015",
+    "senseId": "ja.sense.015.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ください",
+    "meaning": {
+      "en": "please give me, in item requests"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.015.f01",
+        "native": "ください",
+        "reading": "kudasai",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.016",
+    "senseId": "ja.sense.016.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ありがとうございます",
+    "meaning": {
+      "en": "thank you"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.016.f01",
+        "native": "ありがとうございます",
+        "reading": "arigatō gozaimasu",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "ja.lex.017",
+    "senseId": "ja.sense.017.01",
+    "language": "ja",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "と",
+    "meaning": {
+      "en": "and, joining nouns"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "ja.lex.017.f01",
+        "native": "と",
+        "reading": "to",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "ja-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "ja-JP",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.001",
+    "senseId": "kn.sense.001.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ನಮಸ್ಕಾರ",
+    "meaning": {
+      "en": "hello/greeting"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.001.f01",
+        "native": "ನಮಸ್ಕಾರ",
+        "reading": "namaskaara",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson01"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.002",
+    "senseId": "kn.sense.002.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ನನಗೆ",
+    "meaning": {
+      "en": "for me / my need"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.002.f01",
+        "native": "ನನಗೆ",
+        "reading": "nanage",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson01",
+      "kn-lesson06",
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.003",
+    "senseId": "kn.sense.003.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ನಿಮಗೆ",
+    "meaning": {
+      "en": "for you / your need"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.003.f01",
+        "native": "ನಿಮಗೆ",
+        "reading": "nimage",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson01",
+      "kn-lesson06",
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.004",
+    "senseId": "kn.sense.004.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ನೀರು",
+    "meaning": {
+      "en": "water"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.004.f01",
+        "native": "ನೀರು",
+        "reading": "niiru",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson01",
+      "kn-lesson06",
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.005",
+    "senseId": "kn.sense.005.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಟೀ",
+    "meaning": {
+      "en": "tea"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.005.f01",
+        "native": "ಟೀ",
+        "reading": "Tii",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson01",
+      "kn-lesson06",
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.006",
+    "senseId": "kn.sense.006.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಕಾಫಿ",
+    "meaning": {
+      "en": "coffee"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.006.f01",
+        "native": "ಕಾಫಿ",
+        "reading": "kaafi",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson01",
+      "kn-lesson06",
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.007",
+    "senseId": "kn.sense.007.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಹಾಲು",
+    "meaning": {
+      "en": "milk"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.007.f01",
+        "native": "ಹಾಲು",
+        "reading": "haalu",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson01",
+      "kn-lesson06",
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.008",
+    "senseId": "kn.sense.008.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಬೇಕು",
+    "meaning": {
+      "en": "wanted / needed"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.008.f01",
+        "native": "ಬೇಕು",
+        "reading": "beeku",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson01",
+      "kn-lesson06",
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.009",
+    "senseId": "kn.sense.009.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಬೇಡ",
+    "meaning": {
+      "en": "not wanted"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.009.f01",
+        "native": "ಬೇಡ",
+        "reading": "beeDa",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson01",
+      "kn-lesson06",
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.010",
+    "senseId": "kn.sense.010.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಬೇಕಾ",
+    "meaning": {
+      "en": "wanted? / would you like?"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.010.f01",
+        "native": "ಬೇಕಾ",
+        "reading": "beekaa",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson01",
+      "kn-lesson06",
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.011",
+    "senseId": "kn.sense.011.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಕೊಡಿ",
+    "meaning": {
+      "en": "give, respectful request"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.011.f01",
+        "native": "ಕೊಡಿ",
+        "reading": "koDi",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.012",
+    "senseId": "kn.sense.012.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಸ್ವಲ್ಪ",
+    "meaning": {
+      "en": "a little / some"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.012.f01",
+        "native": "ಸ್ವಲ್ಪ",
+        "reading": "svalpa",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.013",
+    "senseId": "kn.sense.013.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ದಯವಿಟ್ಟು",
+    "meaning": {
+      "en": "please"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.013.f01",
+        "native": "ದಯವಿಟ್ಟು",
+        "reading": "dayaviTTu",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson06"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.014",
+    "senseId": "kn.sense.014.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಮನೆ",
+    "meaning": {
+      "en": "home"
+    },
+    "partOfSpeech": "noun / location form",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.014.f01",
+        "native": "ಮನೆ",
+        "reading": "mane",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "kn.lex.014.f02",
+        "native": "ಮನೆಯಲ್ಲಿ",
+        "reading": "maneyalli",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [
+      "ಮನೆಯಲ್ಲಿ ಇದೆ"
+    ],
+    "originalExample": "ಹಾಲು ಮನೆಯಲ್ಲಿ ಇದೆ.",
+    "lessonIds": [
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.015",
+    "senseId": "kn.sense.015.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಅಂಗಡಿ",
+    "meaning": {
+      "en": "shop"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.015.f01",
+        "native": "ಅಂಗಡಿ",
+        "reading": "angaDi",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "kn.lex.015.f02",
+        "native": "ಅಂಗಡಿಯಲ್ಲಿ",
+        "reading": "angaDiyalli",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.016",
+    "senseId": "kn.sense.016.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಇದೆ",
+    "meaning": {
+      "en": "is / is present, for these items"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.016.f01",
+        "native": "ಇದೆ",
+        "reading": "ide",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  },
+  {
+    "lexemeId": "kn.lex.017",
+    "senseId": "kn.sense.017.01",
+    "language": "kn",
+    "kind": "lexeme-or-function-word",
+    "lemmaOrPhrase": "ಎಲ್ಲಿ",
+    "meaning": {
+      "en": "where"
+    },
+    "partOfSpeech": "needs-lexicographic-review",
+    "genderOrClass": null,
+    "register": "as specified by lesson context",
+    "forms": [
+      {
+        "formId": "kn.lex.017.f01",
+        "native": "ಎಲ್ಲಿ",
+        "reading": "elli",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      },
+      {
+        "formId": "kn.lex.017.f02",
+        "native": "ಎಲ್ಲಿದೆ",
+        "reading": "ellide",
+        "features": "Scope in teaching step; morphological feature tagging requires reviewer"
+      }
+    ],
+    "commonCombinations": [],
+    "originalExample": null,
+    "lessonIds": [
+      "kn-lesson10"
+    ],
+    "source": "Existing LingoMitra authored word card, retained and structured for this design",
+    "license": "Project content; no new third-party content copied",
+    "reviewStatus": "AI draft; qualified review required",
+    "audio": {
+      "locale": "kn-IN",
+      "assetId": null,
+      "status": "recording and human review required"
+    }
+  }
+]

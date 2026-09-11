@@ -1,6 +1,6 @@
 ## Lesson 1: Building Your First German Sentences - Verbs, Pronouns & Pronunciation
 
-Welcome! In this foundational lesson, we'll unlock the basics of forming simple German sentences. We'll learn how to say *who* is doing something and how the *action word* (verb) changes. Plus, we'll get comfortable with some essential German sounds. Forget rote memorization; we're focusing on patterns and connections to English.
+Welcome! In this foundational lesson, we'll unlock the basics of forming simple German sentences. We'll learn how to say *who* is doing something and how the *action word* (verb) changes. Plus, we'll get comfortable with some essential German sounds. Understanding a pattern helps, and memory, retrieval and practice still matter. We focus on patterns and connections to English.
 
 ### The Building Blocks: Who is Who? (Pronouns)
 
@@ -86,7 +86,7 @@ Here are 30 common verbs. Most follow the pattern above. We'll note the few tric
 | 18 | laufen      | *lau-fen* ('au' like 'ow') | run / walk      | lauf      |
 | 19 | lesen       | *lay-zen* ('s' like 'z')   | read            | les       |
 | 20 | schreiben   | *shrye-ben* ('ei' like 'eye')| write           | schreib   |
-| 21 | suchen      | *zoo-khen* ('ch' soft)     | search / look for| such      |
+| 21 | suchen      | *zoo-khen* ('ch' after u: back-of-mouth sound) | search / look for| such      |
 | 22 | finden      | *fin-den*                  | find            | find      |
 | 23 | stehen      | *shtay-en*                 | stand           | steh      |
 | 24 | sitzen      | *zit-sen* ('s' like 'z', 'tz' like 'ts') | sit | sitz      |
@@ -146,9 +146,9 @@ Let's try making sentences with our new verbs and pronouns. Remember to match th
 ### Common Mistakes & Thinking Traps
 
 *   **Forgetting Verb Endings:** Saying `Ich lerne**n** Deutsch` instead of `Ich lern**e** Deutsch`. **Think:** The verb *must* agree with the person doing it, just like saying "he walk**s**" not "he walk".
-*   **Mixing up `sie` (she) and `sie` (they) / `Sie` (You formal):** They sound the same but use different verb endings in some cases (though not with the `-en` verbs here). The capitalization of `Sie` (formal You) is your main clue in writing. **Think:** Context and capitalization are key.
+*   **Mixing up `sie` (she) and `sie` (they) / `Sie` (You formal):** They sound the same but take different forms: `sie lernt` means she learns, while `sie lernen` means they learn and `Sie lernen` addresses you formally. The capitalization of `Sie` (formal You) is your main clue in writing. **Think:** Context and capitalization are key.
 *   **Using the wrong "You":** Using `du` with a stranger or `ihr` when talking to just one friend. **Think:** `du`=buddy, `ihr`=buddies, `Sie`=Sir/Ma'am.
-*   **Pronunciation Pitfalls:** Saying `Ich` like "Itch" (it's softer, *ish*). Pronouncing `w` like English 'w' (it's like English 'v'). Pronouncing `z` like English 'z' (it's 'ts'). **Think:** Train your ear and mouth for these new sounds. Listen carefully to examples.
+*   **Pronunciation Pitfalls:** Saying `ich` like English itch or ish. Standard German ich uses [ç], a different consonant. Pronouncing `w` like English 'w' (it's like English 'v'). Pronouncing `z` like English 'z' (it's 'ts'). **Think:** Train your ear and mouth for these new sounds. Listen carefully to examples.
 *   **(Later trap):** Forgetting the vowel changes in irregular verbs for `du` and `er/sie/es` (like `lesen -> liest`). **Think:** We'll practice this specifically later. For now, focus on the standard endings.
 
 ### Quick Practice: Think it Through!

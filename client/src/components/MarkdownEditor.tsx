@@ -1,3 +1,4 @@
+import { Input } from "@/components/ui/input";
 import { useState, useRef, useCallback } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -175,7 +176,7 @@ export default function MarkdownEditor({ value, onChange, placeholder, rows = 15
         </div>
       </div>
 
-      <input
+      <Input
         ref={fileInputRef}
         type="file"
         accept="image/*"

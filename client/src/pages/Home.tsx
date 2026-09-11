@@ -11,7 +11,7 @@ export default function Home() {
   // redirect them to the dashboard to see their language learning content
   useEffect(() => {
     if (user && window.location.pathname === '/') {
-      navigate('/languages');
+      navigate('/dashboard');
     }
   }, [user, navigate]);
 

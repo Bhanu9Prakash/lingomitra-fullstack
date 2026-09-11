@@ -59,7 +59,7 @@ This is a very important meaning where you arrange for someone else to perform a
 *   `Sie **lässt** sich die Haare **schneiden**.` (She **has** her hair **cut** / She's getting her hair cut.) - *`sich` (Dative reflexive `mir/dir/sich...`) is often used when the action is done to a part of the subject's body. `die Haare` is the Accusative object.*
 *   `Wir **lassen** das Essen **liefern**.` (We **have** the food **delivered** / We're getting the food delivered.)
 
-> **Language Transfer Intuition:** This structure looks identical to Meaning 1 (Let/Allow)! **Context is crucial** to tell them apart. "Ich lasse mein Kind spielen" (I let my child play) vs. "Ich lasse mein Auto reparieren" (I have my car repaired). The meaning of the verbs and objects usually makes it clear.
+> **Learning connection:** This structure looks identical to Meaning 1 (Let/Allow)! **Context is crucial** to tell them apart. "Ich lasse mein Kind spielen" (I let my child play) vs. "Ich lasse mein Auto reparieren" (I have my car repaired). The meaning of the verbs and objects usually makes it clear.
 
 ### Meaning 4: Imperative "Let's..."
 

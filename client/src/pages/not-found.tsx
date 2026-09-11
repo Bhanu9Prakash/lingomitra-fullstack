@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
@@ -17,17 +18,9 @@ export default function NotFound() {
         </p>
         
         <div className="space-x-4">
-          <Link href="/">
-            <button className="px-5 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg transition-all hover:-translate-y-1 shadow-sm font-semibold">
-              Go Home
-            </button>
-          </Link>
+          <Button asChild><Link href="/">Go home</Link></Button>
           
-          <Link href="/languages">
-            <button className="px-5 py-2 border border-border hover:bg-muted text-foreground rounded-lg transition-colors font-semibold">
-              See Languages
-            </button>
-          </Link>
+          <Button asChild variant="outline"><Link href="/languages">See languages</Link></Button>
         </div>
       </div>
     </div>

@@ -70,7 +70,7 @@ These phrases help maintain the flow of conversation:
   * 始めましょう。(*Hajimemashou.*) - "Let's begin."
 
 * ～したらどうですか (*~shitara dō desu ka*) - "How about...?"
-  * 休んだらどうですか。(*Yasunda dō desu ka.*) - "How about taking a rest?"
+  * 休んだらどうですか。(*Yasundara dō desu ka.*) - "How about taking a rest?"
 
 **2. Asking for Opinions**
 

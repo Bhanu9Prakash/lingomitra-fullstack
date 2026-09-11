@@ -1,0 +1,1 @@
+ALTER TABLE `user_progress` ADD `version` integer DEFAULT 0 NOT NULL;

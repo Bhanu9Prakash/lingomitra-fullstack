@@ -132,7 +132,7 @@ Examples:
 
 Negative adverbs like 不 (bù) and 没 (méi) always come before the verb or adjective:
 * 我不常常去那里。(Wǒ bù chángcháng qù nàlǐ.) - I don't often go there.
-* 他没已经吃饭。(Tā méi yǐjīng chīfàn.) - He hasn't already eaten.
+* 他还没吃饭。(Tā hái méi chīfàn.) - He has not eaten yet.
 
 ### 4. Reduplication for Emphasis
 
@@ -145,7 +145,7 @@ A special feature of Chinese adjectives and adverbs is reduplication for emphasi
 
 **B. Two-Syllable Adjective Reduplication: AABB**
 * 漂亮 (piàoliang - beautiful) → 漂漂亮亮 (piàopiàoliàngliàng - very beautiful)
-* 干净 (gānjìng - clean) → 干干净净 (gāngānjiàjiàng - very clean)
+* 干净 (gānjìng - clean) → 干干净净 (gāngānjìngjìng - very clean)
 
 **C. Adverb Reduplication:**
 * 慢 (màn - slow) → 慢慢 (mànmàn - slowly)
@@ -159,7 +159,7 @@ Example:
 *   **Using 是 with Adjectives:** Saying ~~他是高~~ instead of 他很高 for "he is tall." Remember, simple adjectives don't need 是!
 *   **Omitting 很:** Saying ~~我忙~~ instead of 我很忙 for "I am busy." In simple statements, adjectives typically need an adverb like 很.
 *   **Wrong Word Order:** Putting adverbs after the words they modify. Adverbs ALWAYS come before the words they modify.
-*   **Comparison Mistakes:** Adding extra words like "more" in comparisons (~~我比他更高~~ is redundant; just say 我比他高).
+*   **Comparison Mistakes:** Both 我比他高 and 我比他更高 are grammatical. 更 can emphasize the comparative degree; it is not automatically an error.
 *   **Forgetting 的 with Attributive Adjectives:** Forgetting to add 的 when using multi-syllable adjectives before nouns.
 
 ### Quick Practice

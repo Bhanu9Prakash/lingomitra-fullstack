@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-10",
+  "components": [
+    {
+      "local": "client/src/components/ui/button.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/button.tsx",
+      "upstream_sha256": "cc36af0f8b5019c33cc039fbf03bb952a513072b15b55b53c592b78af3e5f4c4",
+      "local_sha256": "6e7e143933034f4bb0d4fd9d99097023b8d1b5790e7e6340572189bd76dac322",
+      "changes": [
+        "Use the existing individual Radix dependency in place of the upstream umbrella import",
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used",
+        "Retain the existing exported ButtonProps type"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/card.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/card.tsx",
+      "upstream_sha256": "c48dd3b96be90a7066f1aebf294f0af9d00ebcdc367d5d4aca55429ade570c1c",
+      "local_sha256": "8a66e19e4fb6ac02b27f5d319e4444c620cd17bf2aa0ea7ccf55087e3981aa47",
+      "changes": [
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used",
+        "Keep CardTitle as a semantic h3 heading for existing callers"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/select.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/select.tsx",
+      "upstream_sha256": "0b796a108a4eb5ba52d9ad938b7aea36dc56ae66c703a6d0a23dbc24f96daff3",
+      "local_sha256": "c5fa03c209f59d7a20b45d7f2acec2b874dd4209a747f623ddb14f0156a32081",
+      "changes": [
+        "Use the existing individual Radix dependency in place of the upstream umbrella import",
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/input.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/input.tsx",
+      "upstream_sha256": "8c4612a7c41319ac5049daa3b34b080f9784b6245c17780eb87c127e58e473db",
+      "local_sha256": "6337802a958acb720819a0acc7e2e20527760c4d496eb232c1f036c7f1ae15c4",
+      "changes": [
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/textarea.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/textarea.tsx",
+      "upstream_sha256": "253cdeb487c73beaaccdf47fc163e36e7d5b7ae6ddf09a4f64998a109a112979",
+      "local_sha256": "151a4fb2a73fe7264d97d20ffe4268c1f4cda7c4133eca98daf5abef69875a89",
+      "changes": [
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/accordion.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/accordion.tsx",
+      "upstream_sha256": "9c01f8d794065ebc8bc9ba81feb525c022b1c168fa3120bd2c81bbf6a9a1be95",
+      "local_sha256": "c79dea41e9e76b7fcb3df26a5b0157256520f2873a84a8a857cbb29c0318ff77",
+      "changes": [
+        "Use the existing individual Radix dependency in place of the upstream umbrella import",
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/alert.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/alert.tsx",
+      "upstream_sha256": "2cc59b5f7bda91c1670884b1bf46bfc8a2a6f226cef184f5762acc037188885b",
+      "local_sha256": "ba4f42e54bbbcb1709359abc36ef42fd12f16c205e598a1662e00a7e10e5595b",
+      "changes": [
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/radio-group.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/radio-group.tsx",
+      "upstream_sha256": "36e28961d0c8977b4ded6be08d1fd0e2aeadd1e215adca7d8c0820b7186fb1f8",
+      "local_sha256": "a794a88ce2b87a38adf0e4394aa1c0674bf63d7c6d92db1bdab2d2cd85ccc2cc",
+      "changes": [
+        "Use the existing individual Radix dependency in place of the upstream umbrella import",
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/navigation-menu.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/navigation-menu.tsx",
+      "upstream_sha256": "889d358a77de88e9cb6f39ea4895ea4c76eaf01d731b74e44f1c41e97a78a044",
+      "local_sha256": "b34d8fd5e7c9bb5d0517984ebfb27a4c871c1ee4877e3e81ed66fd324e5e5971",
+      "changes": [
+        "Use the existing individual Radix dependency in place of the upstream umbrella import",
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/progress.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/progress.tsx",
+      "upstream_sha256": "34afe53ed7b9aa5a943c0926316588877b926d6e938a08626453e89145f6f769",
+      "local_sha256": "f5ce9737013824636ac223eb7ce081478be979a76cd26cce2601d22ff7d03c5f",
+      "changes": [
+        "Use the existing individual Radix dependency in place of the upstream umbrella import",
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used",
+        "Pass value to Radix Root for an accurate accessible progress value"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/label.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/label.tsx",
+      "upstream_sha256": "a9e5ce00e4809f1f6804d0e48de09bf364bddc424947c25d2a276c2fc6514c50",
+      "local_sha256": "e294241f09a4dd63011f61b2f5926b405ca7c80f071ac3f452ae4d19f2eef20e",
+      "changes": [
+        "Use the existing individual Radix dependency in place of the upstream umbrella import",
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/separator.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/separator.tsx",
+      "upstream_sha256": "12b3fd96644561a850c3103f67e2d04a3738ce27e12911ab9e55efc856648a41",
+      "local_sha256": "cbedceb776fee01eb04e1f54c4b58ea86876da5e627371c3b388f005b46f229c",
+      "changes": [
+        "Use the existing individual Radix dependency in place of the upstream umbrella import",
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/sonner.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/sonner.tsx",
+      "upstream_sha256": "13ccc9b0fe4248e622f83a1d3b2f0566b72b5e04162d7d0c8db8945ecc71b55f",
+      "local_sha256": "a43bc58d19553ac76bcdd736978b6803ef7af8464df6da6a9831021283cacbdd",
+      "changes": [
+        "Keep the existing Tailwind 3 build; map newer utility names where used",
+        "Use the existing ThemeProvider and HSL token format"
+      ]
+    },
+    {
+      "local": "client/src/components/motion-primitives/animated-group.tsx",
+      "repository": "https://github.com/ibelick/motion-primitives",
+      "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+      "path": "components/core/animated-group.tsx",
+      "upstream_sha256": "0c162bbdd3c332e7aa113cd7ddfa7ac36de3184866cb82ad9140525561e08c35",
+      "local_sha256": "cf15c42e38ec702bb73a57622026528b52bb6f6d8978138eed15d3eafd9f8c04",
+      "changes": []
+    },
+    {
+      "local": "client/src/components/kokonut/slide-text-button.tsx",
+      "repository": "https://github.com/kokonut-labs/kokonutui",
+      "revision": "83eec6d982d400a18438001a8efdbac1f159dd43",
+      "path": "components/kokonutui/slide-text-button.tsx",
+      "upstream_sha256": "5ebb72de04e7bf5e00344a6f64a1b44157055ae84f9f28fce2cf4ef32c86cb79",
+      "local_sha256": "6ee6874459e7f81ed44bfa663887cef2ebf2be07ebd3f95bc7bd87e2c05841ba",
+      "changes": [
+        "Use existing Wouter router",
+        "Keep primary action immediately visible",
+        "Expose one stable accessible label"
+      ]
+    },
+    {
+      "local": "client/src/components/kokonut/switch-button.tsx",
+      "repository": "https://github.com/kokonut-labs/kokonutui",
+      "revision": "83eec6d982d400a18438001a8efdbac1f159dd43",
+      "path": "components/kokonutui/switch-button.tsx",
+      "upstream_sha256": "93b214bf0041a1e9e94f2692c45c79c979973ded0983c379ce0a2bc96dde4c65",
+      "local_sha256": "2e7e166f9993ff0363952cedb822f19587f7dd0d32e1c162da54adaf2fbeb462",
+      "changes": [
+        "Connect existing theme preference without a second provider"
+      ]
+    },
+    {
+      "local": "client/src/components/motion-primitives/animated-background.tsx",
+      "repository": "https://github.com/ibelick/motion-primitives",
+      "revision": "92586e62a951eb9b6bfd1cc7c8a4e6e2ab6ba17d",
+      "path": "components/core/animated-background.tsx",
+      "upstream_sha256": "fa592713c408eaf58b21976c20737d84239c42a0b7e47cf9e7843121b1c0852c",
+      "local_sha256": "d339c07ff989f75c50b09002f1d822d8591fbb6434e4a056018b0a3d1d328c9c",
+      "changes": [
+        "Optional controlled value keeps actual route authoritative, including modified clicks",
+        "Initialize known selection without waiting for an effect",
+        "Disable layout motion and opacity transitions when reduced motion is requested",
+        "Mark the selection decoration hidden from assistive technology"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/dialog.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/dialog.tsx",
+      "upstream_sha256": "1eef94a2bb44fb1a1f132c9538eacca61cb9555e085ee285e5f23d108a931fb0",
+      "local_sha256": "ee35d8d0b1e7cdd9c4c03b7c62fd71948b8d3c35259086e26cf9ecb03d9d08ef",
+      "changes": [
+        "Use the existing individual Radix dependency in place of the upstream umbrella import",
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    },
+    {
+      "local": "client/src/components/ui/skeleton.tsx",
+      "repository": "https://github.com/WatermelonCorp/watermellon-registry",
+      "revision": "0099addd50a985bf53bdb81140ab4b72fc0668ce",
+      "path": "src/components/ui/skeleton.tsx",
+      "upstream_sha256": "ba48dd5be5a6a1378bd4e011028654b5bf419f1e7d20ee4b9f8330c1264e7239",
+      "local_sha256": "7717ee995070e41be17cb9d7b8dc8e077a0b5fd91f02ccbe1de73ed78c5f8d40",
+      "changes": [
+        "Retain React 18 forwarded refs at DOM-facing boundaries",
+        "Keep the existing Tailwind 3 build; map newer utility names where used"
+      ]
+    }
+  ]
+}

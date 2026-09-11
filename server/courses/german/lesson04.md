@@ -43,7 +43,7 @@ Welcome back! In this lesson, we'll learn two of the most important verbs in Ger
 | ihr        | **seid**    | *zyde* ('ei'=eye)  | Completely different.                                   |
 | sie/Sie    | **sind**    | *zint*             | Completely different. Same as `wir`.                    |
 
-> **Language Transfer Intuition:** Think about how irregular "to be" is in English: I *am*, You *are*, He *is*, We *are*, They *are*. `sein` is German's equivalent – the forms seem unrelated to the infinitive `sein`. Just accept and learn them as they are fundamental. Notice `wir sind` and `sie/Sie sind` are the same.
+> **Learning connection:** Think about how irregular "to be" is in English: I *am*, You *are*, He *is*, We *are*, They *are*. `sein` is German's equivalent – the forms seem unrelated to the infinitive `sein`. Just accept and learn them as they are fundamental. Notice `wir sind` and `sie/Sie sind` are the same.
 
 **Using `sein`:**
 

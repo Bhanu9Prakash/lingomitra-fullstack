@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Lesson } from "@shared/schema";
 
 interface LessonNavigationProps {
@@ -16,32 +17,32 @@ export default function LessonNavigation({
   return (
     <div className="lesson-navigation">
       {prevLesson ? (
-        <button
+        <Button variant="ghost"
           className="nav-button"
           onClick={() => onNavigate(prevLesson.lessonId)}
         >
           <i className="fas fa-arrow-left"></i>
           <span>Previous: {prevLesson.title}</span>
-        </button>
+        </Button>
       ) : (
         <div></div> // Empty div for spacing
       )}
 
       {nextLesson ? (
-        <button
+        <Button variant="ghost"
           className="nav-button"
           onClick={() => onNavigate(nextLesson.lessonId)}
         >
           <span>Next: {nextLesson.title}</span>
           <i className="fas fa-arrow-right"></i>
-        </button>
+        </Button>
       ) : (
-        <button
-          className="nav-button disabled"
+        <Button variant="ghost"
+          className="nav-button disabled" disabled
         >
           <span>Course Complete</span>
           <i className="fas fa-check-circle"></i>
-        </button>
+        </Button>
       )}
     </div>
   );

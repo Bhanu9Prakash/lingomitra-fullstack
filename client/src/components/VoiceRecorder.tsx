@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import React, { useState, useRef, useCallback } from 'react';
 import { Mic } from 'lucide-react';
 import { useAudioRecorder } from '@/hooks/useAudioRecorder';
@@ -63,7 +64,7 @@ export function VoiceRecorder({ onAudioSubmit, disabled }: VoiceRecorderProps) {
 
   return (
     <div className="voice-recorder-container">
-      <button
+      <Button variant="ghost"
         className={`voice-recorder-btn ${isRecording ? 'recording' : ''} ${isHolding ? 'holding' : ''}`}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
@@ -78,7 +79,7 @@ export function VoiceRecorder({ onAudioSubmit, disabled }: VoiceRecorderProps) {
         {isRecording && (
           <span className="recording-duration">{formatDuration(duration)}</span>
         )}
-      </button>
+      </Button>
       
       {isRecording && (
         <div className="recording-indicator">

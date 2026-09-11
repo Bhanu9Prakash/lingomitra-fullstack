@@ -3,19 +3,19 @@
    the same visual system without changing the mascot or brand palette. */
 :root {
   color-scheme: light;
-  --primary-color: #e85d1f;
-  --primary-light: #ffb184;
-  --primary-dark: #a93f18;
-  --secondary-color: #7c5247;
-  --secondary-light: #a77d70;
-  --secondary-dark: #5e3b33;
-  --text-color: #3b211c;
-  --text-light: #7c5247;
-  --bg-color: #fffaf3;
-  --bg-light: #f9eedf;
-  --bg-dark: #f1ddc7;
-  --border-color: #ead8c7;
-  --shadow: 0 12px 36px rgba(94, 33, 29, 0.09);
+  --primary-color: var(--ink);
+  --primary-light: var(--paper-deep);
+  --primary-dark: var(--ink);
+  --secondary-color: var(--ink-muted);
+  --secondary-light: var(--paper-deep);
+  --secondary-dark: var(--ink);
+  --text-color: var(--ink);
+  --text-light: var(--ink-muted);
+  --bg-color: var(--paper);
+  --bg-light: var(--paper-deep);
+  --bg-dark: var(--studio-surface-strong);
+  --border-color: var(--line);
+  --shadow: none;
   --transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
   --border-radius: 12px;
 
@@ -42,19 +42,19 @@
 html.dark,
 .dark-theme {
   color-scheme: dark;
-  --primary-color: #ff985f;
-  --primary-light: #ffb88d;
-  --primary-dark: #e86d31;
-  --secondary-color: #d2aa98;
-  --secondary-light: #efd1c0;
-  --secondary-dark: #a47767;
-  --text-color: #feeeda;
-  --text-light: #e9c9b6;
-  --bg-color: #241917;
-  --bg-light: #33211d;
-  --bg-dark: #452c25;
-  --border-color: #69453a;
-  --shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
+  --primary-color: var(--ink);
+  --primary-light: var(--paper-deep);
+  --primary-dark: var(--ink);
+  --secondary-color: var(--ink-muted);
+  --secondary-light: var(--paper-deep);
+  --secondary-dark: var(--ink);
+  --text-color: var(--ink);
+  --text-light: var(--ink-muted);
+  --bg-color: var(--paper);
+  --bg-light: var(--paper-deep);
+  --bg-dark: var(--studio-surface-strong);
+  --border-color: var(--line);
+  --shadow: none;
 
   --background: 10 22% 12%;
   --foreground: 31 92% 93%;
@@ -84,8 +84,8 @@ body {
   padding: env(safe-area-inset-top) 0 0;
   border-bottom: 1px solid color-mix(in srgb, var(--border-color) 82%, transparent);
   background: color-mix(in srgb, var(--bg-color) 92%, transparent) !important;
-  box-shadow: 0 8px 28px rgba(94, 33, 29, 0.06) !important;
-  backdrop-filter: blur(18px) saturate(1.15);
+  box-shadow: none !important;
+  backdrop-filter: none;
 }
 
 .app-wrapper > header .container {

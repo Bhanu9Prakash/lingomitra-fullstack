@@ -23,8 +23,8 @@ export default function AboutPage() {
         <section className="text-center">
           <h1 className="text-4xl font-bold mb-4">About LingoMitra</h1>
           <p className="text-xl mb-6">
-            <span className="font-semibold">LingoMitra is your AI-powered language wing-mate.</span>
-            <br />We blend human-style coaching with the speed and scale of large language models so you can <em>think</em> in a new language rather than memorising disconnected phrases.
+            <span className="font-semibold">LingoMitra helps you build useful sentences.</span>
+            <br />Understand a small pattern, practice it with support, and retrieve it later. Understanding and memory work together through practice.
           </p>
           <Button
             size="lg"
@@ -42,7 +42,7 @@ export default function AboutPage() {
           <Card className="bg-muted/50">
             <CardContent className="pt-6">
               <p className="text-lg">
-                Most apps talk <em>at</em> learners; we wanted one that talks <em>with</em> them. By turning every lesson into a chat-based, Socratic exchange, LingoMitra recreates the feeling of a patient tutor across the table without rigid schedules or high hourly fees.
+                We want a beginner to understand enough to produce a new sentence. The opening lessons in all seven languages pair original explanations with bounded sentence checks. The existing courses remain available as notes and self-practice while we improve them incrementally.
               </p>
             </CardContent>
           </Card>
@@ -55,7 +55,7 @@ export default function AboutPage() {
               <Card 
                 key={language.code}
                 className="overflow-hidden transition-all duration-200 hover:shadow-md cursor-pointer border-0 bg-background/60"
-                onClick={() => navigate(`/language/${language.code}`)}
+                role="link" tabIndex={0} onKeyDown={event => { if(event.key==='Enter')navigate(`/language/${language.code}`); }} onClick={() => navigate(`/language/${language.code}`)}
               >
                 <CardContent className="p-5 flex items-center space-x-4">
                   <div className="w-14 h-14 relative flex-shrink-0">
@@ -91,7 +91,7 @@ export default function AboutPage() {
                   <span className="text-2xl font-bold text-primary">2</span>
                 </div>
                 <h3 className="font-bold mb-2">Bite-sized lesson</h3>
-                <p>Each session targets a single core idea, explained in plain language and reinforced through mini-drills.</p>
+                <p>Each language’s starter introduces one small idea at a time. Broader course notes can be studied in smaller portions.</p>
               </CardContent>
             </Card>
             <Card className="border-0 bg-background/60">
@@ -100,7 +100,7 @@ export default function AboutPage() {
                   <span className="text-2xl font-bold text-primary">3</span>
                 </div>
                 <h3 className="font-bold mb-2">Real-time chat</h3>
-                <p>Our AI tutor reviews your answers on the fly and tailors the next prompt to your exact needs.</p>
+                <p>Optional AI coaching can discuss an attempt. Authored lesson checks and saved learning work without an AI connection.</p>
               </CardContent>
             </Card>
             <Card className="border-0 bg-background/60">
@@ -109,7 +109,7 @@ export default function AboutPage() {
                   <span className="text-2xl font-bold text-primary">4</span>
                 </div>
                 <h3 className="font-bold mb-2">Speak or type</h3>
-                <p>Practise out loud via microphone or just type; either way, instant feedback keeps you moving.</p>
+                <p>Type a sentence or practice aloud privately. Optional recorded messages are transcribed for you to check; this is not a pronunciation score.</p>
               </CardContent>
             </Card>
             <Card className="border-0 bg-background/60">
@@ -117,8 +117,8 @@ export default function AboutPage() {
                 <div className="bg-primary/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl font-bold text-primary">5</span>
                 </div>
-                <h3 className="font-bold mb-2">Track your streak</h3>
-                <p>A streak calendar, per-language progress bars, and badges turn discipline into a game.</p>
+                <h3 className="font-bold mb-2">See what you can do</h3>
+                <p>New starter records distinguish help, independent combinations and later retrieval. Course completion and activity calendars remain separate.</p>
               </CardContent>
             </Card>
           </div>
@@ -133,9 +133,9 @@ export default function AboutPage() {
               <CardContent className="pt-6">
                 <h3 className="font-bold mb-2 flex items-center">
                   <Badge variant="outline" className="mr-2 bg-primary/10">Feature</Badge>
-                  Thinking-first pedagogy
+                  Understanding with practice
                 </h3>
-                <p>We teach ideas before forms. You try first, the tutor guides your self-correction.</p>
+                <p>Meet a useful meaning and form together, try a new combination, and request a cue or complete answer whenever you need it.</p>
               </CardContent>
             </Card>
             <Card className="border-0 bg-background/60">
@@ -144,7 +144,7 @@ export default function AboutPage() {
                   <Badge variant="outline" className="mr-2 bg-primary/10">Feature</Badge>
                   Personalised chat
                 </h3>
-                <p>A private ScratchPad remembers your vocab comfort zone and weak spots, so every reply feels made for you.</p>
+                <p>Chat history helps the optional tutor continue a discussion. It is not a validated model of everything you know.</p>
               </CardContent>
             </Card>
             <Card className="border-0 bg-background/60">
@@ -153,16 +153,16 @@ export default function AboutPage() {
                   <Badge variant="outline" className="mr-2 bg-primary/10">Feature</Badge>
                   True mobility
                 </h3>
-                <p>Install as a PWA, cache favourite lessons, and keep learning even when offline.</p>
+                <p>Add a shortcut from Settings when your device supports installation. Internet is required to load lessons and sync your learning.</p>
               </CardContent>
             </Card>
             <Card className="border-0 bg-background/60">
               <CardContent className="pt-6">
                 <h3 className="font-bold mb-2 flex items-center">
                   <Badge variant="outline" className="mr-2 bg-primary/10">Feature</Badge>
-                  Fair upgrade path
+                  Free and unlocked
                 </h3>
-                <p>First two lessons in every language stay free forever; deeper content unlocks with a modest Premium tier. No ads, no data resale.</p>
+                <p>Every lesson is available to every learner. Sign in with ChatGPT to save your progress and continue across devices.</p>
               </CardContent>
             </Card>
           </div>
@@ -175,7 +175,7 @@ export default function AboutPage() {
           <Card className="border-0 bg-primary/10">
             <CardContent className="pt-6">
               <p className="text-lg text-center italic">
-                Make expert-level language coaching as convenient as texting a friend and as affordable as a daily cup of coffee.
+                Make patient language practice freely available, with support that gradually becomes less necessary.
               </p>
             </CardContent>
           </Card>
@@ -184,7 +184,7 @@ export default function AboutPage() {
         <section className="text-center">
           <h2 className="text-2xl font-bold mb-4">Join the journey</h2>
           <p className="max-w-2xl mx-auto mb-6">
-            Whether you are deciphering anime dialogue, prepping for a German visa interview, or chatting with grandparents in Kannada, LingoMitra turns every spare five minutes into a micro-immersion session. Create an account, open a lesson, and start thinking in a new tongue today.
+            Start with a useful request, then build new combinations. A first sentence is a beginning; fluency needs sustained exposure, practice and real communication.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
@@ -196,9 +196,9 @@ export default function AboutPage() {
             <Button
               size="lg"
               variant="outline"
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/auth?returnTo=%2Fdashboard')}
             >
-              Create Account
+              Continue with ChatGPT
             </Button>
           </div>
         </section>

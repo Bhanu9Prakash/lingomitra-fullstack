@@ -1,6 +1,6 @@
 ## Lesson 1: Building Your First Spanish Sentences - Verbs, Pronouns & Pronunciation
 
-Welcome! In this foundational lesson, we'll unlock the basics of forming simple Spanish sentences. We'll learn how to say *who* is doing something and how the *action word* (verb) changes. Plus, we'll get comfortable with some essential Spanish sounds. Forget rote memorization; we're focusing on patterns and connections to English.
+Welcome! In this foundational lesson, we'll unlock the basics of forming simple Spanish sentences. We'll learn how to say *who* is doing something and how the *action word* (verb) changes. Plus, we'll get comfortable with some essential Spanish sounds. Understanding a pattern helps, and memory, retrieval and practice still matter. We focus on patterns and connections to English.
 
 ### The Building Blocks: Who is Who? (Pronouns)
 

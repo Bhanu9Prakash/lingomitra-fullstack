@@ -56,7 +56,7 @@ Kannada has unique words for the tens:
 | 80 | ಎಂಬತ್ತು | embattu | em-ba-ttu | Derived from "enTu" (8) |
 | 90 | ತೊಂಬತ್ತು | tombattu | tom-ba-ttu | Derived from "ombattu" (9) |
 
-> **Language Transfer Intuition:** The tens numbers in Kannada maintain a connection to their single-digit counterparts, though with some sound changes: "naalku" (4) becomes "nala-" in "nalavattu" (40).
+> **Learning connection:** The tens numbers in Kannada maintain a connection to their single-digit counterparts, though with some sound changes: "naalku" (4) becomes "nala-" in "nalavattu" (40).
 
 ### Combining Numbers: 21-99
 

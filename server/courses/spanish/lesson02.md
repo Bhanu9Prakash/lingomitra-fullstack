@@ -11,7 +11,7 @@ The Spanish alphabet has 27 letters, including the standard 26 letters from Engl
 | Letter | Spanish Name (Approx.) | Sound Hint (How it sounds IN words) | Intuitive Hint / Comparison to English                 |
 |--------|-----------------------|-------------------------------------|--------------------------------------------------------|
 | A a    | *a*                   | Like 'a' in f**a**ther              | Always the same clear 'ah' sound, never like in 'cat' or 'make' |
-| B b    | *be*                  | Soft 'b' almost like 'v', especially between vowels | Similar to English 'b' but softer between vowels |
+| B b    | *be*                  | Like b; often a bilabial approximant between vowels | Similar to English 'b' but softer between vowels |
 | C c    | *ce*                  | Like 'k' before a, o, u; like 'th' (Spain) or 's' (Latin America) before e, i | Two different sounds depending on the following letter |
 | D d    | *de*                  | Like 'd' in **d**og; softer between vowels, almost like 'th' in 'this' | Similar to English 'd' but softer between vowels |
 | E e    | *e*                   | Like 'e' in p**e**t                 | Consistent 'eh' sound, never silent at the end of words |
@@ -32,7 +32,7 @@ The Spanish alphabet has 27 letters, including the standard 26 letters from Engl
 | S s    | *ese*                 | Like 's' in **s**ee                 | Similar to English 's'; sometimes closer to 'z' sound between vowels in some regions |
 | T t    | *te*                  | Like 't' in **t**op                 | Same as English 't' but less aspirated                |
 | U u    | *u*                   | Like 'oo' in f**oo**d               | Consistent 'oo' sound; silent in 'que', 'qui', 'gue', 'gui' combinations |
-| V v    | *uve*                 | Soft 'b' almost like 'v'            | **Key Difference:** Often indistinguishable from 'b' in many regions |
+| V v    | *uve*                 | Same phoneme as Spanish b in standard varieties            | **Key Difference:** Do not model it on English labiodental v |
 | W w    | *uve doble*           | Like 'w' in **w**agon               | Rare in Spanish except in foreign words                |
 | X x    | *equis*               | Like 'ks' in bo**x**; like 'h' in some place names | Usually 'ks', but 'h' in words of indigenous origin like "México" |
 | Y y    | *ye*                  | Like 'y' in **y**es; like 'ee' when used as a conjunction meaning "and" | Similar to English 'y'; sometimes standalone as "and" (e.g., "tú y yo") |
@@ -74,13 +74,13 @@ Spanish uses accent marks (´) to indicate stress or to distinguish between word
 
 **Rules for Word Stress:**
 1. Words ending in a vowel, n, or s: stress falls on the next-to-last syllable
-   * Examples: ca-**sa** (house), ha-**blan** (they speak)
+   * Examples: **ca**-sa (house), **ha**-blan (they speak)
 
 2. Words ending in any other consonant: stress falls on the last syllable
    * Examples: ha-**blar** (to speak), es-pa-**ñol** (Spanish)
 
 3. Accent marks override these rules and indicate the stressed syllable
-   * Examples: **tá**-xi (taxi), can-**ción** (song)
+   * Examples: ca-**fé** (coffee), can-**ción** (song). **Ta**-xi follows rule 1 and is spelled taxi, without an accent mark
 
 **Accent Marks for Distinction:**
 * **tú** (you) vs. **tu** (your)
@@ -105,7 +105,7 @@ Spanish uses accent marks (´) to indicate stress or to distinguish between word
 Try pronouncing these Spanish words aloud, using the rules and hints you've just learned. Don't worry about perfection, just apply the thinking!
 
 1. casa (house) - *Think: stress on first 'a'*
-2. español (Spanish) - *Think: accent mark on 'o'*
+2. español (Spanish) - *Think: final stress; español has no written accent*
 3. guitarra (guitar) - *Think: silent 'u', rolled 'rr'*
 4. llamar (to call) - *Think: 'll' makes 'y' sound*
 5. quiero (I want) - *Think: 'qu' makes 'k' sound, silent 'u'*
@@ -113,7 +113,7 @@ Try pronouncing these Spanish words aloud, using the rules and hints you've just
 7. ciudad (city) - *Think: stress on last syllable, 'iu' diphthong*
 8. México (Mexico) - *Think: 'x' makes 'h' sound, accent on 'e'*
 9. año (year) - *Think: 'ñ' makes 'ny' sound*
-10. familia (family) - *Think: stress on second 'i'*
+10. familia (family) - *Think: fa-MI-lia, stress on the next-to-last syllable*
 
 *(Listen to native speakers pronounce these words online if you can to compare!)*
 

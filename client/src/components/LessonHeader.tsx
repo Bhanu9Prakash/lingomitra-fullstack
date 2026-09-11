@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Lesson, Language } from "@shared/schema";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
@@ -33,13 +34,13 @@ export default function LessonHeader({
           // Mobile layout - simplified single row header with fixed spacing
           <div className="mobile-lesson-header">
             {/* Lesson selector button (left) */}
-            <button 
+            <Button variant="ghost"
               className="lesson-selector-btn"
               onClick={onOpenLessonSelector}
               aria-label="View all lessons"
             >
               <i className="fas fa-list"></i>
-            </button>
+            </Button>
             
             {/* Full lesson title with lesson number */}
             <div className="mobile-lesson-title">
@@ -54,38 +55,38 @@ export default function LessonHeader({
             <div className="chat-buttons">
               {/* Only show reset button when chat is active */}
               {isChatActive && onResetChat && (
-                <button 
+                <Button variant="ghost"
                   className="chat-reset-btn"
                   onClick={onResetChat}
                   aria-label="Reset conversation"
                   title="Reset conversation"
                 >
                   <i className="fas fa-redo-alt"></i>
-                </button>
+                </Button>
               )}
               
               {/* Chat toggle button */}
-              <button 
+              <Button variant="ghost"
                 className={`chat-toggle ${isChatActive ? 'active' : ''}`}
                 onClick={onToggleChat}
                 aria-label={isChatActive ? "Close tutor chat" : "Open tutor chat"}
                 title={isChatActive ? "Close tutor chat" : "Open tutor chat"}
               >
                 <i className={`fas ${isChatActive ? 'fa-times' : 'fa-comment'}`}></i>
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
           // Desktop layout
           <div className="lesson-header-content">
             {/* Lesson selector button (left) */}
-            <button 
+            <Button variant="ghost"
               className="lesson-selector-btn"
               onClick={onOpenLessonSelector}
               aria-label="View all lessons"
             >
               <i className="fas fa-list"></i>
-            </button>
+            </Button>
             
             {/* Lesson title (center) */}
             <div className="lesson-title">
@@ -98,25 +99,25 @@ export default function LessonHeader({
             <div className="chat-buttons">
               {/* Only show reset button when chat is active */}
               {isChatActive && onResetChat && (
-                <button 
+                <Button variant="ghost"
                   className="chat-reset-btn"
                   onClick={onResetChat}
                   aria-label="Reset conversation"
                   title="Reset conversation"
                 >
                   <i className="fas fa-redo-alt"></i>
-                </button>
+                </Button>
               )}
               
               {/* Chat toggle button */}
-              <button 
+              <Button variant="ghost"
                 className={`chat-toggle ${isChatActive ? 'active' : ''}`}
                 onClick={onToggleChat}
                 aria-label={isChatActive ? "Close tutor chat" : "Open tutor chat"}
                 title={isChatActive ? "Close tutor chat" : "Open tutor chat"}
               >
                 <i className={`fas ${isChatActive ? 'fa-times' : 'fa-comment'}`}></i>
-              </button>
+              </Button>
             </div>
           </div>
         )}

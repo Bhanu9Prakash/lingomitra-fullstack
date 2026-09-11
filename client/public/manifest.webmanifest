@@ -3,7 +3,7 @@
   "short_name": "LingoMitra",
   "description": "Master languages with interactive, pattern-based lessons on LingoMitra. Choose from German, Spanish, French, Chinese, Japanese, and Hindi to boost your language skills!",
   "theme_color": "#f97316",
-  "background_color": "#fffaf3",
+  "background_color": "#f7f8fa",
   "display": "standalone",
   "scope": "/",
   "start_url": "/",

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import LearningOperations from '@/components/LearningOperations';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,6 @@ import {
 import { useLocation } from 'wouter';
 import { useSimpleToast } from '../hooks/use-simple-toast';
 import { format } from 'date-fns';
-import SubscriptionDialog from '@/components/admin/SubscriptionDialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -33,8 +33,6 @@ interface User {
   id: number;
   username: string;
   email: string;
-  subscriptionTier: string;
-  subscriptionExpiry: string | null;
   isAdmin: boolean;
 }
 
@@ -43,7 +41,6 @@ interface AnalyticsData {
   lessonCount: number;
   languageCount: number;
   completedLessonCount: number;
-  premiumUserCount: number;
 }
 
 interface ContactSubmission {
@@ -81,8 +78,6 @@ export default function AdminDashboard() {
   const { toast } = useSimpleToast();
   const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null);
   const [resolutionNotes, setResolutionNotes] = useState('');
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
   const [selectedBlogPost, setSelectedBlogPost] = useState<BlogPost | null>(null);
   const [showBlogEditor, setShowBlogEditor] = useState(false);
   const [showBlogPreview, setShowBlogPreview] = useState(false);
@@ -369,50 +364,6 @@ export default function AdminDashboard() {
     }
   };
   
-  // Function to update subscription
-  const updateSubscription = async (userId: number, subscriptionTier: string, subscriptionExpiry?: Date) => {
-    try {
-      const response = await fetch('/api/admin/update-subscription', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          userId, 
-          subscriptionTier, 
-          subscriptionExpiry: subscriptionExpiry ? subscriptionExpiry.toISOString() : null 
-        }),
-        credentials: 'include'
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Failed to update subscription');
-      }
-      
-      toast({
-        title: "Success",
-        description: `Subscription updated to ${subscriptionTier}.`,
-      });
-      
-      // Refresh users data
-      await fetchUsers();
-      
-      // Close the dialog
-      setSelectedUser(null);
-      setShowSubscriptionDialog(false);
-      
-      // The caller only needs completion or a thrown error.
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update subscription.",
-        variant: "destructive",
-      });
-      throw error;
-    }
-  };
-
   // Blog form handlers
   const handleBlogFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -476,6 +427,7 @@ export default function AdminDashboard() {
         
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
+          <LearningOperations />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Total Users Card */}
             <Card className="border border-gray-800">
@@ -488,21 +440,6 @@ export default function AdminDashboard() {
                   <Skeleton className="h-12 w-12" />
                 ) : (
                   <p className="text-3xl font-bold">{(analyticsData as AnalyticsData)?.userCount || 0}</p>
-                )}
-              </CardContent>
-            </Card>
-            
-            {/* Premium Users Card */}
-            <Card className="border border-gray-800">
-              <CardHeader className="pb-2">
-                <CardTitle>Premium Users</CardTitle>
-                <CardDescription>Users with active subscriptions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {loadingAnalytics ? (
-                  <Skeleton className="h-12 w-12" />
-                ) : (
-                  <p className="text-3xl font-bold">{(analyticsData as AnalyticsData)?.premiumUserCount || 0}</p>
                 )}
               </CardContent>
             </Card>
@@ -577,7 +514,6 @@ export default function AdminDashboard() {
                         <TableHead>ID</TableHead>
                         <TableHead>Username</TableHead>
                         <TableHead>Email</TableHead>
-                        <TableHead>Subscription</TableHead>
                         <TableHead>Admin</TableHead>
                         <TableHead>Actions</TableHead>
                       </TableRow>
@@ -589,7 +525,6 @@ export default function AdminDashboard() {
                             <TableCell>{user.id}</TableCell>
                             <TableCell>{user.username}</TableCell>
                             <TableCell>{user.email}</TableCell>
-                            <TableCell>{user.subscriptionTier || 'Free'}</TableCell>
                             <TableCell>{user.isAdmin ? 'Yes' : 'No'}</TableCell>
                             <TableCell>
                               <div className="flex gap-2">
@@ -602,23 +537,13 @@ export default function AdminDashboard() {
                                     Make Admin
                                   </Button>
                                 )}
-                                <Button 
-                                  variant="secondary" 
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedUser(user);
-                                    setShowSubscriptionDialog(true);
-                                  }}
-                                >
-                                  Subscription
-                                </Button>
                               </div>
                             </TableCell>
                           </TableRow>
                         ))
                       ) : (
                         <TableRow>
-                          <TableCell colSpan={6} className="text-center py-6">
+                          <TableCell colSpan={5} className="text-center py-6">
                             No users found. {usersError ? 'Error loading users.' : ''}
                           </TableCell>
                         </TableRow>
@@ -855,15 +780,6 @@ export default function AdminDashboard() {
         </TabsContent>
       </Tabs>
       
-      {/* Subscription Dialog */}
-      {selectedUser && (
-        <SubscriptionDialog
-          isOpen={showSubscriptionDialog}
-          onClose={() => setShowSubscriptionDialog(false)}
-          user={selectedUser}
-          onSave={updateSubscription}
-        />
-      )}
 
       {/* Blog Editor Dialog */}
       <Dialog open={showBlogEditor} onOpenChange={setShowBlogEditor}>
@@ -939,7 +855,7 @@ export default function AdminDashboard() {
                     Upload
                   </Button>
                 </div>
-                <input
+                <Input
                   type="file"
                   id="featuredImageFile"
                   accept="image/*"

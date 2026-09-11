@@ -61,7 +61,7 @@ A very common and polite way to ask someone to do something is by using the moda
     *   `**Können Sie mir** Apfel **geben**?` (Can you give me (an) apple?) - *(Note: Often needs an article like 'einen Apfel', but the core structure is shown).*
     *   `**Kannst du mir** bitte den Stift **geben**?` (Can you please give me the pen? - *Informal*) (*der Stift* = the pen)
 
-> **Language Transfer Intuition:** This is very close to English "Can you... please?". The verb `können` functions similarly. Adding `bitte` makes it polite. `bitte` can often go after the subject or near the end before the infinitive.
+> **Learning connection:** This is very close to English "Can you... please?". The verb `können` functions similarly. Adding `bitte` makes it polite. `bitte` can often go after the subject or near the end before the infinitive.
 
 ### Answering Yes/No Questions
 
@@ -77,7 +77,7 @@ The simplest answers are:
 
 ### Common Mistakes
 
-*   **Wrong Word Order:** Forgetting to put the conjugated verb first in a Yes/No question. *"Du spielst Tennis?"* (with rising intonation) might be understood in casual speech but is grammatically incorrect. The standard is `Spielst du Tennis?`.
+*   **Wrong Word Order:** Forgetting to put the conjugated verb first in a Yes/No question. *"Du spielst Tennis?"* (with rising intonation) is a grammatical declarative question used, for example, to check an expectation. It differs from the neutral verb-first question practised here. The standard is `Spielst du Tennis?`.
 *   **Infinitive Placement:** Forgetting to keep the main infinitive verb at the end when using modal verbs or `werden` in questions. *"Kannst du spielen Kricket?"* -> **Incorrect.** Must be `Kannst du Kricket **spielen**?`.
 *   **Using `haben` for Requests:** While you might say "Can I *have* an apple?" in English, directly translating with `haben` (`Kann ich einen Apfel haben?`) sounds less natural for a request than asking someone to give it to you (`Können Sie mir einen Apfel geben?`) or using `bekommen` (to receive/get) (`Kann ich einen Apfel bekommen?`). Using `Können Sie/Kannst du... geben?` is a very safe and common request structure.
 

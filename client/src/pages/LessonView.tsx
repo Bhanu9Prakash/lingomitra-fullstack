@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+import { pathway } from '@shared/pathways';
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
@@ -6,8 +8,7 @@ import LessonHeader from "@/components/LessonHeader";
 import LessonContent from "@/components/LessonContent";
 import LessonSelector from "@/components/LessonSelector";
 import ChatUI from "@/components/ChatUI";
-import MicrophonePermissionCheck from "@/components/MicrophonePermissionCheck";
-import PaywallModal from "@/components/PaywallModal";
+import { GuidedLesson } from './GuidedLesson';
 import { getQueryFn } from "@/lib/queryClient";
 import { trackEvent } from "@/lib/analytics";
 import { useAuth } from "@/hooks/use-auth";
@@ -47,7 +48,6 @@ export default function LessonView() {
   // State for lesson modal and chat
   const [isLessonSelectorOpen, setLessonSelectorOpen] = useState(false);
   const [isChatActive, setIsChatActive] = useState(false);
-  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
   
   // Ref for chat component to access resetChatHistory method
   const chatRef = useRef<any>(null);
@@ -111,15 +111,6 @@ export default function LessonView() {
       ? lessons.find(l => l.lessonId === currentLessonId) 
       : null);
       
-  // Check if we need to show the paywall when the current lesson changes
-  useEffect(() => {
-    if (currentLesson && shouldShowPaywall(currentLesson)) {
-      setIsPaywallOpen(true);
-    } else {
-      setIsPaywallOpen(false);
-    }
-  }, [currentLesson]);
-  
   // Handle redirects from legacy URLs to new URL format
   useEffect(() => {
     if ((matchLanguage || matchLesson) && !matchStandardRoute && currentLesson) {
@@ -185,24 +176,8 @@ export default function LessonView() {
     }
   };
   
-  // Check if the user needs to see a paywall for this lesson
-  const shouldShowPaywall = (lesson: Lesson) => {
-    // Free tier gets access to the first two lessons only
-    // All lessons beyond lesson 2 require a paid subscription
-    const lessonNumber = getLessonNumber(lesson.lessonId);
-    
-    // Check if user has any paid subscription tier
-    const hasPaidSubscription = user?.subscriptionTier && 
-      ['basic', 'premium', 'pro'].includes(user.subscriptionTier);
-    
-    // Also check if subscription is still valid (not expired)
-    const isSubscriptionValid = !user?.subscriptionExpiry || 
-      new Date(user.subscriptionExpiry) > new Date();
-    
-    // Show paywall for lessons beyond lesson 2 for users without valid paid subscription
-    return lessonNumber > 2 && (!hasPaidSubscription || !isSubscriptionValid);
-  };
-
+  const starter=pathway(currentLesson?.languageCode||'');
+  if(currentLesson?.orderIndex===1&&starter&&!new URLSearchParams(window.location.search).has('notes'))return <GuidedLesson key={starter.starters[0]} activityId={starter.starters[0]}/>;
   return (
     <div className="lesson-view">
       {/* Lesson header */}
@@ -227,19 +202,17 @@ export default function LessonView() {
       {/* Main content */}
       <div className="container">
         {/* Microphone permission check - only show in lesson content mode */}
-        {!isChatActive && <MicrophonePermissionCheck />}
         
         {/* Show chat UI or lesson content based on isChatActive */}
-        {!currentLesson ? (
+        {error ? <div className="lesson-error p-8" role="alert">{error}. <Button variant="ghost" onClick={() => window.location.reload()}>Try again</Button></div> : !currentLesson ? (
           <div className="loading-container">
             <div className="loading-spinner"></div>
           </div>
-        ) : isChatActive ? (
-          /* AI Tutor Chat UI - renders in full screen */
-          <ChatUI ref={chatRef} lesson={currentLesson} />
-        ) : (
-          /* Regular Lesson Content */
-          <LessonContent 
+        ) : (<>
+          <div hidden={!isChatActive}>{isChatActive&&<ChatUI key={currentLesson.lessonId} ref={chatRef} lesson={currentLesson} />}</div>
+          <div hidden={isChatActive}>
+          {/* Original course notes */}
+          <LessonContent key={currentLesson.lessonId}
             lesson={currentLesson}
             isLoading={isLoading}
             error={error}
@@ -247,7 +220,7 @@ export default function LessonView() {
             prevLesson={prevLesson}
             onNavigate={handleLessonSelect}
           />
-        )}
+          </div></>)}
       </div>
 
       {/* Lesson selector modal */}
@@ -258,16 +231,6 @@ export default function LessonView() {
           isOpen={isLessonSelectorOpen}
           onClose={() => setLessonSelectorOpen(false)}
           onSelectLesson={handleLessonSelect}
-        />
-      )}
-      
-      {/* Paywall modal */}
-      {currentLesson && (
-        <PaywallModal
-          isOpen={isPaywallOpen}
-          onClose={() => setIsPaywallOpen(false)}
-          lessonId={currentLesson.lessonId}
-          languageCode={currentLesson.languageCode}
         />
       )}
     </div>

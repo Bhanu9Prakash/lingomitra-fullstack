@@ -67,7 +67,7 @@ When using object pronouns (me, te, le, la, nous, vous, les) with the imperative
 
 **For -er verbs in the 'tu' form:** When adding the pronouns `moi` or `toi`, the dropped -s is added back:
 * Regarde (tu form of 'regarder') + moi = Regarde**s**-moi !
-* Donne (tu form of 'donner') + moi = Donne**s**-moi !
+* Donne (tu imperative of donner) + moi = **Donne-moi !** Do not add s before moi; the special linking s applies before y or en in forms such as vas-y.
 
 **Negative Commands:** Place the object pronoun(s) **between** ne and the verb:
 * Ne **me** regarde pas ! (Don't look at me!)

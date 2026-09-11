@@ -42,7 +42,7 @@ Now a pattern emerges! German builds the teens by adding **`zehn`** (ten) *after
 | 18     | **achtzehn**  | acht + zehn       | *akht-tseyn*       |                                         |
 | 19     | **neunzehn**  | neun + zehn       | *noyn-tseyn*       |                                         |
 
-> **Language Transfer Intuition:** Compare this to English "-teen" (thir**teen**, four**teen**). English puts the "teen" part at the end too, but German is even more literal: `drei` (3) + `zehn` (10) = `dreizehn` (13) = "three-ten". Just watch out for 16 and 17, which shorten slightly!
+> **Learning connection:** Compare this to English "-teen" (thir**teen**, four**teen**). English puts the "teen" part at the end too, but German is even more literal: `drei` (3) + `zehn` (10) = `dreizehn` (13) = "three-ten". Just watch out for 16 and 17, which shorten slightly!
 
 ### The Tens: Numbers 20-90
 
@@ -110,7 +110,7 @@ German uses the word **`Uhr`** (*Oor*) for "o'clock" or "hour" when telling time
 *   10:45 = **zehn Uhr fünfundvierzig** (*tseyn Oor fewnf-unt-fear-tsish*) (Ten Uhr five-and-forty)
 *   8:30 = **acht Uhr dreißig** (*akht Oor drye-sish*) (Eight Uhr thirty)
 
-> **Language Transfer Intuition:** This is very direct, just stating the hour, the word `Uhr`, and then the minutes using the number rules we just learned (including the unit+und+ten structure for minutes from 21-59).
+> **Learning connection:** This is very direct, just stating the hour, the word `Uhr`, and then the minutes using the number rules we just learned (including the unit+und+ten structure for minutes from 21-59).
 
 ### Common Mistakes
 

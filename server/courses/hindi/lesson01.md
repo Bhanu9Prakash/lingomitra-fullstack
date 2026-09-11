@@ -1,6 +1,6 @@
 ## Lesson 1: Building Your First Hindi Sentences - Verbs, Pronouns & Basic Structure
 
-Welcome! In this foundational lesson, we'll unlock the basics of forming simple Hindi sentences. We'll learn how to say *who* is doing something and how word order works differently from English. Forget rote memorization; we're focusing on patterns and English-Hindi connections to make learning intuitive.
+Welcome! In this foundational lesson, we'll unlock the basics of forming simple Hindi sentences. We'll learn how to say *who* is doing something and how word order works differently from English. Understanding a pattern helps, and memory, retrieval and practice still matter. We focus on patterns and English-Hindi connections to make learning intuitive.
 
 ### The Building Blocks: Who is Who? (Pronouns)
 
@@ -129,9 +129,9 @@ Remember the word order: Subject + Object + Verb
 
 ### Common Mistakes & Thinking Traps
 
-* **Word Order:** Putting the verb before the object as in English. *"मैं पीता हूँ पानी"* is incorrect. Remember: Subject + Object + Verb → `मैं पानी पीता हूँ।`
+* **Word Order:** For the neutral pattern taught here, put the object before the verb: `मैं पानी पीता हूँ।` Hindi can use other orders for emphasis; this practice starts with the common neutral order.
 * **Forgetting Gender Agreement:** Using masculine `-ta` forms for female subjects or vice versa. A female speaker must say `मैं जाती हूँ` not `मैं जाता हूँ`.
-* **Formality Confusion:** Using `तू` (tu) with people you've just met. This is considered very rude. When in doubt, use the formal `आप` (aap).
+* **Formality Confusion:** Using `तू` (tu) with people you've just met. This can sound overfamiliar or impolite with strangers; usage depends on relationships and context. When in doubt, use the polite `आप` (aap).
 * **Verb-Pronoun Agreement:** Using the wrong form of "to be" with pronouns. Each pronoun pairs with a specific form (`मैं हूँ`, `वह है`, `हम हैं`, etc.).
 
 ### Quick Practice: Think it Through!
@@ -143,7 +143,7 @@ Translate these sentences into Hindi. Think about subject, object, verb order an
 3. We see a movie. (mixed group)
 4. You are a teacher. (to a female, informal)
 5. She goes home. (Use "ghar" for "home")
-6. What are you doing? (formal)
+6. What do you do? (formal, addressing a man)
 
 *(Try constructing the sentences yourself before checking!)*
 
@@ -156,6 +156,6 @@ Translate these sentences into Hindi. Think about subject, object, verb order an
 3. `हम फिल्म देखते हैं।` - `Hum film dekhte hain.`
 4. `तुम अध्यापिका हो।` - `Tum adhyapika ho.`
 5. `वह घर जाती है।` - `Voh ghar jati hai.`
-6. `आप क्या कर रहे हैं?` - `Aap kya kar rahe hain?`
+6. `आप क्या करते हैं?` - `Aap kya karte hain?`
 
 ---

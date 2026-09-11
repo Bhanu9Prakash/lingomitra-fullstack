@@ -49,7 +49,7 @@ Welcome back! In this lesson, we'll learn two of the most important verbs in Fre
 | vous       | **êtes**    | *et*               | Completely different. Has a circumflex accent.        |
 | ils/elles  | **sont**    | *sohn* (nasal)     | Completely different. Nasal sound.                     |
 
-> **Language Transfer Intuition:** Think about how irregular "to be" is in English: I *am*, You *are*, He *is*, We *are*, They *are*. `être` is French's equivalent – the forms seem unrelated to the infinitive `être`. Just accept and learn them as they are fundamental. Notice `tu es` and `il/elle/on est` sound the same.
+> **Learning connection:** Think about how irregular "to be" is in English: I *am*, You *are*, He *is*, We *are*, They *are*. `être` is French's equivalent – the forms seem unrelated to the infinitive `être`. Just accept and learn them as they are fundamental. Notice `tu es` and `il/elle/on est` sound the same.
 
 **Using `être`:**
 

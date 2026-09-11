@@ -50,6 +50,8 @@ export default function ContactPage() {
   const { theme } = useTheme();
   const toast = useSimpleToast();
   const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
+  const params=new URLSearchParams(window.location.search);
+  const lessonContext=['lesson','activity','version','step'].map(key=>{const value=params.get(key);return value&&/^[a-zA-Z0-9._-]{1,80}$/.test(value)?`${key}: ${value}`:null;}).filter(Boolean).join('\n');
 
   // Initialize form
   const form = useForm<ContactFormValues>({
@@ -57,8 +59,8 @@ export default function ContactPage() {
     defaultValues: {
       name: "",
       email: "",
-      category: "General",
-      message: "",
+      category: lessonContext?"Bug":"General",
+      message: lessonContext?`Lesson issue\n${lessonContext}\n\nWhat was confusing?\n`:"",
       company: "",
     },
   });
@@ -82,17 +84,7 @@ export default function ContactPage() {
       return response.json();
     },
     onSuccess: (data) => {
-      toast.success("Thanks for writing in — a team member will respond at the email you provided.");
-      
-      // If there's a preview URL (for test emails), show another toast with the link
-      if (data.previewUrl) {
-        toast.toast({
-          title: "Test Email Preview Available",
-          description: `Since we're in development mode, emails are sent to a test service. View test email at: ${data.previewUrl}`,
-          variant: 'default',
-          duration: 10000, // Longer duration to give time to click
-        });
-      }
+      toast.success("Your message has been saved for the LingoMitra team.");
       
       form.reset();
       setIsSubmitSuccessful(true);
@@ -118,7 +110,7 @@ export default function ContactPage() {
         </div>
         <h1 className="text-3xl md:text-4xl font-bold mb-3">Talk to the LingoMitra team</h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Questions, bug reports or partnership ideas? Drop a note and we'll reply within two working days.
+          Questions or a confusing lesson? Leave a message for the LingoMitra team. Include the lesson and the sentence you were working on.
         </p>
       </div>
       
@@ -129,7 +121,7 @@ export default function ContactPage() {
           <CardHeader>
             <CardTitle className="text-2xl">Contact Information</CardTitle>
             <CardDescription>
-              How to reach us through different channels
+              Messages submitted here are saved for the team to review.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -150,9 +142,9 @@ export default function ContactPage() {
                 <span className="h-5 w-5 flex items-center justify-center text-primary">⏱️</span>
               </div>
               <div>
-                <p className="font-medium mb-1">Support Hours</p>
+                <p className="font-medium mb-1">Response timing</p>
                 <p className="text-muted-foreground">
-                  Mon–Fri · 10 am–6 pm IST
+                  Replies depend on team availability. No response time is guaranteed.
                 </p>
               </div>
             </div>
@@ -164,7 +156,7 @@ export default function ContactPage() {
           <CardHeader>
             <CardTitle className="text-2xl">Send us a message</CardTitle>
             <CardDescription>
-              Fill out the form below and we'll get back to you soon
+              Your message is saved to LingoMitra when submission succeeds.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -175,7 +167,7 @@ export default function ContactPage() {
               >
                 {/* Honeypot field - hidden from users but bots will fill it out */}
                 <div className="hidden">
-                  <input
+                  <Input
                     type="text"
                     {...form.register("company")}
                     tabIndex={-1}

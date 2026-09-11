@@ -1,7 +1,9 @@
-import { Lesson } from "@shared/schema";
-import { useEffect, useState } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { isLessonCompleted, fetchCompletedLessonsByLanguage } from "@/lib/progress";
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { Lesson } from '@shared/schema';
+import { fetchCompletedLessonsByLanguage } from '@/lib/progress';
+import { Button } from './ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
+import { BookOpen, CheckCircle2, ChevronRight } from 'lucide-react';
 
 interface LessonSelectorProps {
   lessons: Lesson[];
@@ -11,200 +13,39 @@ interface LessonSelectorProps {
   onSelectLesson: (lessonId: string) => void;
 }
 
-export default function LessonSelector({
-  lessons,
-  currentLessonId,
-  isOpen,
-  onClose,
-  onSelectLesson,
-}: LessonSelectorProps) {
-  const isMobile = useIsMobile();
-  
-  // State to force refresh when opened to show updated completion status
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-  // Track completion status
-  const [completedLessons, setCompletedLessons] = useState<string[]>([]);
-  // Loading state while fetching completion data
-  const [isLoadingProgress, setIsLoadingProgress] = useState(false);
-
-  // Helper to extract lesson number for display
-  const getLessonNumber = (lessonId: string) => {
-    const match = lessonId.match(/lesson(\d+)$/);
-    return match ? match[1] : null;
-  };
-
-  // Handle escape key to close modal
-  useEffect(() => {
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleEscKey);
-    return () => {
-      document.removeEventListener("keydown", handleEscKey);
-    };
-  }, [isOpen, onClose]);
-
-  // Get the language code from lessons - defined here to use in useEffect
-  const languageCode = lessons.length > 0 ? lessons[0].languageCode : null;
-  
-  // Prevent body scrolling when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      // Force refresh when opened to get latest completion status
-      setRefreshTrigger(prev => prev + 1);
-      
-      // Fetch the current completed lessons
-      if (languageCode) {
-        setIsLoadingProgress(true);
-        fetchCompletedLessonsByLanguage(languageCode)
-          .then(lessons => {
-            setCompletedLessons(lessons);
-            setIsLoadingProgress(false);
-          })
-          .catch(error => {
-            console.error("Failed to fetch completed lessons:", error);
-            setIsLoadingProgress(false);
-          });
-      }
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen, languageCode]);
-
-  if (!isOpen) return null;
-
-  // Sort lessons by lesson number
-  const sortedLessons = [...lessons].sort((a, b) => {
-    const numA = getLessonNumber(a.lessonId);
-    const numB = getLessonNumber(b.lessonId);
-
-    if (numA && numB) {
-      return parseInt(numA) - parseInt(numB);
-    }
-
-    return 0;
-  });
-
-  // Create language display data
-  const currentLanguage = languageCode
-    ? {
-        code: languageCode,
-        // Convert language code to proper name (assuming ISO language codes)
-        name:
-          {
-            de: "German",
-            fr: "French",
-            es: "Spanish",
-            hi: "Hindi",
-            zh: "Chinese",
-            ja: "Japanese",
-            kn: "Kannada",
-          }[languageCode] || languageCode,
-        // Map language codes to flag codes (some differ from language code)
-        flagCode:
-          {
-            de: "de",
-            fr: "fr",
-            es: "es",
-            hi: "hi",
-            zh: "zh",
-            ja: "jp",
-            kn: "kn",
-          }[languageCode] || languageCode,
-      }
-    : null;
-
-  return (
-    <div
-      className={`lesson-selector ${isOpen ? "open" : ""} ${isMobile ? "mobile-drawer" : ""}`}
-    >
-      <div
-        className="lesson-selector-backdrop"
-        onClick={onClose}
-        aria-label="Close selector"
-      ></div>
-      <div className="lesson-selector-content">
-        <div className="lesson-selector-header">
-          {isMobile && currentLanguage ? (
-            <div className="mobile-drawer-header">
-              <div className="language-info">
-                <div className="language-flag">
-                  <img
-                    src={`/flags/${currentLanguage.flagCode}.svg`}
-                    alt={`${currentLanguage.name} Flag`}
-                  />
-                </div>
-                <h2>
-                  {currentLanguage.name}{" "}
-                  <span className="subtitle">Lessons</span>
-                </h2>
-              </div>
-              <button
-                className="close-selector"
-                onClick={onClose}
-                aria-label="Close lesson selector"
-              >
-                <i className="fas fa-times"></i>
-              </button>
-            </div>
-          ) : (
-            <>
-              <h2>Select a Lesson</h2>
-              <button
-                className="close-selector"
-                onClick={onClose}
-                aria-label="Close lesson selector"
-              >
-                <i className="fas fa-times"></i>
-              </button>
-            </>
-          )}
-        </div>
-
-        {isMobile && currentLanguage && (
-          <div className="mobile-drawer-subheader">
-            <p>Select a lesson to continue learning</p>
-          </div>
-        )}
-
-        <div className="lesson-list">
-          {sortedLessons.map((lesson) => {
-            const lessonNumber = getLessonNumber(lesson.lessonId);
-            const isActive = lesson.lessonId === currentLessonId;
-
-            // Always show full lesson title with number for better readability
-            const displayTitle = lessonNumber
-              ? `Lesson ${lessonNumber}: ${lesson.title}`
-              : lesson.title;
-
-            // Check if the lesson is completed using the completed lessons from state
-            // This is populated from API or localStorage depending on login status
-            const isCompleted = completedLessons.includes(lesson.lessonId);
-            
-            return (
-              <div
-                key={lesson.lessonId}
-                className={`lesson-item ${isActive ? "active" : ""} ${isCompleted ? "completed" : ""}`}
-                onClick={() => {
-                  onSelectLesson(lesson.lessonId);
-                  onClose();
-                }}
-              >
-                {/* Use check-circle for completed lessons, otherwise use book icon */}
-                <i className={`fas ${isCompleted ? "fa-check-circle" : "fa-book"}`}></i>
-                <span>{displayTitle}</span>
-              </div>
-            );
-          })}
-        </div>
+export default function LessonSelector({lessons,currentLessonId,isOpen,onClose,onSelectLesson}:LessonSelectorProps){
+  const opener=useRef<HTMLElement|null>(null);
+  const [completedLessons,setCompletedLessons]=useState<string[]>([]);
+  const [loading,setLoading]=useState(false);
+  const [progressError,setProgressError]=useState(false);
+  const languageCode=lessons[0]?.languageCode;
+  useEffect(()=>{
+    if(!isOpen||!languageCode)return;
+    let active=true;
+    setLoading(true);setProgressError(false);setCompletedLessons([]);
+    fetchCompletedLessonsByLanguage(languageCode).then(completed=>{
+      if(active)setCompletedLessons(completed);
+    }).catch(()=>{if(active)setProgressError(true);}).finally(()=>{if(active)setLoading(false);});
+    return ()=>{active=false;};
+  },[isOpen,languageCode]);
+  const sortedLessons=useMemo(()=>[...lessons].sort((a,b)=>Number(a.lessonId.match(/lesson(\d+)$/)?.[1]||0)-Number(b.lessonId.match(/lesson(\d+)$/)?.[1]||0)),[lessons]);
+  const languageName=({de:'German',fr:'French',es:'Spanish',hi:'Hindi',zh:'Mandarin',ja:'Japanese',kn:'Kannada'} as Record<string,string>)[languageCode||''];
+  return <Dialog open={isOpen} onOpenChange={open=>{if(!open)onClose();}}>
+    <DialogContent className="course-picker-dialog" onOpenAutoFocus={()=>{opener.current=document.activeElement instanceof HTMLElement?document.activeElement:null;}} onCloseAutoFocus={event=>{event.preventDefault();opener.current?.focus();}}>
+      <DialogHeader><DialogTitle>{languageName?`${languageName} lessons`:'Choose a lesson'}</DialogTitle><DialogDescription>Every lesson is open. Choose where you would like to continue.</DialogDescription></DialogHeader>
+      {loading&&<p role="status" className="text-sm text-muted-foreground">Loading your completion record…</p>}
+      {progressError&&<p role="status" className="text-sm text-muted-foreground">Completion marks could not load. You can still open any lesson.</p>}
+      <div className="course-picker-list">
+        {sortedLessons.map(lesson=>{
+          const completed=completedLessons.includes(lesson.lessonId),current=lesson.lessonId===currentLessonId;
+          const number=lesson.lessonId.match(/lesson(\d+)$/)?.[1];
+          return <Button type="button" variant="ghost" key={lesson.lessonId} aria-current={current?'page':undefined} className="course-picker-item" onClick={()=>{onSelectLesson(lesson.lessonId);onClose();}}>
+            {completed?<CheckCircle2 aria-hidden="true"/>:<BookOpen aria-hidden="true"/>}
+            <span><span>{number?`Lesson ${Number(number)}: `:''}{lesson.title}</span>{(completed||current)&&<small>{current?'Current lesson':''}{current&&completed?' · ':''}{completed?'Completed':''}</small>}</span>
+            <ChevronRight aria-hidden="true"/>
+          </Button>;
+        })}
       </div>
-    </div>
-  );
+    </DialogContent>
+  </Dialog>;
 }

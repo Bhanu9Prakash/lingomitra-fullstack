@@ -67,7 +67,7 @@ These pronouns refer to unspecified things or concepts.
 *   `Ich muss **alles** alleine machen.` (I must do everything alone.) - *`alles` is Acc object.*
 *   `**Alles** ist gut.` (Everything is good.) - *`alles` is Nom subject.*
 
-> **Language Transfer Intuition:** `nichts` looks like `nicht` + `s`, conceptually meaning "not a thing" -> nothing. `alles` is clearly related to "all". `etwas` is its own word to learn.
+> **Learning connection:** `nichts` looks like `nicht` + `s`, conceptually meaning "not a thing" -> nothing. `alles` is clearly related to "all". `etwas` is its own word to learn.
 
 ### Common Mistakes
 

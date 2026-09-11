@@ -14,12 +14,16 @@ import { ProtectedRoute } from "@/lib/protected-route";
 
 const NotFound = lazy(() => import("@/pages/not-found"));
 const LanguageSelection = lazy(() => import("@/pages/LanguageSelection"));
+const Today = lazy(() => import("@/pages/Today"));
+const Words = lazy(() => import("@/pages/Words"));
+const Practice = lazy(() => import("@/pages/Practice"));
+const GuidedLesson = lazy(() => import("@/pages/GuidedLesson"));
+const TryLanguage = lazy(() => import('@/pages/TryLanguage'));
 const LanguageDetail = lazy(() => import("@/pages/LanguageDetail"));
 const LessonView = lazy(() => import("@/pages/LessonView"));
 const AuthPage = lazy(() => import("@/pages/auth-page"));
 const Settings = lazy(() => import("@/pages/Settings"));
 const Profile = lazy(() => import("@/pages/Profile"));
-const SubscribePage = lazy(() => import("@/pages/SubscribePage"));
 const AdminDashboard = lazy(() => import("@/pages/AdminDashboard"));
 const AboutPage = lazy(() => import("@/pages/AboutPage"));
 const ContactPage = lazy(() => import("@/pages/ContactPage"));
@@ -27,9 +31,6 @@ const FAQPage = lazy(() => import("@/pages/FAQPage"));
 const Blog = lazy(() => import("@/pages/Blog"));
 const BlogPost = lazy(() => import("@/pages/BlogPost"));
 const ConversationPractice = lazy(() => import("@/pages/ConversationPractice"));
-const VerifyEmailPage = lazy(() => import("@/pages/VerifyEmailPage"));
-const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPasswordPage"));
-const ResetPasswordPage = lazy(() => import("@/pages/ResetPasswordPage"));
 const Healthcheck = lazy(() => import("./pages/Healthcheck"));
 
 function RouteFallback() {
@@ -48,10 +49,17 @@ function Router() {
         <Switch>
         {/* Home page is public to show marketing content */}
         <Route path="/" component={Home} />
-        
+        <Route path="/try/:code/:activityId" component={TryLanguage} /><Route path="/try/:code" component={TryLanguage} />
+
         {/* Protected routes requiring authentication */}
-        <ProtectedRoute path="/dashboard" component={Home} />
-        <ProtectedRoute path="/languages" component={LanguageSelection} />
+        <ProtectedRoute path="/dashboard" component={Today} />
+        <ProtectedRoute path="/dashboard/:code" component={Today} />
+        <ProtectedRoute path="/words" component={Words} />
+        <ProtectedRoute path="/words/:code" component={Words} />
+        <ProtectedRoute path="/practice" component={Practice} />
+        <ProtectedRoute path="/practice/:code" component={Practice} />
+        <ProtectedRoute path="/learn/:activityId" component={GuidedLesson} />
+        <Route path="/languages" component={LanguageSelection} />
         {/* Language detail page */}
         <ProtectedRoute path="/language/:code" component={LanguageDetail} />
         {/* Legacy lesson routes - keep for compatibility but will redirect */}
@@ -73,18 +81,12 @@ function Router() {
         
         {/* Authentication routes */}
         <Route path="/auth" component={AuthPage} />
-        <Route path="/verify-email" component={VerifyEmailPage} />
-        <Route path="/forgot-password" component={ForgotPasswordPage} />
-        <Route path="/reset-password" component={ResetPasswordPage} />
-        
-        {/* Subscription page - public */}
-        <Route path="/subscribe" component={SubscribePage} />
-        
+
         {/* About page - public */}
         <Route path="/about" component={AboutPage} />
         
-        {/* Contact page - public */}
-        <Route path="/contact" component={ContactPage} />
+        {/* Contact form is attributed to the signed-in learner. */}
+        <ProtectedRoute path="/contact" component={ContactPage} />
         
         {/* FAQ page - public */}
         <Route path="/faq" component={FAQPage} />

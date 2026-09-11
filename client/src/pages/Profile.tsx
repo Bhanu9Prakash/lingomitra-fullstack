@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery, useQueries } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { useAuth } from '../hooks/use-auth';
 import { useSimpleToast } from '../hooks/use-simple-toast';
@@ -21,6 +21,8 @@ import { Language, UserProgress, Lesson } from '@shared/schema';
 import { calculateTotalProgressForLanguage, formatTimeSpent } from '@/lib/progress';
 import StreakCalendar from '../components/StreakCalendar';
 import LanguageProgressCards from '../components/LanguageProgressCards';
+import AbilitySummary from '@/components/AbilitySummary';
+import type {CourseOverview, LearningSummary} from '@shared/learning';
 
 /**
  * Profile page that displays user progress across all languages
@@ -50,42 +52,11 @@ export default function Profile() {
         })
   });
 
-  // For each language, fetch progress using useQueries
-  const progressQueries = useQueries({
-    queries: languages.map((language: Language) => ({
-      queryKey: ['progress', language.code],
-      enabled: !!user,
-      retry: 2,
-      staleTime: 60000, // 1 minute
-      refetchOnWindowFocus: true,
-      queryFn: () => 
-        fetch(`/api/progress/language/${language.code}`)
-          .then(res => {
-            if (!res.ok) throw new Error(`Failed to fetch progress for ${language.name}`);
-            return res.json() as Promise<UserProgress[]>;
-          })
-    }))
-  });
-
-  // For each language, fetch lessons using useQueries
-  const lessonQueries = useQueries({
-    queries: languages.map((language: Language) => ({
-      queryKey: ['lessons', language.code],
-      enabled: !!user,
-      retry: 2,
-      staleTime: 60000, // 1 minute
-      queryFn: () => 
-        fetch(`/api/languages/${language.code}/lessons`)
-          .then(res => {
-            if (!res.ok) throw new Error(`Failed to fetch lessons for ${language.name}`);
-            return res.json() as Promise<Lesson[]>;
-          })
-    }))
-  });
-
-  const isLoading = authLoading || languagesLoading || 
-    progressQueries.some(query => query.isLoading) ||
-    lessonQueries.some(query => query.isLoading);
+  const overview=useQuery<CourseOverview>({queryKey:['/api/progress/overview'],enabled:Boolean(user)});
+  const ability=useQuery<LearningSummary>({queryKey:['/api/learning/summary'],enabled:Boolean(user)});
+  const progressQueries=languages.map(language=>({data:overview.data?.courses.find(c=>c.languageCode===language.code)?.progress,isLoading:overview.isLoading}));
+  const lessonQueries=languages.map(language=>({data:overview.data?.courses.find(c=>c.languageCode===language.code)?.lessons,isLoading:overview.isLoading}));
+  const isLoading=authLoading||languagesLoading||overview.isLoading;
 
   // Prepare data for the overview chart
   const prepareChartData = () => {
@@ -159,23 +130,10 @@ export default function Profile() {
     );
   }
 
+  if(overview.error)return <main className="guided-shell"><h1>Your learning record</h1><p role="alert">Your saved progress could not load. It has not been reset.</p><Button onClick={()=>overview.refetch()}>Try again</Button></main>;
   const chartData = prepareChartData();
   const activeLanguages = getActiveLanguages();
   
-  // Debug information
-  console.log("Profile page data:", { 
-    user,
-    languages: languages.map(l => l.code), 
-    progressData: progressQueries.map((q, i) => ({ 
-      language: languages[i]?.code,
-      data: q.data,
-      isLoading: q.isLoading,
-      isError: q.isError,
-      error: q.error
-    })),
-    activeLanguages: activeLanguages.map(l => l.code)
-  });
-
   // Custom BarChart tooltip
   interface TooltipProps {
     active?: boolean;
@@ -199,12 +157,13 @@ export default function Profile() {
     <div className="container mx-auto py-12 max-w-5xl page-container">
       <h1 className="text-3xl font-bold mb-8 text-center md:text-left">Your Language Learning Profile</h1>
       
+      {ability.data?<AbilitySummary skills={ability.data.skills}/>:ability.error?<p role="alert">Assessed learning could not load. <Button variant="ghost" onClick={()=>ability.refetch()}>Retry</Button></p>:<p role="status">Loading assessed attempts…</p>}
       {activeLanguages.length === 0 ? (
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>No Progress Yet</CardTitle>
+            <CardTitle>Course completion history</CardTitle>
             <CardDescription>
-              You haven't started learning any languages yet. Begin your language journey by selecting a language and completing lessons.
+              No completed course activity is recorded yet. Starter assessments and drafts are tracked separately above and on Today.
             </CardDescription>
           </CardHeader>
           <CardFooter>
